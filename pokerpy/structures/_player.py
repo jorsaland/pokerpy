@@ -15,10 +15,10 @@ class Player:
         self.name = name
 
 
-    def play(self, betting_round: str):
+    def play(self):
 
         """
         Makes the player to take an action.
         """
 
-        print(f'{self.name} plays {betting_round}')
+        print(f'{self.name} plays.')

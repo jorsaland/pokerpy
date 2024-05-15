@@ -47,7 +47,7 @@ def cycle():
         table.deal(betting_round)
 
         for player in table.players:
-            player.play(betting_round)
+            player.play()
             table.respond(player)
     
     winner = random.choice(player_names)
