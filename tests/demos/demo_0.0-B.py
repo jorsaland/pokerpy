@@ -35,6 +35,8 @@ class Table:
         print(f'\n=== Dealer deals cards for {betting_round} ===\n')
     def respond(self, player: Player):
         print(f'Dealer responds to {player.name}\n')
+    def showdown(self):
+        print(f'\n=== Showdown! ===\n')
 
 
 # Playability
@@ -61,6 +63,7 @@ def cycle():
             player.play()
             table.respond(player)
     
+    table.showdown()
     winner = random.choice(player_names)
     print(f'{winner} wins!')
 

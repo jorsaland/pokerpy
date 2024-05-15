@@ -50,6 +50,7 @@ def cycle():
             player.play()
             table.respond(player)
     
+    table.showdown()
     winner = random.choice(player_names)
     print(f'{winner} wins!')
 
