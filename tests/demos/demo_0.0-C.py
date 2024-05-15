@@ -13,7 +13,7 @@ sys.path.insert(0, '.')
 import random
 
 
-from pokerpy.structures import Player, Table
+from pokerpy import Player, Table
 
 
 # Constants

@@ -8,4 +8,4 @@ __version__ = '0.0.0'
 
 
 # Content
-from . import structures
+from .structures import Player, Table
