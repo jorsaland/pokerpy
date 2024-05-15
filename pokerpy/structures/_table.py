@@ -34,3 +34,12 @@ class Table:
         """
         
         print(f'Dealer responds to {player.name}\n')
+
+
+    def showdown(self):
+
+        """
+        Makes the players to show their cards and the dealer to determine the winner.
+        """
+        
+        print(f'\n=== Showdown! ===\n')
