@@ -1,2 +1,2 @@
 # PokerPy
-Inicio
+Basic player and table structures are developed
