@@ -7,9 +7,6 @@ instantiated with all players. Again, the winner is chossen randomly.
 """
 
 
-from __future__ import annotations
-
-
 import random
 
 
@@ -25,6 +22,12 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Dealer and player classes
 
+class Player:
+    def __init__(self, name: str):
+        self.name = name
+    def play(self, betting_round: str):
+        print(f'{self.name} plays {betting_round}')
+
 class Table:
     def __init__(self, players: list[Player]):
         self.players = players
@@ -32,13 +35,6 @@ class Table:
         print(f'\n=== Dealer deals cards for {betting_round} ===\n')
     def respond(self, player: Player):
         print(f'Dealer responds to {player.name}\n')
-
-
-class Player:
-    def __init__(self, name: str):
-        self.name = name
-    def play(self, betting_round: str):
-        print(f'{self.name} plays {betting_round}')
 
 
 # Playability
