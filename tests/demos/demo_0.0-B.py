@@ -3,7 +3,7 @@ DEMO 0.0-B
 
 The same poker cycle (hand) of Demo 0.0-A was simulated, using classes and instances for a table
 (including the dealer as part of the table) and multiple players. By now, the table must be
-instantiated with all players. Again, the winner is chossen randomly.
+instantiated with all players. Again, the winner is chosen randomly.
 """
 
 
