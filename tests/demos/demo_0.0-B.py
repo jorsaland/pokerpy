@@ -25,8 +25,8 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 class Player:
     def __init__(self, name: str):
         self.name = name
-    def play(self, betting_round: str):
-        print(f'{self.name} plays {betting_round}')
+    def play(self):
+        print(f'{self.name} plays.')
 
 class Table:
     def __init__(self, players: list[Player]):
@@ -58,7 +58,7 @@ def cycle():
         table.deal(betting_round)
 
         for player in table.players:
-            player.play(betting_round)
+            player.play()
             table.respond(player)
     
     winner = random.choice(player_names)
