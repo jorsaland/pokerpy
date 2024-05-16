@@ -3,6 +3,9 @@ Defines the class that represents a poker table.
 """
 
 
+import random
+
+
 from ._player import Player
 
 
@@ -24,22 +27,16 @@ class Table:
         Makes the dealer to deal the cards.
         """
 
-        print(f'\n=== Dealer deals cards for {betting_round} ===\n')
-
-
-    def respond(self, player: Player):
-
-        """
-        Makes the dealer to respond to a player.
-        """
-        
-        print(f'Dealer responds to {player.name}\n')
+        print(f'Dealer deals cards for {betting_round}.\n')
 
 
     def showdown(self):
 
         """
-        Makes the players to show their cards and the dealer to determine the winner.
+        Makes the dealer to determine who is the winner among remaining players.
         """
-        
-        print(f'\n=== Showdown! ===\n')
+
+        print(f'\n=== SHOWDOWN! ===\n')
+
+        winner = random.choice(self.players)
+        print(f'{winner.name} wins!')

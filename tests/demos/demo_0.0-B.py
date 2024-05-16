@@ -32,40 +32,40 @@ class Table:
     def __init__(self, players: list[Player]):
         self.players = players
     def deal(self, betting_round: str):
-        print(f'\n=== Dealer deals cards for {betting_round} ===\n')
-    def respond(self, player: Player):
-        print(f'Dealer responds to {player.name}\n')
+        print(f'Dealer deals cards for {betting_round}.\n')
     def showdown(self):
-        print(f'\n=== Showdown! ===\n')
+        print(f'\n=== SHOWDOWN! ===\n')
+        winner = random.choice(self.players)
+        print(f'{winner.name} wins!')
 
 
 # Playability
 
 def cycle():
 
-    print('======================')
-    print('=== STARTING TABLE ===')
-    print('======================\n')
+    print('\n======================'  )
+    print(  '=== STARTING TABLE ==='  )
+    print(  '======================\n')
 
-    print('creating table and players...\n')
+    print('\nStarting table and players...\n')
     players = [Player(name) for name in player_names]
     table = Table(players)
 
-    print('======================')
-    print('=== STARTING CYCLE ===')
-    print('======================\n')
+    print('\n======================'  )
+    print(  '=== STARTING CYCLE ==='  )
+    print(  '======================\n')
 
     for betting_round in betting_rounds:
 
-        table.deal(betting_round)
+        print(f'\n=== STARTING {betting_round.upper()} ===\n')
 
+        table.deal(betting_round)
         for player in table.players:
             player.play()
-            table.respond(player)
+        
+        print(f'\n=== ENDING {betting_round.upper()} ===\n')
     
     table.showdown()
-    winner = random.choice(player_names)
-    print(f'{winner} wins!')
 
 
 # Run test

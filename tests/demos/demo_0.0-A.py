@@ -34,7 +34,6 @@ def cycle():
 
         for player_name in player_names:
             print(f'{player_name} plays {betting_round}')
-            print('dealer responds\n')
 
     print(f'\n=== Showdown! ===\n')
     winner = random.choice(player_names)
