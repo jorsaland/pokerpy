@@ -1,5 +1,5 @@
 """
-Namespace for low level structures.
+Namespace for structure-like classes.
 """
 
 
