@@ -1,2 +1,2 @@
 # PokerPy
-Basic player and table structures are developed
+Logic regarding betting round actions constraints and players leaving by folding are developed, as well as BettingRound context manager.
