@@ -25,6 +25,7 @@ class Table:
         # State variables
         self.active_players: list[Player] = []
         self.is_under_bet = False
+        self.last_aggressive_player: (Player|None) = None
 
 
     def activate_all_players(self):
@@ -44,6 +45,7 @@ class Table:
         """
 
         self.is_under_bet = False
+        self.last_aggressive_player = None
 
 
     def deal(self, betting_round: str):
