@@ -3,6 +3,10 @@ Defines the class that represents a poker player.
 """
 
 
+from pokerpy.constants import possible_actions
+from pokerpy.messages import undefined_action_message
+
+
 class Player:
 
 
@@ -12,13 +16,22 @@ class Player:
 
 
     def __init__(self, name: str):
+
+        # Input variables
         self.name = name
 
+        # State variables
+        self.requested_action: (str|None) = None
 
-    def play(self):
+
+    def request(self, action: str):
 
         """
-        Makes the player to take an action.
+        Makes the player to request taking an action.
         """
 
-        print(f'{self.name} plays.')
+        if action not in possible_actions:
+            error_message = undefined_action_message.format(action=action)
+            raise ValueError(error_message)
+
+        self.requested_action = action
