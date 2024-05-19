@@ -67,9 +67,9 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 def cycle():
 
-    print('\n======================'  )
-    print(  '=== STARTING TABLE ==='  )
-    print(  '======================\n')
+    print('======================'  )
+    print('=== STARTING TABLE ==='  )
+    print('======================\n')
 
     print('\nStarting table and players...\n')
     players = [Player(name) for name in player_names]

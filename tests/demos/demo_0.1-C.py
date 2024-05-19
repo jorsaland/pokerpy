@@ -132,9 +132,9 @@ def cycle(table: pk.Table):
 
 def game():
 
-    print('\n======================'  )
-    print(  '=== STARTING TABLE ==='  )
-    print(  '======================\n')
+    print('======================'  )
+    print('=== STARTING TABLE ==='  )
+    print('======================\n')
 
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]

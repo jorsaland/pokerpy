@@ -1,5 +1,5 @@
 """
-DEMO 0.0-B
+Demo 0.0-B
 
 The same poker cycle (hand) of Demo 0.0-A was simulated, using classes and instances for a table
 (including the dealer as part of the table) and multiple players. By now, the table must be
@@ -43,9 +43,9 @@ class Table:
 
 def cycle():
 
-    print('\n======================'  )
-    print(  '=== STARTING TABLE ==='  )
-    print(  '======================\n')
+    print('======================'  )
+    print('=== STARTING TABLE ==='  )
+    print('======================\n')
 
     print('\nStarting table and players...\n')
     players = [Player(name) for name in player_names]
