@@ -1,5 +1,5 @@
 """
-DEMO 0.0-C
+Demo 0.0-C
 
 The same poker cycle (hand) of previous 0.0 demos was simulated, importing classes and instances
 defined within the library.
@@ -27,9 +27,9 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 def cycle():
 
-    print('\n======================'  )
-    print(  '=== STARTING TABLE ==='  )
-    print(  '======================\n')
+    print('======================'  )
+    print('=== STARTING TABLE ==='  )
+    print('======================\n')
 
     print('\nStarting table and players...\n')
     players = [Player(name) for name in player_names]
