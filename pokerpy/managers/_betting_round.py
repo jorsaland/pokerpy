@@ -35,14 +35,16 @@ class BettingRound:
 
         print(f'\n=== STARTING {self.name.upper()} ===\n')
 
+        # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
         self.table.deal(self.name)
         
+        # All players are itered but only active ones are allowed to act
         for player in self.table.players:
 
             # Determine whether betting round should be stopped or not
             if len(self.table.active_players) == 1:
-                print(f'<< ONLY ONE ACTIVE PLAYER ({self.table.active_players[0].name.upper()})... ENDING ROUND >>')
+                print(f'<< ONLY ONE ACTIVE PLAYER ({self.table.active_players[0].name.upper()})... ENDING ROUND >>\n')
                 break
 
             # Determine whether player should be allowed to play or not
@@ -50,6 +52,7 @@ class BettingRound:
                 print(f'<< {player.name.upper()} ALREADY FOLDED >>\n')
                 continue
 
+            # Player keeps its turn until selects a valid action
             while True:
 
                 # Wait for player's action
@@ -61,7 +64,6 @@ class BettingRound:
                 if action is not None and action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
                     print(f'{player.name} {action}s\n'.upper())
                     break
-
                 print(f'<< INVALID ACTION: {action.upper()} >>')
             
             # Determine whether round becomes under bet or not
