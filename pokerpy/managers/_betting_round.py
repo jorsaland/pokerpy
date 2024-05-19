@@ -3,7 +3,9 @@ Defines the class that represents a betting round context manager.
 """
 
 
+from pokerpy.constants import ACTION_FOLD, aggressive_actions
 from pokerpy.structures import Table
+from pokerpy.utils import action_is_valid
 
 
 class BettingRound:
@@ -45,10 +47,31 @@ class BettingRound:
 
             # Determine whether player should be allowed to play or not
             if player not in self.table.active_players:
-                print(f'<< {player.name.upper()} ALREADY FOLDED >>')
+                print(f'<< {player.name.upper()} ALREADY FOLDED >>\n')
                 continue
 
-            yield player
+            while True:
+
+                # Wait for player's action
+                print(f'Waiting for {player.name}...')
+                yield player
+
+                # Determine wheter action is valid or not
+                action = player.requested_action
+                if action is not None and action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
+                    print(f'{player.name} {action}s\n'.upper())
+                    break
+
+                print(f'<< INVALID ACTION: {action.upper()} >>')
+            
+            # Determine whether round becomes under bet or not
+            if action in aggressive_actions:
+                self.table.is_under_bet = True
+            
+            # Determine whether the player becomes inactive or not
+            if action == ACTION_FOLD:
+                self.table.active_players.remove(player)
+
 
 
     def end(self):
@@ -57,4 +80,4 @@ class BettingRound:
         Finaliza la ronda de apuestas.
         """
 
-        print(f'\n=== ENDING {self.name.upper()} ===\n')
+        print(f'=== ENDING {self.name.upper()} ===\n')
