@@ -18,7 +18,32 @@ class Table:
 
 
     def __init__(self, players: list[Player]):
+
+        # Input variables
         self.players = players
+
+        # State variables
+        self.active_players: list[Player] = []
+        self.is_under_bet = False
+
+
+    def activate_all_players(self):
+
+        """
+        Make all players to be available to play.
+        """
+
+        self.active_players.clear()
+        self.active_players.extend(self.players)
+
+
+    def reset_betting_round_states(self):
+        
+        """
+        Resets all state variables that are restricted to betting rounds.
+        """
+
+        self.is_under_bet = False
 
 
     def deal(self, betting_round: str):
@@ -38,5 +63,6 @@ class Table:
 
         print(f'\n=== SHOWDOWN! ===\n')
 
-        winner = random.choice(self.players)
+        print(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
+        winner = random.choice(self.active_players)
         print(f'{winner.name} wins!')
