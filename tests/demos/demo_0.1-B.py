@@ -21,7 +21,7 @@ sys.path.insert(0, '.')
 import random
 
 
-from pokerpy import Player, Table
+from deprecated.v00 import Player, Table
 
 
 # Constants
