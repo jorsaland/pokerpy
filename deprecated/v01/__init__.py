@@ -8,7 +8,8 @@ __version__ = '0.1.0'
 
 
 # Content
-from .constants import possible_actions
+from .constants import ACTION_FOLD, aggressive_actions, possible_actions
 from .managers import BettingRound
 from .structures import Player, Table
+from .utils import action_is_valid
 from . import switches

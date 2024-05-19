@@ -18,7 +18,7 @@ sys.path.insert(0, '.')
 import random
 
 
-import pokerpy as pk
+import deprecated.v01 as pk
 
 
 # Constants
