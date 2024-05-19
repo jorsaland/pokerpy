@@ -62,7 +62,10 @@ class BettingRound:
                 # Determine wheter action is valid or not
                 action = player.requested_action
                 if action is not None and action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
-                    print(f'{player.name} {action}s\n'.upper())
+                    action_print_message = f'--- {player.name} {action}s ---'.upper()
+                    print('-' * len(action_print_message))
+                    print(action_print_message)
+                    print('-' * len(action_print_message) + '\n')
                     break
                 print(f'<< INVALID ACTION: {action.upper()} >>')
             
