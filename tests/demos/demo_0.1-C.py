@@ -72,14 +72,11 @@ def cycle(table: pk.Table):
                 continue
 
             # Let current player to play
-            if round_is_under_bet:
-                action = random.choice(pk.valid_actions_under_bet)
-            else:
-                if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
-                    action = random.choice(pk.valid_actions_not_under_bet)
-                else:
-                    action = random.choice(pk.valid_actions_not_under_bet + [pk.ACTION_FOLD])
-            print(f"{player.name} {action}")
+            action = random.choice(pk.possible_actions)
+            while not pk.action_is_valid(action=action, is_under_bet=round_is_under_bet):
+                print(f'<< INVALID ACTION: {action.upper()} >>')
+                action = random.choice(pk.possible_actions)
+            print(f'{player.name} {action}s')
 
             # Determine whether round becomes under bet or not
             if action in pk.aggressive_actions:

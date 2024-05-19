@@ -10,9 +10,9 @@ __version__ = '0.0.0'
 # Content
 from .constants import (
     ACTION_FOLD,
+    possible_actions,
     aggressive_actions,
-    valid_actions_not_under_bet,
-    valid_actions_under_bet,
 )
 from .structures import Player, Table
+from .utils import action_is_valid
 from . import switches
