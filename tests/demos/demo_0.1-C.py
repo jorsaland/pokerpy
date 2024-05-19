@@ -43,59 +43,56 @@ def cycle(table: pk.Table):
         print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
         print(  '==============================================\n')
 
+    # Make sure every player is active
+    table.activate_all_players()
+
     # Define state variables
-    active_players = table.players.copy()
-    round_is_under_bet = False
 
     for betting_round in betting_rounds:
 
         # Determine whether cycle should be stopped or not
-        if len(active_players) == 1:
+        if len(table.active_players) == 1:
             break
-
-        # Reset betting round restricted state variables
-        round_is_under_bet = False
 
         print(f'\n=== STARTING {betting_round.upper()} ===\n')
 
+        table.reset_betting_round_states()
         table.deal(betting_round)
+
         for player in table.players:
 
             # Determine whether betting round should be stopped or not
-            if len(active_players) == 1:
-                print(f'<< ONLY ONE ACTIVE PLAYER ({active_players[0].name.upper()})... ENDING ROUND >>')
+            if len(table.active_players) == 1:
+                print(f'<< ONLY ONE ACTIVE PLAYER ({table.active_players[0].name.upper()})... ENDING ROUND >>')
                 break
 
             # Determine whether player should be allowed to play or not
-            if player not in active_players:
+            if player not in table.active_players:
                 print(f'<< {player.name.upper()} ALREADY FOLDED >>')
                 continue
 
             # Let current player to play
             action = random.choice(pk.possible_actions)
-            while not pk.action_is_valid(action=action, is_under_bet=round_is_under_bet):
+            while not pk.action_is_valid(action=action, is_under_bet=table.is_under_bet):
                 print(f'<< INVALID ACTION: {action.upper()} >>')
                 action = random.choice(pk.possible_actions)
             print(f'{player.name} {action}s')
 
             # Determine whether round becomes under bet or not
             if action in pk.aggressive_actions:
-                round_is_under_bet = True
+                table.is_under_bet = True
             
             # Determine whether the player becomes inactive or not
             if action == pk.ACTION_FOLD:
-                active_players.remove(player)
+                table.active_players.remove(player)
         
         print(f'\n=== ENDING {betting_round.upper()} ===\n')
     
-    if len(active_players) > 1:
-        print(f'\n=== SHOWDOWN! ===\n')
-        print(f'Remaining players: {", ".join(p.name for p in active_players)}')
-        winner = random.choice(active_players)
-        print(f'{winner.name} wins!')
+    if len(table.active_players) > 1:
+        table.showdown()
     else:
         print('\n=== NO SHOWDOWN... ===\n')
-        winner = active_players[0]
+        winner = table.active_players[0]
         print(f'{winner.name} wins!')
 
 
