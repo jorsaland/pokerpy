@@ -20,7 +20,7 @@ sys.path.insert(0, '.')
 import random
 
 
-import deprecated.v01 as pk
+import deprecated.v01 as v01
 
 
 # Constants
@@ -35,14 +35,14 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Updates
 
-class UpdatedBettingRound(pk.BettingRound):
+class UpdatedBettingRound(v01.BettingRound):
     def start(self):
         print(f'\n=== STARTING {self.name.upper()} ===\n')
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
         self.table.deal(self.name)
         # Define state variables
-        last_aggressive_player: (pk.Player|None) = None
+        last_aggressive_player: (v01.Player|None) = None
         round_must_stop = False
         lap_counter = 0
         # Extend betting round until the last aggressive action has been responded
@@ -71,7 +71,7 @@ class UpdatedBettingRound(pk.BettingRound):
                     yield player
                     # Determine wheter action is valid or not
                     action = player.requested_action
-                    if action is not None and pk.action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
+                    if action is not None and v01.action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
                         action_print_message = f'--- {player.name} {action}s ---'.upper()
                         print('-' * len(action_print_message))
                         print(action_print_message)
@@ -79,11 +79,11 @@ class UpdatedBettingRound(pk.BettingRound):
                         break
                     print(f'<< INVALID ACTION: {action.upper()} >>')
                 # Determine consequences of aggressive actions
-                if action in pk.aggressive_actions:
+                if action in v01.aggressive_actions:
                     self.table.is_under_bet = True
                     last_aggressive_player = player
                 # Determine whether the player becomes inactive or not
-                if action == pk.ACTION_FOLD:
+                if action == v01.ACTION_FOLD:
                     self.table.active_players.remove(player)
             # If no player bets, the round must stop
             if last_aggressive_player is None:
@@ -92,9 +92,9 @@ class UpdatedBettingRound(pk.BettingRound):
 
 # Playability
 
-def cycle(table: pk.Table):
+def cycle(table: v01.Table):
 
-    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -116,7 +116,7 @@ def cycle(table: pk.Table):
         # Run betting round
         with UpdatedBettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
-                action = random.choice(pk.possible_actions)
+                action = random.choice(v01.possible_actions)
                 player.request(action)
             
     if len(table.active_players) > 1:
@@ -134,15 +134,15 @@ def game():
     print('======================\n')
 
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
+    players = [v01.Player(name) for name in player_names]
+    table = v01.Table(players)
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
     cycle(table)
 
     print()
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
     cycle(table)
 
 

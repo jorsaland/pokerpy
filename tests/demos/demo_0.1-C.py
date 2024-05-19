@@ -22,7 +22,7 @@ and do something with it. Probably a similar context manager will be introduced 
 logic for a full poker game.
 
 You may notice this demo fully imports PokerPy instead of importing variables separately. Probably,
-this 'pk' abbreviation will be used in further tests and suggested in docs.
+this 'v01' abbreviation will be used in further tests and suggested in docs.
 """
 
 
@@ -33,7 +33,7 @@ sys.path.insert(0, '.')
 import random
 
 
-import deprecated.v01 as pk
+import deprecated.v01 as v01
 
 
 # Constants
@@ -48,9 +48,9 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Playability
 
-def cycle(table: pk.Table):
+def cycle(table: v01.Table):
 
-    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -70,9 +70,9 @@ def cycle(table: pk.Table):
             break
 
         # Run betting round
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+        with v01.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
-                action = random.choice(pk.possible_actions)
+                action = random.choice(v01.possible_actions)
                 player.request(action)
             
     if len(table.active_players) > 1:
@@ -90,15 +90,15 @@ def game():
     print('======================\n')
 
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
+    players = [v01.Player(name) for name in player_names]
+    table = v01.Table(players)
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
     cycle(table)
 
     print()
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
     cycle(table)
 
 
