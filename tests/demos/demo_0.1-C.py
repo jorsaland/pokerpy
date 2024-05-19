@@ -23,34 +23,6 @@ import pokerpy as pk
 
 betting_rounds = ['pre-flop', 'flop', 'turn', 'river']
 
-ACTION_CHECK = 'checks'
-ACTION_FOLD = 'folds'
-ACTION_CALL = 'calls'
-ACTION_BET = 'bets'
-ACTION_RAISE = 'raises'
-
-aggressive_actions = [
-    ACTION_BET,
-    ACTION_RAISE
-]
-
-passive_actions = [
-    ACTION_FOLD,
-    ACTION_CHECK,
-    ACTION_CALL
-]
-
-valid_actions_not_under_bet = [
-    ACTION_CHECK,
-    ACTION_BET,
-]
-
-valid_actions_under_bet = [
-    ACTION_FOLD,
-    ACTION_CALL,
-    ACTION_RAISE,
-]
-
 
 # Test players
 
@@ -101,20 +73,20 @@ def cycle(table: pk.Table):
 
             # Let current player to play
             if round_is_under_bet:
-                action = random.choice(valid_actions_under_bet)
+                action = random.choice(pk.valid_actions_under_bet)
             else:
                 if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
-                    action = random.choice(valid_actions_not_under_bet)
+                    action = random.choice(pk.valid_actions_not_under_bet)
                 else:
-                    action = random.choice(valid_actions_not_under_bet + [ACTION_FOLD])
+                    action = random.choice(pk.valid_actions_not_under_bet + [pk.ACTION_FOLD])
             print(f"{player.name} {action}")
 
             # Determine whether round becomes under bet or not
-            if action in aggressive_actions:
+            if action in pk.aggressive_actions:
                 round_is_under_bet = True
             
             # Determine whether the player becomes inactive or not
-            if action == ACTION_FOLD:
+            if action == pk.ACTION_FOLD:
                 active_players.remove(player)
         
         print(f'\n=== ENDING {betting_round.upper()} ===\n')
