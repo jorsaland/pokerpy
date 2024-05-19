@@ -15,7 +15,6 @@ from .constants import (
     ACTION_FOLD,
     ACTION_RAISE,
     possible_actions,
-    aggressive_actions,
 )
 from .managers import BettingRound
 from .structures import Player, Table
