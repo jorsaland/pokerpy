@@ -6,17 +6,15 @@ Defines the class that represents a betting round context manager.
 from collections.abc import Generator
 
 
-from pokerpy.constants import ACTION_FOLD, aggressive_actions
 from pokerpy.messages import (
     exiting_unended_betting_round_message,
     overloaded_betting_round_message,
     starting_already_ended_betting_round_message,
 )
 from pokerpy.structures import Player, Table
-from pokerpy.utils import action_is_valid
 
 
-from ._wait_for_player import wait_for_player
+from ._alternate_players import alternate_players
 
 
 class BettingRound:
@@ -36,6 +34,7 @@ class BettingRound:
         # State variables
         self.generator: (Generator[Player]|None) = None
         self.has_ended = False
+    
     
     def __enter__(self):
         self.generator = self.start()
@@ -76,35 +75,8 @@ class BettingRound:
             lap_counter += 1
 
             # All players are itered but only active ones are allowed to act
-            for player in self.table.players:
+            round_must_stop = yield from alternate_players(self.table)
 
-                # Determine whether betting round should be stopped or not
-                if len(self.table.active_players) == 1:
-                    print(f'<< ONLY ONE ACTIVE PLAYER ({self.table.active_players[0].name.upper()})... ENDING ROUND >>\n')
-                    round_must_stop = True
-                    break
-                if player == self.table.last_aggressive_player:
-                    print(f'<< {player.name.upper()} TOOK THE LAST AGGRESSIVE ACTION... ENDING ROUND >>\n')
-                    round_must_stop = True
-                    break
-
-                # Determine whether player should be allowed to play or not
-                if player not in self.table.active_players:
-                    print(f'<< {player.name.upper()} ALREADY FOLDED >>\n')
-                    continue
-
-                # Player keeps its turn until selects a valid action
-                action = yield from wait_for_player(player=player, is_under_bet=self.table.is_under_bet)
-
-                # Set consequences of aggressive actions
-                if action in aggressive_actions:
-                    self.table.is_under_bet = True
-                    self.table.last_aggressive_player = player
-
-                # Determine whether the player becomes inactive or not
-                if action == ACTION_FOLD:
-                    self.table.active_players.remove(player)
-            
             # If no player bets, the round must stop
             if self.table.last_aggressive_player is None:
                 round_must_stop = True
