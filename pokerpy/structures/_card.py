@@ -4,7 +4,7 @@ Defines the class that represents a poker card.
 
 
 from pokerpy.constants import sorted_card_values, sorted_card_suits, unicode_code_point_by_card_suit
-from pokerpy.messages import invalid_card_suit_message, invalid_card_value_message
+from pokerpy.messages import invalid_card_suit_message, invalid_card_value_message, joker_card_message
 
 
 class Card:
@@ -17,7 +17,13 @@ class Card:
 
     def __init__(self, value: str, suit: str):
 
-        # Validate input
+        # Convert cases
+        value = value.upper()
+        suit = suit.lower()
+
+        # Validate and convert input
+        if 'joker' in [value.lower(), suit.lower()]:
+            raise ValueError(joker_card_message)
         if value not in sorted_card_values:
             message = invalid_card_value_message.format(valid_values=', '.join(sorted_card_values))
             raise ValueError(message)
