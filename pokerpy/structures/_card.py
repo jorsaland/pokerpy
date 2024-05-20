@@ -15,6 +15,8 @@ class Card:
     """
 
 
+    # Initialization magic methods
+
     def __init__(self, value: str, suit: str):
 
         # Convert cases
@@ -34,9 +36,30 @@ class Card:
         # Input variables
         self.value = value
         self.suit = suit
-    
+
+
+    # Representation magic methods
+
+    def __repr__(self):
+        return f'Card(value={self.value}, suit={self.suit})'
 
     def __str__(self):
         unicode_code_point = unicode_code_point_by_card_suit[self.suit]
         pretty_suit = chr(unicode_code_point)
         return f'[{self.value}{pretty_suit}]'
+
+
+    # Unicity magic methods
+
+    def __hash__(self):
+        return hash((Card, self.value, self.suit))
+
+
+    # Comparison magic methods
+
+    def __eq__(self, other):
+
+        if not isinstance(other, Card):
+            return False
+
+        return (self.value == other.value) and (self.suit == other.suit)
