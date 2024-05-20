@@ -23,6 +23,7 @@ class TestCard(TestCase):
 
     def test_instantiation(self):
 
+
         """
         Runs test cases to check if cards stantiation works as expected.
         """
@@ -98,17 +99,19 @@ class TestCard(TestCase):
         # Valid cases with different upper and lower case parsing
 
         self.assertIsInstance(pk.Card('a', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('k', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('q', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('j', 'c'), pk.Card)
+        self.assertIsInstance(pk.Card('k', 's'), pk.Card)
+        self.assertIsInstance(pk.Card('q', 's'), pk.Card)
+        self.assertIsInstance(pk.Card('j', 's'), pk.Card)
+        self.assertIsInstance(pk.Card('t', 's'), pk.Card)
         self.assertIsInstance(pk.Card('A', 'S'), pk.Card)
-        self.assertIsInstance(pk.Card('K', 'H'), pk.Card)
-        self.assertIsInstance(pk.Card('Q', 'D'), pk.Card)
-        self.assertIsInstance(pk.Card('J', 'C'), pk.Card)
+        self.assertIsInstance(pk.Card('A', 'H'), pk.Card)
+        self.assertIsInstance(pk.Card('A', 'D'), pk.Card)
+        self.assertIsInstance(pk.Card('A', 'C'), pk.Card)
         self.assertIsInstance(pk.Card('a', 'S'), pk.Card)
         self.assertIsInstance(pk.Card('k', 'H'), pk.Card)
         self.assertIsInstance(pk.Card('q', 'D'), pk.Card)
         self.assertIsInstance(pk.Card('j', 'C'), pk.Card)
+        self.assertIsInstance(pk.Card('t', 'S'), pk.Card)
 
 
         # Invalid value parsings that may be valid in future
