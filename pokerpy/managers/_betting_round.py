@@ -49,7 +49,7 @@ class BettingRound:
     def start(self):
 
         """
-        Inicia la ronda de apuestas, permitiendo que los jugadores alternen sus turnos.
+        Starts the betting round, letting players to alternate turns.
         """
 
         # Check betting round has not ended yet
@@ -127,7 +127,7 @@ class BettingRound:
     def end(self, is_overloaded: bool):
 
         """
-        Finaliza la ronda de apuestas.
+        Ends the betting round.
         """
 
         if is_overloaded:
