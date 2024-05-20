@@ -16,8 +16,10 @@ from .constants import (
     ACTION_RAISE,
     aggressive_actions,
     possible_actions,
+    sorted_card_suits,
+    sorted_card_values,
 )
 from .managers import BettingRound
-from .structures import Player, Table
+from .structures import Card, Player, Table
 from .utils import action_is_valid
 from . import messages, switches
