@@ -40,8 +40,13 @@ class BettingRound:
         self.generator = self.start()
         yield from self.generator
     
-    def __exit__(self, exception_type: (type|None), *_):
-        is_overloaded = (exception_type is StopIteration)
+    def __exit__(self, exception_type: (type|None), exception: BaseException, _):
+        if exception_type is StopIteration:
+            is_overloaded = True
+        elif exception_type is None:
+            is_overloaded = False
+        else:
+            raise exception
         self.end(is_overloaded)
 
 
