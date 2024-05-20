@@ -22,7 +22,7 @@ and do something with it. Probably a similar context manager will be introduced 
 logic for a full poker game.
 
 You may notice this demo fully imports PokerPy instead of importing variables separately. Probably,
-this 'v01' abbreviation will be used in further tests and suggested in docs.
+this 'pk' abbreviation will be used in further tests and suggested in docs.
 """
 
 
