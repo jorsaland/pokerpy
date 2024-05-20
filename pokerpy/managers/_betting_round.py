@@ -3,8 +3,16 @@ Defines the class that represents a betting round context manager.
 """
 
 
+from collections.abc import Generator
+
+
 from pokerpy.constants import ACTION_FOLD, aggressive_actions
-from pokerpy.structures import Table
+from pokerpy.messages import (
+    exiting_unended_betting_round_message,
+    overloaded_betting_round_message,
+    starting_already_ended_betting_round_message,
+)
+from pokerpy.structures import Player, Table
 from pokerpy.utils import action_is_valid
 
 
@@ -17,14 +25,25 @@ class BettingRound:
 
 
     def __init__(self, *, name: str, table: Table):
+
+        # Input variables
         self.name = name
         self.table = table
+
+        # State variables
+        self.generator: (Generator[Player]|None) = None
+        self.has_ended = False
     
     def __enter__(self):
-        yield from self.start()
+        self.generator = self.start()
+        yield from self.generator
     
-    def __exit__(self, *_):
-        self.end()
+    def __exit__(self, exception_type: type, *_):
+        if exception_type == StopIteration:
+            is_overloaded = True
+        else:
+            is_overloaded = False
+        self.end(is_overloaded)
 
 
     def start(self):
@@ -32,6 +51,10 @@ class BettingRound:
         """
         Inicia la ronda de apuestas, permitiendo que los jugadores alternen sus turnos.
         """
+
+        # Check betting round has not ended yet
+        if self.has_ended:
+            raise RuntimeError(starting_already_ended_betting_round_message) 
 
         print(f'\n=== STARTING {self.name.upper()} ===\n')
 
@@ -77,12 +100,25 @@ class BettingRound:
             if action == ACTION_FOLD:
                 self.table.active_players.remove(player)
 
+        # Mark betting round as ended
+        self.has_ended = True
 
 
-    def end(self):
+    def end(self, is_overloaded: bool):
 
         """
         Finaliza la ronda de apuestas.
         """
+
+        if is_overloaded:
+            raise RuntimeError(overloaded_betting_round_message)
+
+        try:
+            next(self.generator)
+        except StopIteration:
+            self.has_ended = True
+
+        if not self.has_ended:
+            raise RuntimeError(exiting_unended_betting_round_message)
 
         print(f'=== ENDING {self.name.upper()} ===\n')
