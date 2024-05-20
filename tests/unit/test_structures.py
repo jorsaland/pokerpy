@@ -257,5 +257,45 @@ class TestCard(TestCase):
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
 
+    def test_comparison(self):
+
+
+        """
+        Runs test cases to check if cards compare to each other as expected.
+        """
+
+
+        # Some equal cards
+        
+        self.assertEqual(pk.Card('A', 's'), pk.Card('A', 's'))
+        self.assertEqual(pk.Card('K', 'h'), pk.Card('K', 'h'))
+        self.assertEqual(pk.Card('Q', 'd'), pk.Card('Q', 'd'))
+        self.assertEqual(pk.Card('J', 'c'), pk.Card('J', 'c'))
+
+
+        # Some cards with same values but different suits
+
+        self.assertNotEqual(pk.Card('T', 's'), pk.Card('T', 'h'))
+        self.assertNotEqual(pk.Card('9', 'h'), pk.Card('9', 'd'))
+        self.assertNotEqual(pk.Card('8', 'd'), pk.Card('8', 'c'))
+        self.assertNotEqual(pk.Card('7', 'c'), pk.Card('7', 's'))
+
+
+        # Some cards with different values but same suits
+
+        self.assertNotEqual(pk.Card('6', 's'), pk.Card('5', 's'))
+        self.assertNotEqual(pk.Card('5', 'h'), pk.Card('4', 'h'))
+        self.assertNotEqual(pk.Card('4', 'd'), pk.Card('3', 'd'))
+        self.assertNotEqual(pk.Card('3', 'c'), pk.Card('2', 'c'))
+
+
+        # Some cards with different values and suits
+
+        self.assertNotEqual(pk.Card('A', 's'), pk.Card('K', 'h'))
+        self.assertNotEqual(pk.Card('T', 'h'), pk.Card('9', 'd'))
+        self.assertNotEqual(pk.Card('6', 'd'), pk.Card('5', 'c'))
+        self.assertNotEqual(pk.Card('2', 'c'), pk.Card('A', 's'))
+
+
 if __name__ == '__main__':
     main()
