@@ -23,6 +23,10 @@ class TestActionIsValid(TestCase):
 
     def test_unexpected_action(self):
 
+        """
+        Runs test cases where non-defined actions are parsed.
+        """
+
         with self.assertRaises(ValueError):
             pk.action_is_valid(action='drinks', is_under_bet=True)
         with self.assertRaises(ValueError):
@@ -30,6 +34,10 @@ class TestActionIsValid(TestCase):
 
 
     def test_actions_under_bet(self):
+
+        """
+        Runs test cases where a betting round is under bet.
+        """
 
         # Valid actions under bet
         self.assertTrue(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=True))
@@ -41,7 +49,11 @@ class TestActionIsValid(TestCase):
         self.assertFalse(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=True))
 
 
-    def test_actions_under_no_bet_folding_forbidden(self):
+    def test_actions_under_no_bet(self):
+
+        """
+        Runs test cases where a betting round is not under bet.
+        """
 
         pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
 
@@ -53,9 +65,6 @@ class TestActionIsValid(TestCase):
         self.assertFalse(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=False))
         self.assertFalse(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=False))
         self.assertFalse(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=False))
-
-
-    def test_actions_under_no_bet_folding_allowed(self):
 
         pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
 
