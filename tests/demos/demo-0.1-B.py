@@ -92,19 +92,19 @@ def cycle():
         # Reset betting round restricted state variables
         round_is_under_bet = False
 
-        print(f'\n=== STARTING {betting_round.upper()} ===\n')
+        print(f'\n============ STARTING {betting_round.upper()} ============\n')
 
         table.deal(betting_round)
         for player in table.players:
 
             # Determine whether betting round should be stopped or not
             if len(active_players) == 1:
-                print(f'<< ONLY ONE ACTIVE PLAYER ({active_players[0].name.upper()})... ENDING ROUND >>')
+                print(f'--- only one active player ({active_players[0].name})... ending round')
                 break
 
             # Determine whether player should be allowed to play or not
             if player not in active_players:
-                print(f'<< {player.name.upper()} ALREADY FOLDED >>')
+                print(f'--- {player.name} already folded')
                 continue
 
             # Let current player to play
@@ -122,15 +122,15 @@ def cycle():
             if action == ACTION_FOLD:
                 active_players.remove(player)
         
-        print(f'\n=== ENDING {betting_round.upper()} ===\n')
+        print(f'\n============ ENDING {betting_round.upper()} ============\n')
     
     if len(active_players) > 1:
-        print(f'\n=== SHOWDOWN! ===\n')
+        print(f'\n============ SHOWDOWN! ============\n')    
         print(f'Remaining players: {", ".join(p.name for p in active_players)}')
         winner = random.choice(active_players)
         print(f'{winner.name} wins!')
     else:
-        print('\n=== NO SHOWDOWN... ===\n')
+        print('\n============ NO SHOWDOWN... ============\n')
         winner = active_players[0]
         print(f'{winner.name} wins!')
 

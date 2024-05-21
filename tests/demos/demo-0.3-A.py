@@ -78,6 +78,8 @@ def cycle(table: pk.Table):
         if len(table.active_players) == 1:
             break
 
+        print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
+
         # Deal two cards to each player if round is pre-flop
         if betting_round_name == PREFLOP:
             for _ in range(2):
@@ -97,22 +99,26 @@ def cycle(table: pk.Table):
             common_cards.append(deck.pop())
         
         # Display player cards and hand
+        print('--------------------------------------------------')
         print(f'Common cards: {"".join(str(c) for c in common_cards)}')
         for player in table.active_players:
             personal_cards = cards_by_player_name[player.name]
             hand = figure_out_hand(personal_cards + common_cards)
             hand_by_player_name[player.name] = hand
             print(f"{player.name}'s cards: {''.join(str(c) for c in personal_cards)} | hand: {str(hand)}{f' ({hand.category})' if hand is not None else ''}")
+        print('--------------------------------------------------\n')
 
         # Run betting round
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
                 action = random.choice(pk.possible_actions)
                 player.request(action)
-            
+
+        print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
+
     # Display showdown
     if len(table.active_players) > 1:
-        print(f'\n=== SHOWDOWN! ===\n')
+        print(f'\n============ SHOWDOWN! ============\n')    
         print(f'Remaining players: {", ".join(p.name for p in table.active_players)}')
         winners: list[pk.Player] = []
         for player in table.active_players:
@@ -132,17 +138,18 @@ def cycle(table: pk.Table):
 
     # Display no showdown
     else:
-        print('\n=== NO SHOWDOWN... ===\n')
+        print('\n============ NO SHOWDOWN... ============\n')
         winner = table.active_players[0]
         print(f'{winner.name} wins!')
 
     # Display cards and hands of remaining players
-    print()
+    print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in common_cards)}')
     for player in table.active_players:
         cards = cards_by_player_name[player.name]
         hand = hand_by_player_name[player.name]
         print(f"{player.name}'s cards: {''.join(str(c) for c in cards)} | hand: {str(hand)}{f' ({hand.category})' if hand is not None else ''}")
+    print('--------------------------------------------------')
 
 def game():
 

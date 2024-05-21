@@ -60,8 +60,6 @@ class BettingRound:
         if self.has_ended:
             raise RuntimeError(starting_already_ended_betting_round_message) 
 
-        print(f'\n=== STARTING {self.name.upper()} ===\n')
-
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
         self.table.deal(self.name)
@@ -103,5 +101,3 @@ class BettingRound:
 
         if not self.has_ended:
             raise RuntimeError(exiting_unended_betting_round_message)
-
-        print(f'=== ENDING {self.name.upper()} ===\n')
