@@ -35,6 +35,8 @@ unicode_code_point_by_card_suit = {
     SPADES: (SPADES_UNICODE_CODE_POINT := 9824),
 }
 
+full_sorted_values_and_suits: tuple[tuple[str, str], ...] = tuple((value, suit) for value in sorted_card_values for suit in sorted_card_suits)
+
 
 # Hands
 
