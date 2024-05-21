@@ -36,7 +36,5 @@ class Table:
         Makes the dealer to determine who is the winner among remaining players.
         """
 
-        print(f'\n=== SHOWDOWN! ===\n')
-
         winner = random.choice(self.players)
         print(f'{winner.name} wins!')
