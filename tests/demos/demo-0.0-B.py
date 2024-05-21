@@ -34,7 +34,6 @@ class Table:
     def deal(self, betting_round: str):
         print(f'Dealer deals cards for {betting_round}.\n')
     def showdown(self):
-        print(f'\n=== SHOWDOWN! ===\n')
         winner = random.choice(self.players)
         print(f'{winner.name} wins!')
 
@@ -57,14 +56,15 @@ def cycle():
 
     for betting_round in betting_rounds:
 
-        print(f'\n=== STARTING {betting_round.upper()} ===\n')
+        print(f'\n============ STARTING {betting_round.upper()} ============\n')
 
         table.deal(betting_round)
         for player in table.players:
             player.play()
         
-        print(f'\n=== ENDING {betting_round.upper()} ===\n')
-    
+        print(f'\n============ ENDING {betting_round.upper()} ============\n')
+
+    print(f'\n============ SHOWDOWN! ============\n')
     table.showdown()
 
 

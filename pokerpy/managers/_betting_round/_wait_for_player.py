@@ -23,12 +23,9 @@ def wait_for_player(player: Player, is_under_bet: bool):
         # Determine wheter action is valid or not
         action = player.requested_action
         if action is not None and action_is_valid(action=action, is_under_bet=is_under_bet):
-            action_print_message = f'--- {player.name} {action}s ---'.upper()
-            print('-' * len(action_print_message))
-            print(action_print_message)
-            print('-' * len(action_print_message) + '\n')
+            print(f'>>> {player.name} {action}s <<<\n'.upper())
             break
-        print(f'<< INVALID ACTION: {action.upper()} >>')
+        print(f'--- invalid action: {action}')
     
     # Return when iteration stops
     return action

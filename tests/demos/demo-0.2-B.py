@@ -49,16 +49,21 @@ def cycle(table: pk.Table):
         if len(table.active_players) == 1:
             break
 
+        print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
+
         # Run betting round
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
                 action = random.choice(pk.possible_actions)
                 player.request(action)
-            
+
+        print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
+
     if len(table.active_players) > 1:
+        print(f'\n============ SHOWDOWN! ============\n')    
         table.showdown()
     else:
-        print('\n=== NO SHOWDOWN... ===\n')
+        print('\n============ NO SHOWDOWN... ============\n')
         winner = table.active_players[0]
         print(f'{winner.name} wins!')
 
