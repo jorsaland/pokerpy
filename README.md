@@ -1,2 +1,2 @@
 # PokerPy
-Logic is developed to make betting round last until there are no more aggressive actions to respond.
+Cards and hands are developed and winners are chosen according to the best hand.
