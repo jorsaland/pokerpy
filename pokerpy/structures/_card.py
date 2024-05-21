@@ -4,6 +4,7 @@ Defines the class that represents a poker card.
 
 
 from pokerpy.constants import (
+    full_sorted_values_and_suits,
     sorted_card_suits,
     sorted_card_values,
     unicode_code_point_by_card_suit,
@@ -60,3 +61,13 @@ class Card:
             return False
 
         return (self.value == other.value) and (self.suit == other.suit)
+
+
+    def get_deck_position(self):
+
+        """
+        Gets the card position in a sorted deck.
+        """
+
+        value_and_suit = (self.value, self.suit)
+        return full_sorted_values_and_suits.index(value_and_suit)
