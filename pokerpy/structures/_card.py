@@ -3,7 +3,11 @@ Defines the class that represents a poker card.
 """
 
 
-from pokerpy.constants import sorted_card_values, sorted_card_suits, unicode_code_point_by_card_suit
+from pokerpy.constants import (
+    sorted_card_suits,
+    sorted_card_values,
+    unicode_code_point_by_card_suit,
+)
 from pokerpy.messages import invalid_card_suit_message, invalid_card_value_message, joker_card_message
 
 
@@ -14,8 +18,6 @@ class Card:
     Represents a poker card.
     """
 
-
-    # Initialization magic methods
 
     def __init__(self, value: str, suit: str):
 
@@ -38,10 +40,9 @@ class Card:
         self.suit = suit
 
 
-    # Representation magic methods
-
     def __repr__(self):
         return f'Card(value={self.value}, suit={self.suit})'
+
 
     def __str__(self):
         unicode_code_point = unicode_code_point_by_card_suit[self.suit]
@@ -49,13 +50,9 @@ class Card:
         return f'[{self.value}{pretty_suit}]'
 
 
-    # Unicity magic methods
-
     def __hash__(self):
         return hash((Card, self.value, self.suit))
 
-
-    # Comparison magic methods
 
     def __eq__(self, other):
 
