@@ -25,7 +25,7 @@ class BettingRound:
     """
 
 
-    def __init__(self, *, name: str, table: Table):
+    def __init__(self, name: str, table: Table):
 
         # Input variables
         self.name = name
