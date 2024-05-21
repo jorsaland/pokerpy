@@ -20,6 +20,6 @@ from .constants import (
     sorted_card_values,
 )
 from .managers import BettingRound
-from .structures import Card, Player, Table
+from .structures import Card, Hand, Player, Table
 from .utils import action_is_valid
 from . import messages, switches
