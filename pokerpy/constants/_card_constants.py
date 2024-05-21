@@ -5,7 +5,7 @@ Defines the constants regarding to actions used when playing.
 
 # Values and suits
 
-sorted_card_values = [
+sorted_card_values: tuple[str] = (
     (DEUCE := '2'),
     (THREE := '3'),
     (FOUR := '4'),
@@ -19,14 +19,14 @@ sorted_card_values = [
     (QUEEN := 'Q'),
     (KING := 'K'),
     (ACE := 'A'),
-]
+)
 
-sorted_card_suits = [
+sorted_card_suits: tuple[str] = (
     (CLUBS := 'c'),
     (DIAMONDS := 'd'),
     (HEARTS := 'h'),
     (SPADES := 's'),
-]
+)
 
 unicode_code_point_by_card_suit = {
     CLUBS: (CLUBS_UNICODE_CODE_POINT := 9827),
@@ -38,7 +38,7 @@ unicode_code_point_by_card_suit = {
 
 # Hands
 
-sorted_hand_names = [
+sorted_hand_categories: tuple[str] = (
     (HIGH_CARD := 'high card'),
     (ONE_PAIR := 'pair'),
     (TWO_PAIR := 'two pair'),
@@ -49,4 +49,4 @@ sorted_hand_names = [
     (FOUR_OF_A_KIND := 'four of a kind'),
     (STRAIGHT_FLUSH := 'straight flush'),
     (ROYAL_FLUSH := 'royal flush'),
-]
+)
