@@ -428,5 +428,70 @@ class TestBettingRound(TestCase):
         self.assertEqual(bet_raises_folds_and_calls(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Dino', 'Andy'])
 
 
+class TestActionIsValid(TestCase):
+
+
+    """
+    Runs unit tests on function action_is_valid.
+    """
+
+
+    def test_unexpected_action(self):
+
+        """
+        Runs test cases where non-defined actions are parsed.
+        """
+
+        with self.assertRaises(ValueError):
+            pk.action_is_valid(action='drinks', is_under_bet=True)
+        with self.assertRaises(ValueError):
+            pk.action_is_valid(action='drinks', is_under_bet=False)
+
+
+    def test_actions_under_bet(self):
+
+        """
+        Runs test cases where a betting round is under bet.
+        """
+
+        # Valid actions under bet
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=True))
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=True))
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=True))
+
+        # Invalid actions under bet
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=True))
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=True))
+
+
+    def test_actions_under_no_bet(self):
+
+        """
+        Runs test cases where a betting round is not under bet.
+        """
+
+        pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+
+        # Valid actions under no bet, folding forbidden
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=False))
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=False))
+
+        # Valid actions under no bet, folding forbidden
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=False))
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=False))
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=False))
+
+        pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+
+        # Valid actions under no bet, folding allowed
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=False))
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=False))
+        self.assertTrue(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=False))
+
+        # Valid actions under no bet, folding allowed
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=False))
+        self.assertFalse(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=False))
+
+
 if __name__ == '__main__':
     main()

@@ -19,7 +19,8 @@ from .constants import (
     sorted_card_suits,
     sorted_card_values,
 )
-from .managers import BettingRound
+from .managers import BettingRound, action_is_valid
 from .structures import Card, Hand, Player, Table
-from .utils import action_is_valid
+from .managers import BettingRound, action_is_valid
+from .structures import Player, Table
 from . import messages, switches
