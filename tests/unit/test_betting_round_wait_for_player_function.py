@@ -21,9 +21,6 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
     """
 
 
-    player = pk.Player('Lugia')
-
-
     def test_under_bet_parsing(self):
 
 
@@ -34,7 +31,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_valid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=True)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=True)
 
             # Request action
             player = next(generator)
@@ -51,7 +49,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_invalid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=True)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=True)
 
             # Request action
             player = next(generator)
@@ -68,7 +67,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=True)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=True)
 
             # Request actions
             player = next(generator)
@@ -91,7 +91,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=True)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=True)
 
             # Request actions
             player = next(generator)
@@ -126,7 +127,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_valid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=False)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=False)
 
             # Request action
             player = next(generator)
@@ -143,7 +145,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_invalid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=False)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=False)
 
             # Request action
             player = next(generator)
@@ -160,7 +163,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=False)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=False)
 
             # Request actions
             player = next(generator)
@@ -187,7 +191,8 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            generator = pk.managers.wait_for_player(self.player, is_under_bet=False)
+            player = pk.Player('Lugia')
+            generator = pk.managers.wait_for_player(player, is_under_bet=False)
 
             # Request actions
             player = next(generator)

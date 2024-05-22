@@ -21,11 +21,6 @@ class TestBettingRoundRunMethod(TestCase):
     """
 
 
-    player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
-
-
     def test_parsing(self):
 
 
@@ -36,10 +31,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def parse_as_many_actions_as_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -66,10 +65,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def parse_less_actions_than_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -95,10 +98,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def parse_more_actions_than_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -139,10 +146,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def all_check():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+            
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -169,10 +180,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_and_folds():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -199,10 +214,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_and_calls():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -229,10 +248,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_and_folds():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -277,10 +300,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_and_calls():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
@@ -329,10 +356,14 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_folds_and_calls():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=self.table)
+            betting_round_cm = pk.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
