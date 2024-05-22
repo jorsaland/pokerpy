@@ -22,6 +22,7 @@ from itertools import combinations
 import random
 
 
+import deprecated.v02 as v02
 import pokerpy as pk
 
 
@@ -50,9 +51,9 @@ def figure_out_hand(cards: list[pk.Card]):
     possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
-def cycle(table: pk.Table):
+def cycle(table: v02.Table):
 
-    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -109,9 +110,9 @@ def cycle(table: pk.Table):
         print('--------------------------------------------------\n')
 
         # Run betting round
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+        with v02.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
-                action = random.choice(pk.possible_actions)
+                action = random.choice(v02.possible_actions)
                 player.request(action)
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
@@ -158,15 +159,15 @@ def game():
     print('======================\n')
 
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
+    players = [v02.Player(name) for name in player_names]
+    table = v02.Table(players)
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
     cycle(table)
 
     print()
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
     cycle(table)
 
 
