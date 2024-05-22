@@ -4,7 +4,7 @@ PokerPy under development!
 
 
 # Info
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 # Content
@@ -13,7 +13,6 @@ from .constants import (
     aggressive_actions,
     possible_actions,
 )
-from .managers import BettingRound
+from .managers import BettingRound, action_is_valid
 from .structures import Player, Table
-from .utils import action_is_valid
 from . import switches
