@@ -37,23 +37,35 @@ class BettingRound:
     
     
     def __enter__(self):
-        self.generator = self.start()
+        self.generator = self.run()
         yield from self.generator
     
+    
     def __exit__(self, exception_type: (type|None), exception: BaseException, _):
+
+        # Stopping before executing all parsed actions
         if exception_type is StopIteration:
-            is_overloaded = True
-        elif exception_type is None:
-            is_overloaded = False
-        else:
+            raise RuntimeError(overloaded_betting_round_message)
+        
+        # Raising unexpected exceptions
+        if exception_type is not None:
             raise exception
-        self.end(is_overloaded)
+
+        # End running iteration after last yield
+        try:
+            next(self.generator)
+        except StopIteration:
+            self.has_ended = True
+
+        # Check generator has ended successfully
+        if not self.has_ended:
+            raise RuntimeError(exiting_unended_betting_round_message)
 
 
-    def start(self):
+    def run(self):
 
         """
-        Starts the betting round, letting players to alternate turns.
+        Runs the betting round, letting players to alternate turns.
         """
 
         # Check betting round has not ended yet
@@ -69,21 +81,3 @@ class BettingRound:
 
         # Mark betting round as ended
         self.has_ended = True
-
-
-    def end(self, is_overloaded: bool):
-
-        """
-        Ends the betting round.
-        """
-
-        if is_overloaded:
-            raise RuntimeError(overloaded_betting_round_message)
-
-        try:
-            next(self.generator)
-        except StopIteration:
-            self.has_ended = True
-
-        if not self.has_ended:
-            raise RuntimeError(exiting_unended_betting_round_message)
