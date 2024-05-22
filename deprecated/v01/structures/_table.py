@@ -24,7 +24,7 @@ class Table:
         self.players = list(players)
 
         # State variables
-        self.active_players: list[Player] = []
+        self.active_players: set[Player] = set()
         self.is_under_bet = False
 
 
@@ -35,7 +35,7 @@ class Table:
         """
 
         self.active_players.clear()
-        self.active_players.extend(self.players)
+        self.active_players.update(self.players)
 
 
     def reset_betting_round_states(self):
@@ -63,5 +63,5 @@ class Table:
         """
 
         print(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
-        winner = random.choice(self.active_players)
+        winner = random.choice(list(self.active_players))
         print(f'{winner.name} wins!')
