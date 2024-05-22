@@ -1,5 +1,5 @@
 """
-Runs unit tests on class Card and its dependencies.
+Defines unit tests on Card class.
 """
 
 
@@ -17,7 +17,7 @@ class TestCard(TestCase):
 
 
     """
-    Runs unit tests on class Card.
+    Runs unit tests on Card class.
     """
 
 
