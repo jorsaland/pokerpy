@@ -36,7 +36,7 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 # Updates
 
 class UpdatedBettingRound(v01.BettingRound):
-    def start(self):
+    def run(self):
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
         self.table.deal(self.name)
