@@ -29,6 +29,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
 
         with self.assertRaises(ValueError):
             pk.action_is_valid(action='drinks', is_under_bet=True)
+        
         with self.assertRaises(ValueError):
             pk.action_is_valid(action='drinks', is_under_bet=False)
 

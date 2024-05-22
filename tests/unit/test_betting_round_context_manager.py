@@ -21,11 +21,6 @@ class TestBettingRoundContextManager(TestCase):
     """
 
 
-    player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
-
-
     def test_exception_catching(self):
 
 
@@ -33,51 +28,77 @@ class TestBettingRoundContextManager(TestCase):
         Runs test cases to check if the context manager works as expected.
         """
 
-
         # Raising unexpected exception: ValueError
 
         value_error_message = 'some value error'
+
         def raise_value_error():
-            with pk.BettingRound(name='round', table=self.table):
+
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            with pk.BettingRound(name='round', table=table):
                 raise ValueError(value_error_message)
             
         with self.assertRaises(ValueError) as cm:
             raise_value_error()
+        
         self.assertEqual(cm.exception.args[0], value_error_message)
 
 
         # Raising unexpected exception: TypeError
 
-        type_error_message = 'some type error'            
+        type_error_message = 'some type error'
+
         def raise_type_error():
-            with pk.BettingRound(name='round', table=self.table):
+
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            with pk.BettingRound(name='round', table=table):
                 raise TypeError(type_error_message)
             
         with self.assertRaises(TypeError) as cm:
             raise_type_error()
+        
         self.assertEqual(cm.exception.args[0], type_error_message)
 
 
         # Raising unexpected parent exception: Exception
 
         exception_error_message = 'parent exception'
+
         def raise_parent_exception():
-            with pk.BettingRound(name='round', table=self.table):
+
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            with pk.BettingRound(name='round', table=table):
                 raise Exception(exception_error_message)
             
         with self.assertRaises(Exception) as cm:
             raise_parent_exception()
+        
         self.assertEqual(cm.exception.args[0], exception_error_message)
 
 
         # Breaking round before time: StopIteration
 
         def raise_stop_iteration():
-            with pk.BettingRound(name='round', table=self.table):
+
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            with pk.BettingRound(name='round', table=table):
                 raise StopIteration()
             
         with self.assertRaises(RuntimeError) as cm:
             raise_stop_iteration()
+
         self.assertEqual(cm.exception.args[0], pk.messages.overloaded_betting_round_message)
 
 
@@ -91,10 +112,14 @@ class TestBettingRoundContextManager(TestCase):
 
         def parse_as_many_actions_as_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            with pk.BettingRound(name='round', table=self.table) as betting_round:
+            with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
                 player.request(pk.ACTION_CHECK)
@@ -120,10 +145,14 @@ class TestBettingRoundContextManager(TestCase):
 
         def parse_less_actions_than_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            with pk.BettingRound(name='round', table=self.table) as betting_round:
+            with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
                 player.request(pk.ACTION_CHECK)
@@ -145,15 +174,20 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as cm:
             parse_less_actions_than_expected()
+
         self.assertEqual(cm.exception.args[0], pk.messages.exiting_unended_betting_round_message)
 
 
         def parse_more_actions_than_expected():
 
-            self.table.activate_all_players()
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
             awaited_players: list[pk.Player] = []
 
-            with pk.BettingRound(name='round', table=self.table) as betting_round:
+            with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
                 player.request(pk.ACTION_CHECK)
@@ -181,6 +215,7 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as cm:
             parse_more_actions_than_expected()
+        
         self.assertEqual(cm.exception.args[0], pk.messages.overloaded_betting_round_message)
 
 

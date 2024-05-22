@@ -21,11 +21,6 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
     """
 
 
-    player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
-
-
     def test_parsing(self):
 
 
@@ -36,8 +31,12 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def parse_as_many_actions_as_expected():
 
-            self.table.activate_all_players()
-            generator = pk.managers.alternate_players(self.table)
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
+            generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
@@ -64,8 +63,12 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def parse_less_actions_than_expected():
 
-            self.table.activate_all_players()
-            generator = pk.managers.alternate_players(self.table)
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
+            generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
@@ -90,8 +93,12 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def parse_more_actions_than_expected():
 
-            self.table.activate_all_players()
-            generator = pk.managers.alternate_players(self.table)
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [pk.Player(name) for name in player_names]
+            table = pk.Table(players)
+
+            table.activate_all_players()
+            generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
