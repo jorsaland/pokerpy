@@ -1,5 +1,5 @@
 """
-Runs unit tests on structures section.
+Runs unit tests on class Card and its dependencies.
 """
 
 

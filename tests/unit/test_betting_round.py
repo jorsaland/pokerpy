@@ -1,5 +1,5 @@
 """
-Runs unit tests on managers section.
+Runs unit tests on class BettingRound and its dependencies.
 """
 
 
