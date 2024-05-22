@@ -96,7 +96,7 @@ def cycle():
     print(  '======================================================\n')
 
     # Define state variables
-    active_players = players.copy()
+    active_players = set(players)
     round_is_under_bet = False
 
     for betting_round in betting_rounds:
@@ -115,7 +115,7 @@ def cycle():
 
             # Determine whether betting round should be stopped or not
             if len(active_players) == 1:
-                print(f'--- only one active player ({active_players[0].name})... ending round')
+                print(f'--- only one active player ({list(active_players)[0].name})... ending round')
                 break
 
             # Determine whether player should be allowed to play or not
@@ -143,11 +143,11 @@ def cycle():
     if len(active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         print(f'Remaining players: {", ".join(p.name for p in active_players)}')
-        winner = random.choice(active_players)
+        winner = random.choice(list(active_players))
         print(f'{winner.name} wins!')
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        winner = active_players[0]
+        winner = list(active_players)[0]
         print(f'{winner.name} wins!')
 
 

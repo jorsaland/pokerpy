@@ -52,7 +52,7 @@ class UpdatedBettingRound(v01.BettingRound):
             for player in self.table.players:
                 # Determine whether betting round should be stopped or not
                 if len(self.table.active_players) == 1:
-                    print(f'--- only one active player ({self.table.active_players[0].name})... ending round\n')
+                    print(f'--- only one active player ({list(self.table.active_players)[0].name})... ending round\n')
                     round_must_stop = True
                     break
                 if player == last_aggressive_player:
@@ -124,7 +124,7 @@ def cycle(table: v01.Table):
         table.showdown()
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        winner = table.active_players[0]
+        winner = list(table.active_players)[0]
         print(f'{winner.name} wins!')
 
 
