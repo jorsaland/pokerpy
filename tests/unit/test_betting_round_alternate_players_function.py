@@ -29,13 +29,13 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         """
 
 
-        def activate_all_players():
+        def reset_cycle_states():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
             player_by_name = {name: pk.Player(name) for name in player_names}
             table = pk.Table(player_by_name.values())
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -70,10 +70,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
                 awaited_player_names = [player.name for player in awaited_players]
                 return awaited_player_names
 
-        self.assertEqual(activate_all_players(), ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi'])
+        self.assertEqual(reset_cycle_states(), ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi'])
 
 
-        def deactivate_all_players():
+        def dereset_cycle_states():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
             player_by_name = {name: pk.Player(name) for name in player_names}
@@ -89,7 +89,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
                 awaited_player_names = [player.name for player in awaited_players]
                 return awaited_player_names
 
-        self.assertEqual(deactivate_all_players(), [])
+        self.assertEqual(dereset_cycle_states(), [])
 
 
         def only_activate_first_and_last_player():
@@ -211,7 +211,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -243,7 +243,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -273,7 +273,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -340,7 +340,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             table.last_aggressive_player = players[0]
             table.is_under_bet = True
 
@@ -361,7 +361,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             table.last_aggressive_player = players[2]
             table.is_under_bet = True
 
@@ -388,7 +388,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             table.last_aggressive_player = players[-1]
             table.is_under_bet = True
 
@@ -418,7 +418,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
 
             generator = pk.managers.alternate_players(table)
 

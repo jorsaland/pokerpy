@@ -116,7 +116,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -149,7 +149,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -184,7 +184,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -233,7 +233,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -266,7 +266,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -299,7 +299,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -332,7 +332,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -383,7 +383,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -438,7 +438,7 @@ class TestBettingRoundContextManager(TestCase):
             players = [pk.Player(name) for name in player_names]
             table = pk.Table(players)
 
-            table.activate_all_players()
+            table.reset_cycle_states()
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
