@@ -6,12 +6,12 @@ Defines the class that represents a betting round context manager.
 from collections.abc import Generator
 
 
-from pokerpy.messages import (
+from deprecated.v01.messages import (
     exiting_unended_betting_round_message,
     overloaded_betting_round_message,
     starting_already_ended_betting_round_message,
 )
-from pokerpy.structures import Player, Table
+from deprecated.v01.structures import Player, Table
 
 
 from ._alternate_players import alternate_players
