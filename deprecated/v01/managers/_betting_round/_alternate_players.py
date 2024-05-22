@@ -3,8 +3,8 @@ Defines the function that alternates players within the betting round.
 """
 
 
-from deprecated.v01.constants import ACTION_FOLD, aggressive_actions
-from deprecated.v01.structures import Table
+from pokerpy.constants import ACTION_FOLD, aggressive_actions
+from pokerpy.structures import Table
 
 
 from ._wait_for_player import wait_for_player
@@ -21,12 +21,12 @@ def alternate_players(table: Table):
 
         # Determine whether betting round should be stopped or not
         if len(table.active_players) == 1:
-            print(f'<< ONLY ONE ACTIVE PLAYER ({table.active_players[0].name.upper()})... ENDING ROUND >>\n')
+            print(f'--- only one active player ({table.active_players[0].name})... ending round\n')
             break
 
         # Determine whether player should be allowed to play or not
         if player not in table.active_players:
-            print(f'<< {player.name.upper()} ALREADY FOLDED >>\n')
+            print(f'--- {player.name} already folded\n')
             continue
 
         # Let player keep choosing an action until it is valid

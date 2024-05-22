@@ -6,12 +6,12 @@ Defines the class that represents a betting round context manager.
 from collections.abc import Generator
 
 
-from deprecated.v01.messages import (
+from pokerpy.messages import (
     exiting_unended_betting_round_message,
     overloaded_betting_round_message,
     starting_already_ended_betting_round_message,
 )
-from deprecated.v01.structures import Player, Table
+from pokerpy.structures import Player, Table
 
 
 from ._alternate_players import alternate_players
@@ -25,7 +25,7 @@ class BettingRound:
     """
 
 
-    def __init__(self, *, name: str, table: Table):
+    def __init__(self, name: str, table: Table):
 
         # Input variables
         self.name = name
@@ -40,8 +40,13 @@ class BettingRound:
         self.generator = self.start()
         yield from self.generator
     
-    def __exit__(self, exception_type: (type|None), *_):
-        is_overloaded = (exception_type is StopIteration)
+    def __exit__(self, exception_type: (type|None), exception: BaseException, _):
+        if exception_type is StopIteration:
+            is_overloaded = True
+        elif exception_type is None:
+            is_overloaded = False
+        else:
+            raise exception
         self.end(is_overloaded)
 
 
@@ -54,8 +59,6 @@ class BettingRound:
         # Check betting round has not ended yet
         if self.has_ended:
             raise RuntimeError(starting_already_ended_betting_round_message) 
-
-        print(f'\n=== STARTING {self.name.upper()} ===\n')
 
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
@@ -84,5 +87,3 @@ class BettingRound:
 
         if not self.has_ended:
             raise RuntimeError(exiting_unended_betting_round_message)
-
-        print(f'=== ENDING {self.name.upper()} ===\n')
