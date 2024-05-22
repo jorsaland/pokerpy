@@ -73,6 +73,7 @@ def cycle(table: v02.Table):
 
     # Make sure every player is active
     table.activate_all_players()
+    
     for betting_round_name in betting_round_names:
 
         # Determine whether cycle should be stopped or not
