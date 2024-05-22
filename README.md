@@ -1,2 +1,2 @@
 # PokerPy
-Logic regarding betting round actions constraints and players leaving by folding are developed, as well as BettingRound context manager.
+Logic regarding betting round actions constraints and players leaving by folding are developed, as well as BettingRound context manager. By now, betting rounds end as soon as all players have taken one action, no matter if there are aggressive actions.
