@@ -17,7 +17,6 @@ from .constants import (
     aggressive_actions,
     possible_actions,
 )
-from .managers import BettingRound
+from .managers import BettingRound, action_is_valid
 from .structures import Player, Table
-from .utils import action_is_valid
 from . import messages, switches
