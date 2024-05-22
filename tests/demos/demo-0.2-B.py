@@ -64,7 +64,7 @@ def cycle(table: v02.Table):
         table.showdown()
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        winner = table.active_players[0]
+        winner = list(table.active_players)[0]
         print(f'{winner.name} wins!')
 
 
