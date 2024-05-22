@@ -297,5 +297,67 @@ class TestCard(TestCase):
         self.assertNotEqual(pk.Card('2', 'c'), pk.Card('A', 's'))
 
 
+    def test_get_deck_position_method(self):
+
+
+        """
+        Runs all test cases on method get_deck_position.
+        """
+
+
+        self.assertEqual(pk.Card('A', 's').get_deck_position(), 51)
+        self.assertEqual(pk.Card('A', 'h').get_deck_position(), 50)
+        self.assertEqual(pk.Card('A', 'd').get_deck_position(), 49)
+        self.assertEqual(pk.Card('A', 'c').get_deck_position(), 48)
+        self.assertEqual(pk.Card('K', 's').get_deck_position(), 47)
+        self.assertEqual(pk.Card('K', 'h').get_deck_position(), 46)
+        self.assertEqual(pk.Card('K', 'd').get_deck_position(), 45)
+        self.assertEqual(pk.Card('K', 'c').get_deck_position(), 44)
+        self.assertEqual(pk.Card('Q', 's').get_deck_position(), 43)
+        self.assertEqual(pk.Card('Q', 'h').get_deck_position(), 42)
+        self.assertEqual(pk.Card('Q', 'd').get_deck_position(), 41)
+        self.assertEqual(pk.Card('Q', 'c').get_deck_position(), 40)
+        self.assertEqual(pk.Card('J', 's').get_deck_position(), 39)
+        self.assertEqual(pk.Card('J', 'h').get_deck_position(), 38)
+        self.assertEqual(pk.Card('J', 'd').get_deck_position(), 37)
+        self.assertEqual(pk.Card('J', 'c').get_deck_position(), 36)
+        self.assertEqual(pk.Card('T', 's').get_deck_position(), 35)
+        self.assertEqual(pk.Card('T', 'h').get_deck_position(), 34)
+        self.assertEqual(pk.Card('T', 'd').get_deck_position(), 33)
+        self.assertEqual(pk.Card('T', 'c').get_deck_position(), 32)
+        self.assertEqual(pk.Card('9', 's').get_deck_position(), 31)
+        self.assertEqual(pk.Card('9', 'h').get_deck_position(), 30)
+        self.assertEqual(pk.Card('9', 'd').get_deck_position(), 29)
+        self.assertEqual(pk.Card('9', 'c').get_deck_position(), 28)
+        self.assertEqual(pk.Card('8', 's').get_deck_position(), 27)
+        self.assertEqual(pk.Card('8', 'h').get_deck_position(), 26)
+        self.assertEqual(pk.Card('8', 'd').get_deck_position(), 25)
+        self.assertEqual(pk.Card('8', 'c').get_deck_position(), 24)
+        self.assertEqual(pk.Card('7', 's').get_deck_position(), 23)
+        self.assertEqual(pk.Card('7', 'h').get_deck_position(), 22)
+        self.assertEqual(pk.Card('7', 'd').get_deck_position(), 21)
+        self.assertEqual(pk.Card('7', 'c').get_deck_position(), 20)
+        self.assertEqual(pk.Card('6', 's').get_deck_position(), 19)
+        self.assertEqual(pk.Card('6', 'h').get_deck_position(), 18)
+        self.assertEqual(pk.Card('6', 'd').get_deck_position(), 17)
+        self.assertEqual(pk.Card('6', 'c').get_deck_position(), 16)
+        self.assertEqual(pk.Card('5', 's').get_deck_position(), 15)
+        self.assertEqual(pk.Card('5', 'h').get_deck_position(), 14)
+        self.assertEqual(pk.Card('5', 'd').get_deck_position(), 13)
+        self.assertEqual(pk.Card('5', 'c').get_deck_position(), 12)
+        self.assertEqual(pk.Card('4', 's').get_deck_position(), 11)
+        self.assertEqual(pk.Card('4', 'h').get_deck_position(), 10)
+        self.assertEqual(pk.Card('4', 'd').get_deck_position(), 9)
+        self.assertEqual(pk.Card('4', 'c').get_deck_position(), 8)
+        self.assertEqual(pk.Card('3', 's').get_deck_position(), 7)
+        self.assertEqual(pk.Card('3', 'h').get_deck_position(), 6)
+        self.assertEqual(pk.Card('3', 'd').get_deck_position(), 5)
+        self.assertEqual(pk.Card('3', 'c').get_deck_position(), 4)
+        self.assertEqual(pk.Card('2', 's').get_deck_position(), 3)
+        self.assertEqual(pk.Card('2', 'h').get_deck_position(), 2)
+        self.assertEqual(pk.Card('2', 'd').get_deck_position(), 1)
+        self.assertEqual(pk.Card('2', 'c').get_deck_position(), 0)
+
+
 if __name__ == '__main__':
     main()
