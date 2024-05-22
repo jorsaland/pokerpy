@@ -15,6 +15,7 @@ from .constants import (
     ACTION_FOLD,
     ACTION_RAISE,
     aggressive_actions,
+    full_sorted_values_and_suits,
     possible_actions,
     sorted_card_suits,
     sorted_card_values,

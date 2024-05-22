@@ -44,10 +44,13 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 # Playability
 
 def figure_out_hand(cards: list[pk.Card]):
+    
     if len(cards) < 5:
         return None
+    
     if len(cards) == 5:
         return pk.Hand(cards)
+    
     possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
@@ -63,13 +66,13 @@ def cycle(table: v02.Table):
         print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
         print(  '==============================================\n')
 
-    # Shuffle cards
-    deck = [pk.Card(value, suit) for value in pk.sorted_card_values for suit in pk.sorted_card_suits]
+    # Get deck
+    deck = {pk.Card(value, suit) for value, suit in pk.full_sorted_values_and_suits}
 
     # Determine card containers
-    cards_by_player_name: dict[str, list[pk.Card]] = {player.name: [] for player in table.players}
+    cards_by_player_name: dict[str, set[pk.Card]] = {player.name: set() for player in table.players}
     hand_by_player_name: dict[str, pk.Hand] =  {}
-    common_cards: list[pk.Card] = []
+    common_cards: set[pk.Card] = set()
 
     # Make sure every player is active
     table.activate_all_players()
@@ -86,26 +89,29 @@ def cycle(table: v02.Table):
         if betting_round_name == PREFLOP:
             for _ in range(2):
                 for player in table.players:
-                    random.shuffle(deck)
-                    cards_by_player_name[player.name].append(deck.pop())
+                    card = random.choice(list(deck))
+                    deck.remove(card)
+                    cards_by_player_name[player.name].add(card)
         
         # Deal three cards to table if round is flop
         if betting_round_name == FLOP:
             for _ in range(3):
-                random.shuffle(deck)
-                common_cards.append(deck.pop())
+                card = random.choice(list(deck))
+                deck.remove(card)
+                common_cards.add(card)
         
         # Deal one card to table if round is turn or river
         if betting_round_name in (TURN, RIVER):
-            random.shuffle(deck)
-            common_cards.append(deck.pop())
+            card = random.choice(list(deck))
+            deck.remove(card)
+            common_cards.add(card)
         
         # Display player cards and hand
         print('--------------------------------------------------')
         print(f'Common cards: {"".join(str(c) for c in common_cards)}')
         for player in table.active_players:
             personal_cards = cards_by_player_name[player.name]
-            hand = figure_out_hand(personal_cards + common_cards)
+            hand = figure_out_hand({*personal_cards, *common_cards})
             hand_by_player_name[player.name] = hand
             print(f"{player.name}'s cards: {''.join(str(c) for c in personal_cards)} | hand: {str(hand)}{f' ({hand.category})' if hand is not None else ''}")
         print('--------------------------------------------------\n')
