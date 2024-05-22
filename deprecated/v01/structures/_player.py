@@ -3,8 +3,8 @@ Defines the class that represents a poker player.
 """
 
 
-from deprecated.v01.constants import possible_actions
-from deprecated.v01.messages import undefined_action_message
+from pokerpy.constants import possible_actions
+from pokerpy.messages import undefined_action_message
 
 
 class Player:
