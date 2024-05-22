@@ -29,6 +29,61 @@ class TestBettingRound(TestCase):
     table = pk.Table(players)
 
 
+    def test_context_manager(self):
+
+
+        """
+        Runs test cases to check if the context manager works as expected.
+        """
+
+
+        # Raising unexpected exception: ValueError
+
+        value_error_message = 'some value error'
+        def raise_value_error():
+            with pk.BettingRound(name='round', table=self.table):
+                raise ValueError(value_error_message)
+            
+        with self.assertRaises(ValueError) as cm:
+            raise_value_error()
+        self.assertEqual(cm.exception.args[0], value_error_message)
+
+
+        # Raising unexpected exception: TypeError
+
+        type_error_message = 'some type error'            
+        def raise_type_error():
+            with pk.BettingRound(name='round', table=self.table):
+                raise TypeError(type_error_message)
+            
+        with self.assertRaises(TypeError) as cm:
+            raise_type_error()
+        self.assertEqual(cm.exception.args[0], type_error_message)
+
+
+        # Raising unexpected parent exception: Exception
+
+        exception_error_message = 'parent exception'
+        def raise_parent_exception():
+            with pk.BettingRound(name='round', table=self.table):
+                raise Exception(exception_error_message)
+            
+        with self.assertRaises(Exception) as cm:
+            raise_parent_exception()
+        self.assertEqual(cm.exception.args[0], exception_error_message)
+
+
+        # Breaking round before time: StopIteration
+
+        def raise_stop_iteration():
+            with pk.BettingRound(name='round', table=self.table):
+                raise StopIteration()
+            
+        with self.assertRaises(RuntimeError) as cm:
+            raise_stop_iteration()
+        self.assertEqual(cm.exception.args[0], pk.messages.overloaded_betting_round_message)
+
+
     def test_iterator_object(self):
 
 
