@@ -19,15 +19,13 @@ def wait_for_player(player: Player, is_under_bet: bool):
     while True:
 
         # Wait for player's action
-        print(f'Waiting for {player.name}...')
         yield player
 
         # Determine wheter action is valid or not
         action = player.requested_action
         if action is not None and action_is_valid(action, is_under_bet):
-            print(f'>>> {player.name} {action}s <<<\n'.upper())
+            print(f'{player.name} {action.upper()}S')
             break
-        print(f'--- invalid action: {action}')
     
     # Return when iteration stops
     return action

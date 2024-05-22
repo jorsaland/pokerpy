@@ -23,17 +23,14 @@ def alternate_players(table: Table):
 
         # Determine whether betting round should be stopped or not
         if len(table.active_players) == 1:
-            print(f'--- only one active player ({list(table.active_players)[0].name})... ending round\n')
             round_must_stop = True
             break
         if player == table.last_aggressive_player:
-            print(f'--- {player.name} took the last aggressive action... ending round\n')
             round_must_stop = True
             break
 
         # Determine whether player should be allowed to play or not
         if player not in table.active_players:
-            print(f'--- {player.name} already folded\n')
             continue
 
         # Player keeps its turn until selects a valid action
