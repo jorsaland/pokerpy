@@ -7,6 +7,10 @@ from pokerpy.constants import possible_actions
 from pokerpy.messages import undefined_action_message
 
 
+from ._card import Card
+from ._hand import Hand
+
+
 class Player:
 
 
@@ -22,6 +26,8 @@ class Player:
 
         # State variables
         self.requested_action: (str|None) = None
+        self.cards: set[Card] = set()
+        self.hand: (Hand|None) = None
 
 
     def request(self, action: str):
