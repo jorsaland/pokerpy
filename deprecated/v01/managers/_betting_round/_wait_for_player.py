@@ -3,8 +3,8 @@ Defines the function that waits for a player to choose a valid action.
 """
 
 
-from pokerpy.structures import Player
-from pokerpy.utils import action_is_valid
+from deprecated.v01.structures import Player
+from deprecated.v01.utils import action_is_valid
 
 
 def wait_for_player(player: Player, is_under_bet: bool):

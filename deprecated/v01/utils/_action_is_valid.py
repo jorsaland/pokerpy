@@ -3,14 +3,14 @@ Defines the function that verifies if a betting-round action is valid.
 """
 
 
-from pokerpy.constants import (
+from deprecated.v01.constants import (
     ACTION_FOLD,
     possible_actions,
     valid_actions_not_under_bet,
     valid_actions_under_bet,
 )
-from pokerpy.messages import undefined_action_message
-from pokerpy import switches
+from deprecated.v01.messages import undefined_action_message
+from deprecated.v01 import switches
 
 
 def action_is_valid(action: str, is_under_bet: bool):
