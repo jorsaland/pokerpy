@@ -1,28 +1,24 @@
 """
 Demo 0.1-C
 
-This is a merge of demos 0.1-A and 0.1-B, displaying both situations where folding is allowed and
-forbidden when there are not previous bets in the betting round.
+This is a merge of demos 0.1-A and 0.1-B, displaying both situations where folding when there are
+not previous bets is allowed or forbidden by turning on/off a 'switch'. This switch can be modified
+on runtime, making it versatile for complex implementations.
 
-Major changes have were introduced in PokerPy in order to make possible this demo. A 'switch' that
-turns on/off the feature that allows folding when there are no previous bets was included. This
-makes it possible to use or stop using this feature in run time. Both Player and Table classes were
-updated in order to manage state logic. Also, BettingRound class was introduced as a context manager
-that runs a generator function that manages logic within betting rounds and listens to player
-requests.
+Major changes have been introduced in PokerPy library to make possible this demo. Both Player and
+Table classes were updated in order to manage state logic. Also, a BettingRound class was
+introduced as a context manager that listens to each player action request.
 
 The decision to use a context manager is the outcome of multiple refactoryings on this library. In
 the very beginning I thought I would use asynchronous functions in order to pause 'dealer' actions
 on the table and await for player actions. Eventually, I realized I was doing things the hard way,
-and also making it harder for users. A context manager can generate an iterator which lets the
-table 'dealer' to modify the table as expected and get paused by yielding the player who acts next.
-After that player takes an action, the current iteration continues and the next one starts. Once
-the generator dies by raising 'StopIteration', the context manager is able to catch this exception
-and do something with it. Probably a similar context manager will be introduced when developing the
-logic for a full poker game.
+and also making it harder for users. BettingRound context manager runs a generator object that
+yields the player who has to act next. Execution is paused until that player chooses a valid
+action. Once the generator ends by raising 'StopIteration', the context manager catches it and
+exits. Probably a similar context manager will be introduced in order to run a full poker game.
 
-You may notice this demo fully imports PokerPy instead of importing variables separately. Probably,
-this 'pk' abbreviation will be used in further tests and suggested in docs.
+You may notice this demo imports PokerPy library instead of importing variables separately.
+Probably, this 'pk' abbreviation will be used in further tests and suggested in docs.
 """
 
 

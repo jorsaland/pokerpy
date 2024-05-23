@@ -1,16 +1,15 @@
 """
 Demo 0.1-B
 
-This demo is pretty much the same as Demo 0.1-A except for the fact that folding is allowed when
-the betting round is not under bet. Even though this is a small change, there is an important
-consequence. In Demo 0.1-A, the first player 'Andy' could never fold because he was always the
-first one to act, so he was never under bet. Therefore, he could lose only in the showdown. Now, it
-is possible that other players win if the end before reaching the showdown.
+This is pretty much the same as Demo 0.1-A, except for the fact that folding is allowed in all
+circumstances, even if a betting round is not under bet. Although this is a small change, there is
+an important consequence. In Demo 0.1-A, the first player 'Andy' could never fold because he was
+always the first one to act, so he was never under bet. Therefore, he could lose only in the
+showdown. Now, it is possible that other players win before the showdown.
 
-For Demo 0.1-C, this library will implement a 'switch' that makes it possible to fold or not when
-the round is not under bet. This switch may be on or off at different times of the game, according
-to implementation needs.
-
+In Demo 0.1-C, PokerPy library will implement a 'switch' that makes it decide whether is allowed or
+not to fold when the round is not under bet. This switch may be turned on/off at different moments,
+according to implementation needs.
 """
 
 
