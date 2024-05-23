@@ -6,19 +6,19 @@ Defines the constants regarding to actions used when playing.
 # Values and suits
 
 sorted_card_values: tuple[str] = (
-    (DEUCE := '2'),
-    (THREE := '3'),
-    (FOUR := '4'),
-    (FIVE := '5'),
-    (SIX := '6'),
-    (SEVEN := '7'),
-    (EIGHT := '8'),
-    (NINE := '9'),
-    (TEN := 'T'),
-    (JACK := 'J'),
-    (QUEEN := 'Q'),
-    (KING := 'K'),
-    (ACE := 'A'),
+    (DEUCES := '2'),
+    (THREES := '3'),
+    (FOURS := '4'),
+    (FIVES := '5'),
+    (SIXES := '6'),
+    (SEVENS := '7'),
+    (EIGHTS := '8'),
+    (NINES := '9'),
+    (TENS := 'T'),
+    (JACKS := 'J'),
+    (QUEENS := 'Q'),
+    (KINGS := 'K'),
+    (ACES := 'A'),
 )
 
 sorted_card_suits: tuple[str] = (

@@ -102,11 +102,11 @@ class Hand:
         # Arrange cards in a special way if hand is a five-to-ace straight
 
         ace_to_five_values = [
-            constants.ACE,
-            constants.FIVE,
-            constants.FOUR,
-            constants.THREE,
-            constants.DEUCE,
+            constants.ACES,
+            constants.FIVES,
+            constants.FOURS,
+            constants.THREES,
+            constants.DEUCES,
         ]
         
         if [card.value for card in cards_list] == ace_to_five_values: # A5432 -> 5432A
@@ -142,13 +142,13 @@ class Hand:
 
         # Check if cards match straight
 
-        merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACE ## ace to ace straight as a string --> 'AKQJT98765432A'
+        merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACES ## ace to ace straight as a string --> 'AKQJT98765432A'
         cards_match_straight = (merged_card_values in merged_full_straight) ## membership comparison between strings --> '76543' is found in 'AKQJT98765432A'
 
         # Match flushes and straights
 
         if cards_match_flush and cards_match_straight:
-            if hand_tuple[0].value == constants.ACE:
+            if hand_tuple[0].value == constants.ACES:
                 return constants.ROYAL_FLUSH
             return constants.STRAIGHT_FLUSH
 
