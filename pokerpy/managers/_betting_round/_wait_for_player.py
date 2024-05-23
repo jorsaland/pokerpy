@@ -21,7 +21,7 @@ def wait_for_player(player: Player, is_under_bet: bool):
         # Wait for player's action
         yield player
 
-        # Determine wheter action is valid or not
+        # Determine whether action is valid or not
         action = player.requested_action
         if action is not None and action_is_valid(action, is_under_bet):
             print(f'{player.name} {action.upper()}S')
