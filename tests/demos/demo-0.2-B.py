@@ -1,8 +1,8 @@
 """
 Demo 0.2-B
 
-This demo does the same than Demo 0.2-A. The only difference is that logic implemented that demo
-was migrated to PokerPy and imported in this demo.
+This is an update of Demo 0.2-A. The betting round logic developed in that demo has been migrated
+to PokerPy library and imported here.
 """
 
 

@@ -1,7 +1,7 @@
 """
 Demo 0.0-A
 
-First playability demo! A Texas Hold'em poker cycle (hand) was simulated by printing player actions
+First playability demo! A Texas Hold'em poker cycle (hand) is simulated by printing player actions
 and dealer responses. The winner is chosen randomly. I tried to make this as abstract as possible.
 This will hopefully be the base for further development.
 """

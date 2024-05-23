@@ -1,33 +1,27 @@
 """
 Demo 0.1-A
 
-Betting round actions are introduced. A Texas Hold'em poker cycle (hand) is simulated by printing
-random player actions. Some rules regarding actions are implemented:
+Based on previous demos, betting round actions are added to the Texas Hold'em poker cycle (hand)
+with random player actions. Some rules regarding actions are implemented:
 - A betting round becomes 'under bet' if any player has taken an aggressive action (bet or raise).
 - If a betting round is under bet, then players can only fold, call or raise.
 - If a betting round is not under bet, then players can only bet or raise.*
-- If a player folds, it becomese inactive for the rest of the cycle.
-- If there is only one player active, then the cycle ends and that player becomes the winner.
+- If a player folds, it becomes inactive for the rest of the cycle.
+- If there is only one player active, then the cycle ends and that player wins.
 
-If the cycle reaches the end of the river, the winner is chosen randomly among the remaining active
-players. At this point, each betting round still consists of exactly one action per active player.
+By now, if the cycle reaches the showdown, the winner is chosen randomly among the remaining active
+players. At this point, each betting round consists of exactly one action per active player, even
+if there are aggressive actions.
 
-Due to the fact that 'Andy' always acts first, then he can only check or bet, but not fold.
-Therefore, that player will always reach the showdown if there is at least another player
-remaining at the end of the river.
+Due to the implementation where 'Andy' always acts first, then he can only check or bet, but not
+fold. Therefore, that player will never lose before the showdown.
 
-Nothing was modified outside from this demo. This was intentional. The goal here is to detect what
-must be modified in the library, before doing it. A consequence of this is that table.showdown
-cannot be used in this demo, because it chooses winner among all players instead of remaining
-players (because folding had not been introduced yet). For similar reasons, player.play is no
-longer being used in this demo. These and other changes will be included in the library for
-Demo 0.1-C.
-
-* Theorically a player can fold even when the round is not under bet. I am not sure about the
-exceptions to this rule. In tournaments, when all-in, players may be forced to keep playing and
-even to show their cards if there are no more possible actions. This library pretends to provide
-resources for different implementations. Therefore, Demo 0.1-B will implement this same demo, but
-allowing folding when the round is not under bet.
+Nothing has been modified in PokerPy library for this demo. Every new dependency has been added in
+this script. This is intentional. The goal here is to detect what must be developed, before adding
+it to the library. A consequence of this is that Table.showdown can no longer be used in this demo,
+as it chooses winner among all players instead of remaining players (because folding had not been
+introduced yet). For similar reasons, player.play is no longer being used in this demo. These and
+other changes will be included in the library for Demo 0.1-C.
 """
 
 
