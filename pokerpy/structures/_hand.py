@@ -26,16 +26,9 @@ class Hand:
 
 
     def __init__(self, cards: Iterable[Card]):
-
-        # Validate input
-        cards_list = list(cards)
-        if len(cards_list) != 5:
-            raise ValueError(not_five_cards_hand_message)
-        if len(cards) != len(set(cards)):
-            raise ValueError(repeated_cards_hand_message)
         
         # Transform input
-        hand_tuple = self.arrange_cards(cards_list)
+        hand_tuple = self.arrange_cards(cards)
         category = self.get_hand_category(hand_tuple)
         
         # Static attributes
@@ -92,6 +85,14 @@ class Hand:
         """
         Arranges a list of cards from most to least repeated and from highest to lowest value.
         """
+
+        # Validate input
+
+        cards_list = list(cards)
+        if len(cards_list) != 5:
+            raise ValueError(not_five_cards_hand_message)
+        if len(cards) != len(set(cards)):
+            raise ValueError(repeated_cards_hand_message)
 
         # Convert to list and sort from higher to lower value
 
