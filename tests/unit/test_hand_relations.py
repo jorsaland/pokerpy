@@ -147,7 +147,7 @@ class TestHandRelations(TestCase):
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Straight higher than ace to five straight
+        # Straight higher than five to ace straight
 
         hand_1 = pk.Hand([
             pk.Card('6', 'h'),
@@ -575,7 +575,7 @@ class TestHandRelations(TestCase):
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Straight higher than ace to five straight
+        # Straight higher than five to ace straight
 
         hand_1 = pk.Hand([
             pk.Card('6', 'd'),
