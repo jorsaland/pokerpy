@@ -29,7 +29,7 @@ class Hand:
         
         # Transform input
         hand_tuple = self.arrange_cards(cards)
-        category = self.get_hand_category(hand_tuple)
+        category = self.get_category(hand_tuple)
         
         # Static attributes
         self.cards = hand_tuple
@@ -123,7 +123,7 @@ class Hand:
 
 
     @classmethod
-    def get_hand_category(cls, cards: Iterable[Card]):
+    def get_category(cls, cards: Iterable[Card]):
 
         """
         Takes an iterable object with arranged cards (see _arrange_hand_cards.py) and determines the name
