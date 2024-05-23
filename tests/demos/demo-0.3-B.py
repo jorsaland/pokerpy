@@ -1,8 +1,8 @@
 """
 Demo 0.3-B
 
-This demo does the same than Demo 0.3-A. The only difference is that Card and Table logic was
-migrated to PokerPy and imported here.
+This is an update of Demo 0.3-A. Player and Table classes now integrate card and hand related logic
+that was developed in that demo.
 """
 
 

@@ -1,15 +1,13 @@
 """
 Demo 0.2-A
 
-Now betting rounds are made to last until the last aggressive action has been responded. If all
-players check, then the round ends. Because chip logic has not been developed yet, this new feature
-implies that, in theory, a betting round could last forever. It also implies that now nothing
-guarantees that the first player 'Andy' will always reach the showdown as it happened in previous
-demos.
+This demo implements logic that lets betting rounds to last until the last aggressive action has
+been responded. Because chip logic has not been developed yet, this new feature implies, at least
+in theory, that a betting round could last forever. It also implies that the first player 'Andy' is
+not guaranteed to reach the showdown as in 0.1 demos.
 
-In order not to touch BettingRound class, a new class was defined here (UpdatedBettingRound). This
-class inherits from BettingRound and overrides start method in order to add logic in the right
-places.
+In order not to touch BettingRound class and other library features, UpdatedBettingRound class
+inherits from BettingRound. and overrides the 'run' method.
 """
 
 

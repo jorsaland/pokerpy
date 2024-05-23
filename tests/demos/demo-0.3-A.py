@@ -1,16 +1,19 @@
 """
 Demo 0.3-A
 
-Cards and hands have been added. This is the first demo where winner will no longer be chosen
-randomly, but according to who has the best hand. A consequence of this is that current Table class
-showdown method had to be removed in this demo (it chooses the winner randomly). Cards were
-implemented directly on the library without modifying other dependencies. In Demo 0.3-B, Player and
-Table classes (maybe BettingRound) will be modified to include cards and hands logic.
+Card and Hand classes have been added to PokerPy library as independent feature, so that Player,
+Table and BettingRound classes are not touched (they will be modified for Demo 0.3-B). When players
+reach thhe showdown, the winner is no longer chosen randomly, but according to the best hand.
+Because of this, current Table showdown method is not used in this demo (it chooses the winner
+randomly).
 
-I would like to point that in my very beginnings, some years ago, I tried to develop a poker game
-starting by cards as it seemed easier, but I did not find how to keep going when I had to face
-playability. It is satisfying to see how postponing card logic until this point made it easier to
-have a strong playability logic.
+I would like to say that in the very beginnings of this project, a few years ago, I tried to
+develop a poker game and thought cards should be developed first because they seemed easier.
+However, I was not aware of what features cards needed to have besides a value and a suit. I made a
+lot of stuff without a clear goal, only to find out out that playability was out of my reach. This
+time I decided to make things different. Playability is the spinal cord of PokerPy since the very
+beginning in version 0.0. Under this approach, it has become obvious what needs to be developed and
+what can be ignored or left for later development versions.
 """
 
 

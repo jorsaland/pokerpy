@@ -1,8 +1,8 @@
 """
 Demo 0.0-C
 
-The same poker cycle (hand) of previous 0.0 demos was simulated, importing classes and instances
-defined within the library.
+This is an update of previous demos. Player and Table classes have been moved to PokerPy library.
+The base directory was added to sys.path in order to import library features.
 """
 
 
