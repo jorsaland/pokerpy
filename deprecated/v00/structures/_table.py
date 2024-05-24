@@ -4,7 +4,6 @@ Defines the class that represents a poker table.
 
 
 import random
-from typing import Iterable
 
 
 from ._player import Player
@@ -18,8 +17,8 @@ class Table:
     """
 
 
-    def __init__(self, players: Iterable[Player]):
-        self.players = list(players)
+    def __init__(self, players: list[Player]):
+        self.players = players
 
 
     def deal(self, betting_round: str):

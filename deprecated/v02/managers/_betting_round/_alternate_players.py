@@ -23,7 +23,7 @@ def alternate_players(table: Table):
 
         # Determine whether betting round should be stopped or not
         if len(table.active_players) == 1:
-            print(f'--- only one active player ({list(table.active_players)[0].name})... ending round\n')
+            print(f'--- only one active player ({table.active_players[0].name})... ending round\n')
             round_must_stop = True
             break
         if player == table.last_aggressive_player:
