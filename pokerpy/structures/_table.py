@@ -4,7 +4,6 @@ Defines the class that represents a poker table.
 
 
 import random
-from typing import Iterable
 
 
 from ._player import Player
@@ -18,13 +17,13 @@ class Table:
     """
 
 
-    def __init__(self, players: Iterable[Player]):
+    def __init__(self, players: list[Player]):
 
         # Input variables
-        self.players = list(players)
+        self.players = players
 
         # State variables
-        self.active_players: set[Player] = set()
+        self.active_players: list[Player] = []
         self.is_under_bet = False
         self.last_aggressive_player: (Player|None) = None
 
@@ -36,7 +35,7 @@ class Table:
         """
 
         self.active_players.clear()
-        self.active_players.update(self.players)
+        self.active_players.extend(self.players)
 
 
     def reset_betting_round_states(self):
@@ -65,5 +64,5 @@ class Table:
         """
 
         print(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
-        winner = random.choice(list(self.active_players))
+        winner = random.choice(self.active_players)
         print(f'{winner.name} wins!')
