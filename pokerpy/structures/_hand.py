@@ -49,6 +49,7 @@ class Hand:
         if not isinstance(other, Hand):
             return NotImplemented
         
+        # If both hands have the same values, they are equally good, no matter the suit
         self_values = [card.value for card in self.cards]
         other_values = [card.value for card in other.cards]
 
@@ -60,11 +61,11 @@ class Hand:
         if not isinstance(other, Hand):
             return NotImplemented
 
-        # The lower a category is in the categories tuple, the lower its value
+        # The higher a category is in the categories tuple, the better the hand is
         self_category_index = constants.sorted_hand_categories.index(self.category)
         other_category_index = constants.sorted_hand_categories.index(other.category)
 
-        # The lower it is in the values tuple, the lower its value
+        # Within a hand category, the higher its values are in the values tuple, the better the hand is
         self_values_indices = [constants.sorted_card_values.index(card.value) for card in self.cards]
         other_values_indices = [constants.sorted_card_values.index(card.value) for card in other.cards]
         
@@ -101,7 +102,7 @@ class Hand:
 
         # Arrange cards in a special way if hand is a five-to-ace straight
 
-        ace_to_five_values = [
+        wrongly_sorted_five_to_ace = [
             constants.ACES,
             constants.FIVES,
             constants.FOURS,
@@ -109,7 +110,7 @@ class Hand:
             constants.DEUCES,
         ]
         
-        if [card.value for card in cards_list] == ace_to_five_values: # A5432 -> 5432A
+        if [card.value for card in cards_list] == wrongly_sorted_five_to_ace: # special sorting case --> A5432 becomes 5432A
             cards_list.append(cards_list.pop(0))
             return HandTuple(tuple(cards_list))
         
@@ -133,7 +134,7 @@ class Hand:
         # Convert cards iterable
 
         hand_tuple = cls.arrange_cards(cards)
-        merged_card_values = ''.join(card.value for card in hand_tuple)
+        merged_card_values = ''.join(card.value for card in hand_tuple) # example --> 'JT987'
 
         # Check if cards match flush
 
@@ -142,8 +143,8 @@ class Hand:
 
         # Check if cards match straight
 
-        merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACES ## ace to ace straight as a string --> 'AKQJT98765432A'
-        cards_match_straight = (merged_card_values in merged_full_straight) ## membership comparison between strings --> '76543' is found in 'AKQJT98765432A'
+        merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACES ## this is literally --> 'AKQJT98765432A'
+        cards_match_straight = (merged_card_values in merged_full_straight) ## membership comparison between strings --> '76543' is contained in 'AKQJT98765432A'
 
         # Match flushes and straights
 
