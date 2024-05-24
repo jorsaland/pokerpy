@@ -150,7 +150,7 @@ def cycle(table: v02.Table):
     # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        winner = list(table.active_players)[0]
+        winner = table.active_players[0]
         print(f'{winner.name} wins!')
 
     # Display cards and hands of remaining players

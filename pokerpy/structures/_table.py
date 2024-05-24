@@ -4,7 +4,6 @@ Defines the class that represents a poker table.
 
 
 import random
-from typing import Iterable
 
 
 from pokerpy.constants import full_sorted_values_and_suits
@@ -22,13 +21,13 @@ class Table:
     """
 
 
-    def __init__(self, players: Iterable[Player]):
+    def __init__(self, players: list[Player]):
 
         # Input variables
-        self.players = list(players)
+        self.players = players
 
         # State variables
-        self.active_players: set[Player] = set()
+        self.active_players: list[Player] = []
         self.is_under_bet = False
         self.last_aggressive_player: (Player|None) = None
         self.deck: set[Card] = set()
@@ -43,7 +42,7 @@ class Table:
 
         # Reset players
         self.active_players.clear()
-        self.active_players.update(self.players)
+        self.active_players.extend(self.players)
 
         # Reset cards
         self.deck.update({Card(value, suit) for value, suit in full_sorted_values_and_suits})

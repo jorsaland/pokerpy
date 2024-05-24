@@ -100,7 +100,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             active_player_names = ['Andy', 'Fomi']
             table.active_players.clear()
-            table.active_players.update([player for name, player in player_by_name.items() if name in active_player_names])
+            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -131,7 +131,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             active_player_names = ['Boa', 'Coral', 'Dino', 'Epa']
             table.active_players.clear()
-            table.active_players.update([player for name, player in player_by_name.items() if name in active_player_names])
+            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -170,7 +170,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             active_player_names = ['Andy', 'Coral', 'Epa']
             table.active_players.clear()
-            table.active_players.update([player for name, player in player_by_name.items() if name in active_player_names])
+            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -320,7 +320,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = pk.Table(players)
 
             table.active_players.clear()
-            table.active_players.add(players[0])
+            table.active_players.append(players[0])
             table.is_under_bet = True
 
             generator = pk.managers.alternate_players(table)
