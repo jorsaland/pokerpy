@@ -70,12 +70,12 @@ def cycle(table: v02.Table):
         print(  '==============================================\n')
 
     # Get deck
-    deck = {pk.Card(value, suit) for value, suit in pk.full_sorted_values_and_suits}
+    deck = [pk.Card(value, suit) for value, suit in pk.full_sorted_values_and_suits]
 
     # Determine card containers
-    cards_by_player_name: dict[str, set[pk.Card]] = {player.name: set() for player in table.players}
+    cards_by_player_name: dict[str, list[pk.Card]] = {player.name: [] for player in table.players}
     hand_by_player_name: dict[str, pk.Hand] =  {}
-    common_cards: set[pk.Card] = set()
+    common_cards: list[pk.Card] = []
 
     # Make sure every player is active
     table.activate_all_players()
@@ -92,29 +92,29 @@ def cycle(table: v02.Table):
         if betting_round_name == PREFLOP:
             for _ in range(2):
                 for player in table.players:
-                    card = random.choice(list(deck))
+                    card = random.choice(deck)
                     deck.remove(card)
-                    cards_by_player_name[player.name].add(card)
+                    cards_by_player_name[player.name].append(card)
         
         # Deal three cards to table if round is flop
         if betting_round_name == FLOP:
             for _ in range(3):
-                card = random.choice(list(deck))
+                card = random.choice(deck)
                 deck.remove(card)
-                common_cards.add(card)
+                common_cards.append(card)
         
         # Deal one card to table if round is turn or river
         if betting_round_name in (TURN, RIVER):
-            card = random.choice(list(deck))
+            card = random.choice(deck)
             deck.remove(card)
-            common_cards.add(card)
+            common_cards.append(card)
         
         # Display player cards and hand
         print('--------------------------------------------------')
         print(f'Common cards: {"".join(str(c) for c in common_cards)}')
         for player in table.active_players:
             personal_cards = cards_by_player_name[player.name]
-            hand = figure_out_hand({*personal_cards, *common_cards})
+            hand = figure_out_hand(personal_cards + common_cards)
             hand_by_player_name[player.name] = hand
             print(f"{player.name}'s cards: {''.join(str(c) for c in personal_cards)} | hand: {str(hand)}{f' ({hand.category})' if hand is not None else ''}")
         print('--------------------------------------------------\n')

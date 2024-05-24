@@ -30,8 +30,8 @@ class Table:
         self.active_players: list[Player] = []
         self.is_under_bet = False
         self.last_aggressive_player: (Player|None) = None
-        self.deck: set[Card] = set()
-        self.common_cards: set[Card] = set()
+        self.deck: list[Card] = []
+        self.common_cards: list[Card] = []
 
 
     def reset_cycle_states(self):
@@ -44,8 +44,11 @@ class Table:
         self.active_players.clear()
         self.active_players.extend(self.players)
 
-        # Reset cards
-        self.deck.update({Card(value, suit) for value, suit in full_sorted_values_and_suits})
+        # Reset deck
+        self.deck.clear()
+        self.deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
+
+        # Reset common and player cards
         self.common_cards.clear()
         for player in self.players:
             player.cards.clear()

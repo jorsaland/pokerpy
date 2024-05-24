@@ -138,7 +138,7 @@ class Hand:
 
         # Check if cards match flush
 
-        unique_suits = {card.suit for card in list(hand_tuple)}
+        unique_suits = {card.suit for card in hand_tuple}
         cards_match_flush = (len(unique_suits) == 1)
 
         # Check if cards match straight

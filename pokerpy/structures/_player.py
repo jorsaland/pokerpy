@@ -26,7 +26,7 @@ class Player:
 
         # State variables
         self.requested_action: (str|None) = None
-        self.cards: set[Card] = set()
+        self.cards: list[Card] = []
         self.hand: (Hand|None) = None
 
 

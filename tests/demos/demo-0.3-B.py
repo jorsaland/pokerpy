@@ -72,28 +72,28 @@ def cycle(table: pk.Table):
         if betting_round_name == PREFLOP:
             for _ in range(2):
                 for player in table.players:
-                    card = random.choice(list(table.deck))
+                    card = random.choice(table.deck)
                     table.deck.remove(card)
-                    player.cards.add(card)
+                    player.cards.append(card)
         
         # Deal three cards to table if round is flop
         if betting_round_name == FLOP:
             for _ in range(3):
-                card = random.choice(list(table.deck))
+                card = random.choice(table.deck)
                 table.deck.remove(card)
-                table.common_cards.add(card)
+                table.common_cards.append(card)
         
         # Deal one card to table if round is turn or river
         if betting_round_name in (TURN, RIVER):
-            card = random.choice(list(table.deck))
+            card = random.choice(table.deck)
             table.deck.remove(card)
-            table.common_cards.add(card)
+            table.common_cards.append(card)
         
         # Display player cards and hand
         print('--------------------------------------------------')
         print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
         for player in table.active_players:
-            player.hand = figure_out_hand({*player.cards, *table.common_cards})
+            player.hand = figure_out_hand(player.cards + table.common_cards)
             print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
         print('--------------------------------------------------\n')
 
