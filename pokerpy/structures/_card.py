@@ -27,7 +27,7 @@ class Card:
         suit = suit.lower()
 
         # Validate and convert input
-        if 'joker' in [value.lower(), suit.lower()]:
+        if 'joker' in (value.lower(), suit.lower()):
             raise ValueError(joker_card_message)
         if value not in sorted_card_values:
             message = invalid_card_value_message.format(valid_values=', '.join(sorted_card_values))
