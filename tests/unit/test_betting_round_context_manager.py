@@ -28,16 +28,21 @@ class TestBettingRoundContextManager(TestCase):
         Runs test cases to check if the context manager works as expected.
         """
 
+
+        all_players = [
+            pk.Player('Andy'),
+            pk.Player('Boa'),
+            pk.Player('Coral'),
+            pk.Player('Dino'),
+        ]
+
+
         # Raising unexpected exception: ValueError
 
         value_error_message = 'some value error'
 
         def raise_value_error():
-
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             with pk.BettingRound(name='round', table=table):
                 raise ValueError(value_error_message)
             
@@ -52,11 +57,7 @@ class TestBettingRoundContextManager(TestCase):
         type_error_message = 'some type error'
 
         def raise_type_error():
-
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             with pk.BettingRound(name='round', table=table):
                 raise TypeError(type_error_message)
             
@@ -71,11 +72,7 @@ class TestBettingRoundContextManager(TestCase):
         exception_error_message = 'parent exception'
 
         def raise_parent_exception():
-
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             with pk.BettingRound(name='round', table=table):
                 raise Exception(exception_error_message)
             
@@ -88,11 +85,7 @@ class TestBettingRoundContextManager(TestCase):
         # Breaking round before time: StopIteration
 
         def raise_stop_iteration():
-
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             with pk.BettingRound(name='round', table=table):
                 raise StopIteration()
             
@@ -110,13 +103,19 @@ class TestBettingRoundContextManager(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+        ]
+
+
         def parse_as_many_actions_as_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -137,19 +136,16 @@ class TestBettingRoundContextManager(TestCase):
                 player.request(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(parse_as_many_actions_as_expected(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(parse_as_many_actions_as_expected(), all_players)
 
 
         def parse_less_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -168,9 +164,7 @@ class TestBettingRoundContextManager(TestCase):
 
                 # Dino is missing
 
-            awaited_player_names = [player.name for player in awaited_players]
-            print(f'{awaited_player_names = }')
-            return awaited_player_names
+            return awaited_players
 
         with self.assertRaises(RuntimeError) as cm:
             parse_less_actions_than_expected()
@@ -180,11 +174,9 @@ class TestBettingRoundContextManager(TestCase):
 
         def parse_more_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -209,9 +201,7 @@ class TestBettingRoundContextManager(TestCase):
                 player.request(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            print(f'{awaited_player_names = }')
-            return awaited_player_names
+            return awaited_players
 
         with self.assertRaises(RuntimeError) as cm:
             parse_more_actions_than_expected()
@@ -227,13 +217,19 @@ class TestBettingRoundContextManager(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+        ]
+
+
         def all_check():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -254,19 +250,16 @@ class TestBettingRoundContextManager(TestCase):
                 player.request(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(all_check(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(all_check(), all_players)
 
 
         def bet_and_folds():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -287,19 +280,16 @@ class TestBettingRoundContextManager(TestCase):
                 player.request(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(bet_and_folds(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(bet_and_folds(), all_players)
 
 
         def bet_and_calls():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -320,19 +310,16 @@ class TestBettingRoundContextManager(TestCase):
                 player.request(pk.ACTION_CALL)
                 awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(bet_and_calls(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(bet_and_calls(), all_players)
 
 
         def bet_raises_and_folds():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -371,19 +358,16 @@ class TestBettingRoundContextManager(TestCase):
 
                 # Boa is the only remaining player
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(bet_raises_and_folds(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Dino'])
+        self.assertEqual(bet_raises_and_folds(), [Andy, Boa, Coral, Dino, Andy, Boa, Dino])
 
 
         def bet_raises_and_calls():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -426,19 +410,16 @@ class TestBettingRoundContextManager(TestCase):
 
                 # Every player has responded to Boa
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(bet_raises_and_calls(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Coral', 'Dino', 'Andy'])
+        self.assertEqual(bet_raises_and_calls(), [Andy, Boa, Coral, Dino, Andy, Boa, Coral, Dino, Andy])
 
 
         def bet_raises_folds_and_calls():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.reset_cycle_states()
+
             awaited_players: list[pk.Player] = []
 
             with pk.BettingRound(name='round', table=table) as betting_round:
@@ -479,10 +460,9 @@ class TestBettingRoundContextManager(TestCase):
 
                 # Every remaining player has responded to Boa
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(bet_raises_folds_and_calls(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Dino', 'Andy'])
+        self.assertEqual(bet_raises_folds_and_calls(), [Andy, Boa, Coral, Dino, Andy, Boa, Dino, Andy])
 
 
 if __name__ == '__main__':

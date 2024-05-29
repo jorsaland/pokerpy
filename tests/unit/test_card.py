@@ -42,218 +42,218 @@ class TestCard(TestCase):
 
         # The complete deck
         
-        self.assertIsInstance(pk.Card('A', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('K', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('K', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('K', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('K', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('Q', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('Q', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('Q', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('Q', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('J', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('J', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('J', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('J', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('T', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('T', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('T', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('T', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('9', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('9', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('9', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('9', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('8', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('8', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('8', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('8', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('7', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('7', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('7', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('7', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('6', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('6', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('6', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('6', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('5', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('5', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('5', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('5', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('4', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('4', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('4', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('4', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('3', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('3', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('3', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('3', 'c'), pk.Card)
-        self.assertIsInstance(pk.Card('2', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('2', 'h'), pk.Card)
-        self.assertIsInstance(pk.Card('2', 'd'), pk.Card)
-        self.assertIsInstance(pk.Card('2', 'c'), pk.Card)
+        pk.Card('A', 's')
+        pk.Card('A', 'h')
+        pk.Card('A', 'd')
+        pk.Card('A', 'c')
+        pk.Card('K', 's')
+        pk.Card('K', 'h')
+        pk.Card('K', 'd')
+        pk.Card('K', 'c')
+        pk.Card('Q', 's')
+        pk.Card('Q', 'h')
+        pk.Card('Q', 'd')
+        pk.Card('Q', 'c')
+        pk.Card('J', 's')
+        pk.Card('J', 'h')
+        pk.Card('J', 'd')
+        pk.Card('J', 'c')
+        pk.Card('T', 's')
+        pk.Card('T', 'h')
+        pk.Card('T', 'd')
+        pk.Card('T', 'c')
+        pk.Card('9', 's')
+        pk.Card('9', 'h')
+        pk.Card('9', 'd')
+        pk.Card('9', 'c')
+        pk.Card('8', 's')
+        pk.Card('8', 'h')
+        pk.Card('8', 'd')
+        pk.Card('8', 'c')
+        pk.Card('7', 's')
+        pk.Card('7', 'h')
+        pk.Card('7', 'd')
+        pk.Card('7', 'c')
+        pk.Card('6', 's')
+        pk.Card('6', 'h')
+        pk.Card('6', 'd')
+        pk.Card('6', 'c')
+        pk.Card('5', 's')
+        pk.Card('5', 'h')
+        pk.Card('5', 'd')
+        pk.Card('5', 'c')
+        pk.Card('4', 's')
+        pk.Card('4', 'h')
+        pk.Card('4', 'd')
+        pk.Card('4', 'c')
+        pk.Card('3', 's')
+        pk.Card('3', 'h')
+        pk.Card('3', 'd')
+        pk.Card('3', 'c')
+        pk.Card('2', 's')
+        pk.Card('2', 'h')
+        pk.Card('2', 'd')
+        pk.Card('2', 'c')
 
 
         # Valid cases with different upper and lower case parsing
 
-        self.assertIsInstance(pk.Card('a', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('k', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('q', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('j', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('t', 's'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'S'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'H'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'D'), pk.Card)
-        self.assertIsInstance(pk.Card('A', 'C'), pk.Card)
-        self.assertIsInstance(pk.Card('a', 'S'), pk.Card)
-        self.assertIsInstance(pk.Card('k', 'H'), pk.Card)
-        self.assertIsInstance(pk.Card('q', 'D'), pk.Card)
-        self.assertIsInstance(pk.Card('j', 'C'), pk.Card)
-        self.assertIsInstance(pk.Card('t', 'S'), pk.Card)
+        pk.Card('a', 's')
+        pk.Card('k', 's')
+        pk.Card('q', 's')
+        pk.Card('j', 's')
+        pk.Card('t', 's')
+        pk.Card('A', 'S')
+        pk.Card('A', 'H')
+        pk.Card('A', 'D')
+        pk.Card('A', 'C')
+        pk.Card('a', 'S')
+        pk.Card('k', 'H')
+        pk.Card('q', 'D')
+        pk.Card('j', 'C')
+        pk.Card('t', 'S')
 
 
         # Invalid value parsings that may be valid in future
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('aces', 's'), pk.Card)
+            pk.Card('aces', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('kings', 's'), pk.Card)
+            pk.Card('kings', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('queens', 's'), pk.Card)
+            pk.Card('queens', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('jacks', 's'), pk.Card)
+            pk.Card('jacks', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('tens', 's'), pk.Card)
+            pk.Card('tens', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('10', 's'), pk.Card)
+            pk.Card('10', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('nines', 's'), pk.Card)
+            pk.Card('nines', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('eights', 's'), pk.Card)
+            pk.Card('eights', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('sevens', 's'), pk.Card)
+            pk.Card('sevens', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('sixes', 's'), pk.Card)
+            pk.Card('sixes', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('fives', 's'), pk.Card)
+            pk.Card('fives', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('fours', 's'), pk.Card)
+            pk.Card('fours', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('threes', 's'), pk.Card)
+            pk.Card('threes', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('deuces', 's'), pk.Card)
+            pk.Card('deuces', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
 
         # Some invalid values NOT to be considered in future
         
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('', 's'), pk.Card)
+            pk.Card('', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('1', 's'), pk.Card)
+            pk.Card('1', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('11', 's'), pk.Card)
+            pk.Card('11', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('aces', 's'), pk.Card)
+            pk.Card('aces', 's')
         self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
 
 
         # Invalid suit parsings that may be valid in future
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'spades'), pk.Card)
+            pk.Card('A', 'spades')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'hearts'), pk.Card)
+            pk.Card('A', 'hearts')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'diamonds'), pk.Card)
+            pk.Card('A', 'diamonds')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'clubs'), pk.Card)
+            pk.Card('A', 'clubs')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
 
         # Invalid suits NOT to be considered in future
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'a'), pk.Card)
+            pk.Card('A', 'a')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', ''), pk.Card)
+            pk.Card('A', '')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'swords'), pk.Card)
+            pk.Card('A', 'swords')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'cups'), pk.Card)
+            pk.Card('A', 'cups')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'coins'), pk.Card)
+            pk.Card('A', 'coins')
         self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
 
 
         # Just kidding
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('joker', 's'), pk.Card)
+            pk.Card('joker', 's')
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('joker', 'whatever'), pk.Card)
+            pk.Card('joker', 'whatever')
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('A', 'joker'), pk.Card)
+            pk.Card('A', 'joker')
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('whatever', 'joker'), pk.Card)
+            pk.Card('whatever', 'joker')
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
         with self.assertRaises(ValueError) as cm:
-            self.assertIsInstance(pk.Card('joker', 'joker'), pk.Card)
+            pk.Card('joker', 'joker')
         self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
 
 
