@@ -4,7 +4,11 @@ Defines the class that represents a poker player.
 
 
 from pokerpy.constants import possible_actions
-from pokerpy.messages import undefined_action_message
+from pokerpy.messages import (
+    not_str_action_message,
+    not_str_player_name_message,
+    undefined_action_message,
+)
 
 
 class Player:
@@ -16,6 +20,10 @@ class Player:
 
 
     def __init__(self, name: str):
+
+        # Check input
+        if not isinstance(name, str):
+            raise TypeError(not_str_player_name_message.format(type(name).__name__))
 
         # Input variables
         self._name = name
@@ -43,8 +51,11 @@ class Player:
         Makes the player to request taking an action.
         """
 
+        if not isinstance(action, str):
+            raise TypeError(not_str_action_message.format(type(action).__name__))
+
         if action not in possible_actions:
-            error_message = undefined_action_message.format(action=action)
+            error_message = undefined_action_message.format(action)
             raise ValueError(error_message)
 
         self._requested_action = action
