@@ -20,11 +20,24 @@ class Table:
     def __init__(self, players: list[Player]):
 
         # Input variables
-        self.players = players
+        self._players = players
 
         # State variables
-        self.active_players: list[Player] = []
-        self.is_under_bet = False
+        self._active_players: list[Player] = []
+        self._is_under_bet = False
+    
+
+    @property
+    def players(self):
+        return tuple(self._players)
+    
+    @property
+    def active_players(self):
+        return tuple(self._active_players)
+
+    @property
+    def is_under_bet(self):
+        return self._is_under_bet
 
 
     def activate_all_players(self):
@@ -33,8 +46,36 @@ class Table:
         Make all players to be available to play.
         """
 
-        self.active_players.clear()
-        self.active_players.extend(self.players)
+        self._active_players.clear()
+        self._active_players.extend(self._players)
+
+
+    def activate_player(self, player: Player):
+        
+        """
+        Make a single player to become available to play.
+        """
+
+        if player not in self.active_players:
+            self._active_players.append(player)
+
+
+    def become_under_bet(self):
+
+        """
+        Makes the betting round to become under bet.
+        """
+
+        self._is_under_bet = True
+    
+
+    def fold_player(self, player: Player):
+
+        """
+        Removes a player from a hand cycle.
+        """
+
+        self._active_players.remove(player)
 
 
     def reset_betting_round_states(self):
@@ -43,7 +84,7 @@ class Table:
         Resets all state variables that are restricted to betting rounds.
         """
 
-        self.is_under_bet = False
+        self._is_under_bet = False
 
 
     def deal(self, betting_round: str):
