@@ -18,10 +18,19 @@ class Player:
     def __init__(self, name: str):
 
         # Input variables
-        self.name = name
+        self._name = name
 
         # State variables
-        self.requested_action: (str|None) = None
+        self._requested_action: (str|None) = None
+
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def requested_action(self):
+        return self._requested_action
 
 
     def request(self, action: str):
@@ -34,4 +43,4 @@ class Player:
             error_message = undefined_action_message.format(action=action)
             raise ValueError(error_message)
 
-        self.requested_action = action
+        self._requested_action = action

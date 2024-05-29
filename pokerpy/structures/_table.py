@@ -20,12 +20,29 @@ class Table:
     def __init__(self, players: list[Player]):
 
         # Input variables
-        self.players = players
+        self._players = players
 
         # State variables
-        self.active_players: list[Player] = []
-        self.is_under_bet = False
-        self.last_aggressive_player: (Player|None) = None
+        self._active_players: list[Player] = []
+        self._is_under_bet = False
+        self._last_aggressive_player: (Player|None) = None
+    
+
+    @property
+    def players(self):
+        return tuple(self._players)
+    
+    @property
+    def active_players(self):
+        return tuple(self._active_players)
+
+    @property
+    def is_under_bet(self):
+        return self._is_under_bet
+
+    @property
+    def last_aggressive_player(self):
+        return self._last_aggressive_player
 
 
     def activate_all_players(self):
@@ -34,8 +51,45 @@ class Table:
         Make all players to be available to play.
         """
 
-        self.active_players.clear()
-        self.active_players.extend(self.players)
+        self._active_players.clear()
+        self._active_players.extend(self._players)
+
+
+    def activate_player(self, player: Player):
+        
+        """
+        Make a single player to become available to play.
+        """
+
+        if player not in self.active_players:
+            self._active_players.append(player)
+
+
+    def become_under_bet(self):
+
+        """
+        Makes the betting round to become under bet.
+        """
+
+        self._is_under_bet = True
+    
+
+    def fold_player(self, player: Player):
+
+        """
+        Removes a player from a hand cycle.
+        """
+
+        self._active_players.remove(player)
+
+
+    def set_last_aggressive_player(self, player: Player):
+
+        """
+        Marks a player as the last one to take an aggressive action.
+        """
+
+        self._last_aggressive_player = player
 
 
     def reset_betting_round_states(self):
@@ -44,8 +98,8 @@ class Table:
         Resets all state variables that are restricted to betting rounds.
         """
 
-        self.is_under_bet = False
-        self.last_aggressive_player = None
+        self._is_under_bet = False
+        self._last_aggressive_player = None
 
 
     def deal(self, betting_round: str):
