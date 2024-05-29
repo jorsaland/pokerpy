@@ -8,6 +8,8 @@ from collections.abc import Generator
 
 from pokerpy.messages import (
     exiting_unended_betting_round_message,
+    not_str_betting_round_name_message,
+    not_table_instance_message,
     overloaded_betting_round_message,
     starting_already_ended_betting_round_message,
 )
@@ -26,6 +28,12 @@ class BettingRound:
 
 
     def __init__(self, name: str, table: Table):
+
+        # Check input
+        if not isinstance(name, str):
+            raise TypeError(not_str_betting_round_name_message.format(type(name).__name__))
+        if not isinstance(table, Table):
+            raise TypeError(not_table_instance_message.format(type(table).__name__))
 
         # Input variables
         self._name = name

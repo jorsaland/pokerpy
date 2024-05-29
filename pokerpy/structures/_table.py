@@ -6,6 +6,13 @@ Defines the class that represents a poker table.
 import random
 
 
+from pokerpy.messages import (
+    not_list_players_message,
+    not_all_player_instances_message,
+    not_player_instance_message,
+)
+
+
 from ._player import Player
 
 
@@ -18,6 +25,12 @@ class Table:
 
 
     def __init__(self, players: list[Player]):
+
+        # Check input
+        if not isinstance(players, list):
+            raise TypeError(not_list_players_message.format(type(players).__name__))
+        if not all(isinstance(player, Player) for player in players):
+            raise TypeError(not_all_player_instances_message)
 
         # Input variables
         self._players = players
@@ -61,6 +74,9 @@ class Table:
         Make a single player to become available to play.
         """
 
+        if not isinstance(player, Player):
+            raise TypeError(not_player_instance_message.format(type(player).__name__))
+
         if player not in self.active_players:
             self._active_players.append(player)
 
@@ -80,6 +96,9 @@ class Table:
         Removes a player from a hand cycle.
         """
 
+        if not isinstance(player, Player):
+            raise TypeError(not_player_instance_message.format(type(player).__name__))
+
         self._active_players.remove(player)
 
 
@@ -88,6 +107,9 @@ class Table:
         """
         Marks a player as the last one to take an aggressive action.
         """
+
+        if not isinstance(player, Player):
+            raise TypeError(not_player_instance_message.format(type(player).__name__))
 
         self._last_aggressive_player = player
 
