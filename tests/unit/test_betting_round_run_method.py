@@ -29,13 +29,19 @@ class TestBettingRoundRunMethod(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+        ]
+
+
         def parse_as_many_actions_as_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             awaited_players: list[pk.Player] = []
 
             betting_round_cm = pk.BettingRound(name='round', table=table)
@@ -57,19 +63,16 @@ class TestBettingRoundRunMethod(TestCase):
             player.request(pk.ACTION_CHECK)
             awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(parse_as_many_actions_as_expected(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(parse_as_many_actions_as_expected(), all_players)
 
 
         def parse_less_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             awaited_players: list[pk.Player] = []
 
             betting_round_cm = pk.BettingRound(name='round', table=table)
@@ -89,20 +92,16 @@ class TestBettingRoundRunMethod(TestCase):
 
             # Dino is missing
 
-            awaited_player_names = [player.name for player in awaited_players]
-            print(f'{awaited_player_names = }')
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(parse_less_actions_than_expected(), ['Andy', 'Boa', 'Coral'])
+        self.assertEqual(parse_less_actions_than_expected(), [Andy, Boa, Coral])
 
 
         def parse_more_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             awaited_players: list[pk.Player] = []
 
             betting_round_cm = pk.BettingRound(name='round', table=table)
@@ -128,9 +127,7 @@ class TestBettingRoundRunMethod(TestCase):
             player.request(pk.ACTION_CHECK)
             awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            print(f'{awaited_player_names = }')
-            return awaited_player_names
+            return awaited_players
 
         with self.assertRaises(StopIteration):
             parse_more_actions_than_expected()

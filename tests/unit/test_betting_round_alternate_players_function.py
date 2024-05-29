@@ -29,13 +29,23 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+            Epa := pk.Player('Epa'),
+            Fomi := pk.Player('Fomi'),
+        ]
+
+
+        # All players are active
+
         def activate_all_players():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
-            player_by_name = {name: pk.Player(name) for name in player_names}
-            table = pk.Table(player_by_name.values())
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -67,17 +77,16 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             try:
                 next(generator) # No more players
             except StopIteration:
-                awaited_player_names = [player.name for player in awaited_players]
-                return awaited_player_names
+                return awaited_players
 
-        self.assertEqual(activate_all_players(), ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi'])
+        self.assertEqual(activate_all_players(), all_players)
 
+
+        # No player is active
 
         def deactivate_all_players():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
-            player_by_name = {name: pk.Player(name) for name in player_names}
-            table = pk.Table(player_by_name.values())
+            table = pk.Table(all_players)
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -92,15 +101,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         self.assertEqual(deactivate_all_players(), [])
 
 
+        # Only first player and last player are active
+
+        first_and_last_players = [Andy, Fomi]
+        
         def only_activate_first_and_last_player():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
-            player_by_name = {name: pk.Player(name) for name in player_names}
-            table = pk.Table(player_by_name.values())
-
-            active_player_names = ['Andy', 'Fomi']
-            table.active_players.clear()
-            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
+            table = pk.Table(all_players)
+            for player in first_and_last_players:
+                table.activate_player(player)
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -117,21 +126,20 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             try:
                 next(generator) # No more players
             except StopIteration:
-                awaited_player_names = [player.name for player in awaited_players]
-                return awaited_player_names
+                return awaited_players
 
-        self.assertEqual(only_activate_first_and_last_player(), ['Andy', 'Fomi'])
+        self.assertEqual(only_activate_first_and_last_player(), first_and_last_players)
 
+
+        # All players are active, except for the first one and last one
+
+        all_players_but_first_and_last = [Boa, Coral, Dino, Epa]
 
         def only_deactivate_first_and_last_player():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
-            player_by_name = {name: pk.Player(name) for name in player_names}
-            table = pk.Table(player_by_name.values())
-
-            active_player_names = ['Boa', 'Coral', 'Dino', 'Epa']
-            table.active_players.clear()
-            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
+            table = pk.Table(all_players)
+            for player in all_players_but_first_and_last:
+                table.activate_player(player)
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -156,21 +164,20 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             try:
                 next(generator) # No more players
             except StopIteration:
-                awaited_player_names = [player.name for player in awaited_players]
-                return awaited_player_names
+                return awaited_players
 
-        self.assertEqual(only_deactivate_first_and_last_player(), ['Boa', 'Coral', 'Dino', 'Epa'])
+        self.assertEqual(only_deactivate_first_and_last_player(), all_players_but_first_and_last)
 
+
+        # Some interspersed players are active
+
+        interspersed_players = [Andy, Coral, Epa]
 
         def activate_interspersed_players():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
-            player_by_name = {name: pk.Player(name) for name in player_names}
-            table = pk.Table(player_by_name.values())
-
-            active_player_names = ['Andy', 'Coral', 'Epa']
-            table.active_players.clear()
-            table.active_players.extend([player for name, player in player_by_name.items() if name in active_player_names])
+            table = pk.Table(all_players)
+            for player in interspersed_players:
+                table.activate_player(player)
 
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
@@ -191,10 +198,9 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             try:
                 next(generator) # No more players
             except StopIteration:
-                awaited_player_names = [player.name for player in awaited_players]
-                return awaited_player_names
+                return awaited_players
 
-        self.assertEqual(activate_interspersed_players(), ['Andy', 'Coral', 'Epa'])
+        self.assertEqual(activate_interspersed_players(), interspersed_players)
 
 
     def test_parsing(self):
@@ -205,13 +211,19 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+        ]
+
+
         def parse_as_many_actions_as_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -231,19 +243,16 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             player.request(pk.ACTION_CHECK)
             awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(parse_as_many_actions_as_expected(), ['Andy', 'Boa', 'Coral', 'Dino'])
+        self.assertEqual(parse_as_many_actions_as_expected(), all_players)
 
 
         def parse_less_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -261,19 +270,16 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             # Dino is missing
 
-            awaited_player_names = [player.name for player in awaited_players]
-            return awaited_player_names
+            return awaited_players
 
-        self.assertEqual(parse_less_actions_than_expected(), ['Andy', 'Boa', 'Coral'])
+        self.assertEqual(parse_less_actions_than_expected(), [Andy, Boa, Coral])
 
 
         def parse_more_actions_than_expected():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
+            
             generator = pk.managers.alternate_players(table)
             awaited_players: list[pk.Player] = []
 
@@ -297,9 +303,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             player.request(pk.ACTION_CHECK)
             awaited_players.append(player)
 
-            awaited_player_names = [player.name for player in awaited_players]
-            print(f'{awaited_player_names = }')
-            return awaited_player_names
+            return awaited_players
 
         with self.assertRaises(StopIteration):
             parse_more_actions_than_expected()
@@ -313,15 +317,20 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         """
 
 
+        all_players = [
+            Andy := pk.Player('Andy'),
+            Boa := pk.Player('Boa'),
+            Coral := pk.Player('Coral'),
+            Dino := pk.Player('Dino'),
+        ]
+
+
         def end_if_single_player_remaining():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
-            table.active_players.clear()
-            table.active_players.append(players[0])
-            table.is_under_bet = True
+            table = pk.Table(all_players)
+            table.activate_player(Andy)
+            
+            table.become_under_bet()
 
             generator = pk.managers.alternate_players(table)
 
@@ -336,13 +345,11 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_first_player_is_the_last_aggressive_one():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
-            table.last_aggressive_player = players[0]
-            table.is_under_bet = True
+
+            table.set_last_aggressive_player(Andy)
+            table.become_under_bet()
 
             generator = pk.managers.alternate_players(table)
 
@@ -357,13 +364,11 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_intermediate_position_player_is_the_last_aggressive_one():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
-            table.last_aggressive_player = players[2]
-            table.is_under_bet = True
+
+            table.set_last_aggressive_player(Coral)
+            table.become_under_bet()
 
             generator = pk.managers.alternate_players(table)
 
@@ -384,13 +389,11 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_last_player_is_the_last_aggressive_one():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
-            table.last_aggressive_player = players[-1]
-            table.is_under_bet = True
+
+            table.set_last_aggressive_player(Dino)
+            table.become_under_bet()
 
             generator = pk.managers.alternate_players(table)
 
@@ -414,10 +417,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def continue_if_round_starts_not_under_bet():
 
-            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
-
+            table = pk.Table(all_players)
             table.activate_all_players()
 
             generator = pk.managers.alternate_players(table)
