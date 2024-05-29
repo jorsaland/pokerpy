@@ -48,3 +48,12 @@ class Player:
             raise ValueError(error_message)
 
         self._requested_action = action
+    
+
+    def reset(self):
+
+        """
+        Resets player's request to None.
+        """
+
+        self._requested_action = None
