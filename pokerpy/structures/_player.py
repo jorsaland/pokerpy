@@ -33,6 +33,10 @@ class Player:
         return self._requested_action
 
 
+    def __repr__(self):
+        return f'Player(name={self.name})'
+
+
     def request(self, action: str):
 
         """
