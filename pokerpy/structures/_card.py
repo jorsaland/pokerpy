@@ -9,7 +9,13 @@ from pokerpy.constants import (
     sorted_card_values,
     unicode_code_point_by_card_suit,
 )
-from pokerpy.messages import invalid_card_suit_message, invalid_card_value_message, joker_card_message
+from pokerpy.messages import (
+    invalid_card_suit_message,
+    invalid_card_value_message,
+    not_str_card_suit_message,
+    not_str_card_value_message,
+    joker_card_message,
+)
 
 
 class Card:
@@ -21,6 +27,12 @@ class Card:
 
 
     def __init__(self, value: str, suit: str):
+
+        # Check types
+        if not isinstance(value, str):
+            raise TypeError(not_str_card_value_message.format(type(value).__name__))
+        if not isinstance(suit, str):
+            raise TypeError(not_str_card_suit_message.format(type(suit).__name__))
 
         # Convert cases
         value = value.upper()
