@@ -32,8 +32,17 @@ class Hand:
         category = self.get_category(hand_tuple)
         
         # Static attributes
-        self.cards = hand_tuple
-        self.category = category
+        self._cards = hand_tuple
+        self._category = category
+
+
+    @property
+    def cards(self):
+        return self._cards
+
+    @property
+    def category(self):
+        return self._category
 
 
     def __repr__(self):

@@ -24,14 +24,39 @@ class Table:
     def __init__(self, players: list[Player]):
 
         # Input variables
-        self.players = players
+        self._players = players
 
         # State variables
-        self.active_players: list[Player] = []
-        self.is_under_bet = False
-        self.last_aggressive_player: (Player|None) = None
-        self.deck: list[Card] = []
-        self.common_cards: list[Card] = []
+        self._active_players: list[Player] = []
+        self._is_under_bet = False
+        self._last_aggressive_player: (Player|None) = None
+        self._deck: list[Card] = []
+        self._common_cards: list[Card] = []
+    
+
+    @property
+    def players(self):
+        return tuple(self._players)
+    
+    @property
+    def active_players(self):
+        return tuple(self._active_players)
+
+    @property
+    def is_under_bet(self):
+        return self._is_under_bet
+
+    @property
+    def last_aggressive_player(self):
+        return self._last_aggressive_player
+
+    @property
+    def deck(self):
+        return tuple(self._deck)
+    
+    @property
+    def common_cards(self):
+        return tuple(self._common_cards)
 
 
     def reset_cycle_states(self):
@@ -41,17 +66,54 @@ class Table:
         """
 
         # Reset players
-        self.active_players.clear()
-        self.active_players.extend(self.players)
+        self._active_players.clear()
+        self._active_players.extend(self._players)
 
         # Reset deck
-        self.deck.clear()
-        self.deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
+        self._deck.clear()
+        self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
 
         # Reset common and player cards
-        self.common_cards.clear()
+        self._common_cards.clear()
         for player in self.players:
-            player.cards.clear()
+            player.drop_cards()
+
+
+    def activate_player(self, player: Player):
+        
+        """
+        Make a single player to become available to play.
+        """
+
+        if player not in self.active_players:
+            self._active_players.append(player)
+
+
+    def become_under_bet(self):
+
+        """
+        Makes the betting round to become under bet.
+        """
+
+        self._is_under_bet = True
+    
+
+    def fold_player(self, player: Player):
+
+        """
+        Removes a player from a hand cycle.
+        """
+
+        self._active_players.remove(player)
+
+
+    def set_last_aggressive_player(self, player: Player):
+
+        """
+        Marks a player as the last one to take an aggressive action.
+        """
+
+        self._last_aggressive_player = player
 
 
     def reset_betting_round_states(self):
@@ -60,8 +122,8 @@ class Table:
         Resets all state variables that are restricted to betting rounds.
         """
 
-        self.is_under_bet = False
-        self.last_aggressive_player = None
+        self._is_under_bet = False
+        self._last_aggressive_player = None
 
 
     def deal(self, betting_round: str):

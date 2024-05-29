@@ -22,12 +22,29 @@ class Player:
     def __init__(self, name: str):
 
         # Input variables
-        self.name = name
+        self._name = name
 
         # State variables
-        self.requested_action: (str|None) = None
-        self.cards: list[Card] = []
-        self.hand: (Hand|None) = None
+        self._requested_action: (str|None) = None
+        self._cards: list[Card] = []
+        self._hand: (Hand|None) = None
+
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def requested_action(self):
+        return self._requested_action
+
+    @property
+    def cards(self):
+        return tuple(self._cards)
+
+    @property
+    def hand(self):
+        return self._hand
 
 
     def request(self, action: str):
@@ -40,4 +57,13 @@ class Player:
             error_message = undefined_action_message.format(action=action)
             raise ValueError(error_message)
 
-        self.requested_action = action
+        self._requested_action = action
+
+
+    def drop_cards(self):
+
+        """
+        Empties player cards.
+        """
+
+        self._cards.clear()

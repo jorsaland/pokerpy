@@ -37,8 +37,17 @@ class Card:
             raise ValueError(message)
 
         # Input variables
-        self.value = value
-        self.suit = suit
+        self._value = value
+        self._suit = suit
+
+
+    @property
+    def value(self):
+        return self._value
+    
+    @property
+    def suit(self):
+        return self._suit
 
 
     def __repr__(self):
