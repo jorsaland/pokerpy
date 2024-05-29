@@ -51,7 +51,7 @@ class Player:
         return f'Player(name={self.name})'
 
 
-    def request(self, action: str):
+    def request_action(self, action: str):
 
         """
         Makes the player to request taking an action.
@@ -62,6 +62,15 @@ class Player:
             raise ValueError(error_message)
 
         self._requested_action = action
+
+
+    def reset_action(self):
+
+        """
+        Resets player's request to None.
+        """
+
+        self._requested_action = None
 
 
     def deliver_card(self, card: Card):

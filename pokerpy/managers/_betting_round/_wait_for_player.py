@@ -27,6 +27,7 @@ def wait_for_player(player: Player, is_under_bet: bool):
             print(f'{player.name} {action.upper()}S')
             break
         print(f'--- invalid action: {action}')
-
-    # Return when iteration stops
+    
+    # Reset player and return requested action
+    player.reset_action()
     return action
