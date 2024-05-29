@@ -1,1 +1,1 @@
-python3 -m venv ../env
+python3.12 -m venv ../env
