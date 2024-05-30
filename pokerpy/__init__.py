@@ -8,7 +8,7 @@ __version__ = '0.3.0'
 
 
 # Content
-from .constants import (
+from pokerpy.constants import (
     ACTION_BET,
     ACTION_CALL,
     ACTION_CHECK,
@@ -30,8 +30,8 @@ from .constants import (
     sorted_card_suits,
     sorted_card_values,
 )
-from .managers import BettingRound, action_is_valid
-from .structures import Card, Hand, Player, Table
-from .managers import BettingRound, action_is_valid
-from .structures import Player, Table
-from . import messages, switches
+from pokerpy.managers import BettingRound, action_is_valid
+from pokerpy.structures import Card, Hand, Player, Table
+from pokerpy.managers import BettingRound, action_is_valid
+from pokerpy.structures import Player, Table
+from pokerpy import messages, switches
