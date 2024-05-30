@@ -8,6 +8,8 @@ from collections.abc import Generator
 
 from deprecated.v02.messages import (
     exiting_unended_betting_round_message,
+    not_str_betting_round_name_message,
+    not_table_instance_message,
     overloaded_betting_round_message,
     starting_already_ended_betting_round_message,
 )
@@ -27,17 +29,40 @@ class BettingRound:
 
     def __init__(self, name: str, table: Table):
 
+        # Check input
+        if not isinstance(name, str):
+            raise TypeError(not_str_betting_round_name_message.format(type(name).__name__))
+        if not isinstance(table, Table):
+            raise TypeError(not_table_instance_message.format(type(table).__name__))
+
         # Input variables
-        self.name = name
-        self.table = table
+        self._name = name
+        self._table = table
 
         # State variables
-        self.generator: (Generator[Player]|None) = None
-        self.has_ended = False
+        self._generator: (Generator[Player]|None) = None
+        self._has_ended = False
     
+
+    @property
+    def name(self):
+        return self._name
     
+    @property
+    def table(self):
+        return self._table
+    
+    @property
+    def generator(self):
+        return self._generator
+    
+    @property
+    def has_ended(self):
+        return self._has_ended
+    
+
     def __enter__(self):
-        self.generator = self.run()
+        self._generator = self.run()
         yield from self.generator
     
     
@@ -55,7 +80,7 @@ class BettingRound:
         try:
             next(self.generator)
         except StopIteration:
-            self.has_ended = True
+            self._has_ended = True
 
         # Check generator has ended successfully
         if not self.has_ended:
@@ -94,4 +119,4 @@ class BettingRound:
                 round_must_stop = True
         
         # Mark betting round as ended
-        self.has_ended = True
+        self._has_ended = True

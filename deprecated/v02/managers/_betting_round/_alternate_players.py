@@ -41,11 +41,11 @@ def alternate_players(table: Table):
 
         # Set consequences of aggressive actions
         if action in aggressive_actions:
-            table.is_under_bet = True
-            table.last_aggressive_player = player
+            table.become_under_bet()
+            table.set_last_aggressive_player(player)
 
         # Determine whether the player becomes inactive or not
         if action == ACTION_FOLD:
-            table.active_players.remove(player)
+            table.fold_player(player)
     
     return round_must_stop
