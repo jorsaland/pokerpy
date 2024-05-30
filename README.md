@@ -8,3 +8,7 @@ Logic is developed to make betting round last until there are no more aggressive
 ### 0.2.1
 - Received feature updates from versions *0.0.1* and *0.1.2*, including unit tests and shell scripts.
 - Some features were developed and updated, including unit tests, and they were included in version *0.3.0*.
+
+### 0.2.2
+- Received feature updates from version *0.1.3*, including type validations in structures and managers, and their respective unit tests.
+- Some features were developed and updated, including more validations in structures, and their respective unit tests. They were included in version *0.3.1*.
