@@ -34,8 +34,8 @@ def alternate_players(table: Table):
 
         # Determine whether round becomes under bet or not
         if action in aggressive_actions:
-            table.is_under_bet = True
+            table.become_under_bet()
         
         # Determine whether the player becomes inactive or not
         if action == ACTION_FOLD:
-            table.active_players.remove(player)
+            table.fold_player(player)

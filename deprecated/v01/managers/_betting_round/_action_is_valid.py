@@ -21,7 +21,7 @@ def action_is_valid(action: str, is_under_bet: bool):
 
     # Verify action exists
     if action not in possible_actions:
-        error_message = undefined_action_message.format(action=action)
+        error_message = undefined_action_message.format(action)
         raise ValueError(error_message)
 
     # Select valid actions under bet
