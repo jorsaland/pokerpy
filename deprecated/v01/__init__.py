@@ -13,6 +13,6 @@ from .constants import (
     aggressive_actions,
     possible_actions,
 )
-from .managers import BettingRound, action_is_valid
-from .structures import Player, Table
-from . import switches
+from deprecated.v01.managers import BettingRound, action_is_valid
+from deprecated.v01.structures import Player, Table
+from deprecated.v01 import switches
