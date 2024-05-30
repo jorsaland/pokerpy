@@ -131,7 +131,7 @@ def cycle(table: v02.Table):
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         print(f'Remaining players: {", ".join(p.name for p in table.active_players)}')
-        winners: list[pk.Player] = []
+        winners: list[v02.Player] = []
         for player in table.active_players:
             player_is_unbeaten = True
             for oponent in table.active_players:
