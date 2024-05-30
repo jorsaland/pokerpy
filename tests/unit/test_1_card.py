@@ -31,8 +31,8 @@ class TestCard(TestCase):
 
         # Resources
 
-        invalid_card_value_full_message = pk.messages.invalid_card_value_message.format(', '.join(pk.sorted_card_values))
-        invalid_card_suit_full_message = pk.messages.invalid_card_suit_message.format(', '.join(pk.sorted_card_suits))
+        invalid_card_value_full_message = pk.messages.card_invalid_value_message.format(', '.join(pk.sorted_card_values))
+        invalid_card_suit_full_message = pk.messages.card_invalid_suit_message.format(', '.join(pk.sorted_card_suits))
 
 
         # The complete deck
@@ -113,11 +113,11 @@ class TestCard(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             pk.Card(8, 's')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_str_card_value_message.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.card_not_str_value_message.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
             pk.Card('8', 1)
-        self.assertEqual(cm.exception.args[0], pk.messages.not_str_card_suit_message.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.card_not_str_suit_message.format(int.__name__))
 
 
         # Invalid value parsings that may be valid in future
@@ -244,23 +244,23 @@ class TestCard(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             pk.Card('joker', 's')
-        self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.card_joker_message)
 
         with self.assertRaises(ValueError) as cm:
             pk.Card('joker', 'whatever')
-        self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.card_joker_message)
 
         with self.assertRaises(ValueError) as cm:
             pk.Card('A', 'joker')
-        self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.card_joker_message)
 
         with self.assertRaises(ValueError) as cm:
             pk.Card('whatever', 'joker')
-        self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.card_joker_message)
 
         with self.assertRaises(ValueError) as cm:
             pk.Card('joker', 'joker')
-        self.assertEqual(cm.exception.args[0], pk.messages.joker_card_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.card_joker_message)
 
 
     def test_comparison(self):

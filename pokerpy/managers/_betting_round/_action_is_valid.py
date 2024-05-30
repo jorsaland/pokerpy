@@ -9,7 +9,7 @@ from pokerpy.constants import (
     valid_actions_not_under_bet,
     valid_actions_under_bet,
 )
-from pokerpy.messages import undefined_action_message
+from pokerpy.messages import betting_round_undefined_action_message
 from pokerpy import switches
 
 
@@ -21,7 +21,7 @@ def action_is_valid(action: str, is_under_bet: bool):
 
     # Verify action exists
     if action not in possible_actions:
-        error_message = undefined_action_message.format(action)
+        error_message = betting_round_undefined_action_message.format(action)
         raise ValueError(error_message)
 
     # Select valid actions under bet

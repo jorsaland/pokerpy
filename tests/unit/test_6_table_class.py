@@ -38,11 +38,11 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             pk.Table('Wood')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_list_players_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_list_players_message.format(str.__name__))
         
         with self.assertRaises(TypeError) as cm:
             pk.Table([pk.Player('Andy'), 'Boa'])
-        self.assertEqual(cm.exception.args[0], pk.messages.not_all_player_instances_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_all_player_instances_message)
 
 
     def test_activate_player_method(self):
@@ -72,14 +72,14 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.activate_player('Dino')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
 
         with self.assertRaises(ValueError) as cm:
             table.activate_player(pk.Player('Dino'))
-        self.assertEqual(cm.exception.args[0], pk.messages.player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_player_not_in_table_message.format('Dino'))
 
 
     def test_fold_player_method(self):
@@ -110,18 +110,18 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.activate_player('Dino')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
         
         with self.assertRaises(ValueError) as cm:
             table.activate_player(pk.Player('Dino'))
-        self.assertEqual(cm.exception.args[0], pk.messages.player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
             table.fold_player(Andy)
-        self.assertEqual(cm.exception.args[0], pk.messages.player_already_folded_message.format(Andy.name))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_player_already_folded_message.format(Andy.name))
 
 
     def test_set_last_aggressive_player_method(self):
@@ -152,18 +152,18 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.set_last_aggressive_player('Dino')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
         
         with self.assertRaises(ValueError) as cm:
             table.set_last_aggressive_player(pk.Player('Dino'))
-        self.assertEqual(cm.exception.args[0], pk.messages.player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
             table.set_last_aggressive_player(Coral)
-        self.assertEqual(cm.exception.args[0], pk.messages.player_already_folded_message.format(Coral.name))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_player_already_folded_message.format(Coral.name))
 
 
     def test_deal_to_players_method(self):
@@ -191,7 +191,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.deal_to_players('Andy')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_int_cards_count_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_int_cards_count_message.format(str.__name__))
 
 
     def test_deal_to_players_method(self):
@@ -219,7 +219,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.deal_common_cards('Andy')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_int_cards_count_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], pk.messages.table_not_int_cards_count_message.format(str.__name__))
 
 
 if __name__ == '__main__':

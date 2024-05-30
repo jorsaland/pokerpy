@@ -9,10 +9,10 @@ from typing import NewType
 
 from pokerpy import constants
 from pokerpy.messages import (
-    not_all_card_instances_message,
-    not_five_cards_hand_message,
-    not_iterable_object_cards_message,
-    repeated_cards_hand_message,
+    hand_not_all_card_instances_message,
+    hand_not_five_cards_message,
+    hand_not_iterable_object_cards_message,
+    hand_repeated_cards_message,
 )
 
 
@@ -34,11 +34,11 @@ class Hand:
 
         # Check input type
         if not isinstance(cards, Iterable):
-            raise TypeError(not_iterable_object_cards_message.format(type(cards).__name__))
+            raise TypeError(hand_not_iterable_object_cards_message.format(type(cards).__name__))
 
         cards_list = list(cards)
         if not all(isinstance(card, Card) for card in cards_list):
-            raise TypeError(not_all_card_instances_message)
+            raise TypeError(hand_not_all_card_instances_message)
 
         # Transform input
         hand_tuple = self.arrange_cards(cards_list)
@@ -113,9 +113,9 @@ class Hand:
 
         cards_list = list(cards)
         if len(cards_list) != 5:
-            raise ValueError(not_five_cards_hand_message)
+            raise ValueError(hand_not_five_cards_message)
         if len(cards) != len(set(cards)):
-            raise ValueError(repeated_cards_hand_message)
+            raise ValueError(hand_repeated_cards_message)
 
         # Convert to list and sort from higher to lower value
 

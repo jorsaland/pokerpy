@@ -5,11 +5,11 @@ Defines the class that represents a poker player.
 
 from pokerpy.constants import possible_actions
 from pokerpy.messages import (
-    not_card_instance_message,
-    not_hand_instance_message,
-    not_str_action_message,
-    not_str_player_name_message,
-    undefined_action_message,
+    player_not_card_instance_message,
+    player_not_hand_instance_message,
+    player_not_str_action_message,
+    player_not_str_name_message,
+    betting_round_undefined_action_message,
 )
 
 
@@ -29,7 +29,7 @@ class Player:
 
         # Check input
         if not isinstance(name, str):
-            raise TypeError(not_str_player_name_message.format(type(name).__name__))
+            raise TypeError(player_not_str_name_message.format(type(name).__name__))
 
         # Input variables
         self._name = name
@@ -68,10 +68,10 @@ class Player:
         """
 
         if not isinstance(action, str):
-            raise TypeError(not_str_action_message.format(type(action).__name__))
+            raise TypeError(player_not_str_action_message.format(type(action).__name__))
 
         if action not in possible_actions:
-            error_message = undefined_action_message.format(action)
+            error_message = betting_round_undefined_action_message.format(action)
             raise ValueError(error_message)
 
         self._requested_action = action
@@ -93,7 +93,7 @@ class Player:
         """
 
         if not isinstance(card, Card):
-            raise TypeError(not_card_instance_message.format(type(card).__name__))
+            raise TypeError(player_not_card_instance_message.format(type(card).__name__))
 
         self._cards.append(card)
 
@@ -114,6 +114,6 @@ class Player:
         """
 
         if not isinstance(hand, Hand):
-            raise TypeError(not_hand_instance_message.format(type(hand).__name__))
+            raise TypeError(player_not_hand_instance_message.format(type(hand).__name__))
 
         self._hand = hand

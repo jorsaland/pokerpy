@@ -8,12 +8,12 @@ import secrets
 
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.messages import (
-    not_int_cards_count_message,
-    not_list_players_message,
-    not_all_player_instances_message,
-    not_player_instance_message,
-    player_not_in_table_message,
-    player_already_folded_message,
+    table_not_int_cards_count_message,
+    table_not_list_players_message,
+    table_not_all_player_instances_message,
+    table_not_player_instance_message,
+    table_player_not_in_table_message,
+    table_player_already_folded_message,
 )
 
 
@@ -33,9 +33,9 @@ class Table:
 
         # Check input
         if not isinstance(players, list):
-            raise TypeError(not_list_players_message.format(type(players).__name__))
+            raise TypeError(table_not_list_players_message.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
-            raise TypeError(not_all_player_instances_message)
+            raise TypeError(table_not_all_player_instances_message)
 
         # Input variables
         self._players = players
@@ -100,10 +100,10 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
         
         if player not in self.players:
-            raise ValueError(player_not_in_table_message.format(player.name))
+            raise ValueError(table_player_not_in_table_message.format(player.name))
 
         if player not in self.active_players:
             self._active_players.append(player)
@@ -125,13 +125,13 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
         
         if player not in self.players:
-            raise ValueError(player_not_in_table_message.format(player.name))
+            raise ValueError(table_player_not_in_table_message.format(player.name))
 
         if player not in self.active_players:
-            raise ValueError(player_already_folded_message.format(player.name))
+            raise ValueError(table_player_already_folded_message.format(player.name))
 
         self._active_players.remove(player)
 
@@ -143,13 +143,13 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
 
         if player not in self.players:
-            raise ValueError(player_not_in_table_message.format(player.name))
+            raise ValueError(table_player_not_in_table_message.format(player.name))
 
         if player not in self.active_players:
-            raise ValueError(player_already_folded_message.format(player.name))
+            raise ValueError(table_player_already_folded_message.format(player.name))
 
         self._last_aggressive_player = player
 
@@ -171,7 +171,7 @@ class Table:
         """
 
         if not isinstance(cards_count, int):
-            raise TypeError(not_int_cards_count_message.format(type(cards_count).__name__))
+            raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
 
         for _ in range(cards_count):
             for player in self.active_players:
@@ -188,7 +188,7 @@ class Table:
         """
 
         if not isinstance(cards_count, int):
-            raise TypeError(not_int_cards_count_message.format(type(cards_count).__name__))
+            raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
 
         print(f'Dealer deals common cards.')
         for _ in range(cards_count):

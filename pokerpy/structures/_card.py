@@ -10,11 +10,11 @@ from pokerpy.constants import (
     unicode_code_point_by_card_suit,
 )
 from pokerpy.messages import (
-    invalid_card_suit_message,
-    invalid_card_value_message,
-    not_str_card_suit_message,
-    not_str_card_value_message,
-    joker_card_message,
+    card_invalid_suit_message,
+    card_invalid_value_message,
+    card_not_str_suit_message,
+    card_not_str_value_message,
+    card_joker_message,
 )
 
 
@@ -30,9 +30,9 @@ class Card:
 
         # Check types
         if not isinstance(value, str):
-            raise TypeError(not_str_card_value_message.format(type(value).__name__))
+            raise TypeError(card_not_str_value_message.format(type(value).__name__))
         if not isinstance(suit, str):
-            raise TypeError(not_str_card_suit_message.format(type(suit).__name__))
+            raise TypeError(card_not_str_suit_message.format(type(suit).__name__))
 
         # Convert cases
         value = value.upper()
@@ -40,12 +40,12 @@ class Card:
 
         # Validate and convert input
         if 'joker' in (value.lower(), suit.lower()):
-            raise ValueError(joker_card_message)
+            raise ValueError(card_joker_message)
         if value not in sorted_card_values:
-            message = invalid_card_value_message.format(', '.join(sorted_card_values))
+            message = card_invalid_value_message.format(', '.join(sorted_card_values))
             raise ValueError(message)
         if suit not in sorted_card_suits:
-            message = invalid_card_suit_message.format(', '.join(sorted_card_suits))
+            message = card_invalid_suit_message.format(', '.join(sorted_card_suits))
             raise ValueError(message)
 
         # Input variables

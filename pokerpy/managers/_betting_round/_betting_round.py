@@ -7,11 +7,11 @@ from collections.abc import Generator
 
 
 from pokerpy.messages import (
-    exiting_unended_betting_round_message,
-    not_str_betting_round_name_message,
-    not_table_instance_message,
-    overloaded_betting_round_message,
-    starting_already_ended_betting_round_message,
+    betting_round_exiting_unended_round_message,
+    betting_round_not_str_name_message,
+    betting_round_not_table_instance_message,
+    betting_round_overloaded_round_message,
+    betting_round_already_ended_round_message,
 )
 from pokerpy.structures import Player, Table
 
@@ -31,9 +31,9 @@ class BettingRound:
 
         # Check input
         if not isinstance(name, str):
-            raise TypeError(not_str_betting_round_name_message.format(type(name).__name__))
+            raise TypeError(betting_round_not_str_name_message.format(type(name).__name__))
         if not isinstance(table, Table):
-            raise TypeError(not_table_instance_message.format(type(table).__name__))
+            raise TypeError(betting_round_not_table_instance_message.format(type(table).__name__))
 
         # Input variables
         self._name = name
@@ -70,7 +70,7 @@ class BettingRound:
 
         # Stopping before executing all parsed actions
         if exception_type is StopIteration:
-            raise RuntimeError(overloaded_betting_round_message)
+            raise RuntimeError(betting_round_overloaded_round_message)
         
         # Raising unexpected exceptions
         if exception_type is not None:
@@ -84,7 +84,7 @@ class BettingRound:
 
         # Check generator has ended successfully
         if not self.has_ended:
-            raise RuntimeError(exiting_unended_betting_round_message)
+            raise RuntimeError(betting_round_exiting_unended_round_message)
 
 
     def run(self):
@@ -95,7 +95,7 @@ class BettingRound:
 
         # Check betting round has not ended yet
         if self.has_ended:
-            raise RuntimeError(starting_already_ended_betting_round_message) 
+            raise RuntimeError(betting_round_already_ended_round_message) 
 
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()

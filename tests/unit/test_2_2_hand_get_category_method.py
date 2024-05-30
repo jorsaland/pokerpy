@@ -44,7 +44,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             pk.Hand.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], pk.messages.not_five_cards_hand_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_five_cards_message)
 
         
         # Less cards than expected
@@ -58,7 +58,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             pk.Hand.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], pk.messages.not_five_cards_hand_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_five_cards_message)
 
 
         # No cards
@@ -68,7 +68,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             pk.Hand.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], pk.messages.not_five_cards_hand_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_five_cards_message)
 
 
         # Exactly five cards but some repeated
@@ -84,7 +84,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             pk.Hand.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], pk.messages.repeated_cards_hand_message)
+        self.assertEqual(cm.exception.args[0], pk.messages.hand_repeated_cards_message)
 
 
     def test_royal_flush(self):
