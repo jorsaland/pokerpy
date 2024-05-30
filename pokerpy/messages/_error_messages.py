@@ -14,6 +14,8 @@ not_list_players_message = "Players must be list, not '{}'."
 not_all_player_instances_message = 'All players must be instances of class Player.'
 not_player_instance_message = "Player must be an instance of class Player, not '{}'."
 not_int_cards_count_message = "Attribute 'cards_count' must be int, not '{}'."
+player_not_in_table_message = "Player '{}' is not in the table."
+player_already_folded_message = "Player '{}' already folded."
 
 # Betting round messages
 not_str_betting_round_name_message = "Betting round name must be str, not '{}'."

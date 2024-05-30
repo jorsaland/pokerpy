@@ -12,6 +12,8 @@ from pokerpy.messages import (
     not_list_players_message,
     not_all_player_instances_message,
     not_player_instance_message,
+    player_not_in_table_message,
+    player_already_folded_message,
 )
 
 
@@ -99,6 +101,9 @@ class Table:
 
         if not isinstance(player, Player):
             raise TypeError(not_player_instance_message.format(type(player).__name__))
+        
+        if player not in self.players:
+            raise ValueError(player_not_in_table_message.format(player.name))
 
         if player not in self.active_players:
             self._active_players.append(player)
@@ -121,6 +126,12 @@ class Table:
 
         if not isinstance(player, Player):
             raise TypeError(not_player_instance_message.format(type(player).__name__))
+        
+        if player not in self.players:
+            raise ValueError(player_not_in_table_message.format(player.name))
+
+        if player not in self.active_players:
+            raise ValueError(player_already_folded_message.format(player.name))
 
         self._active_players.remove(player)
 
@@ -133,6 +144,12 @@ class Table:
 
         if not isinstance(player, Player):
             raise TypeError(not_player_instance_message.format(type(player).__name__))
+
+        if player not in self.players:
+            raise ValueError(player_not_in_table_message.format(player.name))
+
+        if player not in self.active_players:
+            raise ValueError(player_already_folded_message.format(player.name))
 
         self._last_aggressive_player = player
 
