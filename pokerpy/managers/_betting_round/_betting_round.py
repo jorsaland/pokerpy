@@ -91,7 +91,6 @@ class BettingRound:
 
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
-        self.table.deal(self.name)
         
         # Define state variables
         round_must_stop = False

@@ -3,7 +3,7 @@ Defines the class that represents a poker table.
 """
 
 
-import random
+import secrets
 
 
 from pokerpy.constants import full_sorted_values_and_suits
@@ -126,13 +126,31 @@ class Table:
         self._last_aggressive_player = None
 
 
-    def deal(self, betting_round: str):
+    def deal_to_players(self, cards_count: int):
 
         """
-        Makes the dealer to deal the cards.
+        Deals cards to players in equal amounts.
         """
 
-        print(f'Dealer deals cards for {betting_round}.\n')
+        for _ in range(cards_count):
+            for player in self.active_players:
+                print(f'Dealer deals card to {player.name}.')
+                card = secrets.choice(self.deck)
+                self._deck.remove(card)
+                player.deliver_card(card)
+
+
+    def deal_common_cards(self, cards_count: int):
+
+        """
+        Deals common cards to table.
+        """
+
+        print(f'Dealer deals common cards.')
+        for _ in range(cards_count):
+            card = secrets.choice(self.deck)
+            self._deck.remove(card)
+            self._common_cards.append(card)
 
 
     def showdown(self):

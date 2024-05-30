@@ -64,6 +64,15 @@ class Player:
         self._requested_action = action
 
 
+    def deliver_card(self, card: Card):
+
+        """
+        Delivers a card to the player.
+        """
+
+        self._cards.append(card)
+
+
     def drop_cards(self):
 
         """
@@ -71,3 +80,12 @@ class Player:
         """
 
         self._cards.clear()
+    
+
+    def assign_hand(self, hand: Hand):
+
+        """
+        Assigns a hand to the player.
+        """
+
+        self._hand = hand
