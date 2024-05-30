@@ -21,6 +21,38 @@ class TestBettingRoundContextManager(TestCase):
     """
 
 
+    def test_instantiation(self):
+
+
+        """
+        Runs test cases on class instantiation.
+        """
+
+
+        table = pk.Table([
+            pk.Player('Andy'),
+            pk.Player('Boa'),
+            pk.Player('Coral'),
+            pk.Player('Dino'),
+        ])
+
+
+        # Valid inputs
+
+        pk.BettingRound('round', table)
+
+
+        # Invalid types
+
+        with self.assertRaises(TypeError) as cm:
+            pk.BettingRound(1975, table)
+        self.assertEqual(cm.exception.args[0], pk.messages.not_str_betting_round_name_message.format(int.__name__))
+
+        with self.assertRaises(TypeError) as cm:
+            pk.BettingRound('round', 1975)
+        self.assertEqual(cm.exception.args[0], pk.messages.not_table_instance_message.format(int.__name__))
+
+
     def test_exception_catching(self):
 
 
@@ -104,10 +136,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            Andy := pk.Player('Andy'),
-            Boa := pk.Player('Boa'),
-            Coral := pk.Player('Coral'),
-            Dino := pk.Player('Dino'),
+            pk.Player('Andy'),
+            pk.Player('Boa'),
+            pk.Player('Coral'),
+            pk.Player('Dino'),
         ]
 
 

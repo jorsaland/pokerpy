@@ -33,7 +33,7 @@ invalid_card_value_message = 'Card values must be one of these: {}'
 joker_card_message = 'We live in a society.'
 
 # Hand messages
-not_iterable_object_hand_cards_message = "Hand cards must be an iterable object, not '{}'."
+not_iterable_object_cards_message = "Hand cards must be an iterable object, not '{}'."
 not_all_card_instances_message = 'All cards must be instances of class Card.'
 not_five_cards_hand_message = 'Hands must have exactly five cards.'
 repeated_cards_hand_message = 'Cards in a hand cannot be repeated.'

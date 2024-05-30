@@ -31,13 +31,8 @@ class TestCard(TestCase):
 
         # Resources
 
-        invalid_card_value_full_message = pk.messages.invalid_card_value_message.format(
-            valid_values = ', '.join(pk.sorted_card_values)
-        )
-        
-        invalid_card_suit_full_message = pk.messages.invalid_card_suit_message.format(
-            valid_suits = ', '.join(pk.sorted_card_suits)
-        )
+        invalid_card_value_full_message = pk.messages.invalid_card_value_message.format(', '.join(pk.sorted_card_values))
+        invalid_card_suit_full_message = pk.messages.invalid_card_suit_message.format(', '.join(pk.sorted_card_suits))
 
 
         # The complete deck
@@ -112,6 +107,17 @@ class TestCard(TestCase):
         pk.Card('q', 'D')
         pk.Card('j', 'C')
         pk.Card('t', 'S')
+
+
+        # Invalid input types
+
+        with self.assertRaises(TypeError) as cm:
+            pk.Card(8, 's')
+        self.assertEqual(cm.exception.args[0], pk.messages.not_str_card_value_message.format(int.__name__))
+
+        with self.assertRaises(TypeError) as cm:
+            pk.Card('8', 1)
+        self.assertEqual(cm.exception.args[0], pk.messages.not_str_card_suit_message.format(int.__name__))
 
 
         # Invalid value parsings that may be valid in future
