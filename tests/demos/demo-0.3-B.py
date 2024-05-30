@@ -106,9 +106,8 @@ def cycle(table: pk.Table):
     # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        winner = table.active_players[0]
-        print(f'{winner.name} wins!')
-
+        table.no_showdown()
+        
     # Display cards and hands of remaining players
     print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')

@@ -197,6 +197,17 @@ class Table:
             self._common_cards.append(card)
 
 
+    def no_showdown(self):
+
+        """
+        Makes the dealer to announce the winner when there is only one remaining player.
+        """
+
+        winner = self.active_players[0]
+        print(f'{winner.name} wins!')
+
+
+
     def showdown(self):
 
         """
