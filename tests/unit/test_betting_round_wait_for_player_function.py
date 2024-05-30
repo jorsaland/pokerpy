@@ -36,7 +36,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -54,7 +54,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:
@@ -72,13 +72,13 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
 
             # End iteration and retrieve returned value
             try:
@@ -96,17 +96,17 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -132,7 +132,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:
@@ -150,7 +150,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
 
             # End iteration and retrieve returned value
             try:
@@ -168,17 +168,17 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request_action(pk.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request_action(pk.ACTION_FOLD)
 
             # End iteration and retrieve returned value
             try:
@@ -196,19 +196,19 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request_action(pk.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request_action(pk.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:

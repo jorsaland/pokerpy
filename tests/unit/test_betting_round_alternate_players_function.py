@@ -50,27 +50,27 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Epa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Fomi
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             # End iteration
@@ -115,11 +115,11 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Fomi
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             # End iteration
@@ -145,19 +145,19 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Epa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             # End iteration
@@ -183,15 +183,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Epa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             # End iteration
@@ -228,19 +228,19 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             return awaited_players
@@ -257,15 +257,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             # Dino is missing
@@ -284,23 +284,23 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             awaited_players: list[pk.Player] = []
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(generator) # Unexpected action
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
             awaited_players.append(player)
 
             return awaited_players
@@ -373,10 +373,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             generator = pk.managers.alternate_players(table)
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -398,13 +398,13 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             generator = pk.managers.alternate_players(table)
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -423,16 +423,16 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             generator = pk.managers.alternate_players(table)
 
             player = next(generator) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request_action(pk.ACTION_CHECK)
 
             player = next(generator) # Boa
-            player.request(pk.ACTION_BET)
+            player.request_action(pk.ACTION_BET)
 
             player = next(generator) # Coral
-            player.request(pk.ACTION_RAISE)
+            player.request_action(pk.ACTION_RAISE)
 
             player = next(generator) # Dino
-            player.request(pk.ACTION_CALL)
+            player.request_action(pk.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:

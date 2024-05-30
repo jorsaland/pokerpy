@@ -93,7 +93,7 @@ def cycle(table: pk.Table):
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
                 action = random.choice(pk.possible_actions)
-                player.request(action)
+                player.request_action(action)
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 

@@ -121,19 +121,19 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
             return awaited_players
@@ -151,15 +151,15 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 # Dino is missing
@@ -182,23 +182,23 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Unexpected action
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
             return awaited_players
@@ -235,19 +235,19 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request(pk.ACTION_CHECK)
+                player.request_action(pk.ACTION_CHECK)
                 awaited_players.append(player)
 
             return awaited_players
@@ -265,19 +265,19 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_BET)
+                player.request_action(pk.ACTION_BET)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Andy
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Andy
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
             return awaited_players
@@ -295,19 +295,19 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_BET)
+                player.request_action(pk.ACTION_BET)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Andy
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Andy
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
             return awaited_players
@@ -325,33 +325,33 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_BET)
+                player.request_action(pk.ACTION_BET)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Dino
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Dino
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 # Coral already folded
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 # Andy already folded
@@ -373,39 +373,39 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_BET)
+                player.request_action(pk.ACTION_BET)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Dino
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Dino
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Boa
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 # Every player has responded to Boa
@@ -425,37 +425,37 @@ class TestBettingRoundContextManager(TestCase):
             with pk.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_BET)
+                player.request_action(pk.ACTION_BET)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Dino
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Dino
-                player.request(pk.ACTION_RAISE)
+                player.request_action(pk.ACTION_RAISE)
                 awaited_players.append(player)
 
                 # Coral already folded
                 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request(pk.ACTION_FOLD)
+                player.request_action(pk.ACTION_FOLD)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Boa
-                player.request(pk.ACTION_CALL)
+                player.request_action(pk.ACTION_CALL)
                 awaited_players.append(player)
 
                 # Every remaining player has responded to Boa
