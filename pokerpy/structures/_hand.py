@@ -11,7 +11,7 @@ from pokerpy import constants
 from pokerpy.messages import (
     not_all_card_instances_message,
     not_five_cards_hand_message,
-    not_iterable_object_hand_cards_message,
+    not_iterable_object_cards_message,
     repeated_cards_hand_message,
 )
 
@@ -34,12 +34,14 @@ class Hand:
 
         # Check input type
         if not isinstance(cards, Iterable):
-            raise TypeError(not_iterable_object_hand_cards_message.format(type(cards).__name__))
-        if not all(isinstance(card, Card) for card in cards):
+            raise TypeError(not_iterable_object_cards_message.format(type(cards).__name__))
+
+        cards_list = list(cards)
+        if not all(isinstance(card, Card) for card in cards_list):
             raise TypeError(not_all_card_instances_message)
-        
+
         # Transform input
-        hand_tuple = self.arrange_cards(cards)
+        hand_tuple = self.arrange_cards(cards_list)
         category = self.get_category(hand_tuple)
         
         # Static attributes

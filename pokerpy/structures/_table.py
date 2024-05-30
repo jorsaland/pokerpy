@@ -44,7 +44,7 @@ class Table:
         self._active_players: list[Player] = []
         self._is_under_bet = False
         self._last_aggressive_player: (Player|None) = None
-        self._deck: list[Card] = []
+        self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
     
 
