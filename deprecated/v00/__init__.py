@@ -8,4 +8,4 @@ __version__ = '0.0.1'
 
 
 # Content
-from .structures import Player, Table
+from deprecated.v00.structures import Player, Table

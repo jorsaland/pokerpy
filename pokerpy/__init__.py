@@ -8,7 +8,7 @@ __version__ = '0.1.3'
 
 
 # Content
-from .constants import (
+from pokerpy.constants import (
     ACTION_BET,
     ACTION_CALL,
     ACTION_CHECK,
@@ -16,6 +16,6 @@ from .constants import (
     ACTION_RAISE,
     possible_actions,
 )
-from .managers import BettingRound, action_is_valid
-from .structures import Player, Table
-from . import messages, switches
+from pokerpy.managers import BettingRound, action_is_valid
+from pokerpy.structures import Player, Table
+from pokerpy import messages, switches
