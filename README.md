@@ -12,3 +12,6 @@ Logic regarding betting round actions constraints and players leaving by folding
 ### 0.1.2
 - Received feature updates from version *0.0.1*, including shell scripts for demos.
 - Some features were developed and updated, including unit tests and shell scripts for unit tests, and they were included in versions *0.2.1* and *0.3.0*.
+
+### 0.1.3
+- Some features were developed and updated, including type validations in structures and managers, and their respective unit tests. They were included in versions *0.2.2* and *0.3.1*.
