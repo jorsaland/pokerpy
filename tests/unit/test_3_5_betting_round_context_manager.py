@@ -136,10 +136,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            Andy := pk.Player('Andy'),
-            Boa := pk.Player('Boa'),
-            Coral := pk.Player('Coral'),
-            Dino := pk.Player('Dino'),
+            pk.Player('Andy'),
+            pk.Player('Boa'),
+            pk.Player('Coral'),
+            pk.Player('Dino'),
         ]
 
 
