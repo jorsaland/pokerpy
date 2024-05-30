@@ -74,11 +74,11 @@ class UpdatedBettingRound(v01.BettingRound):
                     print(f'--- invalid action: {action}')
                 # Determine consequences of aggressive actions
                 if action in v01.aggressive_actions:
-                    self.table.is_under_bet = True
+                    self.table.become_under_bet()
                     last_aggressive_player = player
                 # Determine whether the player becomes inactive or not
                 if action == v01.ACTION_FOLD:
-                    self.table.active_players.remove(player)
+                    self.table.fold_player(player)
             # If no player bets, the round must stop
             if last_aggressive_player is None:
                 round_must_stop = True
