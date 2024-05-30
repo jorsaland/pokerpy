@@ -85,7 +85,8 @@ def cycle(table: pk.Table):
         print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
         for player in table.active_players:
             hand = figure_out_hand(player.cards + table.common_cards)
-            player.assign_hand(hand)
+            if hand is not None:
+                player.assign_hand(hand)
             print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
         print('--------------------------------------------------\n')
 
