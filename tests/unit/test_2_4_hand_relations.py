@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import structures
 
 
 class TestHandRelations(TestCase):
@@ -31,20 +31,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -53,20 +53,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 'c'),
-            pk.Card('K', 'c'),
-            pk.Card('Q', 'c'),
-            pk.Card('J', 'c'),
-            pk.Card('T', 'c'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 'c'),
+            structures.Card('K', 'c'),
+            structures.Card('Q', 'c'),
+            structures.Card('J', 'c'),
+            structures.Card('T', 'c'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -83,20 +83,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('9', 's'),
-            pk.Card('8', 's'),
-            pk.Card('7', 's'),
-            pk.Card('6', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('9', 's'),
+            structures.Card('8', 's'),
+            structures.Card('7', 's'),
+            structures.Card('6', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('9', 's'),
-            pk.Card('8', 's'),
-            pk.Card('7', 's'),
-            pk.Card('6', 's'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('9', 's'),
+            structures.Card('8', 's'),
+            structures.Card('7', 's'),
+            structures.Card('6', 's'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -105,20 +105,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 'h'),
-            pk.Card('9', 'h'),
-            pk.Card('8', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('6', 'h'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 'h'),
+            structures.Card('9', 'h'),
+            structures.Card('8', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('6', 'h'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 'c'),
-            pk.Card('9', 'c'),
-            pk.Card('8', 'c'),
-            pk.Card('7', 'c'),
-            pk.Card('6', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 'c'),
+            structures.Card('9', 'c'),
+            structures.Card('8', 'c'),
+            structures.Card('7', 'c'),
+            structures.Card('6', 'c'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -127,20 +127,20 @@ class TestHandRelations(TestCase):
 
         # Higher straight
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 'h'),
-            pk.Card('9', 'h'),
-            pk.Card('8', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('6', 'h'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 'h'),
+            structures.Card('9', 'h'),
+            structures.Card('8', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('6', 'h'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('6', 'c'),
-            pk.Card('5', 'c'),
-            pk.Card('4', 'c'),
-            pk.Card('3', 'c'),
-            pk.Card('2', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('6', 'c'),
+            structures.Card('5', 'c'),
+            structures.Card('4', 'c'),
+            structures.Card('3', 'c'),
+            structures.Card('2', 'c'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -149,20 +149,20 @@ class TestHandRelations(TestCase):
 
         # Straight higher than five to ace straight
 
-        hand_1 = pk.Hand([
-            pk.Card('6', 'h'),
-            pk.Card('5', 'h'),
-            pk.Card('4', 'h'),
-            pk.Card('3', 'h'),
-            pk.Card('2', 'h'),
+        hand_1 = structures.Hand([
+            structures.Card('6', 'h'),
+            structures.Card('5', 'h'),
+            structures.Card('4', 'h'),
+            structures.Card('3', 'h'),
+            structures.Card('2', 'h'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('5', 'c'),
-            pk.Card('4', 'c'),
-            pk.Card('3', 'c'),
-            pk.Card('2', 'c'),
-            pk.Card('A', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('5', 'c'),
+            structures.Card('4', 'c'),
+            structures.Card('3', 'c'),
+            structures.Card('2', 'c'),
+            structures.Card('A', 'c'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -179,20 +179,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('7', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('7', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('7', 's'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('7', 's'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -201,20 +201,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different kicker suits
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('7', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('7', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('7', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('7', 'h'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -223,20 +223,20 @@ class TestHandRelations(TestCase):
 
         # Same four of a kind, higher kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('8', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('8', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('7', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('7', 'h'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -245,20 +245,20 @@ class TestHandRelations(TestCase):
 
         # Higher four of a kind, higher kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('5', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('5', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('9', 's'),
-            pk.Card('9', 'h'),
-            pk.Card('9', 'd'),
-            pk.Card('9', 'c'),
-            pk.Card('3', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('9', 's'),
+            structures.Card('9', 'h'),
+            structures.Card('9', 'd'),
+            structures.Card('9', 'c'),
+            structures.Card('3', 'h'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -267,20 +267,20 @@ class TestHandRelations(TestCase):
 
         # Higher four of a kind, lower kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('2', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('2', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('9', 's'),
-            pk.Card('9', 'h'),
-            pk.Card('9', 'd'),
-            pk.Card('9', 'c'),
-            pk.Card('K', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('9', 's'),
+            structures.Card('9', 'h'),
+            structures.Card('9', 'd'),
+            structures.Card('9', 'c'),
+            structures.Card('K', 'h'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -297,20 +297,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('8', 's'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('8', 's'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('8', 's'),
-            pk.Card('8', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('8', 's'),
+            structures.Card('8', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -319,20 +319,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('8', 's'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('8', 's'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('8', 'h'),
-            pk.Card('8', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('8', 'h'),
+            structures.Card('8', 'c'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -341,20 +341,20 @@ class TestHandRelations(TestCase):
 
         # Same three of a kind, higher pair
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('A', 's'),
-            pk.Card('A', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('A', 's'),
+            structures.Card('A', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('8', 'h'),
-            pk.Card('8', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('8', 'h'),
+            structures.Card('8', 'c'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -363,20 +363,20 @@ class TestHandRelations(TestCase):
 
         # Higher three of a kind, higher pair
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('9', 's'),
-            pk.Card('9', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('9', 's'),
+            structures.Card('9', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('3', 'h'),
-            pk.Card('3', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('3', 'h'),
+            structures.Card('3', 'c'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -385,20 +385,20 @@ class TestHandRelations(TestCase):
 
         # Higher three of a kind, lower pair
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('3', 's'),
-            pk.Card('3', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('3', 's'),
+            structures.Card('3', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 'h'),
-            pk.Card('T', 'd'),
-            pk.Card('T', 'c'),
-            pk.Card('9', 'h'),
-            pk.Card('9', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 'h'),
+            structures.Card('T', 'd'),
+            structures.Card('T', 'c'),
+            structures.Card('9', 'h'),
+            structures.Card('9', 'c'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -415,20 +415,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('4', 'h'),
-            pk.Card('2', 'h'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('4', 'h'),
+            structures.Card('2', 'h'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('4', 'h'),
-            pk.Card('2', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('4', 'h'),
+            structures.Card('2', 'h'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -437,20 +437,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('4', 'h'),
-            pk.Card('2', 'h'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('4', 'h'),
+            structures.Card('2', 'h'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'c'),
-            pk.Card('J', 'c'),
-            pk.Card('7', 'c'),
-            pk.Card('4', 'c'),
-            pk.Card('2', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'c'),
+            structures.Card('J', 'c'),
+            structures.Card('7', 'c'),
+            structures.Card('4', 'c'),
+            structures.Card('2', 'c'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -459,20 +459,20 @@ class TestHandRelations(TestCase):
 
         # Flush with all cards higher
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('9', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('9', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('8', 'd'),
-            pk.Card('6', 'd'),
-            pk.Card('5', 'd'),
-            pk.Card('3', 'd'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('8', 'd'),
+            structures.Card('6', 'd'),
+            structures.Card('5', 'd'),
+            structures.Card('3', 'd'),
+            structures.Card('2', 'd'),
         ])
   
         self.assertGreater(hand_1, hand_2)
@@ -481,20 +481,20 @@ class TestHandRelations(TestCase):
 
         # Flush with higher main card, lower secondary cards
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 'c'),
-            pk.Card('6', 's'),
-            pk.Card('5', 's'),
-            pk.Card('3', 's'),
-            pk.Card('2', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 'c'),
+            structures.Card('6', 's'),
+            structures.Card('5', 's'),
+            structures.Card('3', 's'),
+            structures.Card('2', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('Q', 'c'),
-            pk.Card('J', 'c'),
-            pk.Card('9', 'c'),
-            pk.Card('8', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('Q', 'c'),
+            structures.Card('J', 'c'),
+            structures.Card('9', 'c'),
+            structures.Card('8', 'c'),
         ])
   
         self.assertGreater(hand_1, hand_2)
@@ -511,20 +511,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('7', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('3', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('3', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('7', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('3', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('3', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -533,20 +533,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('7', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('3', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('3', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('7', 's'),
-            pk.Card('6', 's'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 'c'),
-            pk.Card('3', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('6', 's'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 'c'),
+            structures.Card('3', 'd'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -555,20 +555,20 @@ class TestHandRelations(TestCase):
 
         # Higher straight
 
-        hand_1 = pk.Hand([
-            pk.Card('8', 'd'),
-            pk.Card('7', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('8', 'd'),
+            structures.Card('7', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('7', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('3', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('3', 'd'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -577,20 +577,20 @@ class TestHandRelations(TestCase):
 
         # Straight higher than five to ace straight
 
-        hand_1 = pk.Hand([
-            pk.Card('6', 'd'),
-            pk.Card('5', 's'),
-            pk.Card('4', 'h'),
-            pk.Card('3', 'd'),
-            pk.Card('2', 's'),
+        hand_1 = structures.Hand([
+            structures.Card('6', 'd'),
+            structures.Card('5', 's'),
+            structures.Card('4', 'h'),
+            structures.Card('3', 'd'),
+            structures.Card('2', 's'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('5', 's'),
-            pk.Card('4', 'h'),
-            pk.Card('3', 'd'),
-            pk.Card('2', 's'),
-            pk.Card('A', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('5', 's'),
+            structures.Card('4', 'h'),
+            structures.Card('3', 'd'),
+            structures.Card('2', 's'),
+            structures.Card('A', 'd'),
         ])
         
         self.assertGreater(hand_1, hand_2)
@@ -607,20 +607,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('7', 's'),
-            pk.Card('4', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('7', 's'),
+            structures.Card('4', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('7', 's'),
-            pk.Card('4', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('7', 's'),
+            structures.Card('4', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -629,20 +629,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('7', 's'),
-            pk.Card('4', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('7', 's'),
+            structures.Card('4', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('7', 'h'),
-            pk.Card('4', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('7', 'h'),
+            structures.Card('4', 'c'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -651,20 +651,20 @@ class TestHandRelations(TestCase):
 
         # Same three of a kind, both kickers higher
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('T', 's'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('T', 's'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('5', 'h'),
-            pk.Card('2', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('5', 'h'),
+            structures.Card('2', 'c'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -673,20 +673,20 @@ class TestHandRelations(TestCase):
 
         # Same three of a kind, main kicker higher, secondary kicker lower
 
-        hand_1 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('T', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('T', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('9', 'h'),
-            pk.Card('5', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('9', 'h'),
+            structures.Card('5', 'c'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -695,20 +695,20 @@ class TestHandRelations(TestCase):
 
         # Higher three of a kind, both kickers higher
 
-        hand_1 = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('K', 'h'),
-            pk.Card('K', 'd'),
-            pk.Card('T', 's'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('K', 'h'),
+            structures.Card('K', 'd'),
+            structures.Card('T', 's'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('5', 'h'),
-            pk.Card('2', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('5', 'h'),
+            structures.Card('2', 'c'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -717,20 +717,20 @@ class TestHandRelations(TestCase):
 
         # Same three of a kind, both kickers lower
 
-        hand_1 = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('K', 'h'),
-            pk.Card('K', 'd'),
-            pk.Card('T', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('K', 'h'),
+            structures.Card('K', 'd'),
+            structures.Card('T', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 'h'),
-            pk.Card('Q', 'd'),
-            pk.Card('Q', 'c'),
-            pk.Card('9', 'h'),
-            pk.Card('5', 'c'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 'h'),
+            structures.Card('Q', 'd'),
+            structures.Card('Q', 'c'),
+            structures.Card('9', 'h'),
+            structures.Card('5', 'c'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -747,20 +747,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('6', 's'),
-            pk.Card('T', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('6', 's'),
+            structures.Card('T', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('6', 's'),
-            pk.Card('T', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('6', 's'),
+            structures.Card('T', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -769,20 +769,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('6', 's'),
-            pk.Card('T', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('6', 's'),
+            structures.Card('T', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'c'),
-            pk.Card('T', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'c'),
+            structures.Card('T', 'd'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -791,20 +791,20 @@ class TestHandRelations(TestCase):
 
         # Same pairs, higher kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('6', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('T', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('6', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('T', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('9', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('9', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -813,20 +813,20 @@ class TestHandRelations(TestCase):
 
         # Same main pair, higher secondary pair and kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('K', 'c'),
-            pk.Card('K', 'h'),
-            pk.Card('T', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('K', 'c'),
+            structures.Card('K', 'h'),
+            structures.Card('T', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('9', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('9', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -835,20 +835,20 @@ class TestHandRelations(TestCase):
 
         # Same main pair, higher secondary pair, lower kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('K', 'c'),
-            pk.Card('K', 'h'),
-            pk.Card('T', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('K', 'c'),
+            structures.Card('K', 'h'),
+            structures.Card('T', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('K', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('K', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -857,20 +857,20 @@ class TestHandRelations(TestCase):
 
         # Higher main pair, secondary pair and kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('8', 'c'),
-            pk.Card('8', 'h'),
-            pk.Card('K', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('8', 'c'),
+            structures.Card('8', 'h'),
+            structures.Card('K', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('J', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('J', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -879,20 +879,20 @@ class TestHandRelations(TestCase):
 
         # Higher main pair, lower secondary pair and kicker
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('2', 'c'),
-            pk.Card('2', 'h'),
-            pk.Card('3', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('2', 'c'),
+            structures.Card('2', 'h'),
+            structures.Card('3', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('J', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('J', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -909,20 +909,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('3', 's'),
-            pk.Card('3', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('3', 's'),
+            structures.Card('3', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('3', 's'),
-            pk.Card('3', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('3', 's'),
+            structures.Card('3', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('2', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -931,20 +931,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('3', 's'),
-            pk.Card('3', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('4', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('3', 's'),
+            structures.Card('3', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('4', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('3', 'h'),
-            pk.Card('3', 'd'),
-            pk.Card('6', 's'),
-            pk.Card('4', 'c'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('3', 'h'),
+            structures.Card('3', 'd'),
+            structures.Card('6', 's'),
+            structures.Card('4', 'c'),
+            structures.Card('2', 'd'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -953,20 +953,20 @@ class TestHandRelations(TestCase):
 
         # Same pairs, higher kickers
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('K', 'c'),
-            pk.Card('T', 'h'),
-            pk.Card('9', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('K', 'c'),
+            structures.Card('T', 'h'),
+            structures.Card('9', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'c'),
-            pk.Card('6', 'h'),
-            pk.Card('4', 'd'),
-            pk.Card('2', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'c'),
+            structures.Card('6', 'h'),
+            structures.Card('4', 'd'),
+            structures.Card('2', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -975,20 +975,20 @@ class TestHandRelations(TestCase):
 
         # Same pairs, higher main kicker, lower secondary kickers
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('K', 'c'),
-            pk.Card('3', 'h'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('K', 'c'),
+            structures.Card('3', 'h'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'c'),
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'd'),
-            pk.Card('T', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'c'),
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'd'),
+            structures.Card('T', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -997,20 +997,20 @@ class TestHandRelations(TestCase):
 
         # Higher pair, higher kickers
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('K', 'c'),
-            pk.Card('J', 'h'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('K', 'c'),
+            structures.Card('J', 'h'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('K', 'c'),
-            pk.Card('5', 'h'),
-            pk.Card('3', 'd'),
-            pk.Card('2', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('K', 'c'),
+            structures.Card('5', 'h'),
+            structures.Card('3', 'd'),
+            structures.Card('2', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -1019,20 +1019,20 @@ class TestHandRelations(TestCase):
 
         # Higher pair, lower kickers
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('A', 'h'),
-            pk.Card('4', 'c'),
-            pk.Card('3', 'h'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('A', 'h'),
+            structures.Card('4', 'c'),
+            structures.Card('3', 'h'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('K', 'c'),
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'd'),
-            pk.Card('T', 'h'),
+        hand_2 = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('K', 'c'),
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'd'),
+            structures.Card('T', 'h'),
         ])
 
         self.assertGreater(hand_1, hand_2)
@@ -1049,20 +1049,20 @@ class TestHandRelations(TestCase):
 
         # Exactly same hand
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('8', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('3', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('8', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('3', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('8', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('3', 's'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('8', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('3', 's'),
+            structures.Card('2', 'd'),
         ])
         
         self.assertEqual(hand_1, hand_2)
@@ -1071,20 +1071,20 @@ class TestHandRelations(TestCase):
 
         # Same hand, different suits
 
-        hand_1 = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('8', 'h'),
-            pk.Card('5', 'd'),
-            pk.Card('3', 's'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('8', 'h'),
+            structures.Card('5', 'd'),
+            structures.Card('3', 's'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('T', 'h'),
-            pk.Card('8', 'd'),
-            pk.Card('5', 's'),
-            pk.Card('3', 'c'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('T', 'h'),
+            structures.Card('8', 'd'),
+            structures.Card('5', 's'),
+            structures.Card('3', 'c'),
+            structures.Card('2', 'd'),
         ])
 
         self.assertEqual(hand_1, hand_2)
@@ -1093,39 +1093,39 @@ class TestHandRelations(TestCase):
 
         # All cards higher
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 'h'),
-            pk.Card('K', 'd'),
-            pk.Card('J', 's'),
-            pk.Card('T', 'c'),
-            pk.Card('8', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 'h'),
+            structures.Card('K', 'd'),
+            structures.Card('J', 's'),
+            structures.Card('T', 'c'),
+            structures.Card('8', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('7', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('5', 's'),
-            pk.Card('3', 'c'),
-            pk.Card('2', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('7', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('5', 's'),
+            structures.Card('3', 'c'),
+            structures.Card('2', 'd'),
         ])
 
 
         # Main card higher, all kickers lower
 
-        hand_1 = pk.Hand([
-            pk.Card('A', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('5', 's'),
-            pk.Card('3', 'c'),
-            pk.Card('2', 'd'),
+        hand_1 = structures.Hand([
+            structures.Card('A', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('5', 's'),
+            structures.Card('3', 'c'),
+            structures.Card('2', 'd'),
         ])
 
-        hand_2 = pk.Hand([
-            pk.Card('7', 'h'),
-            pk.Card('K', 'd'),
-            pk.Card('J', 's'),
-            pk.Card('T', 'c'),
-            pk.Card('8', 'd'),
+        hand_2 = structures.Hand([
+            structures.Card('7', 'h'),
+            structures.Card('K', 'd'),
+            structures.Card('J', 's'),
+            structures.Card('T', 'c'),
+            structures.Card('8', 'd'),
         ])
 
 
@@ -1143,84 +1143,84 @@ class TestHandRelations(TestCase):
         
         # Resources
 
-        royal_flush_hand = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        royal_flush_hand = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
 
-        straight_flush_hand = pk.Hand([
-            pk.Card('5', 's'),
-            pk.Card('4', 's'),
-            pk.Card('3', 's'),
-            pk.Card('2', 's'),
-            pk.Card('A', 's'),
+        straight_flush_hand = structures.Hand([
+            structures.Card('5', 's'),
+            structures.Card('4', 's'),
+            structures.Card('3', 's'),
+            structures.Card('2', 's'),
+            structures.Card('A', 's'),
         ])
 
-        four_of_a_kind_hand = pk.Hand([
-            pk.Card('6', 's'),
-            pk.Card('6', 'h'),
-            pk.Card('6', 'd'),
-            pk.Card('6', 'c'),
-            pk.Card('7', 's'),
+        four_of_a_kind_hand = structures.Hand([
+            structures.Card('6', 's'),
+            structures.Card('6', 'h'),
+            structures.Card('6', 'd'),
+            structures.Card('6', 'c'),
+            structures.Card('7', 's'),
         ])
 
-        full_house_hand = pk.Hand([
-            pk.Card('8', 's'),
-            pk.Card('8', 'h'),
-            pk.Card('8', 'd'),
-            pk.Card('9', 's'),
-            pk.Card('9', 'd'),
+        full_house_hand = structures.Hand([
+            structures.Card('8', 's'),
+            structures.Card('8', 'h'),
+            structures.Card('8', 'd'),
+            structures.Card('9', 's'),
+            structures.Card('9', 'd'),
         ])
 
-        flush_hand = pk.Hand([
-            pk.Card('9', 'h'),
-            pk.Card('8', 'h'),
-            pk.Card('7', 'h'),
-            pk.Card('6', 'h'),
-            pk.Card('4', 'h'),
+        flush_hand = structures.Hand([
+            structures.Card('9', 'h'),
+            structures.Card('8', 'h'),
+            structures.Card('7', 'h'),
+            structures.Card('6', 'h'),
+            structures.Card('4', 'h'),
         ])
 
-        straight_hand = pk.Hand([
-            pk.Card('T', 's'),
-            pk.Card('9', 'h'),
-            pk.Card('8', 'd'),
-            pk.Card('7', 's'),
-            pk.Card('6', 'd'),
+        straight_hand = structures.Hand([
+            structures.Card('T', 's'),
+            structures.Card('9', 'h'),
+            structures.Card('8', 'd'),
+            structures.Card('7', 's'),
+            structures.Card('6', 'd'),
         ])
 
-        three_of_a_kind_hand = pk.Hand([
-            pk.Card('J', 's'),
-            pk.Card('J', 'h'),
-            pk.Card('J', 'd'),
-            pk.Card('9', 's'),
-            pk.Card('8', 'd'),
+        three_of_a_kind_hand = structures.Hand([
+            structures.Card('J', 's'),
+            structures.Card('J', 'h'),
+            structures.Card('J', 'd'),
+            structures.Card('9', 's'),
+            structures.Card('8', 'd'),
         ])
 
-        two_pair_hand = pk.Hand([
-            pk.Card('Q', 's'),
-            pk.Card('Q', 'h'),
-            pk.Card('J', 'd'),
-            pk.Card('J', 's'),
-            pk.Card('T', 'd'),
+        two_pair_hand = structures.Hand([
+            structures.Card('Q', 's'),
+            structures.Card('Q', 'h'),
+            structures.Card('J', 'd'),
+            structures.Card('J', 's'),
+            structures.Card('T', 'd'),
         ])
 
-        pair_hand = pk.Hand([
-            pk.Card('K', 's'),
-            pk.Card('K', 'h'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        pair_hand = structures.Hand([
+            structures.Card('K', 's'),
+            structures.Card('K', 'h'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
 
-        high_card_hand = pk.Hand([
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('9', 'h'),
+        high_card_hand = structures.Hand([
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('9', 'h'),
         ])
 
 

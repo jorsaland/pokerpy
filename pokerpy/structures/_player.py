@@ -14,7 +14,7 @@ from pokerpy.messages import (
 
 
 from ._card import Card
-from ._hand import Hand
+from ._hand._hand import Hand
 
 
 class Player:

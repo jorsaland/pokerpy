@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import messages, structures
 
 
 class TestHandInstantiation(TestCase):
@@ -31,52 +31,52 @@ class TestHandInstantiation(TestCase):
 
         # Valid inputs
 
-        pk.Hand([ ## list
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        structures.Hand([ ## list
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ])
 
-        pk.Hand(( ## tuple
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        structures.Hand(( ## tuple
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         ))
 
-        pk.Hand({ ## set
-            pk.Card('A', 's'),
-            pk.Card('K', 's'),
-            pk.Card('Q', 's'),
-            pk.Card('J', 's'),
-            pk.Card('T', 's'),
+        structures.Hand({ ## set
+            structures.Card('A', 's'),
+            structures.Card('K', 's'),
+            structures.Card('Q', 's'),
+            structures.Card('J', 's'),
+            structures.Card('T', 's'),
         })
 
         def generator():
-            yield pk.Card('A', 's')
-            yield pk.Card('K', 's')
-            yield pk.Card('Q', 's')
-            yield pk.Card('J', 's')
-            yield pk.Card('T', 's')
-        pk.Hand(generator())
+            yield structures.Card('A', 's')
+            yield structures.Card('K', 's')
+            yield structures.Card('Q', 's')
+            yield structures.Card('J', 's')
+            yield structures.Card('T', 's')
+        structures.Hand(generator())
 
 
         # Invalid input types
 
         with self.assertRaises(TypeError) as cm:
-            pk.Hand(98765)
-        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_iterable_object_cards_message.format(int.__name__))
+            structures.Hand(98765)
+        self.assertEqual(cm.exception.args[0], messages.hand_not_iterable_object_cards_message.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
-            pk.Hand('98765')
-        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_all_card_instances_message.format(str.__name__))
+            structures.Hand('98765')
+        self.assertEqual(cm.exception.args[0], messages.hand_not_all_card_instances_message.format(str.__name__))
 
         with self.assertRaises(TypeError) as cm:
-            pk.Hand(['Ah', pk.Card('A', 's')])
-        self.assertEqual(cm.exception.args[0], pk.messages.hand_not_all_card_instances_message)
+            structures.Hand(['Ah', structures.Card('A', 's')])
+        self.assertEqual(cm.exception.args[0], messages.hand_not_all_card_instances_message)
 
 
 if __name__ == '__main__':
