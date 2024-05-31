@@ -1,11 +1,11 @@
 if [ $1 ]
 then version=$1
-else printf "version:"; read version
+else printf "version: "; read version
 fi
 
 if [ $2 ]
 then literal=$2
-else printf "literal:"; read literal
+else printf "literal :"; read literal
 fi
 
 clear
