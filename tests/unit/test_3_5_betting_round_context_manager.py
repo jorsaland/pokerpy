@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import constants, managers, messages, structures
 
 
 class TestBettingRoundContextManager(TestCase):
@@ -29,28 +29,28 @@ class TestBettingRoundContextManager(TestCase):
         """
 
 
-        table = pk.Table([
-            pk.Player('Andy'),
-            pk.Player('Boa'),
-            pk.Player('Coral'),
-            pk.Player('Dino'),
+        table = structures.Table([
+            structures.Player('Andy'),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
         ])
 
 
         # Valid inputs
 
-        pk.BettingRound('round', table)
+        managers.BettingRound('round', table)
 
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
-            pk.BettingRound(1975, table)
-        self.assertEqual(cm.exception.args[0], pk.messages.not_str_betting_round_name_message.format(int.__name__))
+            managers.BettingRound(1975, table)
+        self.assertEqual(cm.exception.args[0], messages.not_str_betting_round_name_message.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
-            pk.BettingRound('round', 1975)
-        self.assertEqual(cm.exception.args[0], pk.messages.not_table_instance_message.format(int.__name__))
+            managers.BettingRound('round', 1975)
+        self.assertEqual(cm.exception.args[0], messages.not_table_instance_message.format(int.__name__))
 
 
     def test_exception_catching(self):
@@ -62,10 +62,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            pk.Player('Andy'),
-            pk.Player('Boa'),
-            pk.Player('Coral'),
-            pk.Player('Dino'),
+            structures.Player('Andy'),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
         ]
 
 
@@ -74,8 +74,8 @@ class TestBettingRoundContextManager(TestCase):
         value_error_message = 'some value error'
 
         def raise_value_error():
-            table = pk.Table(all_players)
-            with pk.BettingRound(name='round', table=table):
+            table = structures.Table(all_players)
+            with managers.BettingRound(name='round', table=table):
                 raise ValueError(value_error_message)
             
         with self.assertRaises(ValueError) as cm:
@@ -89,8 +89,8 @@ class TestBettingRoundContextManager(TestCase):
         type_error_message = 'some type error'
 
         def raise_type_error():
-            table = pk.Table(all_players)
-            with pk.BettingRound(name='round', table=table):
+            table = structures.Table(all_players)
+            with managers.BettingRound(name='round', table=table):
                 raise TypeError(type_error_message)
             
         with self.assertRaises(TypeError) as cm:
@@ -104,8 +104,8 @@ class TestBettingRoundContextManager(TestCase):
         exception_error_message = 'parent exception'
 
         def raise_parent_exception():
-            table = pk.Table(all_players)
-            with pk.BettingRound(name='round', table=table):
+            table = structures.Table(all_players)
+            with managers.BettingRound(name='round', table=table):
                 raise Exception(exception_error_message)
             
         with self.assertRaises(Exception) as cm:
@@ -117,14 +117,14 @@ class TestBettingRoundContextManager(TestCase):
         # Breaking round before time: StopIteration
 
         def raise_stop_iteration():
-            table = pk.Table(all_players)
-            with pk.BettingRound(name='round', table=table):
+            table = structures.Table(all_players)
+            with managers.BettingRound(name='round', table=table):
                 raise StopIteration()
             
         with self.assertRaises(RuntimeError) as cm:
             raise_stop_iteration()
 
-        self.assertEqual(cm.exception.args[0], pk.messages.overloaded_betting_round_message)
+        self.assertEqual(cm.exception.args[0], messages.overloaded_betting_round_message)
 
 
     def test_parsing(self):
@@ -136,36 +136,36 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            pk.Player('Andy'),
-            pk.Player('Boa'),
-            pk.Player('Coral'),
-            pk.Player('Dino'),
+            structures.Player('Andy'),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
         ]
 
 
         def parse_as_many_actions_as_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            with pk.BettingRound(name='round', table=table) as betting_round:
+            with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
             return awaited_players
@@ -175,23 +175,23 @@ class TestBettingRoundContextManager(TestCase):
 
         def parse_less_actions_than_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            with pk.BettingRound(name='round', table=table) as betting_round:
+            with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 # Dino is missing
@@ -201,36 +201,36 @@ class TestBettingRoundContextManager(TestCase):
         with self.assertRaises(RuntimeError) as cm:
             parse_less_actions_than_expected()
 
-        self.assertEqual(cm.exception.args[0], pk.messages.exiting_unended_betting_round_message)
+        self.assertEqual(cm.exception.args[0], messages.exiting_unended_betting_round_message)
 
 
         def parse_more_actions_than_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            with pk.BettingRound(name='round', table=table) as betting_round:
+            with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
                 player = next(betting_round) # Unexpected action
-                player.request(pk.ACTION_CHECK)
+                player.request(constants.ACTION_CHECK)
                 awaited_players.append(player)
 
             return awaited_players
@@ -238,7 +238,7 @@ class TestBettingRoundContextManager(TestCase):
         with self.assertRaises(RuntimeError) as cm:
             parse_more_actions_than_expected()
         
-        self.assertEqual(cm.exception.args[0], pk.messages.overloaded_betting_round_message)
+        self.assertEqual(cm.exception.args[0], messages.overloaded_betting_round_message)
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import constants, managers, switches
 
 
 class TestBettingRoundActionIsValidFunction(TestCase):
@@ -28,10 +28,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         with self.assertRaises(ValueError):
-            pk.action_is_valid(action='drinks', is_under_bet=True)
+            managers.action_is_valid(action='drinks', is_under_bet=True)
         
         with self.assertRaises(ValueError):
-            pk.action_is_valid(action='drinks', is_under_bet=False)
+            managers.action_is_valid(action='drinks', is_under_bet=False)
 
 
     def test_actions_under_bet(self):
@@ -41,13 +41,13 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         # Valid actions under bet
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=True))
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=True))
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=True))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_FOLD, is_under_bet=True))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CALL, is_under_bet=True))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=True))
 
         # Invalid actions under bet
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=True))
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=True))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CHECK, is_under_bet=True))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_BET, is_under_bet=True))
 
 
     def test_actions_under_no_bet(self):
@@ -59,28 +59,28 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         # Switch is ON by default
 
         # Valid actions under no bet, folding forbidden
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=False))
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=False))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CHECK, is_under_bet=False))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_BET, is_under_bet=False))
 
         # Valid actions under no bet, folding forbidden
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=False))
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=False))
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=False))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_FOLD, is_under_bet=False))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CALL, is_under_bet=False))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=False))
 
         # Turn OFF switch
-        pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+        switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
 
         # Valid actions under no bet, folding allowed
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_CHECK, is_under_bet=False))
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_BET, is_under_bet=False))
-        self.assertTrue(pk.action_is_valid(action=pk.ACTION_FOLD, is_under_bet=False))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CHECK, is_under_bet=False))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_BET, is_under_bet=False))
+        self.assertTrue(managers.action_is_valid(action=constants.ACTION_FOLD, is_under_bet=False))
 
         # Valid actions under no bet, folding allowed
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_CALL, is_under_bet=False))
-        self.assertFalse(pk.action_is_valid(action=pk.ACTION_RAISE, is_under_bet=False))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CALL, is_under_bet=False))
+        self.assertFalse(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=False))
 
         # Turn switch back ON
-        pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+        switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
 
 
 if __name__ == '__main__':

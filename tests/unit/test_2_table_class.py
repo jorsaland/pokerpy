@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import messages, structures
 
 
 class TestTableClass(TestCase):
@@ -31,18 +31,18 @@ class TestTableClass(TestCase):
 
         # Valid input
 
-        pk.Table([pk.Player('Andy'), pk.Player('Boa')])
+        structures.Table([structures.Player('Andy'), structures.Player('Boa')])
 
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
-            pk.Table('Wood')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_list_players_message.format(str.__name__))
+            structures.Table('Wood')
+        self.assertEqual(cm.exception.args[0], messages.not_list_players_message.format(str.__name__))
         
         with self.assertRaises(TypeError) as cm:
-            pk.Table([pk.Player('Andy'), 'Boa'])
-        self.assertEqual(cm.exception.args[0], pk.messages.not_all_player_instances_message)
+            structures.Table([structures.Player('Andy'), 'Boa'])
+        self.assertEqual(cm.exception.args[0], messages.not_all_player_instances_message)
 
 
     def test_activate_player_method(self):
@@ -54,11 +54,11 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := pk.Player('Andy'),
-            Boa := pk.Player('Boa'),
-            Coral := pk.Player('Coral'),
+            Andy := structures.Player('Andy'),
+            Boa := structures.Player('Boa'),
+            Coral := structures.Player('Coral'),
         ]
-        table = pk.Table(all_players)
+        table = structures.Table(all_players)
 
 
         # Valid inputs
@@ -72,14 +72,14 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.activate_player('Dino')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
 
         with self.assertRaises(ValueError) as cm:
-            table.activate_player(pk.Player('Dino'))
-        self.assertEqual(cm.exception.args[0], pk.messages.player_not_in_table_message.format('Dino'))
+            table.activate_player(structures.Player('Dino'))
+        self.assertEqual(cm.exception.args[0], messages.player_not_in_table_message.format('Dino'))
 
 
     def test_fold_player_method(self):
@@ -91,11 +91,11 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := pk.Player('Andy'),
-            Boa := pk.Player('Boa'),
-            Coral := pk.Player('Coral'),
+            Andy := structures.Player('Andy'),
+            Boa := structures.Player('Boa'),
+            Coral := structures.Player('Coral'),
         ]
-        table = pk.Table(all_players)
+        table = structures.Table(all_players)
         table.activate_all_players()
 
 
@@ -110,18 +110,18 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.activate_player('Dino')
-        self.assertEqual(cm.exception.args[0], pk.messages.not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
         
         with self.assertRaises(ValueError) as cm:
-            table.activate_player(pk.Player('Dino'))
-        self.assertEqual(cm.exception.args[0], pk.messages.player_not_in_table_message.format('Dino'))
+            table.activate_player(structures.Player('Dino'))
+        self.assertEqual(cm.exception.args[0], messages.player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
             table.fold_player(Andy)
-        self.assertEqual(cm.exception.args[0], pk.messages.player_already_folded_message.format(Andy.name))
+        self.assertEqual(cm.exception.args[0], messages.player_already_folded_message.format(Andy.name))
 
 
 if __name__ == '__main__':
