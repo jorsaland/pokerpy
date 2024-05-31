@@ -14,7 +14,7 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
+import deprecated.v03 as v03
 
 
 # Constants
@@ -34,20 +34,20 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Playability
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v03.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v03.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v03.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
-def cycle(table: pk.Table):
+def cycle(table: v03.Table):
 
-    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if v03.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -91,9 +91,9 @@ def cycle(table: pk.Table):
         print('--------------------------------------------------\n')
 
         # Run betting round
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+        with v03.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
-                action = random.choice(pk.possible_actions)
+                action = random.choice(v03.possible_actions)
                 player.request_action(action)
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
@@ -122,15 +122,15 @@ def game():
     print('======================\n')
 
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
+    players = [v03.Player(name) for name in player_names]
+    table = v03.Table(players)
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    v03.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
     cycle(table)
 
     print()
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    v03.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
     cycle(table)
 
 

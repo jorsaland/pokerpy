@@ -26,7 +26,7 @@ import random
 
 
 import deprecated.v02 as v02
-import pokerpy as pk
+import deprecated.v03 as v03
 
 
 # Constants
@@ -46,15 +46,15 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Playability
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v03.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v03.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v03.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
 def cycle(table: v02.Table):
@@ -70,12 +70,12 @@ def cycle(table: v02.Table):
         print(  '==============================================\n')
 
     # Get deck
-    deck = [pk.Card(value, suit) for value, suit in pk.full_sorted_values_and_suits]
+    deck = [v03.Card(value, suit) for value, suit in v03.full_sorted_values_and_suits]
 
     # Determine card containers
-    cards_by_player_name: dict[str, list[pk.Card]] = {player.name: [] for player in table.players}
-    hand_by_player_name: dict[str, pk.Hand] =  {}
-    common_cards: list[pk.Card] = []
+    cards_by_player_name: dict[str, list[v03.Card]] = {player.name: [] for player in table.players}
+    hand_by_player_name: dict[str, v03.Hand] =  {}
+    common_cards: list[v03.Card] = []
 
     # Make sure every player is active
     table.activate_all_players()
