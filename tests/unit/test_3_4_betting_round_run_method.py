@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import constants, managers, structures
 
 
 class TestBettingRoundRunMethod(TestCase):
@@ -30,37 +30,37 @@ class TestBettingRoundRunMethod(TestCase):
 
 
         all_players = [
-            Andy := pk.Player('Andy'),
-            Boa := pk.Player('Boa'),
-            Coral := pk.Player('Coral'),
-            Dino := pk.Player('Dino'),
+            Andy := structures.Player('Andy'),
+            Boa := structures.Player('Boa'),
+            Coral := structures.Player('Coral'),
+            Dino := structures.Player('Dino'),
         ]
 
 
         def parse_as_many_actions_as_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             return awaited_players
@@ -70,24 +70,24 @@ class TestBettingRoundRunMethod(TestCase):
 
         def parse_less_actions_than_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             # Dino is missing
@@ -99,32 +99,32 @@ class TestBettingRoundRunMethod(TestCase):
 
         def parse_more_actions_than_expected():
 
-            table = pk.Table(all_players)
+            table = structures.Table(all_players)
             table.activate_all_players()
 
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Unexpected action
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             return awaited_players
@@ -144,29 +144,29 @@ class TestBettingRoundRunMethod(TestCase):
         def all_check():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
             
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             awaited_players.append(player)
 
             awaited_player_names = [player.name for player in awaited_players]
@@ -178,29 +178,29 @@ class TestBettingRoundRunMethod(TestCase):
         def bet_and_folds():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
 
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Andy
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Andy
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Andy
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             awaited_player_names = [player.name for player in awaited_players]
@@ -212,29 +212,29 @@ class TestBettingRoundRunMethod(TestCase):
         def bet_and_calls():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
 
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Andy
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Andy
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Andy
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             awaited_player_names = [player.name for player in awaited_players]
@@ -246,43 +246,43 @@ class TestBettingRoundRunMethod(TestCase):
         def bet_raises_and_folds():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
 
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Andy
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Boa
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Andy, responding to Dino
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Dino
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             # Coral already folded
 
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             # Andy already folded
@@ -298,49 +298,49 @@ class TestBettingRoundRunMethod(TestCase):
         def bet_raises_and_calls():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
 
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Andy
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Boa
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Andy, responding to Dino
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Dino
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Boa
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Andy, responding to Boa
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             # Every player has responded to Boa
@@ -354,47 +354,47 @@ class TestBettingRoundRunMethod(TestCase):
         def bet_raises_folds_and_calls():
 
             player_names = ['Andy', 'Boa', 'Coral', 'Dino']
-            players = [pk.Player(name) for name in player_names]
-            table = pk.Table(players)
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
 
             table.activate_all_players()
-            awaited_players: list[pk.Player] = []
+            awaited_players: list[structures.Player] = []
 
-            betting_round_cm = pk.BettingRound(name='round', table=table)
+            betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
             player = next(betting_round) # Andy
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Andy
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Coral, responding to Boa
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             player = next(betting_round) # Andy, responding to Dino
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             player = next(betting_round) # Boa, responding to Dino
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             awaited_players.append(player)
 
             # Coral already folded
             
             player = next(betting_round) # Dino, responding to Boa
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             awaited_players.append(player)
 
             player = next(betting_round) # Andy, responding to Boa
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             awaited_players.append(player)
 
             # Every remaining player has responded to Boa

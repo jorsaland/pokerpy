@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-import pokerpy as pk
+from pokerpy import constants, structures, managers
 
 
 class TestBettingRoundWaitForPlayerFunction(TestCase):
@@ -31,12 +31,12 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_valid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=True)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=True)
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -44,17 +44,17 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_single_valid_action(), pk.ACTION_CALL)        
+        self.assertEqual(parse_single_valid_action(), constants.ACTION_CALL)        
 
 
         def parse_single_invalid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=True)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=True)
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:
@@ -67,18 +67,18 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=True)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=True)
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
 
             # End iteration and retrieve returned value
             try:
@@ -91,22 +91,22 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=True)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=True)
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_BET)
+            player.request(constants.ACTION_BET)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
 
             # End iteration and retrieve returned value
             try:
@@ -114,7 +114,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), pk.ACTION_CALL)
+        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), constants.ACTION_CALL)
 
 
     def test_not_under_bet_parsing(self):
@@ -127,12 +127,12 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_single_valid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=False)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=False)
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:
@@ -140,17 +140,17 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_single_valid_action(), pk.ACTION_CHECK)        
+        self.assertEqual(parse_single_valid_action(), constants.ACTION_CHECK)        
 
 
         def parse_single_invalid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=False)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=False)
 
             # Request action
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
 
             # End iteration and retrieve returned value
             try:
@@ -163,22 +163,22 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=False)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=False)
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
 
             # End iteration and retrieve returned value
             try:
@@ -191,24 +191,24 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            player = pk.Player('Lugia')
-            generator = pk.managers.wait_for_player(player, is_under_bet=False)
+            player = structures.Player('Lugia')
+            generator = managers.wait_for_player(player, is_under_bet=False)
 
             # Request actions
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_RAISE)
+            player.request(constants.ACTION_RAISE)
             player = next(generator)
-            player.request(pk.ACTION_CALL)
+            player.request(constants.ACTION_CALL)
             player = next(generator)
-            player.request(pk.ACTION_FOLD)
+            player.request(constants.ACTION_FOLD)
             player = next(generator)
-            player.request(pk.ACTION_CHECK)
+            player.request(constants.ACTION_CHECK)
 
             # End iteration and retrieve returned value
             try:
@@ -216,7 +216,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), pk.ACTION_CHECK)
+        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), constants.ACTION_CHECK)
 
 
 if __name__ == '__main__':
