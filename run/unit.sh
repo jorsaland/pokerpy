@@ -1,3 +1,5 @@
-source ../env/bin/activate
+source ./env/bin/activate
+
 clear
+
 python -m unittest discover tests/unit
