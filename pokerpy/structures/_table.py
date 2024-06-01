@@ -12,8 +12,10 @@ from pokerpy.messages import (
     table_not_list_players_message,
     table_not_all_player_instances_message,
     table_not_player_instance_message,
+    table_not_int_stack_atom_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
+    table_stack_atom_not_more_than_zero_message,
 )
 
 
@@ -29,16 +31,23 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player]):
+    def __init__(self, players: list[Player], *, stack_atom = 1):
 
-        # Check input
+        # Check input types
         if not isinstance(players, list):
             raise TypeError(table_not_list_players_message.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(table_not_all_player_instances_message)
+        if not isinstance(stack_atom, int):
+            raise TypeError(table_not_int_stack_atom_message.format(type(stack_atom).__name__))
+        
+        # Check input values
+        if not stack_atom > 0:
+            raise ValueError(table_stack_atom_not_more_than_zero_message.format(stack_atom))
 
         # Input variables
         self._players = players
+        self._stack_atom = stack_atom
 
         # State variables
         self._active_players: list[Player] = []
@@ -51,7 +60,11 @@ class Table:
     @property
     def players(self):
         return tuple(self._players)
-    
+
+    @property
+    def stack_atom(self):
+        return self._stack_atom
+
     @property
     def active_players(self):
         return tuple(self._active_players)
