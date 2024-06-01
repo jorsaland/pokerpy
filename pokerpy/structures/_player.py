@@ -3,7 +3,7 @@ Defines the class that represents a poker player.
 """
 
 
-from pokerpy.constants import possible_actions
+from pokerpy.constants import possible_action_names
 from pokerpy.messages import (
     player_not_card_instance_message,
     player_not_hand_instance_message,
@@ -70,7 +70,7 @@ class Player:
         if not isinstance(action, str):
             raise TypeError(player_not_str_action_message.format(type(action).__name__))
 
-        if action not in possible_actions:
+        if action not in possible_action_names:
             error_message = betting_round_undefined_action_message.format(action)
             raise ValueError(error_message)
 

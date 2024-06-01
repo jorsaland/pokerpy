@@ -5,7 +5,7 @@ Defines the constants regarding to actions used when playing.
 
 # All possible actions
 
-possible_actions = [
+possible_action_names = [
     ACTION_CHECK := 'check',
     ACTION_FOLD := 'fold',
     ACTION_CALL := 'call',
@@ -21,7 +21,7 @@ aggressive_actions = [
     ACTION_RAISE
 ]
 
-passive_actions = [action for action in possible_actions if action not in aggressive_actions]
+passive_actions = [action for action in possible_action_names if action not in aggressive_actions]
 
 
 # Actions classified by whether they are valid or not under bet

@@ -5,7 +5,7 @@ Defines the function that verifies if a betting-round action is valid.
 
 from pokerpy.constants import (
     ACTION_FOLD,
-    possible_actions,
+    possible_action_names,
     valid_actions_not_under_bet,
     valid_actions_under_bet,
 )
@@ -20,7 +20,7 @@ def action_is_valid(action: str, is_under_bet: bool):
     """
 
     # Verify action exists
-    if action not in possible_actions:
+    if action not in possible_action_names:
         error_message = betting_round_undefined_action_message.format(action)
         raise ValueError(error_message)
 

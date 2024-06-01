@@ -3,6 +3,13 @@ Defines messages used in exceptions.
 """
 
 
+# Action messages
+action_not_str_name_message = "Action name must be str, not '{}'."
+action_not_int_amount_message = "Action amount must be int, not '{}'."
+action_invalid_name_message = "'{}' is not a valid action name. Please choose one of the following: {}"
+action_amount_not_zero_message = "Action '{}' requires amount being equal to zero (received {})."
+action_amount_not_more_than_zero_message = "Action '{}' requires amount being more than zero (received {})."
+
 # Player messages
 player_not_str_name_message = "Player name must be str, not '{}'."
 player_not_str_action_message = "Player action must be str, not '{}'."
