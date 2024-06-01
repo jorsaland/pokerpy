@@ -14,4 +14,5 @@ Logic regarding betting round actions constraints and players leaving by folding
 - Some features were developed and updated, including unit tests and shell scripts for unit tests, and they were included in versions *0.2.1* and *0.3.0*.
 
 ### 0.1.3
+- Received Powershell scripts from version *0.0.1*.
 - Some features were developed and updated, including class attributes as properties, type validations in structures and managers, and their respective unit tests. They were included in versions *0.2.2* and *0.3.1*.
