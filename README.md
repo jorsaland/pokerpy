@@ -10,5 +10,5 @@ Logic is developed to make betting round last until there are no more aggressive
 - Some features were developed and updated, including unit tests, and they were included in version *0.3.0*.
 
 ### 0.2.2
-- Received feature updates from version *0.1.3*, including class attributes as properties, type validations in structures and managers, and their respective unit tests.
+- Received feature updates from version *0.1.3*, including class attributes as properties, Powershell scripts, type validations in structures and managers, and their respective unit tests.
 - Some features were developed and updated, including more validations in structures, and their respective unit tests. They were included in version *0.3.1*.
