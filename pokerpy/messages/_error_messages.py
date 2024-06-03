@@ -12,7 +12,7 @@ action_amount_not_more_than_zero_message = "Action '{}' requires amount being mo
 
 # Player messages
 player_not_str_name_message = "Player name must be str, not '{}'."
-player_not_str_action_message = "Player action must be str, not '{}'."
+player_not_action_instance_message = "Player action must be an instance of class Action, not '{}'."
 player_not_card_instance_message = "Player card must be an instance of class Card, not '{}'."
 player_not_hand_instance_message = "Player hand must be an instance of class Hand, not '{}'."
 
@@ -32,7 +32,6 @@ betting_round_not_table_instance_message = "Betting round table must be an insta
 betting_round_exiting_unended_round_message = 'Betting round did not end.'
 betting_round_overloaded_round_message = 'Betting round ended before parsing all actions.'
 betting_round_already_ended_round_message = 'Betting round has already ended. It cannot start over.'
-betting_round_undefined_action_message = "'{}' is not a betting-round action."
 
 # Card messages
 card_not_str_value_message = "Card value must be str, not '{}'."

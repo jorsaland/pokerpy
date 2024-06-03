@@ -3,7 +3,7 @@ Defines the function that alternates players within the betting round.
 """
 
 
-from pokerpy.constants import ACTION_FOLD, aggressive_actions
+from pokerpy.constants import ACTION_FOLD, aggressive_action_names
 from pokerpy.structures import Table
 
 
@@ -37,12 +37,12 @@ def alternate_players(table: Table):
         action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet)
 
         # Set consequences of aggressive actions
-        if action in aggressive_actions:
+        if action.name in aggressive_action_names:
             table.become_under_bet()
             table.set_last_aggressive_player(player)
 
         # Determine whether the player becomes inactive or not
-        if action == ACTION_FOLD:
+        if action.name == ACTION_FOLD:
             table.fold_player(player)
     
     return round_must_stop

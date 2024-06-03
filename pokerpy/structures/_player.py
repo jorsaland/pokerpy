@@ -3,16 +3,15 @@ Defines the class that represents a poker player.
 """
 
 
-from pokerpy.constants import possible_action_names
 from pokerpy.messages import (
+    player_not_action_instance_message,
     player_not_card_instance_message,
     player_not_hand_instance_message,
-    player_not_str_action_message,
     player_not_str_name_message,
-    betting_round_undefined_action_message,
 )
 
 
+from ._action import Action
 from ._card import Card
 from ._hand._hand import Hand
 
@@ -35,7 +34,7 @@ class Player:
         self._name = name
 
         # State variables
-        self._requested_action: (str|None) = None
+        self._requested_action: (Action|None) = None
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
 
@@ -61,18 +60,14 @@ class Player:
         return f'Player(name={self.name})'
 
 
-    def request_action(self, action: str):
+    def request_action(self, action: Action):
 
         """
         Makes the player to request taking an action.
         """
 
-        if not isinstance(action, str):
-            raise TypeError(player_not_str_action_message.format(type(action).__name__))
-
-        if action not in possible_action_names:
-            error_message = betting_round_undefined_action_message.format(action)
-            raise ValueError(error_message)
+        if not isinstance(action, Action):
+            raise TypeError(player_not_action_instance_message.format(type(action).__name__))
 
         self._requested_action = action
 

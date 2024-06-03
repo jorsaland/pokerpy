@@ -24,10 +24,10 @@ def wait_for_player(player: Player, is_under_bet: bool):
         # Determine whether action is valid or not
         action = player.requested_action
         if action is not None and action_is_valid(action, is_under_bet):
-            print(f'{player.name} {action.upper()}S')
+            print(f'{player.name} {action.name.upper()}S')
             break
-        print(f'--- invalid action: {action}')
-    
+        print(f'--- invalid action: {action.name}s {action.amount}')
+
     # Reset player and return requested action
     player.reset_action()
     return action
