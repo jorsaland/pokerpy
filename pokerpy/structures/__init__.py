@@ -3,6 +3,8 @@ Namespace for structure-like classes.
 """
 
 
+from ._action import Action
+
 from ._card import Card
 
 from ._hand._hand import Hand
