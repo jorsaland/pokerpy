@@ -8,7 +8,7 @@ from pokerpy.structures import Action
 from pokerpy import switches
 
 
-def action_is_valid(action: Action, is_under_bet: bool):
+def action_is_valid(*, action: Action, is_under_bet: bool):
 
     """
     Verifies if a betting-round action is valid according to previous actions.
