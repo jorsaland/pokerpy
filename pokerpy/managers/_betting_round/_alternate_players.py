@@ -34,7 +34,7 @@ def alternate_players(table: Table):
             continue
 
         # Player keeps its turn until selects a valid action
-        action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet)
+        action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet, stack_atom=table.stack_atom)
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:

@@ -8,22 +8,30 @@ from pokerpy.structures import Action
 from pokerpy import switches
 
 
-def action_is_valid(*, action: Action, is_under_bet: bool):
+def action_is_valid(*, action: Action, is_under_bet: bool, stack_atom: int):
 
     """
     Verifies if a betting-round action is valid according to previous actions.
     """
 
     # Select valid actions under bet
+
     if is_under_bet:
-        valid_actions = valid_action_names_under_bet
+        valid_action_names = valid_action_names_under_bet
     
     # Select valid actions when not under bet
     else:
         if switches.ONLY_ALLOW_FOLDING_UNDER_BET:
-            valid_actions = valid_action_names_not_under_bet
+            valid_action_names = valid_action_names_not_under_bet
         else:
-            valid_actions = valid_action_names_not_under_bet + [ACTION_FOLD]
+            valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
 
-    # Check if action is valid
-    return (action.name in valid_actions)
+    # Validate name
+    if action.name not in valid_action_names:
+        return False
+    
+    # Validate amount
+    if not action.amount % stack_atom == 0:
+        return False
+
+    return True
