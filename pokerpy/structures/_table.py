@@ -12,6 +12,7 @@ from pokerpy.messages import (
     table_not_list_players_message,
     table_not_all_player_instances_message,
     table_not_player_instance_message,
+    table_not_int_current_amount_message,
     table_not_int_stack_atom_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
@@ -51,7 +52,7 @@ class Table:
 
         # State variables
         self._active_players: list[Player] = []
-        self._is_under_bet = False
+        self._current_amount = 0
         self._last_aggressive_player: (Player|None) = None
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
@@ -70,8 +71,8 @@ class Table:
         return tuple(self._active_players)
 
     @property
-    def is_under_bet(self):
-        return self._is_under_bet
+    def current_amount(self):
+        return self._current_amount
 
     @property
     def last_aggressive_player(self):
@@ -122,13 +123,16 @@ class Table:
             self._active_players.append(player)
 
 
-    def become_under_bet(self):
+    def update_current_amount(self, amount: int):
 
         """
-        Makes the betting round to become under bet.
+        Updates the current chip amount under bet that needs to be responded by players.
         """
 
-        self._is_under_bet = True
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
+
+        self._current_amount = amount
     
 
     def fold_player(self, player: Player):
@@ -173,8 +177,11 @@ class Table:
         Resets all state variables that are restricted to betting rounds.
         """
 
-        self._is_under_bet = False
+        self._current_amount = 0
         self._last_aggressive_player = None
+
+        for player in self.players:
+            player.update_current_amount(0)
 
 
     def deal_to_players(self, cards_count: int):

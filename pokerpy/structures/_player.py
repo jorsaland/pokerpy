@@ -6,6 +6,7 @@ Defines the class that represents a poker player.
 from pokerpy.messages import (
     player_not_action_instance_message,
     player_not_card_instance_message,
+    player_not_int_current_amount_message,
     player_not_hand_instance_message,
     player_not_str_name_message,
 )
@@ -37,6 +38,7 @@ class Player:
         self._requested_action: (Action|None) = None
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
+        self._current_amount = 0
 
 
     @property
@@ -54,6 +56,10 @@ class Player:
     @property
     def hand(self):
         return self._hand
+
+    @property
+    def current_amount(self):
+        return self._current_amount
 
 
     def __repr__(self):
@@ -112,3 +118,15 @@ class Player:
             raise TypeError(player_not_hand_instance_message.format(type(hand).__name__))
 
         self._hand = hand
+
+
+    def update_current_amount(self, amount: int):
+
+        """
+        Updates the current chip amount put under bet by a player during a betting round.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(player_not_int_current_amount_message.format(type(amount).__name__))
+
+        self._current_amount = amount

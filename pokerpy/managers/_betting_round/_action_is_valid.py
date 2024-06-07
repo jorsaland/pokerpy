@@ -3,20 +3,28 @@ Defines the function that verifies if a betting-round action is valid according 
 """
 
 
-from pokerpy.constants import ACTION_FOLD, valid_action_names_not_under_bet, valid_action_names_under_bet
-from pokerpy.structures import Action
+from pokerpy.constants import (
+    ACTION_FOLD,
+    ACTION_CALL,
+    ACTION_RAISE,
+    valid_action_names_not_under_bet,
+    valid_action_names_under_bet,
+)
+from pokerpy.structures import Action, Player, Table
 from pokerpy import switches
 
 
-def action_is_valid(*, action: Action, is_under_bet: bool, stack_atom: int):
+def action_is_valid(*, action: Action, table: Table, player: Player):
 
     """
     Verifies if a betting-round action is valid according to previous actions.
     """
 
-    # Select valid actions under bet
+    # Calculate amount that player has to call
+    amount_to_call = table.current_amount - player.current_amount
 
-    if is_under_bet:
+    # Select valid actions under bet
+    if amount_to_call != 0:
         valid_action_names = valid_action_names_under_bet
     
     # Select valid actions when not under bet
@@ -29,9 +37,17 @@ def action_is_valid(*, action: Action, is_under_bet: bool, stack_atom: int):
     # Validate name
     if action.name not in valid_action_names:
         return False
-    
-    # Validate amount
-    if not action.amount % stack_atom == 0:
+
+    # Validate stack atom
+    if not action.amount % table.stack_atom == 0:
         return False
+        
+    # Validate calling amount
+    if action.name == ACTION_CALL:
+        return action.amount == amount_to_call
+    
+    # Validate raising amount
+    if action.name == ACTION_RAISE:
+        return action.amount > amount_to_call
 
     return True

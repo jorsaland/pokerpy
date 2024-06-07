@@ -34,15 +34,17 @@ def alternate_players(table: Table):
             continue
 
         # Player keeps its turn until selects a valid action
-        action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet, stack_atom=table.stack_atom)
+        action = yield from wait_for_player(player=player, table=table)
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
-            table.become_under_bet()
+            table.update_current_amount(player.current_amount)
             table.set_last_aggressive_player(player)
 
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
             table.fold_player(player)
-    
+
+        print(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+
     return round_must_stop
