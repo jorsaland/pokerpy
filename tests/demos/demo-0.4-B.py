@@ -94,11 +94,24 @@ def cycle(table: pk.Table):
         # Run betting round
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
-                action_name = random.choice(pk.possible_action_names)
+                amount_to_call = table.current_amount - player.current_amount
+                if amount_to_call == 0:
+                    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                    else:
+                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                else:
+                    action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
                 if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
                     action_value = 0
-                else:
+                elif action_name == pk.ACTION_CALL:
+                    action_value = amount_to_call
+                elif action_name == pk.ACTION_RAISE:
+                    action_value = random.randint(amount_to_call, amount_to_call + 100) * STACK_ATOM
+                elif action_name == pk. ACTION_BET:
                     action_value = random.randint(1, 100) * STACK_ATOM
+                else:
+                    raise RuntimeError('we live in a society')
                 action = pk.Action(action_name, action_value)
                 player.request_action(action)
 
