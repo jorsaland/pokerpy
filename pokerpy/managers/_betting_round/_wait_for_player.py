@@ -26,7 +26,7 @@ def wait_for_player(*, player: Player, table: Table):
         if action is not None and action_is_valid(action=action, table=table, player=player):
             current_amount = player.current_amount + action.amount
             player.update_current_amount(current_amount)
-            print(f"{player.name} {action.name.upper()}S {action.amount} ({player.name}'s current amount: {player.current_amount})")
+            print(f"{player.cards[0]}{player.cards[1]} {player.name} {action.name.upper()}S {action.amount} ({player.name}'s current amount: {player.current_amount})")
             break
         print(f'--- invalid action: {action.name}s {action.amount}')
 
