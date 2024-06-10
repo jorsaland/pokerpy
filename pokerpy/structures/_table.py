@@ -114,7 +114,7 @@ class Table:
         # Reset common and player cards
         self._common_cards.clear()
         for player in self.players:
-            player.drop_cards()
+            player.reset_cycle_states()
 
 
     def activate_player(self, player: Player):

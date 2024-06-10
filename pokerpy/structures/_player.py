@@ -98,15 +98,6 @@ class Player:
             raise TypeError(player_not_card_instance_message.format(type(card).__name__))
 
         self._cards.append(card)
-
-
-    def drop_cards(self):
-
-        """
-        Empties player cards.
-        """
-
-        self._cards.clear()
     
 
     def assign_hand(self, hand: Hand):
@@ -134,3 +125,27 @@ class Player:
             raise ValueError(player_negative_increase_message.format(amount))
 
         self._current_amount += amount
+
+
+    def reset_betting_round_states(self):
+        
+        """
+        Resets all state variables that are restricted to betting rounds.
+        """
+
+        self._requested_action: (Action|None) = None
+        self._current_amount = 0
+    
+
+    def reset_cycle_states(self):
+
+        """
+        Resets all state variables that are restricted to cycles.
+        """
+
+        # Reset betting round depending states
+        self.reset_betting_round_states()
+
+        # Reset cycle depending states
+        self._cards.clear()
+        self._hand: (Hand|None) = None
