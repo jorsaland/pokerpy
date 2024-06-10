@@ -29,6 +29,7 @@ table_not_int_stack_atom_message = "Table stack atom must be int, not '{}'."
 table_not_int_central_pot_message = "Table central pot amount increase must be int, not '{}'."
 table_not_int_current_amount_message = "Table current amount increase must be int, not '{}'."
 table_negative_increase_message = "Amount increase must be at least zero (received {})."
+table_not_atom_multiple_increase_message = "Amount increase must be a multiple of stack atom: {} (received {})."
 table_stack_atom_not_more_than_zero_message = "Stack atom must be more than zero (received {})."
 
 # Betting round messages

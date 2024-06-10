@@ -9,6 +9,7 @@ import secrets
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.messages import (
     table_negative_increase_message,
+    table_not_atom_multiple_increase_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
     table_not_all_player_instances_message,
@@ -147,6 +148,9 @@ class Table:
 
         if amount < 0:
             raise ValueError(table_negative_increase_message.format(amount))
+        
+        if not amount % self.stack_atom == 0:
+            raise ValueError(table_not_atom_multiple_increase_message.format(self.stack_atom, amount))
 
         self._current_amount += amount
 
@@ -162,6 +166,9 @@ class Table:
 
         if amount < 0:
             raise ValueError(table_negative_increase_message.format(amount))
+
+        if not amount % self.stack_atom == 0:
+            raise ValueError(table_not_atom_multiple_increase_message.format(self.stack_atom, amount))
 
         self._central_pot += amount
 
