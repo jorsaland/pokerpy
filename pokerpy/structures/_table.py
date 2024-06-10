@@ -209,7 +209,7 @@ class Table:
         self._last_aggressive_player = None
 
         for player in self.players:
-            player._current_amount = 0
+            player.reset_betting_round_states()
 
 
     def deal_to_players(self, cards_count: int):
