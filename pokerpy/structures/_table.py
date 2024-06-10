@@ -272,16 +272,20 @@ class Table:
 
         if len(winners) == 1:
             print(f'{winners[0].name} wins {self.central_pot}!')
+            return
 
-        else:
-            print(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-            central_pot_atoms = self.central_pot // self.stack_atom ## remainder should always be zero
-            profit_atoms_per_player = central_pot_atoms // len(winners)
-            remainder_atoms = central_pot_atoms // self.stack_atom % len(winners)
-            profit_atoms_by_player = {player: profit_atoms_per_player for player in winners}
-            while remainder_atoms > 0:
-                for player in winners:
-                    profit_atoms_by_player[player] += 1
-                    remainder_atoms -= 1
-            for player in winners:
-                print(f'{player.name} wins {profit_atoms_by_player[player]}.')
+        print(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
+        central_pot_atoms = self.central_pot // self.stack_atom ## remainder should always be zero
+        profit_atoms_per_player = central_pot_atoms // len(winners)
+        remainder_atoms = central_pot_atoms // self.stack_atom % len(winners)
+        profit_atoms_by_player = {player: profit_atoms_per_player for player in winners}
+
+        for player in winners:
+            if remainder_atoms == 0:
+                break
+            profit_atoms_by_player[player] += 1
+            remainder_atoms -= 1
+
+        for player in winners:
+            print(f'{player.name} wins {profit_atoms_by_player[player]}.')
+        return
