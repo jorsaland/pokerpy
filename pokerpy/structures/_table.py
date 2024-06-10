@@ -8,6 +8,7 @@ import secrets
 
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.messages import (
+    table_negative_increase_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
     table_not_all_player_instances_message,
@@ -132,16 +133,19 @@ class Table:
             self._active_players.append(player)
 
 
-    def update_current_amount(self, amount: int):
+    def add_to_current_amount(self, amount: int):
 
         """
-        Updates the current chip amount under bet that needs to be responded by players.
+        Increases the current chip amount that needs to be responded by players.
         """
 
         if not isinstance(amount, int):
             raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
 
-        self._current_amount = amount
+        if amount < 0:
+            raise ValueError(table_negative_increase_message.format(amount))
+
+        self._current_amount += amount
 
 
     def add_to_central_pot(self, amount: int):
@@ -152,6 +156,9 @@ class Table:
 
         if not isinstance(amount, int):
             raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
+
+        if amount < 0:
+            raise ValueError(table_negative_increase_message.format(amount))
 
         self._central_pot += amount
 
@@ -202,7 +209,7 @@ class Table:
         self._last_aggressive_player = None
 
         for player in self.players:
-            player.update_current_amount(0)
+            player._current_amount = 0
 
 
     def deal_to_players(self, cards_count: int):

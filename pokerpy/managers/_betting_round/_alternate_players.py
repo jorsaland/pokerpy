@@ -38,7 +38,7 @@ def alternate_players(table: Table):
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
-            table.update_current_amount(player.current_amount)
+            table.add_to_current_amount(player.current_amount - table.current_amount)
             table.set_last_aggressive_player(player)
 
         # Determine whether the player becomes inactive or not
