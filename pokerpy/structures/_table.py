@@ -147,7 +147,7 @@ class Table:
     def add_to_central_pot(self, amount: int):
         
         """
-        Adds an amount to the pot in the center of the table.
+        Increases the pot in the center of the table by an amount.
         """
 
         if not isinstance(amount, int):
