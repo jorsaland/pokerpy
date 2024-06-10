@@ -100,6 +100,9 @@ class Table:
         Resets all state variables that are restricted to cycles.
         """
 
+        # Reset betting_round_states
+        self.reset_betting_round_states()
+
         # Reset players
         self._active_players.clear()
         self._active_players.extend(self._players)
