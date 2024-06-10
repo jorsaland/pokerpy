@@ -83,7 +83,7 @@ def cycle(table: pk.Table):
         
         # Display player cards and hand
         print('\n--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
+        print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
         for player in table.active_players:
             hand = figure_out_hand(player.cards + table.common_cards)
             if hand is not None:
@@ -119,20 +119,23 @@ def cycle(table: pk.Table):
 
     # Display showdown
     if len(table.active_players) > 1:
-        print(f'\n============ SHOWDOWN! ============\n')    
+        print(f'\n============ SHOWDOWN! ============\n') 
+        print('--------------------------------------------------')
+        print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
+        for player in table.active_players:
+            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
+        print('--------------------------------------------------\n')
         table.showdown()
 
     # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        table.no_showdown()
-        
-    # Display cards and hands of remaining players
-    print('\n--------------------------------------------------')
-    print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
-    for player in table.active_players:
-        print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-    print('--------------------------------------------------')
+        print('--------------------------------------------------')
+        print(f'Common cards: {"".join(str(c) for c in table.common_cards)}')
+        for player in table.active_players:
+            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
+        print('--------------------------------------------------\n')
+        table.no_showdown()        
 
 def game():
 
