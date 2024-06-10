@@ -76,6 +76,7 @@ class Table:
 
     @property
     def current_amount(self):
+        assert self._current_amount % self._stack_atom == 0 ## should never fail, except for direct manipulation of private attributes
         return self._current_amount
 
     @property
@@ -92,6 +93,7 @@ class Table:
 
     @property
     def central_pot(self):
+        assert self._central_pot % self._stack_atom == 0 ## should never fail, except for direct manipulation of private attributes
         return self._central_pot
 
 
