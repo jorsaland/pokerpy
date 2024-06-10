@@ -7,6 +7,7 @@ import secrets
 
 
 from pokerpy.constants import full_sorted_values_and_suits
+from pokerpy.logger import get_logger
 from pokerpy.messages import (
     table_negative_increase_message,
     table_not_atom_multiple_increase_message,
@@ -25,6 +26,9 @@ from pokerpy.messages import (
 
 from ._card import Card
 from ._player import Player
+
+
+logger = get_logger()
 
 
 class Table:
@@ -235,7 +239,7 @@ class Table:
 
         for _ in range(cards_count):
             for player in self.active_players:
-                print(f'Dealer deals card to {player.name}.')
+                logger.info(f'Dealer deals card to {player.name}.')
                 card = secrets.choice(self.deck)
                 self._deck.remove(card)
                 player.deliver_card(card)
@@ -250,7 +254,7 @@ class Table:
         if not isinstance(cards_count, int):
             raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
 
-        print(f'Dealer deals common cards.')
+        logger.info(f'Dealer deals common cards.')
         for _ in range(cards_count):
             card = secrets.choice(self.deck)
             self._deck.remove(card)
@@ -264,7 +268,7 @@ class Table:
         """
 
         winner = self.active_players[0]
-        print(f'{winner.name} wins {self.central_pot}!')
+        logger.info(f'{winner.name} wins {self.central_pot}!')
 
 
     def showdown(self):
@@ -273,7 +277,7 @@ class Table:
         Makes the dealer to determine who is the winner among remaining players.
         """
 
-        print(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
+        logger.info(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
 
         winners: list[Player] = []
         for player in self.active_players:
@@ -290,10 +294,10 @@ class Table:
                 winners.append(player)
 
         if len(winners) == 1:
-            print(f'{winners[0].name} wins {self.central_pot}!')
+            logger.info(f'{winners[0].name} wins {self.central_pot}!')
             return
 
-        print(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
+        logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
         central_pot_atoms = self.central_pot // self.stack_atom ## remainder should always be zero
         profit_atoms_per_player = central_pot_atoms // len(winners)
         remainder_atoms = central_pot_atoms // self.stack_atom % len(winners)
@@ -306,5 +310,5 @@ class Table:
             remainder_atoms -= 1
 
         for player in winners:
-            print(f'{player.name} wins {profit_atoms_by_player[player]}.')
+            logger.info(f'{player.name} wins {profit_atoms_by_player[player]}.')
         return

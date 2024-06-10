@@ -4,7 +4,11 @@ Defines the function that alternates players within the betting round.
 
 
 from pokerpy.constants import ACTION_FOLD, aggressive_action_names
+from pokerpy.logger import get_logger
 from pokerpy.structures import Table
+
+
+logger = get_logger()
 
 
 from ._wait_for_player import wait_for_player
@@ -45,6 +49,6 @@ def alternate_players(table: Table):
         if action.name == ACTION_FOLD:
             table.fold_player(player)
 
-        print(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+        logger.info(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
 
     return round_must_stop

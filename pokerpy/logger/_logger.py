@@ -17,7 +17,7 @@ def get_logger():
 
     logger = logging.getLogger(LOGGER_NAME)
 
-    if not logger.hasHandlers:
+    if not logger.hasHandlers():
 
         formatter = logging.Formatter(LOGGER_FORMAT)
         handler = logging.StreamHandler()
