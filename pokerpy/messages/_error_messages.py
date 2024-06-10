@@ -25,6 +25,7 @@ table_not_int_cards_count_message = "Attribute 'cards_count' must be int, not '{
 table_player_not_in_table_message = "Player '{}' is not in the table."
 table_player_already_folded_message = "Player '{}' already folded."
 table_not_int_stack_atom_message = "Table stack atom must be int, not '{}'."
+table_not_int_central_pot_message = "Table central pot amount must be int, not '{}'."
 table_not_int_current_amount_message = "Table current amount must be int, not '{}'."
 table_stack_atom_not_more_than_zero_message = "Stack atom must be more than zero (received {})."
 

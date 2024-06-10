@@ -12,6 +12,7 @@ from pokerpy.messages import (
     table_not_list_players_message,
     table_not_all_player_instances_message,
     table_not_player_instance_message,
+    table_not_int_central_pot_message,
     table_not_int_current_amount_message,
     table_not_int_stack_atom_message,
     table_player_not_in_table_message,
@@ -56,6 +57,7 @@ class Table:
         self._last_aggressive_player: (Player|None) = None
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
+        self._central_pot = 0
     
 
     @property
@@ -77,7 +79,7 @@ class Table:
     @property
     def last_aggressive_player(self):
         return self._last_aggressive_player
-
+    
     @property
     def deck(self):
         return tuple(self._deck)
@@ -85,6 +87,10 @@ class Table:
     @property
     def common_cards(self):
         return tuple(self._common_cards)
+
+    @property
+    def central_pot(self):
+        return self._central_pot
 
 
     def reset_cycle_states(self):
@@ -100,6 +106,9 @@ class Table:
         # Reset deck
         self._deck.clear()
         self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
+
+        # Reset pot
+        self._central_pot = 0
 
         # Reset common and player cards
         self._common_cards.clear()
@@ -133,7 +142,19 @@ class Table:
             raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
 
         self._current_amount = amount
-    
+
+
+    def add_to_central_pot(self, amount: int):
+        
+        """
+        Adds an amount to the pot in the center of the table.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
+
+        self._central_pot += amount
+
 
     def fold_player(self, player: Player):
 
@@ -224,8 +245,7 @@ class Table:
         """
 
         winner = self.active_players[0]
-        print(f'{winner.name} wins!')
-
+        print(f'{winner.name} wins {self.central_pot}!')
 
 
     def showdown(self):
@@ -251,7 +271,17 @@ class Table:
                 winners.append(player)
 
         if len(winners) == 1:
-            print(f'{winners[0].name} wins!')
+            print(f'{winners[0].name} wins {self.central_pot}!')
 
         else:
             print(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
+            central_pot_atoms = self.central_pot // self.stack_atom ## remainder should always be zero
+            profit_atoms_per_player = central_pot_atoms // len(winners)
+            remainder_atoms = central_pot_atoms // self.stack_atom % len(winners)
+            profit_atoms_by_player = {player: profit_atoms_per_player for player in winners}
+            while remainder_atoms > 0:
+                for player in winners:
+                    profit_atoms_by_player[player] += 1
+                    remainder_atoms -= 1
+            for player in winners:
+                print(f'{player.name} wins {profit_atoms_by_player[player]}.')
