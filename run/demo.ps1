@@ -1,3 +1,5 @@
+# Define version and demo literal
+
 param([string]$version, [string]$literal)
 
 if (-not $version)
@@ -6,22 +8,32 @@ if (-not $version)
 if (-not $literal)
     {$literal = Read-Host "literal"}
 
+# Move to project location
+
+$script_location = Split-Path $MyInvocation.MyCommand.Path -Parent
+
+Push-Location $script_location
+Push-Location ../
+
+# Run demo
+
+$demo_filepath = "tests/demos/demo-$version-$literal.py"
+
 Clear-Host
-$env:demo_filepath = "tests/demos/demo-$version-$literal.py"
+Write-Host --------------------------------------------------------------
+Write-Host "`n$demo_filepath`n"
+Write-Host --------------------------------------------------------------
+Write-Host `n`n
 
-powershell {
+./env/Scripts/Activate.ps1
+python $demo_filepath
+deactivate
 
-    Write-Output --------------------------------------------------------------
-    Write-Output "`n$env:demo_filepath`n"
-    Write-Output --------------------------------------------------------------
-    Write-Output `n`n
+# Revert location and exit
 
-    ./env/Scripts/Activate.ps1
+Pop-Location
+Pop-Location
 
-    python $env:demo_filepath
-
-    deactivate
-
-}
-
-$env:demo_filepath = ""
+Write-Host `n
+Write-Host "--- ENTER ---" -NoNewLine
+$Host.UI.ReadLine()
