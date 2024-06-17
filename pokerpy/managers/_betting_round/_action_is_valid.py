@@ -10,10 +10,9 @@ from pokerpy.constants import (
     valid_actions_under_bet,
 )
 from pokerpy.messages import betting_round_undefined_action_message
-from pokerpy import switches
 
 
-def action_is_valid(action: str, is_under_bet: bool):
+def action_is_valid(action: str, is_under_bet: bool, fold_to_nothing = False):
 
     """
     Verifies if a betting-round action is valid.
@@ -30,10 +29,10 @@ def action_is_valid(action: str, is_under_bet: bool):
     
     # Select valid actions when not under bet
     else:
-        if switches.ONLY_ALLOW_FOLDING_UNDER_BET:
-            valid_actions = valid_actions_not_under_bet
-        else:
+        if fold_to_nothing:
             valid_actions = valid_actions_not_under_bet + [ACTION_FOLD]
+        else:
+            valid_actions = valid_actions_not_under_bet
 
     # Check if action is valid
     return (action in valid_actions)

@@ -33,8 +33,12 @@ def alternate_players(table: Table):
         if player not in table.active_players:
             continue
 
-        # Player keeps its turn until selects a valid action
-        action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet)
+        # Let player keep choosing an action until it is valid
+        action = yield from wait_for_player(
+            player = player,
+            is_under_bet = table.is_under_bet,
+            fold_to_nothing = table.fold_to_nothing,
+        )
 
         # Set consequences of aggressive actions
         if action in aggressive_actions:
