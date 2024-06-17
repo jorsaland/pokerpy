@@ -95,7 +95,7 @@ def game():
     table = v01.Table(players, fold_to_nothing=False)
     cycle(table)
 
-    print()
+    input('\n\n--- ENTER ---\n')
 
     table.fold_to_nothing = True
     cycle(table)
