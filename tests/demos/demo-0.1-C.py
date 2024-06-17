@@ -2,8 +2,8 @@
 Demo 0.1-C
 
 This is a merge of demos 0.1-A and 0.1-B, displaying both situations where folding when there are
-not previous bets is allowed or forbidden by turning on/off a 'switch'. This switch can be modified
-on runtime, making it versatile for complex implementations.
+not previous bets is allowed or forbidden. The behaviour can be turned on/off in runtime by
+modifiying an attribute in the Table instance.
 
 Major changes have been introduced in PokerPy library to make possible this demo. Both Player and
 Table classes were updated in order to manage state logic. Also, a BettingRound class was
