@@ -88,7 +88,7 @@ class UpdatedBettingRound(v01.BettingRound):
 
 def cycle(table: v01.Table):
 
-    if v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if not table.fold_to_nothing:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -134,14 +134,12 @@ def game():
 
     print('\nStarting table and players...\n')
     players = [v01.Player(name) for name in player_names]
-    table = v01.Table(players)
-
-    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    table = v01.Table(players, fold_to_nothing=False)
     cycle(table)
 
     print()
 
-    v01.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    table.fold_to_nothing = True
     cycle(table)
 
 

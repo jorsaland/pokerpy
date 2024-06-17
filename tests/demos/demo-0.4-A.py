@@ -46,7 +46,7 @@ def figure_out_hand(cards: list[pk.Card]):
 
 def cycle(table: pk.Table):
 
-    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if not table.fold_to_nothing:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -94,7 +94,7 @@ def cycle(table: pk.Table):
             for player in betting_round:
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
-                    if pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+                    if not table.fold_to_nothing:
                         action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
                     else:
                         action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
@@ -143,14 +143,12 @@ def game():
 
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players)
-
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    table = pk.Table(players, fold_to_nothing=False)
     cycle(table)
 
     print()
 
-    pk.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    table.fold_to_nothing = True
     cycle(table)
 
 

@@ -59,7 +59,7 @@ def figure_out_hand(cards: list[v03.Card]):
 
 def cycle(table: v02.Table):
 
-    if v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET:
+    if not table.fold_to_nothing:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -170,14 +170,12 @@ def game():
 
     print('\nStarting table and players...\n')
     players = [v02.Player(name) for name in player_names]
-    table = v02.Table(players)
-
-    v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET = True
+    table = v02.Table(players, fold_to_nothing=False)
     cycle(table)
 
     print()
 
-    v02.switches.ONLY_ALLOW_FOLDING_UNDER_BET = False
+    table.fold_to_nothing = True
     cycle(table)
 
 

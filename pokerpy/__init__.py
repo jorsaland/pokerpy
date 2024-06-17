@@ -21,4 +21,3 @@ from .constants import (
 )
 from .managers import BettingRound
 from .structures import Action, Card, Hand, Player, Table
-from . import switches

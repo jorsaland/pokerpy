@@ -44,6 +44,20 @@ class TestTableClass(TestCase):
             structures.Table([structures.Player('Andy'), 'Boa'])
         self.assertEqual(cm.exception.args[0], messages.table_not_all_player_instances_message)
 
+        
+        # Fold to nothing
+
+        players = [structures.Player('Andy'), structures.Player('Boa')]
+
+        table = structures.Table(players, fold_to_nothing=False)
+        self.assertFalse(table.fold_to_nothing)
+
+        table = structures.Table(players, fold_to_nothing=True)
+        self.assertTrue(table.fold_to_nothing)
+        
+        table = structures.Table(players)
+        self.assertFalse(table.fold_to_nothing)
+
 
     def test_activate_player_method(self):
 

@@ -11,7 +11,6 @@ from pokerpy.constants import (
     valid_action_names_under_bet,
 )
 from pokerpy.structures import Action, Player, Table
-from pokerpy import switches
 
 
 def action_is_valid(*, action: Action, table: Table, player: Player):
@@ -29,10 +28,10 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     
     # Select valid actions when not under bet
     else:
-        if switches.ONLY_ALLOW_FOLDING_UNDER_BET:
-            valid_action_names = valid_action_names_not_under_bet
-        else:
+        if table.fold_to_nothing:
             valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
+        else:
+            valid_action_names = valid_action_names_not_under_bet
 
     # Validate name
     if action.name not in valid_action_names:

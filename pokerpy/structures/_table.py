@@ -39,7 +39,7 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player], *, stack_atom = 1):
+    def __init__(self, players: list[Player], *, fold_to_nothing = False, stack_atom = 1):
 
         # Check input types
         if not isinstance(players, list):
@@ -56,6 +56,7 @@ class Table:
         # Input variables
         self._players = players
         self._stack_atom = stack_atom
+        self.fold_to_nothing = fold_to_nothing
 
         # State variables
         self._active_players: list[Player] = []
