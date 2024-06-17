@@ -7,9 +7,8 @@ an important consequence. In Demo 0.1-A, the first player 'Andy' could never fol
 always the first one to act, so he was never under bet. Therefore, he could lose only in the
 showdown. Now, it is possible that other players win before the showdown.
 
-In Demo 0.1-C, PokerPy library will implement a 'switch' that makes it decide whether is allowed or
-not to fold when the round is not under bet. This switch may be turned on/off at different moments,
-according to implementation needs.
+In Demo 0.1-C, PokerPy library will implement an optional parameter that makes it decide whether is
+allowed or not to fold when the round is not under bet.
 """
 
 
