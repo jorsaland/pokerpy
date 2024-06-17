@@ -15,4 +15,3 @@ from .constants import (
 )
 from .managers import BettingRound, action_is_valid
 from .structures import Player, Table
-from . import switches

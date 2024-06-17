@@ -9,7 +9,7 @@ from deprecated.v01.structures import Player
 from ._action_is_valid import action_is_valid
 
 
-def wait_for_player(player: Player, is_under_bet: bool):
+def wait_for_player(player: Player, is_under_bet: bool, fold_to_nothing = False):
 
     """
     Waits for a player to choose a valid action. Once the generator ends, returns the chosen action.
@@ -24,7 +24,7 @@ def wait_for_player(player: Player, is_under_bet: bool):
 
         # Determine whether action is valid or not
         action = player.requested_action
-        if action is not None and action_is_valid(action, is_under_bet):
+        if action is not None and action_is_valid(action, is_under_bet, fold_to_nothing):
             print(f'>>> {player.name} {action}s <<<\n'.upper())
             break
         print(f'--- invalid action: {action}')
