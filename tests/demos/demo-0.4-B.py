@@ -148,7 +148,7 @@ def game():
     table = pk.Table(players, stack_atom=STACK_ATOM, fold_to_nothing=False)
     cycle(table)
 
-    print()
+    input('\n\n--- ENTER ---\n')
 
     table.fold_to_nothing = True
     cycle(table)
