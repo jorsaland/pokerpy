@@ -3,8 +3,8 @@ Defines the function that alternates players within the betting round.
 """
 
 
-from deprecated.v01.constants import ACTION_FOLD, aggressive_actions
-from deprecated.v01.structures import Table
+from pokerpy.constants import ACTION_FOLD, aggressive_actions
+from pokerpy.structures import Table
 
 
 from ._wait_for_player import wait_for_player
@@ -30,7 +30,11 @@ def alternate_players(table: Table):
             continue
 
         # Let player keep choosing an action until it is valid
-        action = yield from wait_for_player(player=player, is_under_bet=table.is_under_bet)
+        action = yield from wait_for_player(
+            player = player,
+            is_under_bet = table.is_under_bet,
+            fold_to_nothing = table.fold_to_nothing,
+        )
 
         # Determine whether round becomes under bet or not
         if action in aggressive_actions:

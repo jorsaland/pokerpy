@@ -26,7 +26,7 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player]):
+    def __init__(self, players: list[Player], *, fold_to_nothing = False):
 
         # Check input
         if not isinstance(players, list):
@@ -36,11 +36,12 @@ class Table:
 
         # Input variables
         self._players = players
+        self.fold_to_nothing = fold_to_nothing
 
         # State variables
         self._active_players: list[Player] = []
         self._is_under_bet = False
-    
+
 
     @property
     def players(self):
