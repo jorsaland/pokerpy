@@ -16,9 +16,6 @@ and also making it harder for users. BettingRound context manager runs a generat
 yields the player who has to act next. Execution is paused until that player chooses a valid
 action. Once the generator ends by raising 'StopIteration', the context manager catches it and
 exits. Probably a similar context manager will be introduced in order to run a full poker game.
-
-You may notice this demo imports PokerPy library instead of importing variables separately.
-Probably, this 'pk' abbreviation will be used in further tests and suggested in docs.
 """
 
 
