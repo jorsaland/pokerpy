@@ -8,3 +8,6 @@ Cards and hands are developed and winners are chosen according to the best hand.
 ### 0.3.1
 - Received feature updates from versions *0.1.3* and *0.2.2*, including class attributes as properties, Powershell scripts, type validations in structures and managers, and their respective unit tests.
 - Some features were developed and updated, including card dealing logic inside Table class.
+
+### 0.3.2
+- Received feature updates from versions *0.1.3* and *0.2.2*, including Bash and PowerShell scripts being able to run from any directory and the removal of 'switches' feature.
