@@ -3,8 +3,8 @@ Defines the function that alternates players within the betting round.
 """
 
 
-from pokerpy.constants import ACTION_FOLD, aggressive_actions
-from pokerpy.structures import Table
+from deprecated.v01.constants import ACTION_FOLD, aggressive_actions
+from deprecated.v01.structures import Table
 
 
 from ._wait_for_player import wait_for_player
