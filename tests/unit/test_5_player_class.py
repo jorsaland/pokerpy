@@ -58,25 +58,18 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        Andy.request_action(constants.ACTION_BET)
-        Andy.request_action(constants.ACTION_CALL)
-        Andy.request_action(constants.ACTION_CHECK)
-        Andy.request_action(constants.ACTION_FOLD)
-        Andy.request_action(constants.ACTION_RAISE)
+        Andy.request_action(structures.Action(constants.ACTION_BET, 100))
+        Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
+        Andy.request_action(structures.Action(constants.ACTION_RAISE, 100))
+        Andy.request_action(structures.Action(constants.ACTION_CHECK))
+        Andy.request_action(structures.Action(constants.ACTION_FOLD))
 
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
-            Andy.request_action(1953)
-        self.assertEqual(cm.exception.args[0], messages.player_not_str_action_message.format(int.__name__))
-
-
-        # Invalid values
-
-        with self.assertRaises(ValueError) as cm:
-            Andy.request_action('drink')
-        self.assertEqual(cm.exception.args[0], messages.betting_round_undefined_action_message.format('drink'))
+            Andy.request_action(constants.ACTION_BET)
+        self.assertEqual(cm.exception.args[0], messages.player_not_action_instance_message.format(str.__name__))
 
 
     def test_deliver_card_method(self):
@@ -129,6 +122,37 @@ class TestPlayerClass(TestCase):
         with self.assertRaises(TypeError) as cm:
             Andy.assign_hand(structures.Card('J', 's'))
         self.assertEqual(cm.exception.args[0], messages.player_not_hand_instance_message.format(structures.Card.__name__))
+
+
+    def test_add_to_current_amount(self):
+
+
+        """
+        Runs test cases on add_to_current_amount method.
+        """
+
+
+        Andy = structures.Player('Andy')
+
+
+        # Valid inputs
+
+        Andy.add_to_current_amount(0)
+        Andy.add_to_current_amount(100)
+
+
+        # Invalid types
+
+        with self.assertRaises(TypeError) as cm:
+            Andy.add_to_current_amount('100')
+        self.assertEqual(cm.exception.args[0], messages.player_not_int_current_amount_message.format(str.__name__))
+
+
+        # Negative amount
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.add_to_current_amount(-100)
+        self.assertEqual(cm.exception.args[0], messages.player_negative_increase_message.format(-100))
 
 
 if __name__ == '__main__':
