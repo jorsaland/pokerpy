@@ -67,6 +67,9 @@ class Player:
         return f'Player(name={self.name})'
 
 
+    # Methods to set/unset requested action
+
+
     def request_action(self, action: Action):
 
         """
@@ -88,6 +91,9 @@ class Player:
         self._requested_action = None
 
 
+    # Methods to assign cards and hand
+
+
     def deliver_card(self, card: Card):
 
         """
@@ -98,7 +104,7 @@ class Player:
             raise TypeError(player_not_card_instance_message.format(type(card).__name__))
 
         self._cards.append(card)
-    
+
 
     def assign_hand(self, hand: Hand):
 
@@ -110,6 +116,9 @@ class Player:
             raise TypeError(player_not_hand_instance_message.format(type(hand).__name__))
 
         self._hand = hand
+
+
+    # Methods to affect current amount bet by player
 
 
     def add_to_current_amount(self, amount: int):
@@ -125,6 +134,9 @@ class Player:
             raise ValueError(player_negative_increase_message.format(amount))
 
         self._current_amount += amount
+
+
+    # Methods to reset managers
 
 
     def reset_betting_round_states(self):
@@ -143,9 +155,9 @@ class Player:
         Resets all state variables that are restricted to cycles.
         """
 
-        # Reset betting round depending states
+        # Reset betting_round_states
         self.reset_betting_round_states()
 
-        # Reset cycle depending states
+        # Drop cards and reset hand
         self._cards.clear()
         self._hand: (Hand|None) = None

@@ -102,46 +102,7 @@ class Table:
         return self._central_pot
 
 
-    def reset_cycle_states(self):
-
-        """
-        Resets all state variables that are restricted to cycles.
-        """
-
-        # Reset betting_round_states
-        self.reset_betting_round_states()
-
-        # Reset players
-        self._active_players.clear()
-        self._active_players.extend(self._players)
-
-        # Reset deck
-        self._deck.clear()
-        self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
-
-        # Reset pot
-        self._central_pot = 0
-
-        # Reset common and player cards
-        self._common_cards.clear()
-        for player in self.players:
-            player.reset_cycle_states()
-
-
-    def activate_player(self, player: Player):
-        
-        """
-        Make a single player to become available to play.
-        """
-
-        if not isinstance(player, Player):
-            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
-        
-        if player not in self.players:
-            raise ValueError(table_player_not_in_table_message.format(player.name))
-
-        if player not in self.active_players:
-            self._active_players.append(player)
+    # Methods to affect current amount to be responded and central pot
 
 
     def add_to_current_amount(self, amount: int):
@@ -180,6 +141,25 @@ class Table:
         self._central_pot += amount
 
 
+    # Methods to affect players behaviour
+
+
+    def activate_player(self, player: Player):
+        
+        """
+        Make a single player to become available to play.
+        """
+
+        if not isinstance(player, Player):
+            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
+        
+        if player not in self.players:
+            raise ValueError(table_player_not_in_table_message.format(player.name))
+
+        if player not in self.active_players:
+            self._active_players.append(player)
+
+
     def fold_player(self, player: Player):
 
         """
@@ -216,17 +196,7 @@ class Table:
         self._last_aggressive_player = player
 
 
-    def reset_betting_round_states(self):
-        
-        """
-        Resets all state variables that are restricted to betting rounds.
-        """
-
-        self._current_amount = 0
-        self._last_aggressive_player = None
-
-        for player in self.players:
-            player.reset_betting_round_states()
+    # Methods to deal cards
 
 
     def deal_to_players(self, cards_count: int):
@@ -260,6 +230,9 @@ class Table:
             card = secrets.choice(self.deck)
             self._deck.remove(card)
             self._common_cards.append(card)
+
+
+    # Methods to determine winner(s)
 
 
     def no_showdown(self):
@@ -313,3 +286,45 @@ class Table:
         for player in winners:
             logger.info(f'{player.name} wins {profit_atoms_by_player[player]}.')
         return
+
+
+    # Methods to reset managers
+
+
+    def reset_betting_round_states(self):
+        
+        """
+        Resets all state variables that are restricted to betting rounds.
+        """
+
+        self._current_amount = 0
+        self._last_aggressive_player = None
+
+        for player in self.players:
+            player.reset_betting_round_states()
+
+
+    def reset_cycle_states(self):
+
+        """
+        Resets all state variables that are restricted to cycles.
+        """
+
+        # Reset betting_round_states
+        self.reset_betting_round_states()
+
+        # Reset players
+        self._active_players.clear()
+        self._active_players.extend(self._players)
+
+        # Reset deck
+        self._deck.clear()
+        self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
+
+        # Reset pot
+        self._central_pot = 0
+
+        # Reset common and player cards
+        self._common_cards.clear()
+        for player in self.players:
+            player.reset_cycle_states()
