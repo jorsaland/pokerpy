@@ -6,3 +6,8 @@ local/
 
 # Env
 env/
+
+# Setup
+*.egg-info
+build/
+dist/
