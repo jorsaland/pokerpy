@@ -1,11 +1,10 @@
 """
 Demo 0.3-A
 
-Card and Hand classes have been added to PokerPy library as independent feature, so that Player,
-Table and BettingRound classes are not touched (they will be modified for Demo 0.3-B). When players
-reach thhe showdown, the winner is no longer chosen randomly, but according to the best hand.
-Because of this, current Table showdown method is not used in this demo (it chooses the winner
-randomly).
+Card and Hand classes have been added to PokerPy library as independent features. Player, Table and
+BettingRound classes are not touched (they will be modified for Demo 0.3-B). When players reach the
+showdown, the winner is no longer chosen randomly, but according to the best hand. Because of this,
+current Table showdown method is not used in this demo (it chooses the winner randomly).
 
 I would like to say that in the very beginnings of this project, a few years ago, I tried to
 develop a poker game and thought cards should be developed first because they seemed easier.
