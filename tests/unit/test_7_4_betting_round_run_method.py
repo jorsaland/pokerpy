@@ -395,5 +395,56 @@ class TestBettingRoundRunMethod(TestCase):
         self.assertEqual(bet_raises_folds_and_calls(), [Andy, Boa, Coral, Dino, Andy, Boa, Dino, Andy])
 
 
+        def all_actions():
+
+            table = structures.Table(all_players)
+            table.reset_cycle_states()
+
+            awaited_players: list[structures.Player] = []
+
+            betting_round_cm = managers.BettingRound(name='round', table=table)
+            betting_round = betting_round_cm.run()
+
+            player = next(betting_round) # Andy
+            player.request_action(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Boa
+            player.request_action(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Coral
+            player.request_action(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Dino
+            player.request_action(constants.ACTION_BET)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Andy, responding to Dino
+            player.request_action(constants.ACTION_FOLD)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Boa, responding to Dino
+            player.request_action(constants.ACTION_RAISE)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Coral, responding to Boa
+            player.request_action(constants.ACTION_CALL)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Dino, responding to Boa
+            player.request_action(constants.ACTION_CALL)
+            awaited_players.append(player)
+
+            # Andy already folded
+
+            # Every remaining player has responded to Boa
+
+            return awaited_players
+
+        self.assertEqual(all_actions(), [Andy, Boa, Coral, Dino, Andy, Boa, Coral, Dino])
+
+
 if __name__ == '__main__':
     main()
