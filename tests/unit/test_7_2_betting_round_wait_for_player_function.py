@@ -29,14 +29,25 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         """
 
 
+        valid_action = structures.Action(constants.ACTION_CALL, 100)
         def parse_single_valid_action():
+        
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=True)
+            # Make the table to have an amount to be answered
+            table.add_to_current_amount(100)
 
             # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(valid_action)
 
             # End iteration and retrieve returned value
             try:
@@ -44,17 +55,27 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_single_valid_action(), constants.ACTION_CALL)        
+        self.assertEqual(parse_single_valid_action(), valid_action)
 
 
         def parse_single_invalid_action():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=True)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
+
+            # Make the table to have an amount to be answered
+            table.add_to_current_amount(100)
 
             # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
 
             # End iteration and retrieve returned value
             try:
@@ -67,18 +88,28 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=True)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
 
-            # Request actions
+            # Make the table to have an amount to be answered
+            table.add_to_current_amount(100)
+
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
-            player.request_action(constants.ACTION_BET)
+            player.request_action(structures.Action(constants.ACTION_BET, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
-            player.request_action(constants.ACTION_BET)
+            player.request_action(structures.Action(constants.ACTION_BET, 200))
 
             # End iteration and retrieve returned value
             try:
@@ -89,24 +120,35 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         self.assertIsNone(parse_multiple_invalid_actions())       
 
 
+        valid_action = structures.Action(constants.ACTION_CALL, 100)
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=True)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
 
-            # Request actions
+            # Make the table to have an amount to be answered
+            table.add_to_current_amount(100)
+
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
-            player.request_action(constants.ACTION_BET)
+            player.request_action(structures.Action(constants.ACTION_BET, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
-            player.request_action(constants.ACTION_BET)
+            player.request_action(structures.Action(constants.ACTION_BET, 200))
             player = next(generator)
-            player.request_action(constants.ACTION_BET)
+            player.request_action(structures.Action(constants.ACTION_BET, 150))
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(valid_action)
 
             # End iteration and retrieve returned value
             try:
@@ -114,7 +156,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), constants.ACTION_CALL)
+        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), valid_action)
 
 
     def test_not_under_bet_parsing(self):
@@ -124,15 +166,22 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         Runs test cases to check actions are correctly parsed into the generator object when round is not under bet.
         """
 
-
+        valid_action = structures.Action(constants.ACTION_CHECK)
         def parse_single_valid_action():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=False)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
 
             # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(valid_action)
 
             # End iteration and retrieve returned value
             try:
@@ -140,17 +189,24 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_single_valid_action(), constants.ACTION_CHECK)        
+        self.assertEqual(parse_single_valid_action(), valid_action)        
 
 
         def parse_single_invalid_action():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=False)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
 
             # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_RAISE)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
 
             # End iteration and retrieve returned value
             try:
@@ -163,22 +219,29 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         def parse_multiple_invalid_actions():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=False)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players, fold_to_nothing=False)
 
-            # Request actions
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_RAISE)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_FOLD)
+            player.request_action(structures.Action(constants.ACTION_FOLD))
             player = next(generator)
-            player.request_action(constants.ACTION_RAISE)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_FOLD)
+            player.request_action(structures.Action(constants.ACTION_FOLD))
 
             # End iteration and retrieve returned value
             try:
@@ -189,26 +252,34 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         self.assertIsNone(parse_multiple_invalid_actions())
 
 
+        valid_action = structures.Action(constants.ACTION_CHECK)
         def parse_multiple_invalid_actions_and_final_valid_action():
 
-            player = structures.Player('Lugia')
-            generator = managers.wait_for_player(player, is_under_bet=False)
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players, fold_to_nothing=False)
 
-            # Request actions
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table)
             player = next(generator)
-            player.request_action(constants.ACTION_RAISE)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_FOLD)
+            player.request_action(structures.Action(constants.ACTION_FOLD))
             player = next(generator)
-            player.request_action(constants.ACTION_RAISE)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_CALL)
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
             player = next(generator)
-            player.request_action(constants.ACTION_FOLD)
+            player.request_action(structures.Action(constants.ACTION_FOLD))
             player = next(generator)
-            player.request_action(constants.ACTION_CHECK)
+            player.request_action(valid_action)
 
             # End iteration and retrieve returned value
             try:
@@ -216,7 +287,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), constants.ACTION_CHECK)
+        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), valid_action)
 
 
 if __name__ == '__main__':

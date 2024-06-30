@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers
+from pokerpy import constants, managers, structures
 
 
 class TestBettingRoundActionIsValidFunction(TestCase):
@@ -21,58 +21,155 @@ class TestBettingRoundActionIsValidFunction(TestCase):
     """
 
 
-    def test_unexpected_action(self):
+    def test_actions_if_nobody_has_bet_and_folding_is_allowed(self):
 
         """
-        Runs test cases where non-defined actions are parsed.
+        Runs test cases where nobody has bet and folding is allowed.
         """
 
-        with self.assertRaises(ValueError):
-            managers.action_is_valid(action='drinks', is_under_bet=True)
-        
-        with self.assertRaises(ValueError):
-            managers.action_is_valid(action='drinks', is_under_bet=False)
+        # Define actions
+
+        fold = structures.Action(constants.ACTION_FOLD)
+        check = structures.Action(constants.ACTION_CHECK)
+        call = structures.Action(constants.ACTION_CALL, 100)
+        bet = structures.Action(constants.ACTION_BET, 100)
+        raise_ = structures.Action(constants.ACTION_RAISE, 100)
+
+        # Define table and current player
+
+        all_players = [
+            (Andy := structures.Player('Andy')),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
+        ]
+        table = structures.Table(all_players, fold_to_nothing=True)
+
+        # Valid actions
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=fold))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=check))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=bet))
+
+        # Invalid actions
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=call))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=raise_))
 
 
-    def test_actions_under_bet(self):
+    def test_actions_if_nobody_has_bet_and_folding_is_forbidden(self):
 
         """
-        Runs test cases where a betting round is under bet.
+        Runs test cases where nobody has bet and folding is forbidden.
         """
 
-        # Valid actions under bet
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_FOLD, is_under_bet=True))
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CALL, is_under_bet=True))
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=True))
+        # Define actions
 
-        # Invalid actions under bet
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CHECK, is_under_bet=True))
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_BET, is_under_bet=True))
+        fold = structures.Action(constants.ACTION_FOLD)
+        check = structures.Action(constants.ACTION_CHECK)
+        call = structures.Action(constants.ACTION_CALL, 100)
+        bet = structures.Action(constants.ACTION_BET, 100)
+        raise_ = structures.Action(constants.ACTION_RAISE, 100)
+
+        # Define table and current player
+
+        all_players = [
+            (Andy := structures.Player('Andy')),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
+        ]
+        table = structures.Table(all_players, fold_to_nothing=False)
+
+        # Valid actions
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=check))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=bet))
+
+        # Invalid actions
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=fold))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=call))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=raise_))
 
 
-    def test_actions_under_no_bet(self):
+    def test_actions_to_answer_a_bet(self):
 
         """
-        Runs test cases where a betting round is not under bet.
+        Runs test cases where someone else has bet and you have to answer.
         """
 
-        # Valid actions, folding only under bet
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CHECK,  is_under_bet=False, fold_to_nothing=False))
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_BET,    is_under_bet=False, fold_to_nothing=False))
+        # Define actions
 
-        # Invalid actions, folding only under bet
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_FOLD,  is_under_bet=False, fold_to_nothing=False))
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CALL,  is_under_bet=False, fold_to_nothing=False))
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=False, fold_to_nothing=False))
+        fold = structures.Action(constants.ACTION_FOLD)
+        check = structures.Action(constants.ACTION_CHECK)
+        call = structures.Action(constants.ACTION_CALL, 100)
+        bet = structures.Action(constants.ACTION_BET, 100)
+        raise_ = structures.Action(constants.ACTION_RAISE, 200)
+        bad_raise_zero = structures.Action(constants.ACTION_RAISE, 100)
+        bad_raise_negative = structures.Action(constants.ACTION_RAISE, 50)
 
-        # Valid actions, folding to nothing allowed
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_CHECK,  is_under_bet=False, fold_to_nothing=True))
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_BET,    is_under_bet=False, fold_to_nothing=True))
-        self.assertTrue(managers.action_is_valid(action=constants.ACTION_FOLD,   is_under_bet=False, fold_to_nothing=True))
+        # Define table and current player
 
-        # Invalid actions, folding to nothing allowed
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_CALL,  is_under_bet=False, fold_to_nothing=True))
-        self.assertFalse(managers.action_is_valid(action=constants.ACTION_RAISE, is_under_bet=False, fold_to_nothing=True))
+        all_players = [
+            (Andy := structures.Player('Andy')),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
+        ]
+        table = structures.Table(all_players)
+
+        # Make the table to have an amount to be answered
+        table.add_to_current_amount(100)
+
+        # Valid actions
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=fold))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=call))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=raise_))
+
+        # Invalid actions
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=check))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bet))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bad_raise_zero))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bad_raise_negative))
+
+
+    def test_actions_to_answer_a_raise(self):
+
+        """
+        Runs test cases where someone else raised a bet that you previously made or called, and now you have to answer.
+        """
+
+        # Define actions
+
+        fold = structures.Action(constants.ACTION_FOLD)
+        check = structures.Action(constants.ACTION_CHECK)
+        call = structures.Action(constants.ACTION_CALL, 100)
+        bet = structures.Action(constants.ACTION_BET, 100)
+        raise_ = structures.Action(constants.ACTION_RAISE, 200)
+        bad_raise_zero = structures.Action(constants.ACTION_RAISE, 100)
+        bad_raise_negative = structures.Action(constants.ACTION_RAISE, 50)
+
+        # Define table and current player
+
+        all_players = [
+            (Andy := structures.Player('Andy')),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+            structures.Player('Dino'),
+        ]
+        table = structures.Table(all_players)
+
+        # Make the table to have an amount to be answered, higher than player's amount
+        table.add_to_current_amount(200)
+        Andy.add_to_current_amount(100)
+
+        # Valid actions
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=fold))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=call))
+        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=raise_))
+
+        # Invalid actions
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=check))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bet))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bad_raise_zero))
+        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=bad_raise_negative))
 
 
 if __name__ == '__main__':

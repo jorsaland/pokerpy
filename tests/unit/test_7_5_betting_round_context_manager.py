@@ -153,19 +153,19 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
             return awaited_players
@@ -183,15 +183,15 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 # Dino is missing
@@ -214,23 +214,23 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Unexpected action
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
             return awaited_players
@@ -267,19 +267,19 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino
-                player.request_action(constants.ACTION_CHECK)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
                 awaited_players.append(player)
 
             return awaited_players
@@ -297,19 +297,19 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_BET)
+                player.request_action(structures.Action(constants.ACTION_BET, 100))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Andy
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Andy
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD))
                 awaited_players.append(player)
 
             return awaited_players
@@ -327,19 +327,19 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_BET)
+                player.request_action(structures.Action(constants.ACTION_BET, 100))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request_action(constants.ACTION_CALL)
+                player.request_action(structures.Action(constants.ACTION_CALL, 100))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Andy
-                player.request_action(constants.ACTION_CALL)
+                player.request_action(structures.Action(constants.ACTION_CALL, 100))
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Andy
-                player.request_action(constants.ACTION_CALL)
+                player.request_action(structures.Action(constants.ACTION_CALL, 100))
                 awaited_players.append(player)
 
             return awaited_players
@@ -357,33 +357,33 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_BET)
+                player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
                 awaited_players.append(player)
 
                 player = next(betting_round) # Andy, responding to Dino
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 400
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Dino
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Table's current amount: 600
                 awaited_players.append(player)
 
                 # Coral already folded
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 600
                 awaited_players.append(player)
 
                 # Andy already folded
@@ -405,39 +405,39 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_BET)
+                player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request_action(constants.ACTION_CALL)
+                player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
                 awaited_players.append(player)
 
-                player = next(betting_round) # Andy, responding to Dino
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Andy (already put 100), responding to Dino
+                player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 400
                 awaited_players.append(player)
 
-                player = next(betting_round) # Boa, responding to Dino
-                player.request_action(constants.ACTION_RAISE)
+                player = next(betting_round) # Boa (already put 200), responding to Dino
+                player.request_action(structures.Action(constants.ACTION_RAISE, 500)) # Table's current amount: 700
                 awaited_players.append(player)
 
-                player = next(betting_round) # Coral, responding to Boa
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Coral (already put 200), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 500)) # Table's current amount: 700
                 awaited_players.append(player)
 
-                player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Dino (already put 400), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 700
                 awaited_players.append(player)
 
-                player = next(betting_round) # Andy, responding to Boa
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Andy (already put 400), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 700
                 awaited_players.append(player)
 
                 # Every player has responded to Boa
@@ -457,37 +457,37 @@ class TestBettingRoundContextManager(TestCase):
             with managers.BettingRound(name='round', table=table) as betting_round:
 
                 player = next(betting_round) # Andy
-                player.request_action(constants.ACTION_BET)
+                player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
                 awaited_players.append(player)
 
                 player = next(betting_round) # Boa, responding to Andy
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Coral, responding to Boa
-                player.request_action(constants.ACTION_FOLD)
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 200
                 awaited_players.append(player)
 
                 player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_RAISE)
+                player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
                 awaited_players.append(player)
 
-                player = next(betting_round) # Andy, responding to Dino
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Andy (already put 100), responding to Dino
+                player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 400
                 awaited_players.append(player)
 
-                player = next(betting_round) # Boa, responding to Dino
-                player.request_action(constants.ACTION_RAISE)
+                player = next(betting_round) # Boa (already put 200), responding to Dino
+                player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Table's current amount: 800
                 awaited_players.append(player)
 
                 # Coral already folded
                 
-                player = next(betting_round) # Dino, responding to Boa
-                player.request_action(constants.ACTION_FOLD)
+                player = next(betting_round) # Dino (already put 400), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 800
                 awaited_players.append(player)
 
-                player = next(betting_round) # Andy, responding to Boa
-                player.request_action(constants.ACTION_CALL)
+                player = next(betting_round) # Andy (already put 400), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 400)) # Table's current amount: 800
                 awaited_players.append(player)
 
                 # Every remaining player has responded to Boa
