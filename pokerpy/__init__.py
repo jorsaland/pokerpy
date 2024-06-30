@@ -1,5 +1,5 @@
 """
-PokerPy under development!
+PokerPy under development! (Alpha version)
 """
 
 
@@ -14,10 +14,6 @@ from .constants import (
     ACTION_CHECK,
     ACTION_FOLD,
     ACTION_RAISE,
-    full_sorted_values_and_suits,
-    possible_action_names,
-    aggressive_action_names,
-    passive_action_names,
 )
 from .managers import BettingRound
 from .structures import Action, Card, Hand, Player, Table
