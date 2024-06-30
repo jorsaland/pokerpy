@@ -497,5 +497,55 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(bet_raises_folds_and_calls(), [Andy, Boa, Coral, Dino, Andy, Boa, Dino, Andy])
 
 
+        def all_actions():
+
+            table = structures.Table(all_players)
+            table.reset_cycle_states()
+
+            awaited_players: list[structures.Player] = []
+
+            with managers.BettingRound(name='round', table=table) as betting_round:
+
+                player = next(betting_round) # Andy
+                player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+                awaited_players.append(player)
+
+                player = next(betting_round) # Boa
+                player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+                awaited_players.append(player)
+
+                player = next(betting_round) # Coral
+                player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+                awaited_players.append(player)
+
+                player = next(betting_round) # Dino
+                player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
+                awaited_players.append(player)
+
+                player = next(betting_round) # Andy, responding to Dino
+                player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 100
+                awaited_players.append(player)
+
+                player = next(betting_round) # Boa, responding to Dino
+                player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
+                awaited_players.append(player)
+
+                player = next(betting_round) # Coral, responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Table's current amount: 200
+                awaited_players.append(player)
+
+                player = next(betting_round) # Dino (already put 100), responding to Boa
+                player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Table's current amount: 200
+                awaited_players.append(player)
+
+                # Andy already folded
+
+                # Every remaining player has responded to Boa
+
+            return awaited_players
+
+        self.assertEqual(all_actions(), [Andy, Boa, Coral, Dino, Andy, Boa, Coral, Dino])
+
+
 if __name__ == '__main__':
     main()
