@@ -1,5 +1,5 @@
 """
-PokerPy under development! (Alpha version)
+PokerPy under development! (Alpha)
 
 
 --------------------------------------------------------------------------
@@ -21,6 +21,7 @@ limitations under the License.
 
 
 # Info
+__author__ = 'Andrés Saldarriaga Jordan'
 __version__ = '0.4.0'
 
 
