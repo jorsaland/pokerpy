@@ -1,7 +1,14 @@
 """
 Demo 0.4-A
 
-...
+Action class has been added to PokerPy library, taking a name and an amount. Basic validations were
+included, such as having to call the right amount or having to put more chips than call amount in
+order to make a raise. There are some current limitations to be worked in further versions:
+- No blinds/antes logic has been implemented nor minimum betting or raising amounts.
+- Player stacks are infinite in order to avoid issues regarding all-in and side pots logic.
+
+By now, the smallest 'chip' is the integer 1. Therefore, any amount bet must be a positive integer.
+This will change in Demo 0.4-B.
 """
 
 

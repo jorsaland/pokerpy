@@ -1,7 +1,9 @@
 """
 Demo 0.4-B
 
-...
+This demo is based on Demo 0.4-A. A smallest chip value was implemented. Every bet or raise must be
+multiples of the smallest chip value. If there is a tie and chips cannot be split in equal amounts,
+the first remaining player to the left of the dealer takes the remaining chip.
 """
 
 
