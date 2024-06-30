@@ -109,7 +109,7 @@ class TestTableClass(TestCase):
             structures.Player('Boa'),
             structures.Player('Coral'),
         ]
-        table = structures.Table(all_players, stack_atom=10)
+        table = structures.Table(all_players, smallest_chip=10)
 
 
         # Valid inputs
@@ -132,15 +132,15 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_negative_increase_message.format(-100))
 
 
-        # Not multiple of stack atom
+        # Not multiple of smallest chip
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_current_amount(5)
-        self.assertEqual(cm.exception.args[0], messages.table_not_atom_multiple_increase_message.format(10, 5))
+        self.assertEqual(cm.exception.args[0], messages.table_not_smallest_chip_multiple_increase_message.format(10, 5))
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_current_amount(107)
-        self.assertEqual(cm.exception.args[0], messages.table_not_atom_multiple_increase_message.format(10, 107))
+        self.assertEqual(cm.exception.args[0], messages.table_not_smallest_chip_multiple_increase_message.format(10, 107))
 
 
     def test_add_to_central_pot(self):
@@ -156,7 +156,7 @@ class TestTableClass(TestCase):
             structures.Player('Boa'),
             structures.Player('Coral'),
         ]
-        table = structures.Table(all_players, stack_atom=10)
+        table = structures.Table(all_players, smallest_chip=10)
 
 
         # Valid inputs
@@ -179,15 +179,15 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_negative_increase_message.format(-100))
 
 
-        # Not multiple of stack atom
+        # Not multiple of smallest chip
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(5)
-        self.assertEqual(cm.exception.args[0], messages.table_not_atom_multiple_increase_message.format(10, 5))
+        self.assertEqual(cm.exception.args[0], messages.table_not_smallest_chip_multiple_increase_message.format(10, 5))
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(107)
-        self.assertEqual(cm.exception.args[0], messages.table_not_atom_multiple_increase_message.format(10, 107))
+        self.assertEqual(cm.exception.args[0], messages.table_not_smallest_chip_multiple_increase_message.format(10, 107))
 
 
     def test_fold_player_method(self):

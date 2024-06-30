@@ -10,17 +10,17 @@ from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
     table_negative_increase_message,
-    table_not_atom_multiple_increase_message,
+    table_not_smallest_chip_multiple_increase_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
     table_not_all_player_instances_message,
     table_not_player_instance_message,
     table_not_int_central_pot_message,
     table_not_int_current_amount_message,
-    table_not_int_stack_atom_message,
+    table_not_int_smallest_chip_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
-    table_stack_atom_not_more_than_zero_message,
+    table_smallest_chip_not_more_than_zero_message,
 )
 
 
@@ -39,23 +39,23 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player], *, fold_to_nothing = False, stack_atom = 1):
+    def __init__(self, players: list[Player], *, fold_to_nothing = False, smallest_chip = 1):
 
         # Check input types
         if not isinstance(players, list):
             raise TypeError(table_not_list_players_message.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(table_not_all_player_instances_message)
-        if not isinstance(stack_atom, int):
-            raise TypeError(table_not_int_stack_atom_message.format(type(stack_atom).__name__))
+        if not isinstance(smallest_chip, int):
+            raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
         
         # Check input values
-        if not stack_atom > 0:
-            raise ValueError(table_stack_atom_not_more_than_zero_message.format(stack_atom))
+        if not smallest_chip > 0:
+            raise ValueError(table_smallest_chip_not_more_than_zero_message.format(smallest_chip))
 
         # Input variables
         self._players = players
-        self._stack_atom = stack_atom
+        self._smallest_chip = smallest_chip
         self.fold_to_nothing = fold_to_nothing
 
         # State variables
@@ -72,8 +72,8 @@ class Table:
         return tuple(self._players)
 
     @property
-    def stack_atom(self):
-        return self._stack_atom
+    def smallest_chip(self):
+        return self._smallest_chip
 
     @property
     def active_players(self):
@@ -81,7 +81,7 @@ class Table:
 
     @property
     def current_amount(self):
-        assert self._current_amount % self._stack_atom == 0 ## should never fail, except for direct manipulation of private attributes
+        assert self._current_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._current_amount
 
     @property
@@ -98,7 +98,7 @@ class Table:
 
     @property
     def central_pot(self):
-        assert self._central_pot % self._stack_atom == 0 ## should never fail, except for direct manipulation of private attributes
+        assert self._central_pot % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._central_pot
 
 
@@ -117,8 +117,8 @@ class Table:
         if amount < 0:
             raise ValueError(table_negative_increase_message.format(amount))
         
-        if not amount % self.stack_atom == 0:
-            raise ValueError(table_not_atom_multiple_increase_message.format(self.stack_atom, amount))
+        if not amount % self.smallest_chip == 0:
+            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
 
@@ -135,8 +135,8 @@ class Table:
         if amount < 0:
             raise ValueError(table_negative_increase_message.format(amount))
 
-        if not amount % self.stack_atom == 0:
-            raise ValueError(table_not_atom_multiple_increase_message.format(self.stack_atom, amount))
+        if not amount % self.smallest_chip == 0:
+            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
 
         self._central_pot += amount
 
@@ -272,9 +272,9 @@ class Table:
             return
 
         logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-        central_pot_atoms = self.central_pot // self.stack_atom ## remainder should always be zero
+        central_pot_atoms = self.central_pot // self.smallest_chip ## remainder should always be zero
         profit_atoms_per_player = central_pot_atoms // len(winners)
-        remainder_atoms = central_pot_atoms // self.stack_atom % len(winners)
+        remainder_atoms = central_pot_atoms // self.smallest_chip % len(winners)
         profit_atoms_by_player = {player: profit_atoms_per_player for player in winners}
 
         for player in winners:

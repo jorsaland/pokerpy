@@ -37,8 +37,8 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     if action.name not in valid_action_names:
         return False
 
-    # Validate stack atom
-    if not action.amount % table.stack_atom == 0:
+    # Validate amount being multiple of smallest chip
+    if not action.amount % table.smallest_chip == 0:
         return False
         
     # Validate calling amount

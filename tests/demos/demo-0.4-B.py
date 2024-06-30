@@ -18,7 +18,7 @@ import pokerpy as pk
 
 # Constants
 
-STACK_ATOM = 5
+SMALLEST_CHIP = 5
 
 betting_round_names = [
     (PREFLOP := 'pre-flop'),
@@ -107,9 +107,9 @@ def cycle(table: pk.Table):
                 elif action_name == pk.ACTION_CALL:
                     action_value = amount_to_call
                 elif action_name == pk.ACTION_RAISE:
-                    action_value = random.randint(amount_to_call, amount_to_call + 100) * STACK_ATOM
+                    action_value = random.randint(amount_to_call, amount_to_call + 100) * SMALLEST_CHIP
                 elif action_name == pk. ACTION_BET:
-                    action_value = random.randint(1, 100) * STACK_ATOM
+                    action_value = random.randint(1, 100) * SMALLEST_CHIP
                 else:
                     raise RuntimeError('we live in a society')
                 action = pk.Action(action_name, action_value)
@@ -145,7 +145,7 @@ def game():
 
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players, stack_atom=STACK_ATOM, fold_to_nothing=False)
+    table = pk.Table(players, smallest_chip=SMALLEST_CHIP, fold_to_nothing=False)
     cycle(table)
 
     input('\n\n--- ENTER ---\n')

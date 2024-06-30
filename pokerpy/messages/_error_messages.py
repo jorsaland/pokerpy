@@ -25,12 +25,12 @@ table_not_player_instance_message = "Player must be an instance of class Player,
 table_not_int_cards_count_message = "Attribute 'cards_count' must be int, not '{}'."
 table_player_not_in_table_message = "Player '{}' is not in the table."
 table_player_already_folded_message = "Player '{}' already folded."
-table_not_int_stack_atom_message = "Table stack atom must be int, not '{}'."
+table_not_int_smallest_chip_message = "Table smallest chip must be int, not '{}'."
 table_not_int_central_pot_message = "Table central pot amount increase must be int, not '{}'."
 table_not_int_current_amount_message = "Table current amount increase must be int, not '{}'."
 table_negative_increase_message = "Amount increase must be at least zero (received {})."
-table_not_atom_multiple_increase_message = "Amount increase must be a multiple of stack atom: {} (received {})."
-table_stack_atom_not_more_than_zero_message = "Stack atom must be more than zero (received {})."
+table_not_smallest_chip_multiple_increase_message = "Amount increase must be a multiple of the smallest chip: {} (received {})."
+table_smallest_chip_not_more_than_zero_message = "Smallest chip must be more than zero (received {})."
 
 # Betting round messages
 betting_round_not_str_name_message = "Betting round name must be str, not '{}'."
