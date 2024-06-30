@@ -405,5 +405,58 @@ class TestBettingRoundRunMethod(TestCase):
         self.assertEqual(bet_raises_folds_and_calls(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Dino', 'Andy'])
 
 
+        def all_actions():
+
+            player_names = ['Andy', 'Boa', 'Coral', 'Dino']
+            players = [structures.Player(name) for name in player_names]
+            table = structures.Table(players)
+
+            table.activate_all_players()
+            awaited_players: list[structures.Player] = []
+
+            betting_round_cm = managers.BettingRound(name='round', table=table)
+            betting_round = betting_round_cm.run()
+
+            player = next(betting_round) # Andy
+            player.request(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Boa
+            player.request(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Coral
+            player.request(constants.ACTION_CHECK)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Dino
+            player.request(constants.ACTION_BET)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Andy, responding to Dino
+            player.request(constants.ACTION_FOLD)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Boa, responding to Dino
+            player.request(constants.ACTION_RAISE)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Coral, responding to Boa
+            player.request(constants.ACTION_CALL)
+            awaited_players.append(player)
+
+            player = next(betting_round) # Dino, responding to Boa
+            player.request(constants.ACTION_CALL)
+            awaited_players.append(player)
+
+            # Andy already folded
+
+            # Every remaining player has responded to Boa
+
+            awaited_player_names = [player.name for player in awaited_players]
+            return awaited_player_names
+
+        self.assertEqual(all_actions(), ['Andy', 'Boa', 'Coral', 'Dino', 'Andy', 'Boa', 'Coral', 'Dino'])
+
 if __name__ == '__main__':
     main()
