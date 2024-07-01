@@ -66,14 +66,14 @@ class BettingRound:
         yield from self.generator
     
     
-    def __exit__(self, exception_type: (type|None), exception: BaseException, _):
+    def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
 
         # Stopping before executing all parsed actions
         if exception_type is StopIteration:
             raise RuntimeError(betting_round_overloaded_round_message)
         
         # Raising unexpected exceptions
-        if exception_type is not None:
+        if exception is not None:
             raise exception
 
         # End running iteration after last yield
