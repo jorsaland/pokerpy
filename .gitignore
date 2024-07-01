@@ -1,10 +1,6 @@
-# Python cache
-__pycache__
-
 # Local
+__pycache__/
 local/
-
-# Env
 env/
 
 # Setup
