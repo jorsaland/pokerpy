@@ -29,7 +29,7 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
         if len(table.active_players) == 1:
             round_must_stop = True
             break
-        if player == table.last_aggressive_player:
+        if player == table.stopping_player:
             round_must_stop = True
             break
 
@@ -47,7 +47,7 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
             table.add_to_current_amount(player.current_amount - table.current_amount)
-            table.set_last_aggressive_player(player)
+            table.set_stopping_player(player)
 
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:

@@ -243,11 +243,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format(Andy.name))
 
 
-    def test_set_last_aggressive_player_method(self):
+    def test_set_stopping_player_method(self):
 
 
         """
-        Runs test cases on set_last_aggressive_player method.
+        Runs test cases on set_stopping_player method.
         """
 
 
@@ -263,28 +263,28 @@ class TestTableClass(TestCase):
 
         # Valid inputs
 
-        table.set_last_aggressive_player(Andy)
-        self.assertEqual(table.last_aggressive_player, Andy)
+        table.set_stopping_player(Andy)
+        self.assertEqual(table.stopping_player, Andy)
 
-        table.set_last_aggressive_player(Boa)
-        self.assertEqual(table.last_aggressive_player, Boa)
+        table.set_stopping_player(Boa)
+        self.assertEqual(table.stopping_player, Boa)
 
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
-            table.set_last_aggressive_player('Dino')
+            table.set_stopping_player('Dino')
         self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
         
         with self.assertRaises(ValueError) as cm:
-            table.set_last_aggressive_player(structures.Player('Dino'))
+            table.set_stopping_player(structures.Player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
-            table.set_last_aggressive_player(Coral)
+            table.set_stopping_player(Coral)
         self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format(Coral.name))
 
 
@@ -370,12 +370,12 @@ class TestTableClass(TestCase):
 
         table.add_to_current_amount(200)
         table.activate_player(Andy)
-        table.set_last_aggressive_player(Andy)
+        table.set_stopping_player(Andy)
 
         table.reset_betting_round_states()
 
         self.assertEqual(table.current_amount, 0)
-        self.assertIsNone(table.last_aggressive_player)
+        self.assertIsNone(table.stopping_player)
     
 
     def test_reset_cycle_states_method(self):
@@ -396,7 +396,7 @@ class TestTableClass(TestCase):
         table.add_to_current_amount(200)
         table.deal_common_cards(5)
         table.activate_player(Andy)
-        table.set_last_aggressive_player(Andy)
+        table.set_stopping_player(Andy)
         table.deal_common_cards(5)
         table.deal_to_players(2)
         table.add_to_central_pot(300)
@@ -404,7 +404,7 @@ class TestTableClass(TestCase):
         table.reset_cycle_states()
 
         self.assertEqual(table.current_amount, 0)
-        self.assertIsNone(table.last_aggressive_player)
+        self.assertIsNone(table.stopping_player)
         self.assertTupleEqual(table.active_players, tuple(all_players))
         self.assertTupleEqual(table.deck, tuple(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits))
         self.assertEqual(table.central_pot, 0)

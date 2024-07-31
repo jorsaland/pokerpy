@@ -348,7 +348,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            table.set_last_aggressive_player(Andy)
+            table.set_stopping_player(Andy)
             table.add_to_current_amount(100)
 
             generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
@@ -367,7 +367,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            table.set_last_aggressive_player(Coral)
+            table.set_stopping_player(Coral)
             table.add_to_current_amount(100)
 
             generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
@@ -392,7 +392,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            table.set_last_aggressive_player(Dino)
+            table.set_stopping_player(Dino)
             table.add_to_current_amount(100)
 
             generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
