@@ -232,11 +232,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format(Andy.name))
 
 
-    def test_set_last_aggressive_player_method(self):
+    def test_set_stopping_player_method(self):
 
 
         """
-        Runs test cases on set_last_aggressive_player method.
+        Runs test cases on set_stopping_player method.
         """
 
 
@@ -252,25 +252,25 @@ class TestTableClass(TestCase):
 
         # Valid inputs
 
-        table.set_last_aggressive_player(Andy)
-        table.set_last_aggressive_player(Boa)
+        table.set_stopping_player(Andy)
+        table.set_stopping_player(Boa)
 
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
-            table.set_last_aggressive_player('Dino')
+            table.set_stopping_player('Dino')
         self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
 
 
         # Invalid values
         
         with self.assertRaises(ValueError) as cm:
-            table.set_last_aggressive_player(structures.Player('Dino'))
+            table.set_stopping_player(structures.Player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
-            table.set_last_aggressive_player(Coral)
+            table.set_stopping_player(Coral)
         self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format(Coral.name))
 
 

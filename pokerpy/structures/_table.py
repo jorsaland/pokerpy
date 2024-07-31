@@ -61,7 +61,7 @@ class Table:
         # State variables
         self._active_players: list[Player] = []
         self._current_amount = 0
-        self._last_aggressive_player: (Player|None) = None
+        self._stopping_player: (Player|None) = None
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
         self._central_pot = 0
@@ -85,8 +85,8 @@ class Table:
         return self._current_amount
 
     @property
-    def last_aggressive_player(self):
-        return self._last_aggressive_player
+    def stopping_player(self):
+        return self._stopping_player
     
     @property
     def deck(self):
@@ -178,10 +178,10 @@ class Table:
         self._active_players.remove(player)
 
 
-    def set_last_aggressive_player(self, player: Player):
+    def set_stopping_player(self, player: Player):
 
         """
-        Marks a player as the last one to take an aggressive action.
+        Marks a player before whom the betting round is closed.
         """
 
         if not isinstance(player, Player):
@@ -193,7 +193,7 @@ class Table:
         if player not in self.active_players:
             raise ValueError(table_player_already_folded_message.format(player.name))
 
-        self._last_aggressive_player = player
+        self._stopping_player = player
 
 
     # Methods to deal cards
@@ -298,7 +298,7 @@ class Table:
         """
 
         self._current_amount = 0
-        self._last_aggressive_player = None
+        self._stopping_player = None
 
         for player in self.players:
             player.reset_betting_round_states()

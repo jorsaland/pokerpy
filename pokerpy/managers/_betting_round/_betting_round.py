@@ -114,7 +114,7 @@ class BettingRound:
             round_must_stop = yield from alternate_players(self.table)
 
             # If no player bets, the round must stop
-            if self.table.last_aggressive_player is None:
+            if self.table.stopping_player is None:
                 round_must_stop = True
         
         # Move chips to the center of the table
