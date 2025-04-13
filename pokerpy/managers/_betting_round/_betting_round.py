@@ -27,7 +27,7 @@ class BettingRound:
     """
 
 
-    def __init__(self, name: str, table: Table):
+    def __init__(self, name: str, table: Table, *, ignore_invalid_actions = True):
 
         # Check input
         if not isinstance(name, str):
@@ -38,6 +38,7 @@ class BettingRound:
         # Input variables
         self._name = name
         self._table = table
+        self._ignore_invalid_actions = bool(ignore_invalid_actions)
 
         # State variables
         self._generator: (Generator[Player]|None) = None
@@ -59,6 +60,10 @@ class BettingRound:
     @property
     def has_ended(self):
         return self._has_ended
+    
+    @property
+    def ignore_invalid_actions(self):
+        return self._ignore_invalid_actions
     
 
     def __enter__(self):
@@ -111,7 +116,10 @@ class BettingRound:
             lap_counter += 1
 
             # All players are itered but only active ones are allowed to act
-            round_must_stop = yield from alternate_players(self.table)
+            round_must_stop = yield from alternate_players(
+                table = self.table,
+                ignore_invalid_actions = self.ignore_invalid_actions
+            )
 
             # If no player bets, the round must stop
             if self.table.last_aggressive_player is None:

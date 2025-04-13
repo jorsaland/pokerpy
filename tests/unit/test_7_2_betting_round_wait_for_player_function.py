@@ -45,7 +45,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table.add_to_current_amount(100)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(valid_action)
 
@@ -73,7 +73,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table.add_to_current_amount(100)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_CHECK))
 
@@ -101,7 +101,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table.add_to_current_amount(100)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
@@ -136,7 +136,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table.add_to_current_amount(100)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_CHECK))
             player = next(generator)
@@ -179,7 +179,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table = structures.Table(all_players)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(valid_action)
 
@@ -204,7 +204,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table = structures.Table(all_players)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_RAISE, 100))
 
@@ -229,7 +229,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table = structures.Table(all_players, open_fold_allowed=False)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)
@@ -265,7 +265,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             table = structures.Table(all_players, open_fold_allowed=False)
 
             # Request action
-            generator = managers.wait_for_player(player=Andy, table=table)
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
             player = next(generator)
             player.request_action(structures.Action(constants.ACTION_RAISE, 100))
             player = next(generator)

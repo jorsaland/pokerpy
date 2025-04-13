@@ -14,7 +14,7 @@ logger = get_logger()
 from ._wait_for_player import wait_for_player
 
 
-def alternate_players(table: Table):
+def alternate_players(*, table: Table, ignore_invalid_actions: bool):
 
     """
     Alternates players within the betting round. Once the generator ends, returns whether round must stop or not.
@@ -38,7 +38,11 @@ def alternate_players(table: Table):
             continue
 
         # Player keeps its turn until selects a valid action
-        action = yield from wait_for_player(player=player, table=table)
+        action = yield from wait_for_player(
+            player = player,
+            table = table,
+            ignore_invalid_actions = ignore_invalid_actions,
+        )
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:

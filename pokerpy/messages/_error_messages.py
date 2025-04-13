@@ -38,6 +38,7 @@ betting_round_not_table_instance_message = "Betting round table must be an insta
 betting_round_exiting_unended_round_message = 'Betting round did not end.'
 betting_round_overloaded_round_message = 'Betting round ended before parsing all actions.'
 betting_round_already_ended_round_message = 'Betting round has already ended. It cannot start over.'
+betting_round_invalid_action_message = 'The requested action is not allowed: {}.'
 
 # Card messages
 card_not_str_value_message = "Card value must be str, not '{}'."
