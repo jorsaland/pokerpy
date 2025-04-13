@@ -25,11 +25,8 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
     # All players are itered but only active ones are allowed to act
     for player in table.players:
 
-        # Determine whether betting round should be stopped or not
+        # Stop if there is one player remaining
         if len(table.active_players) == 1:
-            round_must_stop = True
-            break
-        if player == table.stopping_player:
             round_must_stop = True
             break
 
@@ -52,6 +49,11 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
             table.fold_player(player)
+
+        # Stop if the current player still is the stopping player
+        if player == table.stopping_player:
+            round_must_stop = True
+            break
 
         logger.info(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
 

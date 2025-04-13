@@ -10,6 +10,7 @@ from pokerpy.messages import (
     betting_round_exiting_unended_round_message,
     betting_round_not_str_name_message,
     betting_round_not_table_instance_message,
+    betting_round_not_stopping_player_instance_message,
     betting_round_not_dict_blind_bets_message,
     betting_round_overloaded_round_message,
     betting_round_already_ended_round_message,
@@ -34,6 +35,7 @@ class BettingRound:
         table: Table,
         *,
         blind_bets: (dict[Player, int]|None) = None,
+        initial_stopping_player: (Player|None) = None,
         ignore_invalid_actions = True
     ):
 
@@ -54,6 +56,11 @@ class BettingRound:
         )
         if not blind_bets_dict_is_valid:
             raise TypeError(betting_round_not_dict_blind_bets_message)
+        
+        if initial_stopping_player is None:
+            initial_stopping_player = table.players[-1]
+        if not isinstance(initial_stopping_player, Player):
+            raise TypeError(betting_round_not_stopping_player_instance_message)
 
         # Input variables
 
@@ -61,6 +68,7 @@ class BettingRound:
         self._table = table
         self._blind_bets = blind_bets
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
+        self._initial_stopping_player = initial_stopping_player
 
         # State variables
 
@@ -75,6 +83,10 @@ class BettingRound:
     @property
     def table(self):
         return self._table
+    
+    @property
+    def initial_stopping_player(self):
+        return self._initial_stopping_player
     
     @property
     def generator(self):
@@ -131,6 +143,7 @@ class BettingRound:
 
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
+        self.table.set_stopping_player(self.initial_stopping_player)
         
         # Define state variables
         round_must_stop = False
