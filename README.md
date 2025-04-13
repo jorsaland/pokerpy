@@ -5,6 +5,9 @@ Basic money logic is implemented, including a smallest chip value and validation
 - All features are developed to reach the goal.
 - Started from version *0.3.1* and received feature updates from versions *0.0.1*, *0.1.3*, *0.2.2* and *0.3.2*, including unit tests, features and deprecations.
 
+### 0.4.1
+- Some features were developed and updated, including optional parameters in BettingRound class and unit tests.
+
 ## Upcoming versions
 - **0.5 (alpha):** Blind bet options will be added (including antes), as well as minimum betting and raising amounts.
 - **0.6 (alpha):** Stacks will no longer be infinite. This implies all-in situations and side-pots will be possible.

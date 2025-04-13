@@ -22,7 +22,7 @@ limitations under the License.
 
 # Info
 __author__ = 'Andrés Saldarriaga Jordan'
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 
 
 # Content
