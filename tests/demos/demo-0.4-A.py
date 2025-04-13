@@ -20,7 +20,7 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
+import deprecated.v04 as v04
 
 
 # Constants
@@ -40,18 +40,18 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 # Playability
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v04.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v04.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v04.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
-def cycle(table: pk.Table):
+def cycle(table: v04.Table):
 
     if not table.open_fold_allowed:
         print('\n======================================================'  )
@@ -97,27 +97,27 @@ def cycle(table: pk.Table):
         print('--------------------------------------------------\n')
 
         # Run betting round
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+        with v04.BettingRound(name=betting_round_name, table=table) as betting_round:
             for player in betting_round:
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
                     if not table.open_fold_allowed:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                        action_name = random.choice([v04.ACTION_CHECK, v04.ACTION_BET])
                     else:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                        action_name = random.choice([v04.ACTION_CHECK, v04.ACTION_BET, v04.ACTION_FOLD])
                 else:
-                    action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
-                if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
+                    action_name = random.choice([v04.ACTION_CALL, v04.ACTION_FOLD, v04.ACTION_RAISE])
+                if action_name in [v04.ACTION_FOLD, v04.ACTION_CHECK]:
                     action_value = 0
-                elif action_name == pk.ACTION_CALL:
+                elif action_name == v04.ACTION_CALL:
                     action_value = amount_to_call
-                elif action_name == pk.ACTION_RAISE:
+                elif action_name == v04.ACTION_RAISE:
                     action_value = random.randint(amount_to_call, amount_to_call + 100)
-                elif action_name == pk. ACTION_BET:
+                elif action_name == v04. ACTION_BET:
                     action_value = random.randint(1, 100)
                 else:
                     raise RuntimeError('we live in a society')
-                action = pk.Action(action_name, action_value)
+                action = v04.Action(action_name, action_value)
                 player.request_action(action)
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
@@ -149,8 +149,8 @@ def game():
     print('======================\n')
 
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players, open_fold_allowed=False)
+    players = [v04.Player(name) for name in player_names]
+    table = v04.Table(players, open_fold_allowed=False)
     cycle(table)
 
     input('\n\n--- ENTER ---\n')
