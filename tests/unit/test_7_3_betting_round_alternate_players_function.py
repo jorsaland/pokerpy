@@ -46,7 +46,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -88,7 +88,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             table = structures.Table(all_players)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             # End iteration
@@ -111,7 +111,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             for player in first_and_last_players:
                 table.activate_player(player)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -141,7 +141,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             for player in all_players_but_first_and_last:
                 table.activate_player(player)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Boa
@@ -179,7 +179,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             for player in interspersed_players:
                 table.activate_player(player)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -224,7 +224,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -253,7 +253,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -280,7 +280,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
             
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
             awaited_players: list[structures.Player] = []
 
             player = next(generator) # Andy
@@ -332,7 +332,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             
             table.add_to_current_amount(100)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             # End iteration and retrieve returned value
             try:
@@ -351,7 +351,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table.set_last_aggressive_player(Andy)
             table.add_to_current_amount(100)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             # End iteration and retrieve returned value
             try:
@@ -370,7 +370,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table.set_last_aggressive_player(Coral)
             table.add_to_current_amount(100)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             player = next(generator) # Andy
             player.request_action(structures.Action(constants.ACTION_CALL, 100))
@@ -395,7 +395,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table.set_last_aggressive_player(Dino)
             table.add_to_current_amount(100)
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             player = next(generator) # Andy
             player.request_action(structures.Action(constants.ACTION_CALL, 100))
@@ -420,7 +420,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=True)
+            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             player = next(generator) # Andy
             player.request_action(structures.Action(constants.ACTION_CHECK))

@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, structures
+from pokerpy import constants, managers, messages, structures
 
 
 class TestBettingRoundWaitForPlayerFunction(TestCase):
@@ -58,7 +58,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         self.assertEqual(parse_single_valid_action(), valid_action)
 
 
-        def parse_single_invalid_action():
+        def parse_single_invalid_action_while_ignoring_the_error():
 
             # Define table and current player
             all_players = [
@@ -83,7 +83,37 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertIsNone(parse_single_invalid_action())
+        self.assertIsNone(parse_single_invalid_action_while_ignoring_the_error())
+
+
+        def parse_single_invalid_action_while_not_ignoring_the_error():
+
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
+
+            # Make the table to have an amount to be answered
+            table.add_to_current_amount(100)
+
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=False)
+            player = next(generator)
+            player.request_action(structures.Action(constants.ACTION_CHECK))
+
+            # End iteration and retrieve returned value
+            try:
+                next(generator)
+            except StopIteration as ex:
+                return ex.value
+
+        with self.assertRaises(RuntimeError) as cm:
+            self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
+        self.assertEqual(cm.exception.args[0], messages.betting_round_invalid_action_message.format(f'{constants.ACTION_CHECK} {0}'))
 
 
         def parse_multiple_invalid_actions():
@@ -192,7 +222,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         self.assertEqual(parse_single_valid_action(), valid_action)        
 
 
-        def parse_single_invalid_action():
+        def parse_single_invalid_action_while_ignoring_the_error():
 
             # Define table and current player
             all_players = [
@@ -214,7 +244,34 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             except StopIteration as ex:
                 return ex.value
 
-        self.assertIsNone(parse_single_invalid_action())
+        self.assertIsNone(parse_single_invalid_action_while_ignoring_the_error())
+
+
+        def parse_single_invalid_action_while_not_ignoring_the_error():
+
+            # Define table and current player
+            all_players = [
+                Andy := structures.Player('Andy'),
+                structures.Player('Boa'),
+                structures.Player('Coral'),
+                structures.Player('Dino'),
+            ]
+            table = structures.Table(all_players)
+
+            # Request action
+            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=False)
+            player = next(generator)
+            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
+
+            # End iteration and retrieve returned value
+            try:
+                next(generator)
+            except StopIteration as ex:
+                return ex.value
+
+        with self.assertRaises(RuntimeError) as cm:
+            self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
+        self.assertEqual(cm.exception.args[0], messages.betting_round_invalid_action_message.format(f'{constants.ACTION_RAISE} {100}'))
 
 
         def parse_multiple_invalid_actions():
