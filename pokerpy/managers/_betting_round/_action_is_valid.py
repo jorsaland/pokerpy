@@ -28,7 +28,7 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     
     # Select valid actions when not under bet
     else:
-        if table.fold_to_nothing:
+        if table.open_fold_allowed:
             valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
         else:
             valid_action_names = valid_action_names_not_under_bet

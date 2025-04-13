@@ -39,7 +39,7 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player], *, fold_to_nothing = False, smallest_chip = 1):
+    def __init__(self, players: list[Player], *, open_fold_allowed = False, smallest_chip = 1):
 
         # Check input types
         if not isinstance(players, list):
@@ -56,7 +56,7 @@ class Table:
         # Input variables
         self._players = players
         self._smallest_chip = smallest_chip
-        self.fold_to_nothing = fold_to_nothing
+        self.open_fold_allowed = open_fold_allowed
 
         # State variables
         self._active_players: list[Player] = []

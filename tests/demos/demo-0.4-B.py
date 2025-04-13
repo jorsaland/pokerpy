@@ -50,7 +50,7 @@ def figure_out_hand(cards: list[pk.Card]):
 
 def cycle(table: pk.Table):
 
-    if not table.fold_to_nothing:
+    if not table.open_fold_allowed:
         print('\n======================================================'  )
         print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
         print(  '======================================================\n')
@@ -98,7 +98,7 @@ def cycle(table: pk.Table):
             for player in betting_round:
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
-                    if not table.fold_to_nothing:
+                    if not table.open_fold_allowed:
                         action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
                     else:
                         action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
@@ -147,12 +147,12 @@ def game():
 
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players, smallest_chip=SMALLEST_CHIP, fold_to_nothing=False)
+    table = pk.Table(players, smallest_chip=SMALLEST_CHIP, open_fold_allowed=False)
     cycle(table)
 
     input('\n\n--- ENTER ---\n')
 
-    table.fold_to_nothing = True
+    table.open_fold_allowed = True
     cycle(table)
 
 

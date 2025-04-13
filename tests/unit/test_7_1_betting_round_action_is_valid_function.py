@@ -43,7 +43,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             structures.Player('Coral'),
             structures.Player('Dino'),
         ]
-        table = structures.Table(all_players, fold_to_nothing=True)
+        table = structures.Table(all_players, open_fold_allowed=True)
 
         # Valid actions
         self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=fold))
@@ -77,7 +77,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             structures.Player('Coral'),
             structures.Player('Dino'),
         ]
-        table = structures.Table(all_players, fold_to_nothing=False)
+        table = structures.Table(all_players, open_fold_allowed=False)
 
         # Valid actions
         self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=check))

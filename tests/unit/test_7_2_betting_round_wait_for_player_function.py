@@ -226,7 +226,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
                 structures.Player('Coral'),
                 structures.Player('Dino'),
             ]
-            table = structures.Table(all_players, fold_to_nothing=False)
+            table = structures.Table(all_players, open_fold_allowed=False)
 
             # Request action
             generator = managers.wait_for_player(player=Andy, table=table)
@@ -262,7 +262,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
                 structures.Player('Coral'),
                 structures.Player('Dino'),
             ]
-            table = structures.Table(all_players, fold_to_nothing=False)
+            table = structures.Table(all_players, open_fold_allowed=False)
 
             # Request action
             generator = managers.wait_for_player(player=Andy, table=table)

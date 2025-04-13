@@ -49,14 +49,14 @@ class TestTableClass(TestCase):
 
         players = [structures.Player('Andy'), structures.Player('Boa')]
 
-        table = structures.Table(players, fold_to_nothing=False)
-        self.assertFalse(table.fold_to_nothing)
+        table = structures.Table(players, open_fold_allowed=False)
+        self.assertFalse(table.open_fold_allowed)
 
-        table = structures.Table(players, fold_to_nothing=True)
-        self.assertTrue(table.fold_to_nothing)
+        table = structures.Table(players, open_fold_allowed=True)
+        self.assertTrue(table.open_fold_allowed)
         
         table = structures.Table(players)
-        self.assertFalse(table.fold_to_nothing)
+        self.assertFalse(table.open_fold_allowed)
 
 
     def test_activate_player_method(self):
