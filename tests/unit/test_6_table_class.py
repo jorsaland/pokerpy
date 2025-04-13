@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import messages, structures
+from pokerpy import constants, messages, structures
 
 
 class TestTableClass(TestCase):
@@ -115,7 +115,10 @@ class TestTableClass(TestCase):
         # Valid inputs
 
         table.add_to_current_amount(0)
+        table.add_to_current_amount(50)
         table.add_to_current_amount(100)
+
+        self.assertEqual(table.current_amount, 150)
 
 
         # Invalid types
@@ -162,7 +165,10 @@ class TestTableClass(TestCase):
         # Valid inputs
 
         table.add_to_central_pot(0)
+        table.add_to_central_pot(50)
         table.add_to_central_pot(100)
+
+        self.assertEqual(table.central_pot, 150)
 
 
         # Invalid types
@@ -210,8 +216,13 @@ class TestTableClass(TestCase):
         # Valid inputs
 
         table.fold_player(Andy)
+        self.assertTupleEqual(table.active_players, (Boa, Coral))
+
         table.fold_player(Boa)
+        self.assertTupleEqual(table.active_players, (Coral,))
+
         table.fold_player(Coral)
+        self.assertTupleEqual(table.active_players, ())
 
 
         # Invalid types
@@ -253,7 +264,10 @@ class TestTableClass(TestCase):
         # Valid inputs
 
         table.set_last_aggressive_player(Andy)
+        self.assertEqual(table.last_aggressive_player, Andy)
+
         table.set_last_aggressive_player(Boa)
+        self.assertEqual(table.last_aggressive_player, Boa)
 
 
         # Invalid types
@@ -294,6 +308,10 @@ class TestTableClass(TestCase):
 
         table.deal_to_players(3)
 
+        self.assertSetEqual(
+            set(table.deck).union(*[player.cards for player in table.players]),
+            set(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits)
+        )
 
         # Invalid types
 
@@ -322,12 +340,74 @@ class TestTableClass(TestCase):
 
         table.deal_common_cards(10)
 
+        self.assertSetEqual(
+            set(table.deck).union(table.common_cards),
+            set(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits)
+        )
+
 
         # Invalid types
 
         with self.assertRaises(TypeError) as cm:
             table.deal_common_cards('AKQJT')
         self.assertEqual(cm.exception.args[0], messages.table_not_int_cards_count_message.format(str.__name__))
+
+
+    def test_reset_betting_round_states_method(self):
+
+
+        """
+        Runs test cases on reset_betting_round_states method.
+        """
+
+
+        all_players = [
+            Andy := structures.Player('Andy'),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+        ]
+        table = structures.Table(all_players)
+
+        table.add_to_current_amount(200)
+        table.activate_player(Andy)
+        table.set_last_aggressive_player(Andy)
+
+        table.reset_betting_round_states()
+
+        self.assertEqual(table.current_amount, 0)
+        self.assertIsNone(table.last_aggressive_player)
+    
+
+    def test_reset_cycle_states_method(self):
+
+
+        """
+        Runs test cases on reset_cycle_states method.
+        """
+
+
+        all_players = [
+            Andy := structures.Player('Andy'),
+            structures.Player('Boa'),
+            structures.Player('Coral'),
+        ]
+        table = structures.Table(all_players)
+
+        table.add_to_current_amount(200)
+        table.deal_common_cards(5)
+        table.activate_player(Andy)
+        table.set_last_aggressive_player(Andy)
+        table.deal_common_cards(5)
+        table.deal_to_players(2)
+        table.add_to_central_pot(300)
+
+        table.reset_cycle_states()
+
+        self.assertEqual(table.current_amount, 0)
+        self.assertIsNone(table.last_aggressive_player)
+        self.assertTupleEqual(table.active_players, tuple(all_players))
+        self.assertTupleEqual(table.deck, tuple(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits))
+        self.assertEqual(table.central_pot, 0)
 
 
 if __name__ == '__main__':

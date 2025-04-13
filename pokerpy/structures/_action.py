@@ -62,3 +62,11 @@ class Action:
 
     def __repr__(self):
         return f'Action(name={self.name}, amount={self.amount})'
+    
+
+    def __eq__(self, other):
+
+        if not isinstance(other, Action):
+            return NotImplemented
+
+        return (self.name == other.name) and (self.amount == other.amount)
