@@ -35,6 +35,7 @@ table_smallest_chip_not_more_than_zero_message = "Smallest chip must be more tha
 # Betting round messages
 betting_round_not_str_name_message = "Betting round name must be str, not '{}'."
 betting_round_not_table_instance_message = "Betting round table must be an instance of class Table, not '{}'."
+betting_round_not_dict_blind_bets_message = "Betting round blind bets must be a dictionary with Player instances as keys and integers as values."
 betting_round_exiting_unended_round_message = 'Betting round did not end.'
 betting_round_overloaded_round_message = 'Betting round ended before parsing all actions.'
 betting_round_already_ended_round_message = 'Betting round has already ended. It cannot start over.'

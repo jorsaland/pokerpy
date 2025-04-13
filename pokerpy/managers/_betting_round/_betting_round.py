@@ -10,6 +10,7 @@ from pokerpy.messages import (
     betting_round_exiting_unended_round_message,
     betting_round_not_str_name_message,
     betting_round_not_table_instance_message,
+    betting_round_not_dict_blind_bets_message,
     betting_round_overloaded_round_message,
     betting_round_already_ended_round_message,
 )
@@ -27,20 +28,42 @@ class BettingRound:
     """
 
 
-    def __init__(self, name: str, table: Table, *, ignore_invalid_actions = True):
+    def __init__(
+        self,
+        name: str,
+        table: Table,
+        *,
+        blind_bets: (dict[Player, int]|None) = None,
+        ignore_invalid_actions = True
+    ):
 
-        # Check input
+        # Validations
+
         if not isinstance(name, str):
             raise TypeError(betting_round_not_str_name_message.format(type(name).__name__))
+
         if not isinstance(table, Table):
             raise TypeError(betting_round_not_table_instance_message.format(type(table).__name__))
 
+        if blind_bets is None:
+            blind_bets = {}
+        blind_bets_dict_is_valid = (
+            isinstance(blind_bets,dict) and
+            all(isinstance(key, Player) for key in blind_bets.keys()) and
+            all(isinstance(value, int) for value in blind_bets.values())
+        )
+        if not blind_bets_dict_is_valid:
+            raise TypeError(betting_round_not_dict_blind_bets_message)
+
         # Input variables
+
         self._name = name
         self._table = table
+        self._blind_bets = blind_bets
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
 
         # State variables
+
         self._generator: (Generator[Player]|None) = None
         self._has_ended = False
     
@@ -60,6 +83,10 @@ class BettingRound:
     @property
     def has_ended(self):
         return self._has_ended
+    
+    @property
+    def blind_bets(self):
+        return self._blind_bets
     
     @property
     def ignore_invalid_actions(self):
@@ -109,6 +136,11 @@ class BettingRound:
         round_must_stop = False
         lap_counter = 0
 
+        # Put blind bets
+        for player in self.table.players:
+            if (blind_bet := self.blind_bets.get(player)) is not None:
+                player.add_to_current_amount(blind_bet)
+                
         # Extend betting round until the last aggressive action has been responded
         while not round_must_stop:
 
