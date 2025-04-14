@@ -19,8 +19,6 @@ import random
 import pokerpy as pk
 
 
-# Constants
-
 betting_round_names = [
     (PREFLOP := 'pre-flop'),
     (FLOP := 'flop'),
@@ -28,13 +26,8 @@ betting_round_names = [
     (RIVER := 'river'),
 ]
 
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def figure_out_hand(cards: list[pk.Card]):
     
@@ -46,6 +39,7 @@ def figure_out_hand(cards: list[pk.Card]):
     
     possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
+
 
 def cycle(table: pk.Table):
 
@@ -59,12 +53,9 @@ def cycle(table: pk.Table):
         print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
         print(  '==============================================\n')
 
-    # Make sure every player is active and has no cards
-    table.reset_cycle_states()
-
     for betting_round_name in betting_round_names:
 
-        # Determine whether cycle should be stopped or not
+        # Break before starting if only remains one player
         if len(table.active_players) == 1:
             break
 
@@ -94,6 +85,7 @@ def cycle(table: pk.Table):
 
         # Run betting round
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+            table.reset_betting_round_states()
             for player in betting_round:
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
@@ -118,7 +110,8 @@ def cycle(table: pk.Table):
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 
-    # Display showdown
+    # Display showdown or not showdown
+
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         print('--------------------------------------------------')
@@ -128,7 +121,6 @@ def cycle(table: pk.Table):
         print('--------------------------------------------------\n')
         table.showdown()
 
-    # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
         print('--------------------------------------------------')
@@ -137,25 +129,29 @@ def cycle(table: pk.Table):
             print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
         print('--------------------------------------------------\n')
         table.no_showdown()
-        
+
+
 def game():
 
     print('======================'  )
     print('=== STARTING TABLE ==='  )
     print('======================\n')
 
+    # Prepare the table
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
     table = pk.Table(players, open_fold_allowed=False)
-    cycle(table)
 
+    # Cycle not allowing open fold
+    table.reset_cycle_states()
+    cycle(table)
     input('\n\n--- ENTER ---\n')
 
+    # Cycle allowing open fold
     table.open_fold_allowed = True
+    table.reset_cycle_states()
     cycle(table)
 
-
-# Run test
 
 def main():
     game()

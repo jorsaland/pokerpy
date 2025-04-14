@@ -75,10 +75,6 @@ class BettingRound:
         self._generator: (Generator[Player]|None) = None
         self._has_ended = False
 
-        # Reset betting round states regarding to table and players
-
-        self.table.reset_betting_round_states()
-
 
     @property
     def name(self):

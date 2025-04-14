@@ -31,12 +31,8 @@ SMALL_BLIND = 50
 BIG_BLIND = 100
 
 
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def figure_out_hand(cards: list[pk.Card]):
     
@@ -48,6 +44,7 @@ def figure_out_hand(cards: list[pk.Card]):
     
     possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
+
 
 def cycle(table: pk.Table):
 
@@ -61,10 +58,6 @@ def cycle(table: pk.Table):
         print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
         print(  '==============================================\n')
 
-    # Make sure every player is active and has no cards
-
-    table.reset_cycle_states()
-
     # Run pre-flop
 
     print(f'\n============ STARTING {PREFLOP.upper()} ============\n')
@@ -75,21 +68,29 @@ def cycle(table: pk.Table):
         starting_player = table.players[2],
         stopping_player = table.players[1],
     )
+
     with betting_round_instance as betting_round:
+
+        # Reset betting round states regarding to table and players
+        table.reset_betting_round_states()
+
         # Place small blind
         small_blind_player = table.players[0]
         small_blind_player.add_to_current_amount(SMALL_BLIND)
         table.add_to_current_amount(SMALL_BLIND)
         print(f"{small_blind_player.name} PLACES SMALL BLIND {SMALL_BLIND} ({small_blind_player.name}'s current amount: {small_blind_player.current_amount})")
         print(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+
         # Place big blind
         big_blind_player = table.players[1]
         big_blind_player.add_to_current_amount(BIG_BLIND)
         table.add_to_current_amount(BIG_BLIND - SMALL_BLIND)
         print(f"{big_blind_player.name} PLACES BIG BLIND {BIG_BLIND} ({big_blind_player.name}'s current amount: {big_blind_player.current_amount})")
         print(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+
         # Deal pre-flop
         table.deal_to_players(2)
+
         # Display player cards and hand
         print('\n--------------------------------------------------')
         print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
@@ -99,6 +100,7 @@ def cycle(table: pk.Table):
                 player.assign_hand(hand)
             print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
         print('--------------------------------------------------\n')
+
         # Let players to play
         for player in betting_round:
             amount_to_call = table.current_amount - player.current_amount
@@ -128,21 +130,26 @@ def cycle(table: pk.Table):
 
     for betting_round_name in after_preflop_round_names:
 
+        # Break before starting if only remains one player
         if len(table.active_players) == 1:
             break
 
         print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
 
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+
+            # Reset betting round states regarding to table and players
+            table.reset_betting_round_states()
+
             # Deal three cards to table if round is flop and one if is turn or river
             if betting_round_name == FLOP:
                 table.deal_common_cards(3)        
             else:
                 table.deal_common_cards(1)
+
             # Display player cards and hand
             print('\n--------------------------------------------------')
             print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-            # Let players to play
             for player in table.active_players:
                 hand = figure_out_hand(player.cards + table.common_cards)
                 if hand is not None:
@@ -150,6 +157,7 @@ def cycle(table: pk.Table):
                 print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
             print('--------------------------------------------------\n')
 
+            # Let players to play
             for player in betting_round:
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
@@ -174,7 +182,8 @@ def cycle(table: pk.Table):
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 
-    # Display showdown
+    # Display showdown or not showdown
+
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         print('--------------------------------------------------')
@@ -184,7 +193,6 @@ def cycle(table: pk.Table):
         print('--------------------------------------------------\n')
         table.showdown()
 
-    # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
         print('--------------------------------------------------')
@@ -193,25 +201,29 @@ def cycle(table: pk.Table):
             print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
         print('--------------------------------------------------\n')
         table.no_showdown()
-        
+
+
 def game():
 
     print('======================'  )
     print('=== STARTING TABLE ==='  )
     print('======================\n')
 
+    # Prepare the table
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
     table = pk.Table(players, open_fold_allowed=False)
-    cycle(table)
 
+    # Cycle not allowing open fold
+    table.reset_cycle_states()
+    cycle(table)
     input('\n\n--- ENTER ---\n')
 
+    # Cycle allowing open fold
     table.open_fold_allowed = True
+    table.reset_cycle_states()
     cycle(table)
 
-
-# Run test
 
 def main():
     game()
