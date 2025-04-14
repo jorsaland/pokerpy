@@ -18,8 +18,6 @@ import random
 import deprecated.v04 as v04
 
 
-# Constants
-
 SMALLEST_CHIP = 5
 
 betting_round_names = [
@@ -29,13 +27,8 @@ betting_round_names = [
     (RIVER := 'river'),
 ]
 
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def figure_out_hand(cards: list[v04.Card]):
     
@@ -47,6 +40,7 @@ def figure_out_hand(cards: list[v04.Card]):
     
     possible_hands = [v04.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
+
 
 def cycle(table: v04.Table):
 
@@ -65,7 +59,7 @@ def cycle(table: v04.Table):
 
     for betting_round_name in betting_round_names:
 
-        # Determine whether cycle should be stopped or not
+        # Break before starting if only remains one player
         if len(table.active_players) == 1:
             break
 
@@ -119,7 +113,8 @@ def cycle(table: v04.Table):
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 
-    # Display showdown
+    # Display showdown or not showdown
+
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n') 
         print('--------------------------------------------------')
@@ -129,7 +124,6 @@ def cycle(table: v04.Table):
         print('--------------------------------------------------\n')
         table.showdown()
 
-    # Display no showdown
     else:
         print('\n============ NO SHOWDOWN... ============\n')
         print('--------------------------------------------------')
@@ -139,24 +133,27 @@ def cycle(table: v04.Table):
         print('--------------------------------------------------\n')
         table.no_showdown()        
 
+
 def game():
 
     print('======================'  )
     print('=== STARTING TABLE ==='  )
     print('======================\n')
 
+    # Prepare the table
     print('\nStarting table and players...\n')
     players = [v04.Player(name) for name in player_names]
     table = v04.Table(players, smallest_chip=SMALLEST_CHIP, open_fold_allowed=False)
+    
+    # Cycle not allowing open fold
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
+    # Cycle allowing open fold
     table.open_fold_allowed = True
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     game()

@@ -22,8 +22,6 @@ import random
 from deprecated.v00 import Player, Table
 
 
-# Constants
-
 betting_rounds = ['pre-flop', 'flop', 'turn', 'river']
 
 ACTION_CHECK = 'checks'
@@ -55,13 +53,8 @@ valid_actions_under_bet = [
     ACTION_RAISE,
 ]
 
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def cycle():
 
@@ -122,6 +115,7 @@ def cycle():
         
         print(f'\n============ ENDING {betting_round.upper()} ============\n')
     
+    # Display showdown or not showdown
     if len(active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         print(f'Remaining players: {", ".join(p.name for p in active_players)}')
@@ -133,8 +127,6 @@ def cycle():
         print(f'{winner.name} wins!')
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     cycle()

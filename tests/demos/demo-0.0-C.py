@@ -13,17 +13,9 @@ sys.path.insert(0, '.')
 from deprecated.v00 import Player, Table
 
 
-# Constants
-
 betting_rounds = ['pre-flop', 'flop', 'turn', 'river']
-
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def cycle():
 
@@ -53,8 +45,6 @@ def cycle():
     table.showdown()
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     cycle()

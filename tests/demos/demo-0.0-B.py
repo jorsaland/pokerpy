@@ -9,17 +9,9 @@ to be part of the table.
 import random
 
 
-# Constants
-
 betting_rounds = ['pre-flop', 'flop', 'turn', 'river']
-
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Dealer and player classes
 
 class Player:
     def __init__(self, name: str):
@@ -36,8 +28,6 @@ class Table:
         winner = random.choice(self.players)
         print(f'{winner.name} wins!')
 
-
-# Playability
 
 def cycle():
 
@@ -67,8 +57,6 @@ def cycle():
     table.showdown()
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     cycle()

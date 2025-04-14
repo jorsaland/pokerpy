@@ -21,33 +21,32 @@ import random
 import deprecated.v01 as v01
 
 
-# Constants
-
 betting_round_names = ['pre-flop', 'flop', 'turn', 'river']
-
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 
-# Updates
-
 class UpdatedBettingRound(v01.BettingRound):
+
     def run(self):
+
         # Prepare betting round before players start their actions
         self.table.reset_betting_round_states()
         self.table.deal(self.name)
+
         # Define state variables
         last_aggressive_player: (v01.Player|None) = None
         round_must_stop = False
         lap_counter = 0
+
         # Extend betting round until the last aggressive action has been responded
         while not round_must_stop:
+
             # Add to lap counter
             lap_counter += 1
+
             # All players are itered but only active ones are allowed to act
             for player in self.table.players:
+
                 # Determine whether betting round should be stopped or not
                 if len(self.table.active_players) == 1:
                     print(f'--- only one active player ({self.table.active_players[0].name})... ending round\n')
@@ -57,34 +56,39 @@ class UpdatedBettingRound(v01.BettingRound):
                     print(f'--- {player.name} took the last aggressive action... ending round\n')
                     round_must_stop = True
                     break
+
                 # Determine whether player should be allowed to play or not
                 if player not in self.table.active_players:
                     print(f'--- {player.name} already folded\n')
                     continue
+
                 # Player keeps its turn until selects a valid action
                 while True:
+
                     # Wait for player's action
                     print(f'Waiting for {player.name}...')
                     yield player
+
                     # Determine whether action is valid or not
                     action = player.requested_action
                     if action is not None and v01.action_is_valid(action=action, is_under_bet=self.table.is_under_bet):
                         print(f'>>> {player.name} {action}s <<<\n'.upper())
                         break
                     print(f'--- invalid action: {action}')
+
                 # Determine consequences of aggressive actions
                 if action in v01.aggressive_actions:
                     self.table.become_under_bet()
                     last_aggressive_player = player
+
                 # Determine whether the player becomes inactive or not
                 if action == v01.ACTION_FOLD:
                     self.table.fold_player(player)
+
             # If no player bets, the round must stop
             if last_aggressive_player is None:
                 round_must_stop = True
 
-
-# Playability
 
 def cycle(table: v01.Table):
 
@@ -117,6 +121,7 @@ def cycle(table: v01.Table):
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 
+    # Display showdown or not showdown
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')    
         table.showdown()
@@ -132,18 +137,20 @@ def game():
     print('=== STARTING TABLE ==='  )
     print('======================\n')
 
+    # Prepare the table
     print('\nStarting table and players...\n')
     players = [v01.Player(name) for name in player_names]
     table = v01.Table(players, fold_to_nothing=False)
+
+    # Cycle not allowing open fold
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
+    # Cycle allowing open fold
     table.fold_to_nothing = True
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     game()

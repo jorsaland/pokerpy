@@ -10,17 +10,9 @@ This will hopefully be the base for further development.
 import random
 
 
-# Constants
-
 betting_rounds = ['pre-flop', 'flop', 'turn', 'river']
-
-
-# Test players
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
-
-# Playability
 
 def cycle():
 
@@ -49,8 +41,6 @@ def cycle():
     print(f'{winner} wins!')
     input('\n\n--- ENTER ---\n')
 
-
-# Run test
 
 def main():
     cycle()
