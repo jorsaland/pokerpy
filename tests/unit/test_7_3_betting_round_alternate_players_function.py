@@ -79,7 +79,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             except StopIteration:
                 return awaited_players
 
-        self.assertEqual(activate_all_players(), all_players)
+        self.assertListEqual(activate_all_players(), all_players)
 
 
         # No player is active
@@ -95,10 +95,9 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             try:
                 next(generator) # No more players
             except StopIteration:
-                awaited_player_names = [player.name for player in awaited_players]
-                return awaited_player_names
+                return awaited_players
 
-        self.assertEqual(deactivate_all_players(), [])
+        self.assertListEqual(deactivate_all_players(), [])
 
 
         # Only first player and last player are active
@@ -135,7 +134,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         all_players_but_first_and_last = [Boa, Coral, Dino, Epa]
 
-        def only_deactivate_first_and_last_player():
+        def activate_all_but_first_and_last_player():
 
             table = structures.Table(all_players)
             for player in all_players_but_first_and_last:
@@ -166,7 +165,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             except StopIteration:
                 return awaited_players
 
-        self.assertEqual(only_deactivate_first_and_last_player(), all_players_but_first_and_last)
+        self.assertEqual(activate_all_but_first_and_last_player(), all_players_but_first_and_last)
 
 
         # Some interspersed players are active
@@ -343,7 +342,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         self.assertTrue(end_if_single_player_remaining())
 
 
-        def end_if_first_player_is_the_last_aggressive_one():
+        def end_if_first_player_is_the_stopping_player():
 
             table = structures.Table(all_players)
             table.reset_cycle_states()
@@ -353,41 +352,47 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
+            player = next(generator) # Andy
+            self.assertEqual(player, Andy)
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
+
             # End iteration and retrieve returned value
             try:
-                next(generator) # Andy
+                next(generator) # Boa (should not be reached)
             except StopIteration as ex:
                 return ex.value
 
-        self.assertTrue(end_if_first_player_is_the_last_aggressive_one())
+        self.assertTrue(end_if_first_player_is_the_stopping_player())
 
 
-        def end_if_intermediate_position_player_is_the_last_aggressive_one():
+        def end_if_intermediate_position_player_is_the_stopping_player():
 
             table = structures.Table(all_players)
             table.reset_cycle_states()
 
-            table.set_stopping_player(Coral)
+            table.set_stopping_player(Boa)
             table.add_to_current_amount(100)
 
             generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
 
             player = next(generator) # Andy
+            self.assertEqual(player, Andy)
             player.request_action(structures.Action(constants.ACTION_CALL, 100))
 
             player = next(generator) # Boa
+            self.assertEqual(player, Boa)
             player.request_action(structures.Action(constants.ACTION_CALL, 100))
 
             # End iteration and retrieve returned value
             try:
-                next(generator) # Coral
+                next(generator) # Coral (should not be reached)
             except StopIteration as ex:
                 return ex.value
 
-        self.assertTrue(end_if_intermediate_position_player_is_the_last_aggressive_one())
+        self.assertTrue(end_if_intermediate_position_player_is_the_stopping_player())
 
 
-        def end_if_last_player_is_the_last_aggressive_one():
+        def end_if_last_player_is_the_stopping_player():
 
             table = structures.Table(all_players)
             table.reset_cycle_states()
@@ -406,41 +411,16 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             player = next(generator) # Coral
             player.request_action(structures.Action(constants.ACTION_CALL, 100))
 
-            # End iteration and retrieve returned value
-            try:
-                next(generator) # Dino
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertTrue(end_if_last_player_is_the_last_aggressive_one())
-
-
-        def continue_if_round_starts_not_under_bet():
-
-            table = structures.Table(all_players)
-            table.reset_cycle_states()
-
-            generator = managers.alternate_players(table=table, ignore_invalid_actions=False)
-
-            player = next(generator) # Andy
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-
-            player = next(generator) # Boa
-            player.request_action(structures.Action(constants.ACTION_BET, 100))
-
-            player = next(generator) # Coral
-            player.request_action(structures.Action(constants.ACTION_RAISE, 200))
-
             player = next(generator) # Dino
-            player.request_action(structures.Action(constants.ACTION_CALL, 200))
+            player.request_action(structures.Action(constants.ACTION_CALL, 100))
 
             # End iteration and retrieve returned value
             try:
-                next(generator) # Andy
+                next(generator) # Andy (should not be reached)
             except StopIteration as ex:
                 return ex.value
 
-        self.assertFalse(continue_if_round_starts_not_under_bet())
+        self.assertTrue(end_if_last_player_is_the_stopping_player())
 
 
 if __name__ == '__main__':

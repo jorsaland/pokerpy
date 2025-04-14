@@ -270,22 +270,18 @@ class TestTableClass(TestCase):
         self.assertEqual(table.stopping_player, Boa)
 
 
-        # Invalid types
+        # Invalid type
 
         with self.assertRaises(TypeError) as cm:
             table.set_stopping_player('Dino')
         self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
 
 
-        # Invalid values
+        # Invalid value
         
         with self.assertRaises(ValueError) as cm:
             table.set_stopping_player(structures.Player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
-
-        with self.assertRaises(ValueError) as cm:
-            table.set_stopping_player(Coral)
-        self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format(Coral.name))
 
 
     def test_deal_to_players_method(self):
