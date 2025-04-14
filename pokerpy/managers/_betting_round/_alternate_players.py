@@ -32,7 +32,11 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
 
         # Determine whether player should be allowed to play or not
         if player not in table.active_players:
-            continue
+            if player == table.stopping_player:
+                round_must_stop = True
+                break
+            else:
+                continue
 
         # Player keeps its turn until selects a valid action
         action = yield from wait_for_player(
@@ -44,17 +48,20 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
             table.add_to_current_amount(player.current_amount - table.current_amount)
-            table.set_stopping_player(player)
+            player_index = table.players.index(player)
+            stopping_player = table.players[player_index-1] if player_index != 0 else table.players[-1]
+            table.set_stopping_player(stopping_player)
 
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
             table.fold_player(player)
 
+        # Log table current amount before breaking (or not) in the next block
+        logger.info(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+
         # Stop if the current player still is the stopping player
         if player == table.stopping_player:
             round_must_stop = True
             break
-
-        logger.info(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
 
     return round_must_stop

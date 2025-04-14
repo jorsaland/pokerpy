@@ -190,9 +190,6 @@ class Table:
         if player not in self.players:
             raise ValueError(table_player_not_in_table_message.format(player.name))
 
-        if player not in self.active_players:
-            raise ValueError(table_player_already_folded_message.format(player.name))
-
         self._stopping_player = player
 
 
