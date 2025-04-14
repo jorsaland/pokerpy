@@ -10,6 +10,7 @@ from pokerpy.messages import (
     betting_round_exiting_unended_round_message,
     betting_round_not_str_name_message,
     betting_round_not_table_instance_message,
+    betting_round_not_starting_player_instance_message,
     betting_round_not_stopping_player_instance_message,
     betting_round_not_dict_blind_bets_message,
     betting_round_overloaded_round_message,
@@ -34,8 +35,9 @@ class BettingRound:
         name: str,
         table: Table,
         *,
-        blind_bets: (dict[Player, int]|None) = None,
+        starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
+        blind_bets: (dict[Player, int]|None) = None,
         ignore_invalid_actions = True
     ):
 
@@ -47,6 +49,16 @@ class BettingRound:
         if not isinstance(table, Table):
             raise TypeError(betting_round_not_table_instance_message.format(type(table).__name__))
 
+        if starting_player is None:
+            starting_player = table.players[0]
+        if not isinstance(starting_player, Player):
+            raise TypeError(betting_round_not_starting_player_instance_message.format(type(starting_player).__name__))
+
+        if stopping_player is None:
+            stopping_player = table.players[-1]
+        if not isinstance(stopping_player, Player):
+            raise TypeError(betting_round_not_stopping_player_instance_message.format(type(stopping_player).__name__))
+
         if blind_bets is None:
             blind_bets = {}
         blind_bets_dict_is_valid = (
@@ -56,19 +68,16 @@ class BettingRound:
         )
         if not blind_bets_dict_is_valid:
             raise TypeError(betting_round_not_dict_blind_bets_message)
-        
-        if stopping_player is None:
-            stopping_player = table.players[-1]
-        if not isinstance(stopping_player, Player):
-            raise TypeError(betting_round_not_stopping_player_instance_message)
 
         # Input variables
 
         self._name = name
         self._table = table
+
+        self._starting_player = starting_player
+        self._initial_stopping_player = stopping_player
         self._blind_bets = blind_bets
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
-        self._initial_stopping_player = stopping_player
 
         # State variables
 
@@ -84,6 +93,10 @@ class BettingRound:
     def table(self):
         return self._table
     
+    @property
+    def starting_player(self):
+        return self._starting_player
+
     @property
     def initial_stopping_player(self):
         return self._initial_stopping_player
@@ -146,6 +159,7 @@ class BettingRound:
         self.table.set_stopping_player(self.initial_stopping_player)
         
         # Define state variables
+        starting_player = self.starting_player
         round_must_stop = False
         lap_counter = 0
 
@@ -163,12 +177,12 @@ class BettingRound:
             # All players are itered but only active ones are allowed to act
             round_must_stop = yield from alternate_players(
                 table = self.table,
+                starting_player = starting_player,
                 ignore_invalid_actions = self.ignore_invalid_actions
             )
 
-            # If no player bets, the round must stop
-            if self.table.stopping_player is None:
-                round_must_stop = True
+            # After the first lap, reset the starting player as the first one on the list
+            starting_player = self.table.players[0]
         
         # Move chips to the center of the table
         for player in self.table.players:

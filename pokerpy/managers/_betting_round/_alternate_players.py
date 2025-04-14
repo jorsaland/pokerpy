@@ -5,7 +5,7 @@ Defines the function that alternates players within the betting round.
 
 from pokerpy.constants import ACTION_FOLD, aggressive_action_names
 from pokerpy.logger import get_logger
-from pokerpy.structures import Table
+from pokerpy.structures import Player, Table
 
 
 logger = get_logger()
@@ -14,7 +14,7 @@ logger = get_logger()
 from ._wait_for_player import wait_for_player
 
 
-def alternate_players(*, table: Table, ignore_invalid_actions: bool):
+def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_actions: bool):
 
     """
     Alternates players within the betting round. Once the generator ends, returns whether round must stop or not.
@@ -29,6 +29,10 @@ def alternate_players(*, table: Table, ignore_invalid_actions: bool):
         if len(table.active_players) == 1:
             round_must_stop = True
             break
+
+        # Jump until the starting player has to play
+        if table.players.index(player) < table.players.index(starting_player):
+            continue
 
         # Determine whether player should be allowed to play or not
         if player not in table.active_players:
