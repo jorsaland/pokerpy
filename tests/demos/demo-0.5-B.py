@@ -28,7 +28,6 @@ after_preflop_round_names = [
 
 BLIND_BET = 100
 
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 

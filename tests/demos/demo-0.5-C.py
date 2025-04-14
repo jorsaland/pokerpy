@@ -30,7 +30,6 @@ after_preflop_round_names = [
 SMALL_BLIND = 50
 BIG_BLIND = 100
 
-
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 
