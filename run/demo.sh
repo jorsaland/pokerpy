@@ -29,7 +29,3 @@ printf "\n\n\n"
 
 source ./env/bin/activate
 python $filepath
-
-printf "\n\n"
-echo -n "--- ENTER ---"
-read

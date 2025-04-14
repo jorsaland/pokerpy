@@ -47,6 +47,7 @@ def cycle():
     print(f'\n============ SHOWDOWN! ============\n')
     winner = random.choice(player_names)
     print(f'{winner} wins!')
+    input('\n\n--- ENTER ---\n')
 
 
 # Run test

@@ -152,11 +152,11 @@ def game():
     players = [v04.Player(name) for name in player_names]
     table = v04.Table(players, open_fold_allowed=False)
     cycle(table)
-
     input('\n\n--- ENTER ---\n')
 
     table.open_fold_allowed = True
     cycle(table)
+    input('\n\n--- ENTER ---\n')
 
 
 # Run test

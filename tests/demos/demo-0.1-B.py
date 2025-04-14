@@ -131,6 +131,7 @@ def cycle():
         print('\n============ NO SHOWDOWN... ============\n')
         winner = active_players[0]
         print(f'{winner.name} wins!')
+    input('\n\n--- ENTER ---\n')
 
 
 # Run test

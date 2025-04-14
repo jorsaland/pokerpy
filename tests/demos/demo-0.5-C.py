@@ -223,6 +223,7 @@ def game():
     table.open_fold_allowed = True
     table.reset_cycle_states()
     cycle(table)
+    input('\n\n--- ENTER ---\n')
 
 
 def main():

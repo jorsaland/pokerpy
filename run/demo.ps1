@@ -33,7 +33,3 @@ deactivate
 
 Pop-Location
 Pop-Location
-
-Write-Host `n
-Write-Host "--- ENTER ---" -NoNewLine
-$Host.UI.ReadLine()

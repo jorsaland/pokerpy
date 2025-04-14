@@ -65,6 +65,7 @@ def cycle():
 
     print(f'\n============ SHOWDOWN! ============\n')
     table.showdown()
+    input('\n\n--- ENTER ---\n')
 
 
 # Run test
