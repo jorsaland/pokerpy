@@ -8,10 +8,10 @@ from pokerpy.logger import get_logger
 from pokerpy.structures import Player, Table
 
 
-logger = get_logger()
-
-
 from ._wait_for_player import wait_for_player
+
+
+logger = get_logger()
 
 
 def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_actions: bool):

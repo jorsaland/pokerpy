@@ -6,13 +6,13 @@ Defines the class that represents a betting round context manager.
 from collections.abc import Generator
 
 
+from pokerpy.logger import get_logger
 from pokerpy.messages import (
     betting_round_exiting_unended_round_message,
     betting_round_not_str_name_message,
     betting_round_not_table_instance_message,
     betting_round_not_starting_player_instance_message,
     betting_round_not_stopping_player_instance_message,
-    betting_round_not_dict_blind_bets_message,
     betting_round_overloaded_round_message,
     betting_round_already_ended_round_message,
 )
@@ -20,6 +20,9 @@ from pokerpy.structures import Player, Table
 
 
 from ._alternate_players import alternate_players
+
+
+logger = get_logger()
 
 
 class BettingRound:
@@ -37,7 +40,6 @@ class BettingRound:
         *,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
-        blind_bets: (dict[Player, int]|None) = None,
         ignore_invalid_actions = True
     ):
 
@@ -59,16 +61,6 @@ class BettingRound:
         if not isinstance(stopping_player, Player):
             raise TypeError(betting_round_not_stopping_player_instance_message.format(type(stopping_player).__name__))
 
-        if blind_bets is None:
-            blind_bets = {}
-        blind_bets_dict_is_valid = (
-            isinstance(blind_bets,dict) and
-            all(isinstance(key, Player) for key in blind_bets.keys()) and
-            all(isinstance(value, int) for value in blind_bets.values())
-        )
-        if not blind_bets_dict_is_valid:
-            raise TypeError(betting_round_not_dict_blind_bets_message)
-
         # Input variables
 
         self._name = name
@@ -76,14 +68,17 @@ class BettingRound:
 
         self._starting_player = starting_player
         self._initial_stopping_player = stopping_player
-        self._blind_bets = blind_bets
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
 
         # State variables
 
         self._generator: (Generator[Player]|None) = None
         self._has_ended = False
-    
+
+        # Reset betting round states regarding to table and players
+
+        self.table.reset_betting_round_states()
+
 
     @property
     def name(self):
@@ -108,11 +103,7 @@ class BettingRound:
     @property
     def has_ended(self):
         return self._has_ended
-    
-    @property
-    def blind_bets(self):
-        return self._blind_bets
-    
+
     @property
     def ignore_invalid_actions(self):
         return self._ignore_invalid_actions
@@ -152,21 +143,15 @@ class BettingRound:
 
         # Check betting round has not ended yet
         if self.has_ended:
-            raise RuntimeError(betting_round_already_ended_round_message) 
-
-        # Prepare betting round before players start their actions
-        self.table.reset_betting_round_states()
-        self.table.set_stopping_player(self.initial_stopping_player)
+            raise RuntimeError(betting_round_already_ended_round_message)
         
+        # Prepare betting round before players start their actions
+        self.table.set_stopping_player(self.initial_stopping_player)
+
         # Define state variables
         starting_player = self.starting_player
         round_must_stop = False
         lap_counter = 0
-
-        # Put blind bets
-        for player in self.table.players:
-            if (blind_bet := self.blind_bets.get(player)) is not None:
-                player.add_to_current_amount(blind_bet)
                 
         # Extend betting round until the last aggressive action has been responded
         while not round_must_stop:
