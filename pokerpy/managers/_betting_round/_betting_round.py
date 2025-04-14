@@ -35,7 +35,7 @@ class BettingRound:
         table: Table,
         *,
         blind_bets: (dict[Player, int]|None) = None,
-        initial_stopping_player: (Player|None) = None,
+        stopping_player: (Player|None) = None,
         ignore_invalid_actions = True
     ):
 
@@ -57,9 +57,9 @@ class BettingRound:
         if not blind_bets_dict_is_valid:
             raise TypeError(betting_round_not_dict_blind_bets_message)
         
-        if initial_stopping_player is None:
-            initial_stopping_player = table.players[-1]
-        if not isinstance(initial_stopping_player, Player):
+        if stopping_player is None:
+            stopping_player = table.players[-1]
+        if not isinstance(stopping_player, Player):
             raise TypeError(betting_round_not_stopping_player_instance_message)
 
         # Input variables
@@ -68,7 +68,7 @@ class BettingRound:
         self._table = table
         self._blind_bets = blind_bets
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
-        self._initial_stopping_player = initial_stopping_player
+        self._initial_stopping_player = stopping_player
 
         # State variables
 
