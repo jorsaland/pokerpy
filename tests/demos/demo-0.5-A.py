@@ -29,6 +29,17 @@ betting_round_names = [
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 
+def display_cards_and_money(table: pk.Table):
+    print('\n--------------------------------------------------')
+    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
+    for player in table.active_players:
+        hand = figure_out_hand(player.cards + table.common_cards)
+        if hand is not None:
+            player.assign_hand(hand)
+        print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards) if player.cards else None} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
+    print('--------------------------------------------------\n')
+
+
 def figure_out_hand(cards: list[pk.Card]):
     
     if len(cards) < 5:
@@ -64,24 +75,17 @@ def cycle(table: pk.Table):
         # Deal two cards to each player if round is pre-flop
         if betting_round_name == PREFLOP:
             table.deal_to_players(2)
+            display_cards_and_money(table)
         
         # Deal three cards to table if round is flop
         if betting_round_name == FLOP:
             table.deal_common_cards(3)
+            display_cards_and_money(table)
         
         # Deal one card to table if round is turn or river
         if betting_round_name in (TURN, RIVER):
             table.deal_common_cards(1)
-        
-        # Display player cards and hand
-        print('\n--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            hand = figure_out_hand(player.cards + table.common_cards)
-            if hand is not None:
-                player.assign_hand(hand)
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+            display_cards_and_money(table)
 
         # Run betting round
         with pk.BettingRound(name=betting_round_name, table=table) as betting_round:

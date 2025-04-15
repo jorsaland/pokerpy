@@ -35,6 +35,17 @@ BIG_BLIND = 100
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 
+def display_cards_and_money(table: pk.Table):
+    print('\n--------------------------------------------------')
+    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
+    for player in table.active_players:
+        hand = figure_out_hand(player.cards + table.common_cards)
+        if hand is not None:
+            player.assign_hand(hand)
+        print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards) if player.cards else None} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
+    print('--------------------------------------------------\n')
+
+
 def figure_out_hand(cards: list[pk.Card]):
     
     if len(cards) < 5:
@@ -80,11 +91,6 @@ def cycle(table: pk.Table):
             action = pk.Action(pk.ACTION_CHECK)
             player.request_action(action)
 
-        # Display pot
-        print('\n--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-        print('--------------------------------------------------\n')
-
     print(f'\n============ ENDING {ANTE_ROUND.upper()} ============\n')
 
     # Run pre-flop
@@ -119,16 +125,7 @@ def cycle(table: pk.Table):
 
         # Deal pre-flop
         table.deal_to_players(2)
-
-        # Display player cards and hand
-        print('\n--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            hand = figure_out_hand(player.cards + table.common_cards)
-            if hand is not None:
-                player.assign_hand(hand)
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+        display_cards_and_money(table)
 
         # Let players to play
         for player in betting_round:
@@ -175,16 +172,7 @@ def cycle(table: pk.Table):
                 table.deal_common_cards(3)        
             else:
                 table.deal_common_cards(1)
-
-            # Display player cards and hand
-            print('\n--------------------------------------------------')
-            print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-            for player in table.active_players:
-                hand = figure_out_hand(player.cards + table.common_cards)
-                if hand is not None:
-                    player.assign_hand(hand)
-                print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-            print('--------------------------------------------------\n')
+            display_cards_and_money(table)
 
             # Let players to play
             for player in betting_round:
