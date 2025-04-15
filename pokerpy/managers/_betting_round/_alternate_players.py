@@ -51,7 +51,9 @@ def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_a
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
-            table.add_to_current_amount(player.current_amount - table.current_amount)
+            raising_amount = player.current_amount - table.current_amount
+            table.overwrite_smallest_rising_amount(raising_amount) 
+            table.add_to_current_amount(raising_amount)
             player_index = table.players.index(player)
             stopping_player = table.players[player_index-1] if player_index != 0 else table.players[-1]
             table.set_stopping_player(stopping_player)

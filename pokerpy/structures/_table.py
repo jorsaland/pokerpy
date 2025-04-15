@@ -17,6 +17,7 @@ from pokerpy.messages import (
     table_not_player_instance_message,
     table_not_int_central_pot_message,
     table_not_int_current_amount_message,
+    table_not_int_smallest_rising_amount_message,
     table_not_int_smallest_chip_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
@@ -86,6 +87,7 @@ class Table:
         # State variables
 
         self._active_players: list[Player] = []
+        self._smallest_rising_amount = smallest_bet
         self._current_amount = 0
         self._stopping_player: (Player|None) = None
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
@@ -109,6 +111,11 @@ class Table:
     def smallest_bet(self):
         assert self._smallest_bet % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._smallest_bet
+    
+    @property
+    def smallest_rising_amount(self):
+        assert self._smallest_rising_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
+        return self._smallest_rising_amount
 
     @property
     def current_amount(self):
@@ -152,6 +159,25 @@ class Table:
             raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
+
+
+    def overwrite_smallest_rising_amount(self, amount: int):
+
+        """
+        Overwrites the smallest amount expected to make a raise.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_smallest_rising_amount_message.format(type(amount).__name__))
+
+        if amount < 0:
+            raise ValueError(table_negative_increase_message.format(amount))
+        
+        if not amount % self.smallest_chip == 0:
+            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+
+        self._smallest_rising_amount = amount
+
 
 
     def add_to_central_pot(self, amount: int):
@@ -326,6 +352,7 @@ class Table:
         """
 
         self._current_amount = 0
+        self._smallest_rising_amount = self.smallest_bet
         self._stopping_player = None
 
         for player in self.players:
