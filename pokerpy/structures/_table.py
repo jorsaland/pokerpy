@@ -21,6 +21,7 @@ from pokerpy.messages import (
     table_player_not_in_table_message,
     table_player_already_folded_message,
     table_smallest_chip_not_more_than_zero_message,
+    table_already_asigned_players_message,
 )
 
 
@@ -52,11 +53,17 @@ class Table:
         # Check input values
         if not smallest_chip > 0:
             raise ValueError(table_smallest_chip_not_more_than_zero_message.format(smallest_chip))
+        already_asigned_players = [player.name for player in players if player.already_asigned]
+        if already_asigned_players:
+            raise ValueError(table_already_asigned_players_message.format(', '.join(already_asigned_players)))
 
         # Input variables
         self._players = players
         self._smallest_chip = smallest_chip
-        self.open_fold_allowed = open_fold_allowed
+        self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
+        for player in players:
+            player._already_asigned = True
+            player._smallest_chip = smallest_chip
 
         # State variables
         self._active_players: list[Player] = []

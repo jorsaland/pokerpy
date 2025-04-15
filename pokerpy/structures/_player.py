@@ -10,6 +10,8 @@ from pokerpy.messages import (
     player_not_int_current_amount_message,
     player_not_hand_instance_message,
     player_not_str_name_message,
+    player_smallest_chip_not_asigned_message,
+    player_not_smallest_chip_multiple_increase_message,
 )
 
 
@@ -39,7 +41,9 @@ class Player:
         self._requested_action: (Action|None) = None
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
-        self._current_amount = 0
+        self._current_amount = 0 # this is set by instance methods
+        self._already_asigned = False # this is set by the table when instanced
+        self._smallest_chip = 0 # this is set by the table when instanced
 
 
     @property
@@ -60,7 +64,18 @@ class Player:
 
     @property
     def current_amount(self):
+        assert self._current_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation
         return self._current_amount
+    
+    @property
+    def already_asigned(self):
+        return self._already_asigned
+    
+    @property
+    def smallest_chip(self):
+        if self._smallest_chip == 0:
+            raise ValueError(player_smallest_chip_not_asigned_message)
+        return self._smallest_chip
 
 
     def __repr__(self):
@@ -132,6 +147,9 @@ class Player:
 
         if amount < 0:
             raise ValueError(player_negative_increase_message.format(amount))
+
+        if not amount % self.smallest_chip == 0:
+            raise ValueError(player_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
 

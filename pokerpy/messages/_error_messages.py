@@ -17,6 +17,8 @@ player_not_card_instance_message = "Player card must be an instance of class Car
 player_not_hand_instance_message = "Player hand must be an instance of class Hand, not '{}'."
 player_not_int_current_amount_message = "Player current amount increase must be int, not '{}'."
 player_negative_increase_message = "Amount increase must be at least zero (received {})."
+player_not_smallest_chip_multiple_increase_message = "Amount increase must be a multiple of the smallest chip: {} (received {})."
+player_smallest_chip_not_asigned_message = "Player smallest chip has not being linked to a table yet."
 
 # Table messages
 table_not_list_players_message = "Table players must be list, not '{}'."
@@ -31,10 +33,12 @@ table_not_int_current_amount_message = "Table current amount increase must be in
 table_negative_increase_message = "Amount increase must be at least zero (received {})."
 table_not_smallest_chip_multiple_increase_message = "Amount increase must be a multiple of the smallest chip: {} (received {})."
 table_smallest_chip_not_more_than_zero_message = "Smallest chip must be more than zero (received {})."
+table_already_asigned_players_message = "Players {} have been asigned to another table. Please, create new Player instances."
 
 # Betting round messages
 betting_round_not_str_name_message = "Betting round name must be str, not '{}'."
 betting_round_not_table_instance_message = "Betting round table must be an instance of class Table, not '{}'."
+betting_round_not_int_smallest_bet_message = "Betting round smallest bet must be int, not '{}'."
 betting_round_not_starting_player_instance_message = "Betting round starting player must be an instance of class Player, not '{}'."
 betting_round_not_stopping_player_instance_message = "Betting round stopping player must be an instance of class Player, not '{}'."
 betting_round_exiting_unended_round_message = 'Betting round did not end.'
