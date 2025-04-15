@@ -204,21 +204,13 @@ def cycle(table: pk.Table):
     # Display showdown or not showdown
 
     if len(table.active_players) > 1:
-        print(f'\n============ SHOWDOWN! ============\n')    
-        print('--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards)} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+        print(f'\n============ SHOWDOWN! ============\n')
+        display_cards_and_money(table)
         table.showdown()
 
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        print('--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards)} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+        display_cards_and_money(table)
         table.no_showdown()
 
 
