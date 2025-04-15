@@ -104,9 +104,13 @@ def cycle(table: pk.Table):
                 elif action_name == pk.ACTION_CALL:
                     action_value = amount_to_call
                 elif action_name == pk.ACTION_RAISE:
-                    action_value = random.randint(amount_to_call, amount_to_call + 100)
+                    smallest_amount = amount_to_call + table.smallest_rising_amount
+                    action_value = random.randint(smallest_amount, smallest_amount*3)
                 elif action_name == pk. ACTION_BET:
-                    action_value = random.randint(1, 100)
+                    if table.central_pot < 2:
+                        action_value = random.randint(1, 5)
+                    else:
+                        action_value = random.randint(table.central_pot//2, table.central_pot*2)
                 else:
                     raise RuntimeError('we live in a society')
                 action = pk.Action(action_name, action_value)
@@ -117,21 +121,13 @@ def cycle(table: pk.Table):
     # Display showdown or not showdown
 
     if len(table.active_players) > 1:
-        print(f'\n============ SHOWDOWN! ============\n')    
-        print('--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards)} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+        print(f'\n============ SHOWDOWN! ============\n')
+        display_cards_and_money(table)
         table.showdown()
 
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        print('--------------------------------------------------')
-        print(f'Common cards: {"".join(str(c) for c in table.common_cards)} | central pot: {table.central_pot}')
-        for player in table.active_players:
-            print(f"{player.name}'s cards: {''.join(str(c) for c in player.cards)} | hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''}")
-        print('--------------------------------------------------\n')
+        display_cards_and_money(table)
         table.no_showdown()
 
 
