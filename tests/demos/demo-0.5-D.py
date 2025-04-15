@@ -142,13 +142,11 @@ def cycle(table: pk.Table):
             elif action_name == pk.ACTION_CALL:
                 action = pk.Action(action_name, amount_to_call)
             elif action_name == pk. ACTION_BET:
-                action = pk.Action(action_name, random.randint(BIG_BLIND, 100))
+                action = pk.Action(action_name, random.randint(BIG_BLIND, BIG_BLIND*5))
             elif action_name == pk.ACTION_RAISE:
-                action_value = random.randint(amount_to_call, amount_to_call * 5)
+                smallest_amount = amount_to_call + table.smallest_rising_amount
+                action_value = random.randint(smallest_amount, smallest_amount*3)
                 action = pk.Action(action_name, action_value)
-                while not pk.managers.action_is_valid(action=action, table=table, player=player):
-                    action_value = random.randint(amount_to_call, amount_to_call * 5)
-                    action = pk.Action(action_name, action_value)
             else:
                 raise RuntimeError('we live in a society')
             player.request_action(action)
@@ -192,13 +190,11 @@ def cycle(table: pk.Table):
                 elif action_name == pk.ACTION_CALL:
                     action = pk.Action(action_name, amount_to_call)
                 elif action_name == pk. ACTION_BET:
-                    action = pk.Action(action_name, random.randint(BIG_BLIND, 100))
+                    action = pk.Action(action_name, random.randint(table.central_pot//2, table.central_pot*2))
                 elif action_name == pk.ACTION_RAISE:
-                    action_value = random.randint(amount_to_call, amount_to_call * 5)
+                    smallest_amount = amount_to_call + table.smallest_rising_amount
+                    action_value = random.randint(smallest_amount, smallest_amount*3)
                     action = pk.Action(action_name, action_value)
-                    while not pk.managers.action_is_valid(action=action, table=table, player=player):
-                        action_value = random.randint(amount_to_call, amount_to_call * 5)
-                        action = pk.Action(action_name, action_value)
                 else:
                     raise RuntimeError('we live in a society')
                 player.request_action(action)
