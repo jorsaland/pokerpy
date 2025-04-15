@@ -264,8 +264,8 @@ class Table:
 
         for _ in range(cards_count):
             for player in self.active_players:
-                logger.info(f'Dealer deals card to {player.name}.')
                 card = secrets.choice(self.deck)
+                logger.info(f'Dealer deals card {card} to {player.name}.')
                 self._deck.remove(card)
                 player.deliver_card(card)
 
@@ -279,11 +279,11 @@ class Table:
         if not isinstance(cards_count, int):
             raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
 
-        logger.info(f'Dealer deals common cards.')
         for _ in range(cards_count):
             card = secrets.choice(self.deck)
             self._deck.remove(card)
             self._common_cards.append(card)
+        logger.info(f'Dealer deals common cards.')
 
 
     # Methods to determine winner(s)
