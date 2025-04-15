@@ -22,6 +22,8 @@ from pokerpy.messages import (
     table_player_already_folded_message,
     table_smallest_chip_not_more_than_zero_message,
     table_already_asigned_players_message,
+    table_not_int_smallest_bet_message,
+    table_smallest_bet_not_multiple_of_smallest_chip_message,
 )
 
 
@@ -40,32 +42,49 @@ class Table:
     """
 
 
-    def __init__(self, players: list[Player], *, open_fold_allowed = False, smallest_chip = 1):
+    def __init__(
+        self,
+        players: list[Player],
+        *,
+        smallest_chip: int = 1,
+        smallest_bet: int = None,
+        open_fold_allowed = False,
+    ):
 
-        # Check input types
+        # Validations
+
         if not isinstance(players, list):
             raise TypeError(table_not_list_players_message.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(table_not_all_player_instances_message)
-        if not isinstance(smallest_chip, int):
-            raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
-        
-        # Check input values
-        if not smallest_chip > 0:
-            raise ValueError(table_smallest_chip_not_more_than_zero_message.format(smallest_chip))
         already_asigned_players = [player.name for player in players if player.already_asigned]
         if already_asigned_players:
             raise ValueError(table_already_asigned_players_message.format(', '.join(already_asigned_players)))
 
+        if not isinstance(smallest_chip, int):
+            raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
+        if not smallest_chip > 0:
+            raise ValueError(table_smallest_chip_not_more_than_zero_message.format(smallest_chip))
+
+        if smallest_bet is None:
+            smallest_bet = smallest_chip
+        if not isinstance(smallest_bet, int):
+            raise TypeError(table_not_int_smallest_bet_message.format(type(smallest_bet).__name__))
+        if not smallest_bet % smallest_chip == 0:
+            raise ValueError(table_smallest_bet_not_multiple_of_smallest_chip_message.format(smallest_chip, smallest_bet))
+
         # Input variables
+
         self._players = players
         self._smallest_chip = smallest_chip
+        self._smallest_bet = smallest_bet
         self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
         for player in players:
             player._already_asigned = True
             player._smallest_chip = smallest_chip
 
         # State variables
+
         self._active_players: list[Player] = []
         self._current_amount = 0
         self._stopping_player: (Player|None) = None
@@ -79,12 +98,17 @@ class Table:
         return tuple(self._players)
 
     @property
-    def smallest_chip(self):
-        return self._smallest_chip
-
-    @property
     def active_players(self):
         return tuple(self._active_players)
+
+    @property
+    def smallest_chip(self):
+        return self._smallest_chip
+    
+    @property
+    def smallest_bet(self):
+        assert self._smallest_bet % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
+        return self._smallest_bet
 
     @property
     def current_amount(self):
