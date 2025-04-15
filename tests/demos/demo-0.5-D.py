@@ -28,9 +28,9 @@ after_preflop_round_names = [
     (RIVER := 'river'),
 ]
 
-ANTE = 5
-SMALL_BLIND = 50
-BIG_BLIND = 100
+ANTE = 1
+SMALL_BLIND = 5
+BIG_BLIND = 10
 
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
@@ -138,16 +138,19 @@ def cycle(table: pk.Table):
             else:
                 action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
             if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                action_value = 0
+                action = pk.Action(action_name, 0)
             elif action_name == pk.ACTION_CALL:
-                action_value = amount_to_call
-            elif action_name == pk.ACTION_RAISE:
-                action_value = random.randint(amount_to_call, amount_to_call + 100)
+                action = pk.Action(action_name, amount_to_call)
             elif action_name == pk. ACTION_BET:
-                action_value = random.randint(1, 100)
+                action = pk.Action(action_name, random.randint(BIG_BLIND, 100))
+            elif action_name == pk.ACTION_RAISE:
+                action_value = random.randint(amount_to_call, amount_to_call * 5)
+                action = pk.Action(action_name, action_value)
+                while not pk.managers.action_is_valid(action=action, table=table, player=player):
+                    action_value = random.randint(amount_to_call, amount_to_call * 5)
+                    action = pk.Action(action_name, action_value)
             else:
                 raise RuntimeError('we live in a society')
-            action = pk.Action(action_name, action_value)
             player.request_action(action)
 
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
@@ -185,16 +188,19 @@ def cycle(table: pk.Table):
                 else:
                     action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
                 if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                    action_value = 0
+                    action = pk.Action(action_name, 0)
                 elif action_name == pk.ACTION_CALL:
-                    action_value = amount_to_call
-                elif action_name == pk.ACTION_RAISE:
-                    action_value = random.randint(amount_to_call, amount_to_call + 100)
+                    action = pk.Action(action_name, amount_to_call)
                 elif action_name == pk. ACTION_BET:
-                    action_value = random.randint(1, 100)
+                    action = pk.Action(action_name, random.randint(BIG_BLIND, 100))
+                elif action_name == pk.ACTION_RAISE:
+                    action_value = random.randint(amount_to_call, amount_to_call * 5)
+                    action = pk.Action(action_name, action_value)
+                    while not pk.managers.action_is_valid(action=action, table=table, player=player):
+                        action_value = random.randint(amount_to_call, amount_to_call * 5)
+                        action = pk.Action(action_name, action_value)
                 else:
                     raise RuntimeError('we live in a society')
-                action = pk.Action(action_name, action_value)
                 player.request_action(action)
 
         print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
@@ -229,7 +235,7 @@ def game():
     # Prepare the table
     print('\nStarting table and players...\n')
     players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players, open_fold_allowed=False)
+    table = pk.Table(players, open_fold_allowed=False, smallest_bet=BIG_BLIND)
 
     # Cycle not allowing open fold
     table.reset_cycle_states()
