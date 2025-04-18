@@ -17,8 +17,35 @@ class TestBettingRoundActionIsValidFunction(TestCase):
 
 
     """
-    Runs unit tests on action_is_valid function.
+    Runs unit tests on get_valid_action_names and action_is_valid functions.
     """
+
+
+    def test_get_valid_action_names(self):
+
+        """
+        Runs test cases on function get_valid_action_names.
+        """
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=0, open_fold_allowed=True)),
+            sorted([constants.ACTION_FOLD, constants.ACTION_CHECK, constants.ACTION_BET])
+        )
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=0, open_fold_allowed=False)),
+            sorted([constants.ACTION_CHECK, constants.ACTION_BET])
+        )
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=10, open_fold_allowed=True)),
+            sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
+        )
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=10, open_fold_allowed=False)),
+            sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
+        )
 
 
     def test_actions_if_nobody_has_bet_and_folding_is_allowed(self):
