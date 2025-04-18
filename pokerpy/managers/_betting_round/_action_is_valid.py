@@ -14,6 +14,24 @@ from pokerpy.constants import (
 from pokerpy.structures import Action, Player, Table
 
 
+def get_valid_action_names(*, amount_to_call: int, open_fold_allowed: bool):
+
+    """
+    Lists the valid possible actions depending on previous actions taken during the betting round.
+    """
+
+    if amount_to_call != 0:
+        valid_action_names = valid_action_names_under_bet
+
+    else:
+        if open_fold_allowed:
+            valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
+        else:
+            valid_action_names = valid_action_names_not_under_bet
+
+    return valid_action_names
+
+
 def action_is_valid(*, action: Action, table: Table, player: Player):
 
     """
@@ -24,13 +42,10 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     amount_to_call = table.current_amount - player.current_amount
 
     # Validate action per se
-    if amount_to_call != 0:
-        valid_action_names = valid_action_names_under_bet
-    else:
-        if table.open_fold_allowed:
-            valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
-        else:
-            valid_action_names = valid_action_names_not_under_bet
+    valid_action_names = get_valid_action_names(
+        amount_to_call = amount_to_call,
+        open_fold_allowed = table.open_fold_allowed,
+    )
     if action.name not in valid_action_names:
         return False
 
