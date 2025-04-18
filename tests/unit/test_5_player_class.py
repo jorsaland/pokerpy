@@ -46,7 +46,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             structures.Player('Andy', smallest_chip=0)
-        self.assertEqual(cm.exception.args[0], messages.player_smallest_chip_not_more_than_zero_message.format(0))
+        self.assertEqual(cm.exception.args[0], messages.player_not_positive_smalleset_chip_message.format(0))
 
 
     def test_request_action_and_reset_action_methods(self):
@@ -194,15 +194,15 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, -100))
+        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, -100))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(7)
-        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, 7))
+        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, 7))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(77)
-        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, 77))
+        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, 77))
 
 
     def test_reset_betting_round_states_method(self):

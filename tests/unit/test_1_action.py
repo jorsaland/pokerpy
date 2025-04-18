@@ -52,7 +52,7 @@ class TestAction(TestCase):
         # Negative amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_FOLD, -100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_zero_message.format(constants.ACTION_FOLD, -100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_zero_amount_message.format(constants.ACTION_FOLD, -100))
 
         # Zero amount
         structures.Action(constants.ACTION_FOLD)
@@ -61,7 +61,7 @@ class TestAction(TestCase):
         # Non-zero amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_FOLD, 100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_zero_message.format(constants.ACTION_FOLD, 100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_zero_amount_message.format(constants.ACTION_FOLD, 100))
 
 
         # Action check amounts
@@ -69,7 +69,7 @@ class TestAction(TestCase):
         # Negative amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_CHECK, -100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_zero_message.format(constants.ACTION_CHECK, -100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_zero_amount_message.format(constants.ACTION_CHECK, -100))
 
         # Zero amount
         structures.Action(constants.ACTION_CHECK)
@@ -78,7 +78,7 @@ class TestAction(TestCase):
         # Non-zero amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_CHECK, 100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_zero_message.format(constants.ACTION_CHECK, 100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_zero_amount_message.format(constants.ACTION_CHECK, 100))
 
 
         # Action bet amounts
@@ -86,15 +86,15 @@ class TestAction(TestCase):
         # Negative amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_BET, -100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_BET, -100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_BET, -100))
 
         # Zero amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_BET)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_BET, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_BET, 0))
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_BET, 0)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_BET, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_BET, 0))
 
         # Non-zero amount
         structures.Action(constants.ACTION_BET, 100)
@@ -105,15 +105,15 @@ class TestAction(TestCase):
         # Negative amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_CALL, -100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_CALL, -100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_CALL, -100))
 
         # Zero amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_CALL)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_CALL, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_CALL, 0))
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_CALL, 0)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_CALL, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_CALL, 0))
 
         # Non-zero amount
         structures.Action(constants.ACTION_CALL, 100)
@@ -124,15 +124,15 @@ class TestAction(TestCase):
         # Negative amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_RAISE, -100)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_RAISE, -100))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_RAISE, -100))
 
         # Zero amount
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_RAISE)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_RAISE, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_RAISE, 0))
         with self.assertRaises(ValueError) as cm:
             structures.Action(constants.ACTION_RAISE, 0)
-        self.assertEqual(cm.exception.args[0], messages.action_amount_not_more_than_zero_message.format(constants.ACTION_RAISE, 0))
+        self.assertEqual(cm.exception.args[0], messages.action_not_positive_amount_message.format(constants.ACTION_RAISE, 0))
 
         # Non-zero amount
         structures.Action(constants.ACTION_RAISE, 100)

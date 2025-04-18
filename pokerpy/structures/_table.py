@@ -9,7 +9,7 @@ import secrets
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    table_not_smallest_chip_multiple_increase_message,
+    table_increase_not_multiple_of_smallest_chip_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
     table_not_all_player_instances_message,
@@ -20,7 +20,7 @@ from pokerpy.messages import (
     table_not_int_smallest_chip_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
-    table_smallest_chip_not_more_than_zero_message,
+    table_not_positive_smallest_chip_message,
     table_sra_not_multiple_of_smallest_chip_message,
     table_not_int_smallest_bet_message,
     table_smallest_bet_not_multiple_of_smallest_chip_message,
@@ -61,7 +61,7 @@ class Table:
         if not isinstance(smallest_chip, int):
             raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
         if not smallest_chip > 0:
-            raise ValueError(table_smallest_chip_not_more_than_zero_message.format(smallest_chip))
+            raise ValueError(table_not_positive_smallest_chip_message.format(smallest_chip))
 
         if smallest_bet is None:
             smallest_bet = smallest_chip
@@ -234,7 +234,7 @@ class Table:
             raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
         
         if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+            raise ValueError(table_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
 
@@ -264,7 +264,7 @@ class Table:
             raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
 
         if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+            raise ValueError(table_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
 
         self._central_pot += amount
 

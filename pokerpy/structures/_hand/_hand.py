@@ -10,7 +10,7 @@ from typing import NewType
 from pokerpy import constants
 from pokerpy.messages import (
     hand_not_all_card_instances_message,
-    hand_not_iterable_object_cards_message,
+    hand_cards_not_iterable_object_message,
 )
 
 
@@ -35,7 +35,7 @@ class Hand:
 
         # Check input type
         if not isinstance(cards, Iterable):
-            raise TypeError(hand_not_iterable_object_cards_message.format(type(cards).__name__))
+            raise TypeError(hand_cards_not_iterable_object_message.format(type(cards).__name__))
 
         cards_list = list(cards)
         if not all(isinstance(card, Card) for card in cards_list):

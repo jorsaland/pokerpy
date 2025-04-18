@@ -23,7 +23,7 @@ def get_logger():
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
 
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.CRITICAL)
         logger.addHandler(handler)
     
     return logger

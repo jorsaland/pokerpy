@@ -9,8 +9,8 @@ from pokerpy.constants import (
     possible_action_names,
 )
 from pokerpy.messages import (
-    action_amount_not_more_than_zero_message,
-    action_amount_not_zero_message,
+    action_not_positive_amount_message,
+    action_not_zero_amount_message,
     action_not_int_amount_message,
     action_not_str_name_message,
     action_invalid_name_message,
@@ -41,10 +41,10 @@ class Action:
         # Validate amount
         if name in (ACTION_FOLD, ACTION_CHECK):
             if amount != 0:
-                raise ValueError(action_amount_not_zero_message.format(name, amount))
+                raise ValueError(action_not_zero_amount_message.format(name, amount))
         else:
             if not amount > 0:
-                raise ValueError(action_amount_not_more_than_zero_message.format(name, amount))
+                raise ValueError(action_not_positive_amount_message.format(name, amount))
 
         # Input variables
         self._name = name

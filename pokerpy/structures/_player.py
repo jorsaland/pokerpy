@@ -9,8 +9,8 @@ from pokerpy.messages import (
     player_not_int_current_amount_message,
     player_not_hand_instance_message,
     player_not_str_name_message,
-    player_not_smallest_chip_multiple_increase_message,
-    player_smallest_chip_not_more_than_zero_message,
+    player_increase_not_multiple_of_smallest_chip_message,
+    player_not_positive_smalleset_chip_message,
     player_not_int_smallest_chip_message,
 )
 
@@ -38,7 +38,7 @@ class Player:
         if not isinstance(smallest_chip, int):
             raise TypeError(player_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
         if not smallest_chip > 0:
-            raise ValueError(player_smallest_chip_not_more_than_zero_message.format(smallest_chip))
+            raise ValueError(player_not_positive_smalleset_chip_message.format(smallest_chip))
 
         # Input variables
         self._name = name
@@ -145,7 +145,7 @@ class Player:
             raise TypeError(player_not_int_current_amount_message.format(type(amount).__name__))
 
         if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(player_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+            raise ValueError(player_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
 
