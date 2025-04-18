@@ -34,15 +34,19 @@ class TestPlayerClass(TestCase):
         structures.Player('Andy')
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
             structures.Player(1933)
         self.assertEqual(cm.exception.args[0], messages.player_not_str_name_message.format(int.__name__))
         
         with self.assertRaises(TypeError) as cm:
-            structures.Player(['Andy'])
-        self.assertEqual(cm.exception.args[0], messages.player_not_str_name_message.format(list.__name__))
+            structures.Player('Andy', smallest_chip='1')
+        self.assertEqual(cm.exception.args[0], messages.player_not_int_smallest_chip_message.format(str.__name__))
+
+        with self.assertRaises(ValueError) as cm:
+            structures.Player('Andy', smallest_chip=0)
+        self.assertEqual(cm.exception.args[0], messages.player_smallest_chip_not_more_than_zero_message.format(0))
 
 
     def test_request_action_and_reset_action_methods(self):
@@ -77,18 +81,18 @@ class TestPlayerClass(TestCase):
         self.assertIsNone(Andy.requested_action)
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
             Andy.request_action(constants.ACTION_BET)
         self.assertEqual(cm.exception.args[0], messages.player_not_action_instance_message.format(str.__name__))
 
 
-    def test_deliver_card_method(self):
+    def test_deal_card_method(self):
 
 
         """
-        Runs test cases on deliver_card method.
+        Runs test cases on deal_card method.
         """
 
 
@@ -97,17 +101,17 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        Andy.deliver_card(structures.Card('A', 's'))
+        Andy.deal_card(structures.Card('A', 's'))
         self.assertEqual(Andy.cards, (structures.Card('A', 's'),))
 
-        Andy.deliver_card(structures.Card('J', 'd'))
+        Andy.deal_card(structures.Card('J', 'd'))
         self.assertEqual(Andy.cards, (structures.Card('A', 's'), structures.Card('J', 'd')))
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.deliver_card('As')
+            Andy.deal_card('As')
         self.assertEqual(cm.exception.args[0], messages.player_not_card_instance_message.format(str.__name__))
 
 
@@ -155,7 +159,7 @@ class TestPlayerClass(TestCase):
         ]))
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
             Andy.assign_hand(structures.Card('J', 's'))
@@ -170,7 +174,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = structures.Player('Andy', smallest_chip=10)
 
 
         # Valid inputs
@@ -182,18 +186,23 @@ class TestPlayerClass(TestCase):
         self.assertEqual(Andy.current_amount, 150)
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
             Andy.add_to_current_amount('100')
         self.assertEqual(cm.exception.args[0], messages.player_not_int_current_amount_message.format(str.__name__))
 
-
-        # Negative amount
-
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_negative_increase_message.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, -100))
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.add_to_current_amount(7)
+        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, 7))
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.add_to_current_amount(77)
+        self.assertEqual(cm.exception.args[0], messages.player_not_smallest_chip_multiple_increase_message.format(10, 77))
 
 
     def test_reset_betting_round_states_method(self):
@@ -227,7 +236,7 @@ class TestPlayerClass(TestCase):
 
         Andy.request_action(structures.Action(constants.ACTION_BET, 200))
         Andy.add_to_current_amount(200)
-        Andy.deliver_card(structures.Card('J', 'd'))
+        Andy.deal_card(structures.Card('J', 'd'))
         Andy.assign_hand(structures.Hand([
             structures.Card('7', 's'),
             structures.Card('7', 'd'),

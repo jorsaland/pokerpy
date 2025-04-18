@@ -12,13 +12,13 @@ action_amount_not_more_than_zero_message = "Action '{}' requires amount being mo
 
 # Player messages
 player_not_str_name_message = "Player name must be str, not '{}'."
+player_not_int_smallest_chip_message = "Player smallest chip must be int, not '{}'."
 player_not_action_instance_message = "Player action must be an instance of class Action, not '{}'."
 player_not_card_instance_message = "Player card must be an instance of class Card, not '{}'."
 player_not_hand_instance_message = "Player hand must be an instance of class Hand, not '{}'."
 player_not_int_current_amount_message = "Player current amount increase must be int, not '{}'."
-player_negative_increase_message = "Amount increase must be at least zero (received {})."
 player_not_smallest_chip_multiple_increase_message = "Amount increase must be a multiple of the smallest chip: {} (received {})."
-player_smallest_chip_not_asigned_message = "Player smallest chip has not being linked to a table yet."
+player_smallest_chip_not_more_than_zero_message = "Smallest chip must be more than zero (received {})."
 
 # Table messages
 table_not_list_players_message = "Table players must be list, not '{}'."

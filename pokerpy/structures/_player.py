@@ -4,14 +4,14 @@ Defines the class that represents a poker player.
 
 
 from pokerpy.messages import (
-    player_negative_increase_message,
     player_not_action_instance_message,
     player_not_card_instance_message,
     player_not_int_current_amount_message,
     player_not_hand_instance_message,
     player_not_str_name_message,
-    player_smallest_chip_not_asigned_message,
     player_not_smallest_chip_multiple_increase_message,
+    player_smallest_chip_not_more_than_zero_message,
+    player_not_int_smallest_chip_message,
 )
 
 
@@ -28,11 +28,17 @@ class Player:
     """
 
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, *, smallest_chip: int = 1):
 
-        # Check input
+        # Validations
+
         if not isinstance(name, str):
             raise TypeError(player_not_str_name_message.format(type(name).__name__))
+
+        if not isinstance(smallest_chip, int):
+            raise TypeError(player_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
+        if not smallest_chip > 0:
+            raise ValueError(player_smallest_chip_not_more_than_zero_message.format(smallest_chip))
 
         # Input variables
         self._name = name
@@ -42,8 +48,7 @@ class Player:
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
         self._current_amount = 0 # this is set by instance methods
-        self._already_asigned = False # this is set by the table when instanced
-        self._smallest_chip = 0 # this is set by the table when instanced
+        self._smallest_chip = smallest_chip
 
 
     @property
@@ -68,13 +73,7 @@ class Player:
         return self._current_amount
     
     @property
-    def already_asigned(self):
-        return self._already_asigned
-    
-    @property
     def smallest_chip(self):
-        if self._smallest_chip == 0:
-            raise ValueError(player_smallest_chip_not_asigned_message)
         return self._smallest_chip
 
 
@@ -109,10 +108,10 @@ class Player:
     # Methods to assign cards and hand
 
 
-    def deliver_card(self, card: Card):
+    def deal_card(self, card: Card):
 
         """
-        Delivers a card to the player.
+        Deals a card to the player.
         """
 
         if not isinstance(card, Card):
@@ -145,10 +144,7 @@ class Player:
         if not isinstance(amount, int):
             raise TypeError(player_not_int_current_amount_message.format(type(amount).__name__))
 
-        if amount < 0:
-            raise ValueError(player_negative_increase_message.format(amount))
-
-        if not amount % self.smallest_chip == 0:
+        if not (amount >= 0 and amount % self.smallest_chip == 0):
             raise ValueError(player_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
