@@ -403,21 +403,15 @@ class TestTableClass(TestCase):
         self.assertEqual(table.central_pot, 150)
 
 
-        # Invalid types
+        # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
             table.add_to_central_pot('100')
         self.assertEqual(cm.exception.args[0], messages.table_not_int_central_pot_message.format(str.__name__))
 
-
-        # Negative amount
-
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(-100)
         self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, -100))
-
-
-        # Not multiple of smallest chip
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(5)
