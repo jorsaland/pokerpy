@@ -9,7 +9,6 @@ import secrets
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    table_negative_increase_message,
     table_not_smallest_chip_multiple_increase_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
@@ -22,7 +21,7 @@ from pokerpy.messages import (
     table_player_not_in_table_message,
     table_player_already_folded_message,
     table_smallest_chip_not_more_than_zero_message,
-    table_already_asigned_players_message,
+    table_sra_not_multiple_of_smallest_chip_message,
     table_not_int_smallest_bet_message,
     table_smallest_bet_not_multiple_of_smallest_chip_message,
 )
@@ -58,9 +57,6 @@ class Table:
             raise TypeError(table_not_list_players_message.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(table_not_all_player_instances_message)
-        already_asigned_players = [player.name for player in players if player.already_asigned]
-        if already_asigned_players:
-            raise ValueError(table_already_asigned_players_message.format(', '.join(already_asigned_players)))
 
         if not isinstance(smallest_chip, int):
             raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
@@ -71,7 +67,7 @@ class Table:
             smallest_bet = smallest_chip
         if not isinstance(smallest_bet, int):
             raise TypeError(table_not_int_smallest_bet_message.format(type(smallest_bet).__name__))
-        if not smallest_bet % smallest_chip == 0:
+        if not (smallest_bet > 0 and smallest_bet % smallest_chip == 0):
             raise ValueError(table_smallest_bet_not_multiple_of_smallest_chip_message.format(smallest_chip, smallest_bet))
 
         # Input variables
@@ -80,9 +76,6 @@ class Table:
         self._smallest_chip = smallest_chip
         self._smallest_bet = smallest_bet
         self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
-        for player in players:
-            player._already_asigned = True
-            player._smallest_chip = smallest_chip
 
         # State variables
 
@@ -138,64 +131,6 @@ class Table:
     def central_pot(self):
         assert self._central_pot % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._central_pot
-
-
-    # Methods to affect current amount to be responded and central pot
-
-
-    def add_to_current_amount(self, amount: int):
-
-        """
-        Increases the current chip amount that needs to be responded by players.
-        """
-
-        if not isinstance(amount, int):
-            raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
-
-        if amount < 0:
-            raise ValueError(table_negative_increase_message.format(amount))
-        
-        if not amount % self.smallest_chip == 0:
-            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
-
-        self._current_amount += amount
-
-
-    def overwrite_smallest_rising_amount(self, amount: int):
-
-        """
-        Overwrites the smallest amount expected to make a raise.
-        """
-
-        if not isinstance(amount, int):
-            raise TypeError(table_not_int_smallest_rising_amount_message.format(type(amount).__name__))
-
-        if amount < 0:
-            raise ValueError(table_negative_increase_message.format(amount))
-        
-        if not amount % self.smallest_chip == 0:
-            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
-
-        self._smallest_rising_amount = amount
-
-
-
-    def add_to_central_pot(self, amount: int):
-        
-        """
-        Increases the pot in the center of the table by an amount.
-        """
-
-        if not isinstance(amount, int):
-            raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
-
-        if amount < 0:
-            raise ValueError(table_negative_increase_message.format(amount))
-
-        if not amount % self.smallest_chip == 0:
-            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
-
-        self._central_pot += amount
 
 
     # Methods to affect players behaviour
@@ -267,7 +202,7 @@ class Table:
                 card = secrets.choice(self.deck)
                 logger.info(f'Dealer deals card {card} to {player.name}.')
                 self._deck.remove(card)
-                player.deliver_card(card)
+                player.deal_card(card)
 
 
     def deal_common_cards(self, cards_count: int):
@@ -284,6 +219,54 @@ class Table:
             self._deck.remove(card)
             self._common_cards.append(card)
         logger.info(f'Dealer deals common cards.')
+
+
+    # Methods to affect current amount to be responded and central pot
+
+
+    def add_to_current_amount(self, amount: int):
+
+        """
+        Increases the current chip amount that needs to be responded by players.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
+        
+        if not (amount >= 0 and amount % self.smallest_chip == 0):
+            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+
+        self._current_amount += amount
+
+
+    def overwrite_smallest_rising_amount(self, amount: int):
+
+        """
+        Overwrites the smallest amount expected to make a raise.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_smallest_rising_amount_message.format(type(amount).__name__))
+        
+        if not (amount > 0 and amount % self.smallest_chip == 0):
+            raise ValueError(table_sra_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+
+        self._smallest_rising_amount = amount
+
+
+    def add_to_central_pot(self, amount: int):
+        
+        """
+        Increases the pot in the center of the table by an amount.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
+
+        if not (amount >= 0 and amount % self.smallest_chip == 0):
+            raise ValueError(table_not_smallest_chip_multiple_increase_message.format(self.smallest_chip, amount))
+
+        self._central_pot += amount
 
 
     # Methods to determine winner(s)
