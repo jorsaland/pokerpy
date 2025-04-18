@@ -61,7 +61,7 @@ class BettingRound:
         if not isinstance(stopping_player, Player):
             raise TypeError(betting_round_not_stopping_player_instance_message.format(type(stopping_player).__name__))
 
-        # Input variables
+        # Fixed variables
 
         self._name = name
         self._table = table
@@ -70,9 +70,10 @@ class BettingRound:
         self._initial_stopping_player = stopping_player
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
 
+        self._generator: (Generator[Player]|None) = None
+
         # State variables
 
-        self._generator: (Generator[Player]|None) = None
         self._has_ended = False
 
 

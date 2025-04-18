@@ -40,7 +40,7 @@ class Player:
         if not smallest_chip > 0:
             raise ValueError(player_not_positive_smalleset_chip_message.format(smallest_chip))
 
-        # Input variables
+        # Fixed variables
         self._name = name
 
         # State variables

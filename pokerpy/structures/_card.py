@@ -48,7 +48,7 @@ class Card:
             message = card_invalid_suit_message.format(', '.join(sorted_card_suits))
             raise ValueError(message)
 
-        # Input variables
+        # Fixed variables
         self._value = value
         self._suit = suit
 

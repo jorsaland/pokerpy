@@ -46,7 +46,7 @@ class Action:
             if not amount > 0:
                 raise ValueError(action_not_positive_amount_message.format(name, amount))
 
-        # Input variables
+        # Fixed variables
         self._name = name
         self._amount = amount
 

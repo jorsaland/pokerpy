@@ -70,7 +70,7 @@ class Table:
         if not (smallest_bet > 0 and smallest_bet % smallest_chip == 0):
             raise ValueError(table_smallest_bet_not_multiple_of_smallest_chip_message.format(smallest_chip, smallest_bet))
 
-        # Input variables
+        # Fixed variables
 
         self._players = players
         self._smallest_chip = smallest_chip
