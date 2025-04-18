@@ -25,7 +25,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
 
         """
-        Runs test cases to check only active players take action.
+        Runs test cases where all, some or none players are active and every active player takes action.
         """
 
 
@@ -206,7 +206,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
 
         """
-        Runs test cases to check actions are correctly parsed into the generator object.
+        Runs test cases where all players are active and the actions parsed are less than, just as, or more than expected.
         """
 
 
@@ -298,7 +298,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
             player.request_action(structures.Action(constants.ACTION_CHECK))
             awaited_players.append(player)
 
-            player = next(generator) # Unexpected action
+            player = next(generator) # Unexpected action, generator is overloaded
             player.request_action(structures.Action(constants.ACTION_CHECK))
             awaited_players.append(player)
 
@@ -312,20 +312,18 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
 
         """
-        Runs test cases to check the function correctly detects whether round must stop or not.
+        Runs test cases to validate that the generator correctly detects whether the round must stop or not.
         """
-
-
-        all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
-        ]
 
 
         def end_if_single_player_remaining():
 
+            all_players = [
+                Andy := structures.Player('Andy'),
+                Boa := structures.Player('Boa'),
+                Coral := structures.Player('Coral'),
+                Dino := structures.Player('Dino'),
+            ]
             table = structures.Table(all_players)
             table.activate_player(Andy)
             
@@ -344,8 +342,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_first_player_is_the_stopping_player():
 
+            all_players = [
+                Andy := structures.Player('Andy'),
+                Boa := structures.Player('Boa'),
+                Coral := structures.Player('Coral'),
+                Dino := structures.Player('Dino'),
+            ]
             table = structures.Table(all_players)
-            table.reset_cycle_states()
+            for player in table.players:
+                table.activate_player(player)
 
             table.set_stopping_player(Andy)
             table.add_to_current_amount(100)
@@ -367,8 +372,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_intermediate_position_player_is_the_stopping_player():
 
+            all_players = [
+                Andy := structures.Player('Andy'),
+                Boa := structures.Player('Boa'),
+                Coral := structures.Player('Coral'),
+                Dino := structures.Player('Dino'),
+            ]
             table = structures.Table(all_players)
-            table.reset_cycle_states()
+            for player in table.players:
+                table.activate_player(player)
 
             table.set_stopping_player(Boa)
             table.add_to_current_amount(100)
@@ -394,8 +406,15 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
         def end_if_last_player_is_the_stopping_player():
 
+            all_players = [
+                Andy := structures.Player('Andy'),
+                Boa := structures.Player('Boa'),
+                Coral := structures.Player('Coral'),
+                Dino := structures.Player('Dino'),
+            ]
             table = structures.Table(all_players)
-            table.reset_cycle_states()
+            for player in table.players:
+                table.activate_player(player)
 
             table.set_stopping_player(Dino)
             table.add_to_current_amount(100)
@@ -416,7 +435,7 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
             # End iteration and retrieve returned value
             try:
-                next(generator) # Andy (should not be reached)
+                next(generator) # There are no more players
             except StopIteration as ex:
                 return ex.value
 
