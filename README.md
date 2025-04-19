@@ -1,11 +1,11 @@
 # PokerPy under development! (Alpha)
-Money logic is enhanced by adding blind bets. The parameter "last_aggressive_player" is replaced by "stopping_player". The key difference is that the last aggressive player from previous versions closed the betting round BEFORE taking action, whilst the stopping player introduced in this version closes the round AFTER taking action. This change is helpful to identify who has to act first after placing the blinds, while still considering that not every betting round has blinds. A configurable minimum betting amount is also introduced, as well as a minimum rising amount which is equal to the previous betting/rising amount.
+Money logic is improved with the introduction of blind bets. The previous `last_aggressive_player` parameter has been replaced by `stopping_player`. The key difference is that in earlier versions, the last aggressive player ended the betting round BEFORE playing, whereas now the stopping player ends the round AFTER taking action. This change helps clarify who acts first after blinds are posted, while still supporting betting rounds without blinds (flop, turn and river). Additionally, this version introduces a configurable minimum bet amount, along with a minimum raise amount equal to the size of the previous bet or raise.
 
 ### 0.5.0
 - All features are developed to reach the goal.
 - Started from version *0.4.1*.
 
 ## Upcoming versions
-- **0.6 (alpha):** Stacks will no longer be infinite. This implies all-in situations and side-pots will be possible.
-- **0.7 (beta):** A basic No limit Texas hold'em framework will be available, making it possible to implement a full cash game. This will include logic regarding moving the button in different situations, such as players leaving or entering the table.
-- **1.0 (stable):** This will be the first release. No new features are expected, but they might arise during the final evaluations and tests. 
+- **0.6 (alpha):** Stack sizes will be finite for the first time. This change introduces support for all-in scenarios and the creation of side pots. At this point, users will be able to implement realistic betting rounds.
+- **0.7 (beta):** A fully functional framework for No Limit Texas Hold'em cash games will be introduced. This includes game dynamics such as button movement logic, support for players entering and leaving the table, and proper handling of heads-up situations.
+- **1.0 (stable):** The first stable release. No major features are planned beyond this point, though minor adjustments or enhancements may arise from final testing and feedback.
