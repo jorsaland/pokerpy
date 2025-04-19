@@ -151,7 +151,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def all_check():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -159,22 +159,42 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_CHECK))
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-            awaited_players.append(player)
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
 
-            player = next(betting_round) # Coral
-            player.request_action(structures.Action(constants.ACTION_CHECK))
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Boa
             awaited_players.append(player)
+            
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
 
-            player = next(betting_round) # Dino
-            player.request_action(structures.Action(constants.ACTION_CHECK))
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Coral
             awaited_players.append(player)
+            
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
 
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Dino
+            awaited_players.append(player)
+            
             return awaited_players
 
         self.assertEqual(all_check(), all_players)
@@ -182,7 +202,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_and_folds():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -190,20 +210,40 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_BET, 100))
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+            
+            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_FOLD))
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Boa, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_FOLD))
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_FOLD))
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Andy
             awaited_players.append(player)
 
             return awaited_players
@@ -213,7 +253,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_and_calls():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -221,20 +261,40 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_BET, 100))
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Boa, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Coral, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Dino, responding to Andy
             awaited_players.append(player)
 
             return awaited_players
@@ -244,7 +304,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_and_folds():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -252,34 +312,69 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy, responding to Dino
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 100)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Andy, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Dino
-            player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Table's current amount: 600
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 200)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Boa, responding to Dino
             awaited_players.append(player)
 
             # Coral already folded
 
-            player = next(betting_round) # Dino, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 600
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 400)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 800)
+            self.assertEqual(table.smallest_rising_amount, 400)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Boa
             awaited_players.append(player)
 
             # Andy already folded
@@ -293,7 +388,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_and_calls():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -301,40 +396,85 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_BET, 50)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 50)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 150)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Coral, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 150)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy (already put 100), responding to Dino
-            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 50)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 350)) # Andy, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa (already put 200), responding to Dino
-            player.request_action(structures.Action(constants.ACTION_RAISE, 500)) # Table's current amount: 700
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 200)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 500)) # Boa, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral (already put 200), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 500)) # Table's current amount: 700
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 200)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 700)
+            self.assertEqual(table.smallest_rising_amount, 300)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 500)) # Coral, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino (already put 400), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 700
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 400)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 700)
+            self.assertEqual(table.smallest_rising_amount, 300)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Dino, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy (already put 400), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 700
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 400)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 700)
+            self.assertEqual(table.smallest_rising_amount, 300)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Andy, responding to Boa
             awaited_players.append(player)
 
             # Every player has responded to Boa
@@ -346,7 +486,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def bet_raises_folds_and_calls():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -354,38 +494,78 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Andy
-            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 100)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 100)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy (already put 100), responding to Dino
-            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Table's current amount: 400
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 100)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Andy, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa (already put 200), responding to Dino
-            player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Table's current amount: 800
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 200)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 400)
+            self.assertEqual(table.smallest_rising_amount, 200)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Boa, responding to Dino
             awaited_players.append(player)
 
             # Coral already folded
             
-            player = next(betting_round) # Dino (already put 400), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 800
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 400)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 800)
+            self.assertEqual(table.smallest_rising_amount, 400)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy (already put 400), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 400)) # Table's current amount: 800
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 400)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 800)
+            self.assertEqual(table.smallest_rising_amount, 400)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 400)) # Andy, responding to Boa
             awaited_players.append(player)
 
             # Every remaining player has responded to Boa
@@ -397,7 +577,7 @@ class TestBettingRoundRunMethod(TestCase):
 
         def all_actions():
 
-            table = structures.Table(all_players)
+            table = structures.Table(all_players, smallest_bet=50)
             table.reset_cycle_states()
 
             awaited_players: list[structures.Player] = []
@@ -405,45 +585,94 @@ class TestBettingRoundRunMethod(TestCase):
             betting_round_cm = managers.BettingRound(name='round', table=table)
             betting_round = betting_round_cm.run()
 
-            player = next(betting_round) # Andy
-            player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Andy
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa
-            player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral
-            player.request_action(structures.Action(constants.ACTION_CHECK)) # Table's current amount: 0
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_CHECK)) # Coral
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino
-            player.request_action(structures.Action(constants.ACTION_BET, 100)) # Table's current amount: 100
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 0)
+            self.assertEqual(table.stopping_player, Dino)
+            self.assertEqual(table.current_amount, 0)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_BET, 50)) # Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Andy, responding to Dino
-            player.request_action(structures.Action(constants.ACTION_FOLD)) # Table's current amount: 100
+            player = next(betting_round)
+            self.assertEqual(Andy.current_amount, 0)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 50)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_FOLD)) # Andy, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Boa, responding to Dino
-            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 0)
+            self.assertEqual(table.stopping_player, Coral)
+            self.assertEqual(table.current_amount, 50)
+            self.assertEqual(table.smallest_rising_amount, 50)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Dino
             awaited_players.append(player)
 
-            player = next(betting_round) # Coral, responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Coral.current_amount, 0)
+            self.assertEqual(table.stopping_player, Andy)
+            self.assertEqual(table.current_amount, 200)
+            self.assertEqual(table.smallest_rising_amount, 150)
+
+            player.request_action(structures.Action(constants.ACTION_RAISE, 350)) # Coral, responding to Boa
             awaited_players.append(player)
 
-            player = next(betting_round) # Dino (already put 100), responding to Boa
-            player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Table's current amount: 200
+            player = next(betting_round)
+            self.assertEqual(Dino.current_amount, 50)
+            self.assertEqual(table.stopping_player, Boa)
+            self.assertEqual(table.current_amount, 350)
+            self.assertEqual(table.smallest_rising_amount, 150)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Dino, responding to Coral
             awaited_players.append(player)
 
             # Andy already folded
 
-            # Every remaining player has responded to Boa
+            player = next(betting_round)
+            self.assertEqual(Boa.current_amount, 200)
+            self.assertEqual(table.stopping_player, Boa)
+            self.assertEqual(table.current_amount, 350)
+            self.assertEqual(table.smallest_rising_amount, 150)
+
+            player.request_action(structures.Action(constants.ACTION_CALL, 150)) # Boa, responding to Coral
+            awaited_players.append(player)
+
+            # Every remaining player has responded to Coral
 
             return awaited_players
 
-        self.assertEqual(all_actions(), [Andy, Boa, Coral, Dino, Andy, Boa, Coral, Dino])
+        self.assertEqual(all_actions(), [Andy, Boa, Coral, Dino, Andy, Boa, Coral, Dino, Boa])
 
 
 if __name__ == '__main__':
