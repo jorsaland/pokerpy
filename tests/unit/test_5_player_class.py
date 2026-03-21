@@ -190,19 +190,19 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.add_to_current_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.player_not_int_current_amount_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_not_int_amount_message.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, -100))
+        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, -100))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(7)
-        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, 7))
+        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, 7))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(77)
-        self.assertEqual(cm.exception.args[0], messages.player_increase_not_multiple_of_smallest_chip_message.format(10, 77))
+        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, 77))
 
 
     def test_reset_betting_round_states_method(self):

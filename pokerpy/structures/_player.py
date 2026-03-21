@@ -6,12 +6,15 @@ Defines the class that represents a poker player.
 from pokerpy.messages import (
     player_not_action_instance_message,
     player_not_card_instance_message,
-    player_not_int_current_amount_message,
+    player_not_int_amount_message,
     player_not_hand_instance_message,
     player_not_str_name_message,
-    player_increase_not_multiple_of_smallest_chip_message,
+    player_amount_larger_than_stack_message,
+    player_amount_not_multiple_of_smallest_chip_message,
     player_not_positive_smalleset_chip_message,
     player_not_int_smallest_chip_message,
+    player_not_int_stack_message,
+    player_stack_not_multiple_of_smallest_chip_message,
 )
 
 
@@ -28,7 +31,7 @@ class Player:
     """
 
 
-    def __init__(self, name: str, *, smallest_chip: int = 1):
+    def __init__(self, name: str, *, smallest_chip: int = 1, stack: int):
 
         # Validations
 
@@ -37,8 +40,13 @@ class Player:
 
         if not isinstance(smallest_chip, int):
             raise TypeError(player_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
+        if not isinstance(stack, int):
+            raise TypeError(player_not_int_stack_message.format(type(stack).__name__))
+
         if not smallest_chip > 0:
             raise ValueError(player_not_positive_smalleset_chip_message.format(smallest_chip))
+        if not (stack > 0 and stack % smallest_chip == 0):
+            raise ValueError(player_stack_not_multiple_of_smallest_chip_message.format(smallest_chip, stack))
 
         # Fixed variables
         self._name = name
@@ -49,6 +57,7 @@ class Player:
         self._hand: (Hand|None) = None
         self._current_amount = 0 # this is set by instance methods
         self._smallest_chip = smallest_chip
+        self._stack = stack
 
 
     @property
@@ -76,12 +85,17 @@ class Player:
     def smallest_chip(self):
         return self._smallest_chip
 
+    @property
+    def stack(self):
+        assert self._stack % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
+        return self._stack
+
 
     def __repr__(self):
         return f'Player(name={self.name})'
 
 
-    # Methods to set/unset requested action
+    # Methods to set/unset actions
 
 
     def request_action(self, action: Action):
@@ -132,7 +146,7 @@ class Player:
         self._hand = hand
 
 
-    # Methods to affect current amount bet by player
+    # Methods to affect stack and current amount
 
 
     def add_to_current_amount(self, amount: int):
@@ -142,12 +156,45 @@ class Player:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(player_not_int_current_amount_message.format(type(amount).__name__))
+            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
 
         if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(player_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
 
         self._current_amount += amount
+
+
+    def add_to_stack(self, amount: int):
+
+        """
+        Adds chips to the stack.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
+
+        if not (amount >= 0 and amount % self.smallest_chip == 0):
+            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+
+        self._stack += amount
+
+
+    def remove_from_stack(self, amount: int):
+
+        """
+        Removes chips from the stack.
+        """
+
+        if not isinstance(amount, int):
+            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
+
+        if not (amount >= 0 and amount % self.smallest_chip == 0):
+            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        
+        if amount > self.stack:
+            raise ValueError(player_amount_larger_than_stack_message.format(amount, self.stack))
+
+        self._stack -= amount
 
 
     # Methods to reset managers
