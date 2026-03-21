@@ -35,8 +35,12 @@ def wait_for_player(*, player: Player, table: Table, ignore_invalid_actions: boo
             continue
 
         if action_is_valid(action=action, table=table, player=player):
+            player.remove_from_stack(action.amount)
             player.add_to_current_amount(action.amount)
-            logger.info(f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} ({player.name}'s current amount: {player.current_amount})")
+            logger.info(
+                f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
+                f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
+            )
             break
 
         logger.debug(f'--- invalid action: {action.name}s {action.amount}')

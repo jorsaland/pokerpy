@@ -6,28 +6,30 @@ Defines the function that verifies if a betting-round action is valid according 
 from pokerpy.constants import (
     ACTION_FOLD,
     ACTION_CALL,
+    ACTION_CHECK,
     ACTION_BET,
     ACTION_RAISE,
-    valid_action_names_not_under_bet,
-    valid_action_names_under_bet,
 )
 from pokerpy.structures import Action, Player, Table
 
 
-def get_valid_action_names(*, amount_to_call: int, open_fold_allowed: bool):
+def get_valid_action_names(*, amount_to_call: int, stack: int, open_fold_allowed: bool):
 
     """
     Lists the valid possible actions depending on previous actions taken during the betting round.
     """
 
     if amount_to_call != 0:
-        valid_action_names = valid_action_names_under_bet
+        if amount_to_call >= stack:
+            valid_action_names = [ACTION_FOLD, ACTION_CALL]
+        else:
+            valid_action_names = [ACTION_FOLD, ACTION_CALL, ACTION_RAISE]
 
     else:
         if open_fold_allowed:
-            valid_action_names = valid_action_names_not_under_bet + [ACTION_FOLD]
+            valid_action_names = [ACTION_CHECK, ACTION_BET, ACTION_FOLD]
         else:
-            valid_action_names = valid_action_names_not_under_bet
+            valid_action_names = [ACTION_CHECK, ACTION_BET]
 
     return valid_action_names
 
@@ -41,9 +43,10 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     # Calculate amount that player has to call
     amount_to_call = table.current_amount - player.current_amount
 
-    # Validate action per se
+    # Validate action name makes sense in context
     valid_action_names = get_valid_action_names(
         amount_to_call = amount_to_call,
+        stack = player.stack,
         open_fold_allowed = table.open_fold_allowed,
     )
     if action.name not in valid_action_names:
@@ -51,6 +54,10 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
 
     # Validate amount being multiple of smallest chip
     if not action.amount % table.smallest_chip == 0:
+        return False
+    
+    # Validate player has enough chips
+    if action.amount > player.stack:
         return False
 
     # Validate calling amount

@@ -34,13 +34,18 @@ def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_a
         if table.players.index(player) < table.players.index(starting_player):
             continue
 
-        # Determine whether player should be allowed to play or not
-        if player not in table.active_players:
+        # Determine whether player should be allowed to choose an action
+        if player in table.active_players:
+            if player.stack == 0:
+                if player == table.stopping_player:
+                    round_must_stop = True
+                    break
+                continue
+        else:
             if player == table.stopping_player:
                 round_must_stop = True
                 break
-            else:
-                continue
+            continue
 
         # Player keeps its turn until selects a valid action
         action = yield from wait_for_player(

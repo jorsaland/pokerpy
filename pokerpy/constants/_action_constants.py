@@ -22,17 +22,3 @@ aggressive_action_names = [
 ]
 
 passive_action_names = [action for action in possible_action_names if action not in aggressive_action_names]
-
-
-# Actions classified by whether they are valid or not under bet
-
-valid_action_names_not_under_bet = [
-    ACTION_CHECK,
-    ACTION_BET,
-]
-
-valid_action_names_under_bet = [
-    ACTION_FOLD,
-    ACTION_CALL,
-    ACTION_RAISE,
-]
