@@ -11,7 +11,7 @@ from pokerpy.messages import (
     player_not_str_name_message,
     player_amount_larger_than_stack_message,
     player_amount_not_multiple_of_smallest_chip_message,
-    player_not_positive_smalleset_chip_message,
+    player_not_positive_smallest_chip_message,
     player_not_int_smallest_chip_message,
     player_not_int_stack_message,
     player_stack_not_multiple_of_smallest_chip_message,
@@ -44,7 +44,7 @@ class Player:
             raise TypeError(player_not_int_stack_message.format(type(stack).__name__))
 
         if not smallest_chip > 0:
-            raise ValueError(player_not_positive_smalleset_chip_message.format(smallest_chip))
+            raise ValueError(player_not_positive_smallest_chip_message.format(smallest_chip))
         if not (stack > 0 and stack % smallest_chip == 0):
             raise ValueError(player_stack_not_multiple_of_smallest_chip_message.format(smallest_chip, stack))
 

@@ -20,7 +20,7 @@ player_not_int_amount_message = "Amount must be int, not '{}'."
 player_not_action_instance_message = "Player action must be an instance of class Action, not '{}'."
 player_not_card_instance_message = "Player card must be an instance of class Card, not '{}'."
 player_not_hand_instance_message = "Player hand must be an instance of class Hand, not '{}'."
-player_not_positive_smalleset_chip_message = "Smallest chip must be more than zero (received {})."
+player_not_positive_smallest_chip_message = "Smallest chip must be more than zero (received {})."
 player_stack_not_multiple_of_smallest_chip_message = "The stack must be a positive multiple of the smallest chip: {} (received {})."
 
 # Table messages
