@@ -63,19 +63,7 @@ def figure_out_hand(cards: list[pk.Card]):
     return max(possible_hands)
 
 
-def cycle(table: pk.Table):
-
-    if not table.open_fold_allowed:
-        print('\n======================================================'  )
-        print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
-        print(  '======================================================\n')
-    
-    else:
-        print('\n=============================================='  )
-        print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
-        print(  '==============================================\n')
-
-    # Run ante betting round
+def ante_round(table: pk.Table):
 
     print(f'\n============ STARTING {ANTE_ROUND.upper()} ============\n')
 
@@ -83,7 +71,6 @@ def cycle(table: pk.Table):
 
         # Reset betting round states regarding to table and players
         table.reset_betting_round_states()
-        display_cards_and_money(table)
 
         # Place antes
         for player in table.players:
@@ -98,9 +85,11 @@ def cycle(table: pk.Table):
             action = pk.Action(pk.ACTION_CHECK)
             player.request_action(action)
 
+    display_cards_and_money(table)
     print(f'\n============ ENDING {ANTE_ROUND.upper()} ============\n')
 
-    # Run pre-flop
+
+def preflop(table: pk.Table):
 
     print(f'\n============ STARTING {PREFLOP.upper()} ============\n')
 
@@ -115,7 +104,6 @@ def cycle(table: pk.Table):
 
         # Reset betting round states regarding to table and players
         table.reset_betting_round_states()
-        display_cards_and_money(table)
 
         # Place small blind
         small_blind_player = table.players[0]
@@ -185,74 +173,93 @@ def cycle(table: pk.Table):
                 raise RuntimeError('we live in a society')
             player.request_action(action)
 
+    display_cards_and_money(table)
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
 
-    # Run flop, turn and river
+
+def postflop(table: pk.Table, betting_round_name: str):
+
+    # Break before starting if only remains one player
+    if len(table.active_players) == 1:
+        return False
+
+    print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
+
+    with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+
+        # Reset betting round states regarding to table and players
+        table.reset_betting_round_states()
+
+        # Deal three cards to table if round is flop and one if is turn or river
+        if betting_round_name == FLOP:
+            table.deal_common_cards(3)        
+        else:
+            table.deal_common_cards(1)
+        print()
+
+        # Let players to play
+        for player in betting_round:
+            amount_to_call = table.current_amount - player.current_amount
+            if amount_to_call == 0:
+                if not table.open_fold_allowed:
+                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                else:
+                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+            elif amount_to_call >= player.stack:
+                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD])
+            else:
+                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
+            if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
+                action = pk.Action(action_name, 0)
+            elif action_name == pk.ACTION_CALL:
+                action = pk.Action(action_name, amount_to_call)
+            elif action_name == pk. ACTION_BET:
+                amount = random.randint(table.central_pot//2, table.central_pot*2)
+                if amount > player.stack:
+                    amount = player.stack
+                action = pk.Action(action_name, amount)
+            elif action_name == pk.ACTION_RAISE:
+                smallest_amount = amount_to_call + table.smallest_rising_amount
+                amount = random.randint(smallest_amount, smallest_amount*3)
+                if amount > player.stack:
+                    amount = player.stack
+                action = pk.Action(action_name, amount)
+            else:
+                raise RuntimeError('we live in a society')
+            player.request_action(action)
+
+    display_cards_and_money(table)
+    print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
+
+    return True
+
+
+def cycle(table: pk.Table):
+
+    if not table.open_fold_allowed:
+        print('\n======================================================'  )
+        print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
+        print(  '======================================================\n')
+    
+    else:
+        print('\n=============================================='  )
+        print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
+        print(  '==============================================\n')
+
+    display_cards_and_money(table)
+    ante_round(table)
+    preflop(table)
 
     for betting_round_name in after_preflop_round_names:
-
-        # Break before starting if only remains one player
-        if len(table.active_players) == 1:
+        keep_playing = postflop(table, betting_round_name)
+        if not keep_playing:
             break
-
-        print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
-
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
-
-            # Reset betting round states regarding to table and players
-            table.reset_betting_round_states()
-            display_cards_and_money(table)
-
-            # Deal three cards to table if round is flop and one if is turn or river
-            if betting_round_name == FLOP:
-                table.deal_common_cards(3)        
-            else:
-                table.deal_common_cards(1)
-            print()
-
-            # Let players to play
-            for player in betting_round:
-                amount_to_call = table.current_amount - player.current_amount
-                if amount_to_call == 0:
-                    if not table.open_fold_allowed:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
-                    else:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
-                elif amount_to_call >= player.stack:
-                    action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD])
-                else:
-                    action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
-                if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                    action = pk.Action(action_name, 0)
-                elif action_name == pk.ACTION_CALL:
-                    action = pk.Action(action_name, amount_to_call)
-                elif action_name == pk. ACTION_BET:
-                    amount = random.randint(table.central_pot//2, table.central_pot*2)
-                    if amount > player.stack:
-                        amount = player.stack
-                    action = pk.Action(action_name, amount)
-                elif action_name == pk.ACTION_RAISE:
-                    smallest_amount = amount_to_call + table.smallest_rising_amount
-                    amount = random.randint(smallest_amount, smallest_amount*3)
-                    if amount > player.stack:
-                        amount = player.stack
-                    action = pk.Action(action_name, amount)
-                else:
-                    raise RuntimeError('we live in a society')
-                player.request_action(action)
-
-        print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
-
-    # Display showdown or not showdown
 
     if len(table.active_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')
-        display_cards_and_money(table)
         table.showdown()
-
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        display_cards_and_money(table)
         table.no_showdown()
 
 

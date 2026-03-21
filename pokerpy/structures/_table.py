@@ -218,7 +218,8 @@ class Table:
             card = secrets.choice(self.deck)
             self._deck.remove(card)
             self._common_cards.append(card)
-        logger.info(f'Dealer deals common cards.')
+        
+        logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.common_cards[-cards_count:])}.')
 
 
     # Methods to affect current amount to be responded and central pot
