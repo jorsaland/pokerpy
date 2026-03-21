@@ -66,14 +66,19 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     
     # Validate betting amount
     if action.name == ACTION_BET:
-        return action.amount >= table.smallest_bet
-    
+        return (
+            (action.amount >= table.smallest_bet) or ## by default, the bet amount must be at least the smallest bet
+            (table.smallest_bet > player.stack and action.amount == player.stack) ## if the player cannot cover the smallest bet, then has to go all-in
+        )
+
     # Validate raising amount
     if action.name == ACTION_RAISE:
-        validation_conditions = [
-            action.amount > amount_to_call,
-            action.amount - amount_to_call >= table.smallest_rising_amount,
-        ]
-        return all(validation_conditions)
+        return (
+            (action.amount > amount_to_call) and ## the action amount must be larger than the amount to call (otherwise would be call)
+            (
+                (action.amount - amount_to_call >= table.smallest_rising_amount) or ## by default, the raise component of the action amount must be at least the smallest rising amount
+                (amount_to_call + table.smallest_rising_amount > player.stack and action.amount == player.stack) ## if the player cannot raise the smallest raising amount, then has to go all-in
+            )
+        )
 
     return True
