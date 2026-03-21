@@ -15,7 +15,7 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
+import deprecated.v05 as pk
 
 
 # Constants

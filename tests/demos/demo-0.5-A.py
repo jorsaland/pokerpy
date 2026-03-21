@@ -16,7 +16,7 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
+import deprecated.v05 as pk
 
 
 betting_round_names = [
