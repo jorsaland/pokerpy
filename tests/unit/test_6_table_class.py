@@ -66,13 +66,21 @@ class TestTableClass(TestCase):
             )
         self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_smallest_bet.format(str.__name__))
 
-        # Argument 'smallest_bet' is not positive
+        # Argument 'smallest_bet' is negative
         with self.assertRaises(ValueError) as cm:
             structures.Table(
                 [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_bet = -10
             )
         self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_smallest_bet.format(-10))
+
+        # Argument 'smallest_bet' is zero
+        with self.assertRaises(ValueError) as cm:
+            structures.Table(
+                [create_standard_player('Andy'), create_standard_player('Boa')],
+                smallest_bet = 0
+            )
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_smallest_bet.format(0))
 
 
     def test_activate_player_and_fold_player_methods(self):
