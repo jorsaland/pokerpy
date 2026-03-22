@@ -4,15 +4,15 @@ Defines the class that represents a poker player.
 
 
 from pokerpy.messages import (
-    player_not_action_instance_message,
-    player_not_card_instance_message,
-    player_not_int_amount_message,
-    player_not_hand_instance_message,
-    player_not_str_name_message,
-    player_amount_larger_than_stack_message,
-    player_not_positive_amount,
-    player_not_int_stack_message,
-    player_not_positive_stack,
+    player_msg_not_action_instance,
+    player_msg_not_card_instance,
+    player_msg_not_int_amount,
+    player_msg_not_hand_instance,
+    player_msg_not_str_name,
+    player_msg_amount_larger_than_stack,
+    player_msg_not_int_stack,
+    player_msg_not_positive_or_zero_amount,
+    player_msg_not_positive_stack,
 )
 
 
@@ -34,13 +34,13 @@ class Player:
         # Validations
 
         if not isinstance(name, str):
-            raise TypeError(player_not_str_name_message.format(type(name).__name__))
+            raise TypeError(player_msg_not_str_name.format(type(name).__name__))
 
         if not isinstance(stack, int):
-            raise TypeError(player_not_int_stack_message.format(type(stack).__name__))
+            raise TypeError(player_msg_not_int_stack.format(type(stack).__name__))
 
         if stack <= 0:
-            raise ValueError(player_not_positive_stack.format(stack))
+            raise ValueError(player_msg_not_positive_stack.format(stack))
 
         # Fixed variables
         self._name = name
@@ -92,7 +92,7 @@ class Player:
         """
 
         if not isinstance(action, Action):
-            raise TypeError(player_not_action_instance_message.format(type(action).__name__))
+            raise TypeError(player_msg_not_action_instance.format(type(action).__name__))
 
         self._requested_action = action
 
@@ -116,7 +116,7 @@ class Player:
         """
 
         if not isinstance(card, Card):
-            raise TypeError(player_not_card_instance_message.format(type(card).__name__))
+            raise TypeError(player_msg_not_card_instance.format(type(card).__name__))
 
         self._cards.append(card)
 
@@ -128,7 +128,7 @@ class Player:
         """
 
         if not isinstance(hand, Hand):
-            raise TypeError(player_not_hand_instance_message.format(type(hand).__name__))
+            raise TypeError(player_msg_not_hand_instance.format(type(hand).__name__))
 
         self._hand = hand
 
@@ -143,10 +143,10 @@ class Player:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
+            raise TypeError(player_msg_not_int_amount.format(type(amount).__name__))
 
         if amount < 0:
-            raise ValueError(player_not_positive_amount.format(amount))
+            raise ValueError(player_msg_not_positive_or_zero_amount.format(amount))
 
         self._current_amount += amount
 
@@ -158,10 +158,10 @@ class Player:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
+            raise TypeError(player_msg_not_int_amount.format(type(amount).__name__))
 
         if amount < 0:
-            raise ValueError(player_not_positive_amount.format(amount))
+            raise ValueError(player_msg_not_positive_or_zero_amount.format(amount))
 
         self._stack += amount
 
@@ -173,13 +173,13 @@ class Player:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
+            raise TypeError(player_msg_not_int_amount.format(type(amount).__name__))
 
         if amount < 0:
-            raise ValueError(player_not_positive_amount.format(amount))
+            raise ValueError(player_msg_not_positive_or_zero_amount.format(amount))
         
         if amount > self.stack:
-            raise ValueError(player_amount_larger_than_stack_message.format(amount, self.stack))
+            raise ValueError(player_msg_amount_larger_than_stack.format(amount, self.stack))
 
         self._stack -= amount
 

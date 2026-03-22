@@ -4,7 +4,7 @@ Defines the function that waits for a player to choose a valid action.
 
 
 from pokerpy.logger import get_logger
-from pokerpy.messages import betting_round_invalid_action_message
+from pokerpy.messages import betting_round_msg_invalid_action
 from pokerpy.structures import Player, Table
 
 
@@ -45,7 +45,7 @@ def wait_for_player(*, player: Player, table: Table, ignore_invalid_actions: boo
 
         logger.debug(f'--- invalid action: {action.name}s {action.amount}')
         if not ignore_invalid_actions:
-            raise RuntimeError(betting_round_invalid_action_message.format(f'{action.name} {action.amount}'))
+            raise RuntimeError(betting_round_msg_invalid_action.format(f'{action.name} {action.amount}'))
 
     # Reset player and return requested action
 

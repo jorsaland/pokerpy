@@ -40,11 +40,11 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             structures.Player(1933, stack=1000)
-        self.assertEqual(cm.exception.args[0], messages.player_not_str_name_message.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_str_name.format(int.__name__))
         
         with self.assertRaises(TypeError) as cm:
             structures.Player('Andy', stack='1000')
-        self.assertEqual(cm.exception.args[0], messages.player_not_int_stack_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_int_stack.format(str.__name__))
 
 
     def test_request_action_and_reset_action_methods(self):
@@ -83,7 +83,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.request_action(constants.ACTION_BET)
-        self.assertEqual(cm.exception.args[0], messages.player_not_action_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_action_instance.format(str.__name__))
 
 
     def test_deal_card_method(self):
@@ -110,7 +110,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.deal_card('As')
-        self.assertEqual(cm.exception.args[0], messages.player_not_card_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_card_instance.format(str.__name__))
 
 
     def test_assign_hand_method(self):
@@ -161,7 +161,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.assign_hand(structures.Card('J', 's'))
-        self.assertEqual(cm.exception.args[0], messages.player_not_hand_instance_message.format(structures.Card.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_hand_instance.format(structures.Card.__name__))
 
 
     def test_add_to_current_amount_method(self):
@@ -188,11 +188,11 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.add_to_current_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.player_not_int_amount_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_int_amount.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_not_positive_amount.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.player_msg_not_positive_or_zero_amount.format(-100))
 
 
     def test_reset_betting_round_states_method(self):

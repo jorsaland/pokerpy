@@ -8,13 +8,13 @@ from collections.abc import Generator
 
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    betting_round_exiting_unended_round_message,
-    betting_round_not_str_name_message,
-    betting_round_not_table_instance_message,
-    betting_round_not_starting_player_instance_message,
-    betting_round_not_stopping_player_instance_message,
-    betting_round_overloaded_round_message,
-    betting_round_already_ended_round_message,
+    betting_round_msg_exiting_unended_round,
+    betting_round_msg_not_str_name,
+    betting_round_msg_not_table_instance,
+    betting_round_msg_not_starting_player_instance,
+    betting_round_msg_not_stopping_player_instance,
+    betting_round_msg_overloaded_round,
+    betting_round_msg_already_ended_round,
 )
 from pokerpy.structures import Player, Table
 
@@ -46,20 +46,20 @@ class BettingRound:
         # Validations
 
         if not isinstance(name, str):
-            raise TypeError(betting_round_not_str_name_message.format(type(name).__name__))
+            raise TypeError(betting_round_msg_not_str_name.format(type(name).__name__))
 
         if not isinstance(table, Table):
-            raise TypeError(betting_round_not_table_instance_message.format(type(table).__name__))
+            raise TypeError(betting_round_msg_not_table_instance.format(type(table).__name__))
 
         if starting_player is None:
             starting_player = table.players[0]
         if not isinstance(starting_player, Player):
-            raise TypeError(betting_round_not_starting_player_instance_message.format(type(starting_player).__name__))
+            raise TypeError(betting_round_msg_not_starting_player_instance.format(type(starting_player).__name__))
 
         if stopping_player is None:
             stopping_player = table.players[-1]
         if not isinstance(stopping_player, Player):
-            raise TypeError(betting_round_not_stopping_player_instance_message.format(type(stopping_player).__name__))
+            raise TypeError(betting_round_msg_not_stopping_player_instance.format(type(stopping_player).__name__))
 
         # Fixed variables
 
@@ -115,7 +115,7 @@ class BettingRound:
 
         # Stopping before executing all parsed actions
         if exception_type is StopIteration:
-            raise RuntimeError(betting_round_overloaded_round_message)
+            raise RuntimeError(betting_round_msg_overloaded_round)
         
         # Raising unexpected exceptions
         if exception is not None:
@@ -129,7 +129,7 @@ class BettingRound:
 
         # Check generator has ended successfully
         if not self.has_ended:
-            raise RuntimeError(betting_round_exiting_unended_round_message)
+            raise RuntimeError(betting_round_msg_exiting_unended_round)
 
 
     def run(self):
@@ -140,7 +140,7 @@ class BettingRound:
 
         # Check betting round has not ended yet
         if self.has_ended:
-            raise RuntimeError(betting_round_already_ended_round_message)
+            raise RuntimeError(betting_round_msg_already_ended_round)
         
         # Prepare betting round before players start their actions
         self.table.set_stopping_player(self.initial_stopping_player)

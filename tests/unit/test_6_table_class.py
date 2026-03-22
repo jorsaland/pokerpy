@@ -51,12 +51,12 @@ class TestTableClass(TestCase):
         # Argument 'players' is not a list
         with self.assertRaises(TypeError) as cm:
             structures.Table('Wood')
-        self.assertEqual(cm.exception.args[0], messages.table_not_list_players_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_list_players.format(str.__name__))
         
         # Not all elements in argument 'players' are players
         with self.assertRaises(TypeError) as cm:
             structures.Table([create_standard_player('Andy'), 'Boa'])
-        self.assertEqual(cm.exception.args[0], messages.table_not_all_player_instances_message)
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_all_player_instances)
 
         # Argument 'smallest_bet' is not an integer
         with self.assertRaises(TypeError) as cm:
@@ -64,7 +64,7 @@ class TestTableClass(TestCase):
                 [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_bet = '10'
             )
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_bet_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_smallest_bet.format(str.__name__))
 
         # Argument 'smallest_bet' is not positive
         with self.assertRaises(ValueError) as cm:
@@ -72,7 +72,7 @@ class TestTableClass(TestCase):
                 [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_bet = -10
             )
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_smallest_bet_message.format(-10))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_smallest_bet.format(-10))
 
 
     def test_activate_player_and_fold_player_methods(self):
@@ -118,23 +118,23 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.activate_player('Dino')
-        self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_player_instance.format(str.__name__))
 
         with self.assertRaises(TypeError) as cm:
             table.fold_player('Dino')
-        self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_player_instance.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             table.activate_player(create_standard_player('Dino'))
-        self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_player_not_in_table.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
             table.fold_player(create_standard_player('Dino'))
-        self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_player_not_in_table.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
             table.fold_player(Andy)
-        self.assertEqual(cm.exception.args[0], messages.table_player_already_folded_message.format('Andy'))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_player_already_folded.format('Andy'))
 
 
     def test_set_stopping_player_method(self):
@@ -168,11 +168,11 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.set_stopping_player('Dino')
-        self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_player_instance.format(str.__name__))
         
         with self.assertRaises(ValueError) as cm:
             table.set_stopping_player(create_standard_player('Dino'))
-        self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_player_not_in_table.format('Dino'))
 
 
     def test_deal_to_players_method(self):
@@ -213,7 +213,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.deal_to_players('Andy')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_cards_count_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_cards_count.format(str.__name__))
 
 
     def test_deal_common_cards(self):
@@ -250,7 +250,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.deal_common_cards('AKQJT')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_cards_count_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_cards_count.format(str.__name__))
 
 
     def test_add_to_current_amount(self):
@@ -282,11 +282,11 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.add_to_current_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_current_amount_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_current_amount.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_or_zero_amount.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_or_zero_amount.format(-100))
 
 
     def test_overwrite_smallest_rising_amount(self):
@@ -318,15 +318,15 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.overwrite_smallest_rising_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_rising_amount_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_smallest_raise.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             table.overwrite_smallest_rising_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_amount.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_smallest_raise.format(-100))
 
         with self.assertRaises(ValueError) as cm:
             table.overwrite_smallest_rising_amount(0)
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_amount.format(0))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_smallest_raise.format(0))
 
 
     def test_add_to_central_pot(self):
@@ -358,11 +358,11 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             table.add_to_central_pot('100')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_central_pot_message.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_int_central_pot.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_or_zero_amount.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.table_msg_not_positive_or_zero_amount.format(-100))
 
 
     def test_reset_betting_round_states_method(self):

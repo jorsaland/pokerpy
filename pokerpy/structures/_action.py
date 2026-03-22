@@ -9,11 +9,11 @@ from pokerpy.constants import (
     possible_action_names,
 )
 from pokerpy.messages import (
-    action_not_positive_amount_message,
-    action_not_zero_amount_message,
-    action_not_int_amount_message,
-    action_not_str_name_message,
-    action_invalid_name_message,
+    action_msg_not_positive_amount,
+    action_msg_not_zero_amount,
+    action_msg_not_int_amount,
+    action_msg_not_str_name,
+    action_msg_invalid_name,
 )
 
 
@@ -29,22 +29,22 @@ class Action:
 
         # Check types
         if not isinstance(name, str):
-            raise TypeError(action_not_str_name_message.format(type(name).__name__))
+            raise TypeError(action_msg_not_str_name.format(type(name).__name__))
         if not isinstance(amount, int):
-            raise TypeError(action_not_int_amount_message.format(type(amount).__name__))
+            raise TypeError(action_msg_not_int_amount.format(type(amount).__name__))
 
         # Validate input
         if name not in possible_action_names:
-            error_message = action_invalid_name_message.format(name, ', '.join(possible_action_names))
+            error_message = action_msg_invalid_name.format(name, ', '.join(possible_action_names))
             raise ValueError(error_message)
         
         # Validate amount
         if name in (ACTION_FOLD, ACTION_CHECK):
             if amount != 0:
-                raise ValueError(action_not_zero_amount_message.format(name, amount))
+                raise ValueError(action_msg_not_zero_amount.format(name, amount))
         else:
             if not amount > 0:
-                raise ValueError(action_not_positive_amount_message.format(name, amount))
+                raise ValueError(action_msg_not_positive_amount.format(name, amount))
 
         # Fixed variables
         self._name = name

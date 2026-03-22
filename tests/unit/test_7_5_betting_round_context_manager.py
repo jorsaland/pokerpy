@@ -47,11 +47,11 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             managers.BettingRound(1975, table)
-        self.assertEqual(cm.exception.args[0], messages.betting_round_not_str_name_message.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_not_str_name.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
             managers.BettingRound('round', 1975)
-        self.assertEqual(cm.exception.args[0], messages.betting_round_not_table_instance_message.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_not_table_instance.format(int.__name__))
 
 
     def test_exception_catching(self):
@@ -125,7 +125,7 @@ class TestBettingRoundContextManager(TestCase):
         with self.assertRaises(RuntimeError) as cm:
             raise_stop_iteration()
 
-        self.assertEqual(cm.exception.args[0], messages.betting_round_overloaded_round_message)
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_overloaded_round)
 
 
     def test_parsing(self):
@@ -202,7 +202,7 @@ class TestBettingRoundContextManager(TestCase):
         with self.assertRaises(RuntimeError) as cm:
             parse_less_actions_than_expected()
 
-        self.assertEqual(cm.exception.args[0], messages.betting_round_exiting_unended_round_message)
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_exiting_unended_round)
 
 
         def parse_more_actions_than_expected():
@@ -239,7 +239,7 @@ class TestBettingRoundContextManager(TestCase):
         with self.assertRaises(RuntimeError) as cm:
             parse_more_actions_than_expected()
         
-        self.assertEqual(cm.exception.args[0], messages.betting_round_overloaded_round_message)
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_overloaded_round)
 
 
     def test_action_chain(self):

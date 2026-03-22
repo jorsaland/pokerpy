@@ -9,19 +9,19 @@ import secrets
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    table_not_int_cards_count_message,
-    table_not_list_players_message,
-    table_not_all_player_instances_message,
-    table_not_player_instance_message,
-    table_not_int_central_pot_message,
-    table_not_int_current_amount_message,
-    table_not_int_smallest_rising_amount_message,
-    table_not_int_smallest_bet_message,
-    table_not_positive_amount,
-    table_not_positive_or_zero_amount,
-    table_not_positive_smallest_bet_message,
-    table_player_not_in_table_message,
-    table_player_already_folded_message,
+    table_msg_not_int_cards_count,
+    table_msg_not_list_players,
+    table_msg_not_all_player_instances,
+    table_msg_not_player_instance,
+    table_msg_not_int_central_pot,
+    table_msg_not_int_current_amount,
+    table_msg_not_int_smallest_raise,
+    table_msg_not_int_smallest_bet,
+    table_msg_not_positive_smallest_raise,
+    table_msg_not_positive_or_zero_amount,
+    table_msg_not_positive_smallest_bet,
+    table_msg_player_not_in_table,
+    table_msg_player_already_folded,
 )
 
 
@@ -51,14 +51,14 @@ class Table:
         # Validations
 
         if not isinstance(players, list):
-            raise TypeError(table_not_list_players_message.format(type(players).__name__))
+            raise TypeError(table_msg_not_list_players.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
-            raise TypeError(table_not_all_player_instances_message)
+            raise TypeError(table_msg_not_all_player_instances)
 
         if not isinstance(smallest_bet, int):
-            raise TypeError(table_not_int_smallest_bet_message.format(type(smallest_bet).__name__))
+            raise TypeError(table_msg_not_int_smallest_bet.format(type(smallest_bet).__name__))
         if smallest_bet <= 0:
-            raise ValueError(table_not_positive_smallest_bet_message.format(smallest_bet))
+            raise ValueError(table_msg_not_positive_smallest_bet.format(smallest_bet))
 
         # Fixed variables
 
@@ -124,10 +124,10 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
         
         if player not in self.players:
-            raise ValueError(table_player_not_in_table_message.format(player.name))
+            raise ValueError(table_msg_player_not_in_table.format(player.name))
 
         if player not in self.active_players:
             self._active_players.append(player)
@@ -140,13 +140,13 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
         
         if player not in self.players:
-            raise ValueError(table_player_not_in_table_message.format(player.name))
+            raise ValueError(table_msg_player_not_in_table.format(player.name))
 
         if player not in self.active_players:
-            raise ValueError(table_player_already_folded_message.format(player.name))
+            raise ValueError(table_msg_player_already_folded.format(player.name))
 
         self._active_players.remove(player)
 
@@ -158,10 +158,10 @@ class Table:
         """
 
         if not isinstance(player, Player):
-            raise TypeError(table_not_player_instance_message.format(type(player).__name__))
+            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
 
         if player not in self.players:
-            raise ValueError(table_player_not_in_table_message.format(player.name))
+            raise ValueError(table_msg_player_not_in_table.format(player.name))
 
         self._stopping_player = player
 
@@ -176,7 +176,7 @@ class Table:
         """
 
         if not isinstance(cards_count, int):
-            raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
+            raise TypeError(table_msg_not_int_cards_count.format(type(cards_count).__name__))
 
         for _ in range(cards_count):
             for player in self.active_players:
@@ -193,7 +193,7 @@ class Table:
         """
 
         if not isinstance(cards_count, int):
-            raise TypeError(table_not_int_cards_count_message.format(type(cards_count).__name__))
+            raise TypeError(table_msg_not_int_cards_count.format(type(cards_count).__name__))
 
         for _ in range(cards_count):
             card = secrets.choice(self.deck)
@@ -213,10 +213,10 @@ class Table:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
+            raise TypeError(table_msg_not_int_current_amount.format(type(amount).__name__))
         
         if amount < 0:
-            raise ValueError(table_not_positive_or_zero_amount.format(amount))
+            raise ValueError(table_msg_not_positive_or_zero_amount.format(amount))
 
         self._current_amount += amount
 
@@ -228,10 +228,10 @@ class Table:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(table_not_int_smallest_rising_amount_message.format(type(amount).__name__))
+            raise TypeError(table_msg_not_int_smallest_raise.format(type(amount).__name__))
         
         if amount <= 0:
-            raise ValueError(table_not_positive_amount.format(amount))
+            raise ValueError(table_msg_not_positive_smallest_raise.format(amount))
 
         self._smallest_rising_amount = amount
 
@@ -243,10 +243,10 @@ class Table:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
+            raise TypeError(table_msg_not_int_central_pot.format(type(amount).__name__))
 
         if amount < 0:
-            raise ValueError(table_not_positive_or_zero_amount.format(amount))
+            raise ValueError(table_msg_not_positive_or_zero_amount.format(amount))
 
         self._central_pot += amount
 

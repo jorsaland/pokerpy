@@ -114,7 +114,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         with self.assertRaises(RuntimeError) as cm:
             self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
-        self.assertEqual(cm.exception.args[0], messages.betting_round_invalid_action_message.format(f'{constants.ACTION_CHECK} {0}'))
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_invalid_action.format(f'{constants.ACTION_CHECK} {0}'))
 
 
         def parse_multiple_invalid_actions():
@@ -272,7 +272,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         with self.assertRaises(RuntimeError) as cm:
             self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
-        self.assertEqual(cm.exception.args[0], messages.betting_round_invalid_action_message.format(f'{constants.ACTION_RAISE} {100}'))
+        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_invalid_action.format(f'{constants.ACTION_RAISE} {100}'))
 
 
         def parse_multiple_invalid_actions():
