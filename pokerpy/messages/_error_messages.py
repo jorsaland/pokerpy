@@ -12,31 +12,27 @@ action_not_positive_amount_message = "Action '{}' requires amount being more tha
 
 # Player messages
 player_amount_larger_than_stack_message = "Amount ({}) cannot be larger than stack ({})."
-player_amount_not_multiple_of_smallest_chip_message = "Amount must be a multiple of the smallest chip: {} (received {})."
 player_not_str_name_message = "Player name must be str, not '{}'."
-player_not_int_smallest_chip_message = "Player smallest chip must be int, not '{}'."
 player_not_int_stack_message = "Player stack must be int, not '{}'."
 player_not_int_amount_message = "Amount must be int, not '{}'."
 player_not_action_instance_message = "Player action must be an instance of class Action, not '{}'."
 player_not_card_instance_message = "Player card must be an instance of class Card, not '{}'."
 player_not_hand_instance_message = "Player hand must be an instance of class Hand, not '{}'."
-player_not_positive_smallest_chip_message = "Smallest chip must be more than zero (received {})."
-player_stack_not_multiple_of_smallest_chip_message = "The stack must be a positive multiple of the smallest chip: {} (received {})."
+player_not_positive_stack = "The stack must be positive (received {})."
+player_not_positive_amount = "The amount must be positive (received {})."
 
 # Table messages
 table_not_list_players_message = "Table players must be list, not '{}'."
 table_not_all_player_instances_message = 'All table players must be instances of class Player.'
 table_not_player_instance_message = "Player must be an instance of class Player, not '{}'."
 table_not_int_cards_count_message = "Attribute 'cards_count' must be int, not '{}'."
-table_not_int_smallest_chip_message = "Table smallest chip must be int, not '{}'."
 table_not_int_central_pot_message = "Table central pot amount increase must be int, not '{}'."
 table_not_int_current_amount_message = "Table amount increase must be int, not '{}'."
 table_not_int_smallest_rising_amount_message = "Table smallest rising amount increase must be int, not '{}'."
 table_not_int_smallest_bet_message = "Table smallest bet must be int, not '{}'."
-table_increase_not_multiple_of_smallest_chip_message = "Table amount increase must be a multiple of the smallest chip: {} (received {})."
-table_sra_not_multiple_of_smallest_chip_message = "Table smallest rising amount cannot be zero and must be a multiple of the smallest chip: {} (received {})."
-table_not_positive_smallest_chip_message = "Smallest chip must be more than zero (received {})."
-table_smallest_bet_not_multiple_of_smallest_chip_message = "The smallest valid bet must be a positive multiple of the smallest chip: {} (received {})."
+table_not_positive_smallest_bet_message = "The smallest valid bet must be positive (received {})."
+table_not_positive_amount = "The amount must be positive (received {})."
+table_not_positive_or_zero_amount = "The amount must be positive or zero (received {})."
 table_player_not_in_table_message = "Player '{}' is not in the table."
 table_player_already_folded_message = "Player '{}' already folded."
 

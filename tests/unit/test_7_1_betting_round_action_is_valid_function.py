@@ -72,12 +72,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             create_standard_player('Dino'),
         ]
 
-        table = structures.Table(
-            all_players,
-            smallest_chip = 10,
-            smallest_bet = 50,
-            open_fold_allowed = True
-        )
+        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=True)
 
         # Valid actions
 
@@ -102,10 +97,6 @@ class TestBettingRoundActionIsValidFunction(TestCase):
 
         # Invalid actions because of their amounts
 
-        # Betting amount smaller than the smallest chip
-        action = structures.Action(constants.ACTION_BET, 5)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
         # Betting amount smaller than the smallest bet
         action = structures.Action(constants.ACTION_BET, 40)
         self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
@@ -124,12 +115,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             create_standard_player('Dino'),
         ]
 
-        table = structures.Table(
-            all_players,
-            smallest_chip = 10,
-            smallest_bet = 50,
-            open_fold_allowed = False
-        )
+        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
 
 
         # Valid actions
@@ -158,10 +144,6 @@ class TestBettingRoundActionIsValidFunction(TestCase):
 
         # Invalid actions because of their amounts
 
-        # Betting more than the smallest bet but not a multiple of the smallest chip
-        action = structures.Action(constants.ACTION_BET, 55)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
         # Betting an amount smaller than the smallest bet
         action = structures.Action(constants.ACTION_BET, 40)
         self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
@@ -180,12 +162,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             create_standard_player('Dino'),
         ]
 
-        table = structures.Table(
-            all_players,
-            smallest_chip = 10,
-            smallest_bet = 50,
-            open_fold_allowed = False
-        )
+        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
 
         table.add_to_current_amount(60) # Someone bets 60
         table.overwrite_smallest_rising_amount(60) # The bet of +60
@@ -237,10 +214,6 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         action = structures.Action(constants.ACTION_RAISE, 110)
         self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
 
-        # Raising more than the smallest rising amount but not a multiple of the smallest chip
-        action = structures.Action(constants.ACTION_RAISE, 125)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
 
     def test_actions_to_answer_a_single_raise(self):
 
@@ -255,12 +228,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             create_standard_player('Dino'),
         ]
 
-        table = structures.Table(
-            all_players,
-            smallest_chip = 10,
-            smallest_bet = 50,
-            open_fold_allowed = False
-        )
+        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
 
         Andy.add_to_current_amount(60) # Andy bets or calls 60
         table.add_to_current_amount(130) # Someone raises to 130 (+70)
@@ -313,10 +281,6 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         action = structures.Action(constants.ACTION_RAISE, 130)
         self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
 
-        # Raising more than the smallest rising amount but not a multiple of the smallest chip
-        action = structures.Action(constants.ACTION_RAISE, 145)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
 
     def test_actions_to_answer_multiple_raises(self):
 
@@ -331,12 +295,7 @@ class TestBettingRoundActionIsValidFunction(TestCase):
             create_standard_player('Dino'),
         ]
 
-        table = structures.Table(
-            all_players,
-            smallest_chip = 10,
-            smallest_bet = 50,
-            open_fold_allowed = False
-        )
+        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
 
         Andy.add_to_current_amount(60) # Andy bets or calls 60
         table.add_to_current_amount(200) # Someone raises to 120 (+60), and someone else to 200 (+80)
@@ -387,10 +346,6 @@ class TestBettingRoundActionIsValidFunction(TestCase):
 
         # Raising more than the calling amount but less than the smallest rising amount
         action = structures.Action(constants.ACTION_RAISE, 210)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising more than the smallest rising amount but not a multiple of the smallest chip
-        action = structures.Action(constants.ACTION_RAISE, 225)
         self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
 
 

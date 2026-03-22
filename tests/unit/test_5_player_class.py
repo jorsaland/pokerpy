@@ -33,7 +33,7 @@ class TestPlayerClass(TestCase):
         # Valid inputs
 
         create_standard_player('Andy')
-        structures.Player('Andy', stack=1000, smallest_chip=10)
+        structures.Player('Andy', stack=1000)
 
 
         # Invalid inputs
@@ -43,16 +43,8 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.player_not_str_name_message.format(int.__name__))
         
         with self.assertRaises(TypeError) as cm:
-            structures.Player('Andy', smallest_chip='1', stack=1000)
-        self.assertEqual(cm.exception.args[0], messages.player_not_int_smallest_chip_message.format(str.__name__))
-
-        with self.assertRaises(TypeError) as cm:
             structures.Player('Andy', stack='1000')
         self.assertEqual(cm.exception.args[0], messages.player_not_int_stack_message.format(str.__name__))
-
-        with self.assertRaises(ValueError) as cm:
-            structures.Player('Andy', smallest_chip=0, stack=1000)
-        self.assertEqual(cm.exception.args[0], messages.player_not_positive_smallest_chip_message.format(0))
 
 
     def test_request_action_and_reset_action_methods(self):
@@ -180,7 +172,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', smallest_chip=10, stack=1000)
+        Andy = structures.Player('Andy', stack=1000)
 
 
         # Valid inputs
@@ -200,15 +192,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, -100))
-
-        with self.assertRaises(ValueError) as cm:
-            Andy.add_to_current_amount(7)
-        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, 7))
-
-        with self.assertRaises(ValueError) as cm:
-            Andy.add_to_current_amount(77)
-        self.assertEqual(cm.exception.args[0], messages.player_amount_not_multiple_of_smallest_chip_message.format(10, 77))
+        self.assertEqual(cm.exception.args[0], messages.player_not_positive_amount.format(-100))
 
 
     def test_reset_betting_round_states_method(self):

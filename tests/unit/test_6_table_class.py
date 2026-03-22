@@ -36,18 +36,11 @@ class TestTableClass(TestCase):
 
         structures.Table(
             [create_standard_player('Andy'), create_standard_player('Boa')],
-            smallest_chip = 5,
-        )
-
-        structures.Table(
-            [create_standard_player('Andy'), create_standard_player('Boa')],
-            smallest_chip = 5,
             smallest_bet = 10,
         )
 
         structures.Table(
             [create_standard_player('Andy'), create_standard_player('Boa')],
-            smallest_chip = 5,
             smallest_bet = 10,
             open_fold_allowed = True,
         )
@@ -65,48 +58,21 @@ class TestTableClass(TestCase):
             structures.Table([create_standard_player('Andy'), 'Boa'])
         self.assertEqual(cm.exception.args[0], messages.table_not_all_player_instances_message)
 
-        # Argument 'smallest_chip' is not an integer
-        with self.assertRaises(TypeError) as cm:
-            structures.Table(
-                [create_standard_player('Andy'), create_standard_player('Boa')],
-                smallest_chip = '5'
-            )
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_chip_message.format(str.__name__))
-
-        # Argument 'smallest_chip' is not positive
-        with self.assertRaises(ValueError) as cm:
-            structures.Table(
-                [create_standard_player('Andy'), create_standard_player('Boa')],
-                smallest_chip = -5
-            )
-        self.assertEqual(cm.exception.args[0], messages.table_not_positive_smallest_chip_message.format(-5))
-
         # Argument 'smallest_bet' is not an integer
         with self.assertRaises(TypeError) as cm:
             structures.Table(
                 [create_standard_player('Andy'), create_standard_player('Boa')],
-                smallest_chip = 5,
                 smallest_bet = '10'
             )
         self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_bet_message.format(str.__name__))
-
-        # Argument 'smallest_bet' is not a multiple of 'smallest_chip'
-        with self.assertRaises(ValueError) as cm:
-            structures.Table(
-                [create_standard_player('Andy'), create_standard_player('Boa')],
-                smallest_chip = 5,
-                smallest_bet = 7,
-            )
-        self.assertEqual(cm.exception.args[0], messages.table_smallest_bet_not_multiple_of_smallest_chip_message.format(5, 7))
 
         # Argument 'smallest_bet' is not positive
         with self.assertRaises(ValueError) as cm:
             structures.Table(
                 [create_standard_player('Andy'), create_standard_player('Boa')],
-                smallest_chip = 5,
                 smallest_bet = -10
             )
-        self.assertEqual(cm.exception.args[0], messages.table_smallest_bet_not_multiple_of_smallest_chip_message.format(5, -10))
+        self.assertEqual(cm.exception.args[0], messages.table_not_positive_smallest_bet_message.format(-10))
 
 
     def test_activate_player_and_fold_player_methods(self):
@@ -300,7 +266,7 @@ class TestTableClass(TestCase):
             create_standard_player('Boa'),
             create_standard_player('Coral'),
         ]
-        table = structures.Table(all_players, smallest_chip=10)
+        table = structures.Table(all_players)
 
 
         # Valid inputs
@@ -320,15 +286,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, -100))
-
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_current_amount(5)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, 5))
-
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_current_amount(107)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, 107))
+        self.assertEqual(cm.exception.args[0], messages.table_not_positive_or_zero_amount.format(-100))
 
 
     def test_overwrite_smallest_rising_amount(self):
@@ -344,7 +302,7 @@ class TestTableClass(TestCase):
             create_standard_player('Boa'),
             create_standard_player('Coral'),
         ]
-        table = structures.Table(all_players, smallest_chip=10)
+        table = structures.Table(all_players)
 
 
         # Valid inputs
@@ -364,19 +322,11 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             table.overwrite_smallest_rising_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, -100))
+        self.assertEqual(cm.exception.args[0], messages.table_not_positive_amount.format(-100))
 
         with self.assertRaises(ValueError) as cm:
             table.overwrite_smallest_rising_amount(0)
-        self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 0))
-
-        with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(5)
-        self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 5))
-
-        with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(107)
-        self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 107))
+        self.assertEqual(cm.exception.args[0], messages.table_not_positive_amount.format(0))
 
 
     def test_add_to_central_pot(self):
@@ -392,7 +342,7 @@ class TestTableClass(TestCase):
             create_standard_player('Boa'),
             create_standard_player('Coral'),
         ]
-        table = structures.Table(all_players, smallest_chip=10)
+        table = structures.Table(all_players)
 
 
         # Valid inputs
@@ -412,15 +362,7 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(ValueError) as cm:
             table.add_to_central_pot(-100)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, -100))
-
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_central_pot(5)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, 5))
-
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_central_pot(107)
-        self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, 107))
+        self.assertEqual(cm.exception.args[0], messages.table_not_positive_or_zero_amount.format(-100))
 
 
     def test_reset_betting_round_states_method(self):

@@ -9,7 +9,6 @@ import secrets
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    table_increase_not_multiple_of_smallest_chip_message,
     table_not_int_cards_count_message,
     table_not_list_players_message,
     table_not_all_player_instances_message,
@@ -17,13 +16,12 @@ from pokerpy.messages import (
     table_not_int_central_pot_message,
     table_not_int_current_amount_message,
     table_not_int_smallest_rising_amount_message,
-    table_not_int_smallest_chip_message,
+    table_not_int_smallest_bet_message,
+    table_not_positive_amount,
+    table_not_positive_or_zero_amount,
+    table_not_positive_smallest_bet_message,
     table_player_not_in_table_message,
     table_player_already_folded_message,
-    table_not_positive_smallest_chip_message,
-    table_sra_not_multiple_of_smallest_chip_message,
-    table_not_int_smallest_bet_message,
-    table_smallest_bet_not_multiple_of_smallest_chip_message,
 )
 
 
@@ -46,8 +44,7 @@ class Table:
         self,
         players: list[Player],
         *,
-        smallest_chip: int = 1,
-        smallest_bet: int = None,
+        smallest_bet: int = 1,
         open_fold_allowed = False,
     ):
 
@@ -58,22 +55,14 @@ class Table:
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(table_not_all_player_instances_message)
 
-        if not isinstance(smallest_chip, int):
-            raise TypeError(table_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
-        if not smallest_chip > 0:
-            raise ValueError(table_not_positive_smallest_chip_message.format(smallest_chip))
-
-        if smallest_bet is None:
-            smallest_bet = smallest_chip
         if not isinstance(smallest_bet, int):
             raise TypeError(table_not_int_smallest_bet_message.format(type(smallest_bet).__name__))
-        if not (smallest_bet > 0 and smallest_bet % smallest_chip == 0):
-            raise ValueError(table_smallest_bet_not_multiple_of_smallest_chip_message.format(smallest_chip, smallest_bet))
+        if smallest_bet <= 0:
+            raise ValueError(table_not_positive_smallest_bet_message.format(smallest_bet))
 
         # Fixed variables
 
         self._players = players
-        self._smallest_chip = smallest_chip
         self._smallest_bet = smallest_bet
         self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
 
@@ -95,24 +84,17 @@ class Table:
     @property
     def active_players(self):
         return tuple(self._active_players)
-
-    @property
-    def smallest_chip(self):
-        return self._smallest_chip
     
     @property
     def smallest_bet(self):
-        assert self._smallest_bet % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._smallest_bet
     
     @property
     def smallest_rising_amount(self):
-        assert self._smallest_rising_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._smallest_rising_amount
 
     @property
     def current_amount(self):
-        assert self._current_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._current_amount
 
     @property
@@ -129,7 +111,6 @@ class Table:
 
     @property
     def central_pot(self):
-        assert self._central_pot % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._central_pot
 
 
@@ -234,8 +215,8 @@ class Table:
         if not isinstance(amount, int):
             raise TypeError(table_not_int_current_amount_message.format(type(amount).__name__))
         
-        if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(table_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount < 0:
+            raise ValueError(table_not_positive_or_zero_amount.format(amount))
 
         self._current_amount += amount
 
@@ -249,8 +230,8 @@ class Table:
         if not isinstance(amount, int):
             raise TypeError(table_not_int_smallest_rising_amount_message.format(type(amount).__name__))
         
-        if not (amount > 0 and amount % self.smallest_chip == 0):
-            raise ValueError(table_sra_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount <= 0:
+            raise ValueError(table_not_positive_amount.format(amount))
 
         self._smallest_rising_amount = amount
 
@@ -264,8 +245,8 @@ class Table:
         if not isinstance(amount, int):
             raise TypeError(table_not_int_central_pot_message.format(type(amount).__name__))
 
-        if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(table_increase_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount < 0:
+            raise ValueError(table_not_positive_or_zero_amount.format(amount))
 
         self._central_pot += amount
 
@@ -310,19 +291,18 @@ class Table:
             return
 
         logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-        central_pot_atoms = self.central_pot // self.smallest_chip ## remainder should always be zero
-        profit_atoms_per_player = central_pot_atoms // len(winners)
-        remainder_atoms = central_pot_atoms // self.smallest_chip % len(winners)
-        profit_atoms_by_player = {player: profit_atoms_per_player for player in winners}
+        profit_per_player = self.central_pot // len(winners)
+        remainder = self.central_pot % len(winners)
+        profit_by_player = {player: profit_per_player for player in winners}
 
         for player in winners:
-            if remainder_atoms == 0:
+            if remainder == 0:
                 break
-            profit_atoms_by_player[player] += 1
-            remainder_atoms -= 1
+            profit_by_player[player] += 1
+            remainder -= 1
 
         for player in winners:
-            logger.info(f'{player.name} wins {profit_atoms_by_player[player]}.')
+            logger.info(f'{player.name} wins {profit_by_player[player]}.')
         return
 
 

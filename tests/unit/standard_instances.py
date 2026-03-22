@@ -17,4 +17,4 @@ def create_standard_player(name: str):
     Creates a standard player with a custom value for the mandatory fields.
     """
 
-    return structures.Player(name, stack=100000)
+    return structures.Player(name, stack=1000000)

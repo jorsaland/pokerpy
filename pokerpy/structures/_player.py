@@ -10,11 +10,9 @@ from pokerpy.messages import (
     player_not_hand_instance_message,
     player_not_str_name_message,
     player_amount_larger_than_stack_message,
-    player_amount_not_multiple_of_smallest_chip_message,
-    player_not_positive_smallest_chip_message,
-    player_not_int_smallest_chip_message,
+    player_not_positive_amount,
     player_not_int_stack_message,
-    player_stack_not_multiple_of_smallest_chip_message,
+    player_not_positive_stack,
 )
 
 
@@ -31,22 +29,18 @@ class Player:
     """
 
 
-    def __init__(self, name: str, *, smallest_chip: int = 1, stack: int):
+    def __init__(self, name: str, *, stack: int):
 
         # Validations
 
         if not isinstance(name, str):
             raise TypeError(player_not_str_name_message.format(type(name).__name__))
 
-        if not isinstance(smallest_chip, int):
-            raise TypeError(player_not_int_smallest_chip_message.format(type(smallest_chip).__name__))
         if not isinstance(stack, int):
             raise TypeError(player_not_int_stack_message.format(type(stack).__name__))
 
-        if not smallest_chip > 0:
-            raise ValueError(player_not_positive_smallest_chip_message.format(smallest_chip))
-        if not (stack > 0 and stack % smallest_chip == 0):
-            raise ValueError(player_stack_not_multiple_of_smallest_chip_message.format(smallest_chip, stack))
+        if stack <= 0:
+            raise ValueError(player_not_positive_stack.format(stack))
 
         # Fixed variables
         self._name = name
@@ -56,7 +50,6 @@ class Player:
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
         self._current_amount = 0 # this is set by instance methods
-        self._smallest_chip = smallest_chip
         self._stack = stack
 
 
@@ -78,16 +71,10 @@ class Player:
 
     @property
     def current_amount(self):
-        assert self._current_amount % self._smallest_chip == 0 ## should never fail, except for direct manipulation
         return self._current_amount
     
     @property
-    def smallest_chip(self):
-        return self._smallest_chip
-
-    @property
     def stack(self):
-        assert self._stack % self._smallest_chip == 0 ## should never fail, except for direct manipulation of private attributes
         return self._stack
 
 
@@ -158,8 +145,8 @@ class Player:
         if not isinstance(amount, int):
             raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
 
-        if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount < 0:
+            raise ValueError(player_not_positive_amount.format(amount))
 
         self._current_amount += amount
 
@@ -173,8 +160,8 @@ class Player:
         if not isinstance(amount, int):
             raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
 
-        if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount < 0:
+            raise ValueError(player_not_positive_amount.format(amount))
 
         self._stack += amount
 
@@ -188,8 +175,8 @@ class Player:
         if not isinstance(amount, int):
             raise TypeError(player_not_int_amount_message.format(type(amount).__name__))
 
-        if not (amount >= 0 and amount % self.smallest_chip == 0):
-            raise ValueError(player_amount_not_multiple_of_smallest_chip_message.format(self.smallest_chip, amount))
+        if amount < 0:
+            raise ValueError(player_not_positive_amount.format(amount))
         
         if amount > self.stack:
             raise ValueError(player_amount_larger_than_stack_message.format(amount, self.stack))
