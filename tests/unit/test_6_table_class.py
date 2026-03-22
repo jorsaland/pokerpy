@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, messages, structures
+from standard_instances import create_standard_player
 
 
 class TestTableClass(TestCase):
@@ -31,21 +32,21 @@ class TestTableClass(TestCase):
 
         # Valid inputs
 
-        structures.Table([structures.Player('Andy'), structures.Player('Boa')])
+        structures.Table([create_standard_player('Andy'), create_standard_player('Boa')])
 
         structures.Table(
-            [structures.Player('Andy'), structures.Player('Boa')],
+            [create_standard_player('Andy'), create_standard_player('Boa')],
             smallest_chip = 5,
         )
 
         structures.Table(
-            [structures.Player('Andy'), structures.Player('Boa')],
+            [create_standard_player('Andy'), create_standard_player('Boa')],
             smallest_chip = 5,
             smallest_bet = 10,
         )
 
         structures.Table(
-            [structures.Player('Andy'), structures.Player('Boa')],
+            [create_standard_player('Andy'), create_standard_player('Boa')],
             smallest_chip = 5,
             smallest_bet = 10,
             open_fold_allowed = True,
@@ -61,13 +62,13 @@ class TestTableClass(TestCase):
         
         # Not all elements in argument 'players' are players
         with self.assertRaises(TypeError) as cm:
-            structures.Table([structures.Player('Andy'), 'Boa'])
+            structures.Table([create_standard_player('Andy'), 'Boa'])
         self.assertEqual(cm.exception.args[0], messages.table_not_all_player_instances_message)
 
         # Argument 'smallest_chip' is not an integer
         with self.assertRaises(TypeError) as cm:
             structures.Table(
-                [structures.Player('Andy'), structures.Player('Boa')],
+                [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_chip = '5'
             )
         self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_chip_message.format(str.__name__))
@@ -75,7 +76,7 @@ class TestTableClass(TestCase):
         # Argument 'smallest_chip' is not positive
         with self.assertRaises(ValueError) as cm:
             structures.Table(
-                [structures.Player('Andy'), structures.Player('Boa')],
+                [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_chip = -5
             )
         self.assertEqual(cm.exception.args[0], messages.table_not_positive_smallest_chip_message.format(-5))
@@ -83,7 +84,7 @@ class TestTableClass(TestCase):
         # Argument 'smallest_bet' is not an integer
         with self.assertRaises(TypeError) as cm:
             structures.Table(
-                [structures.Player('Andy'), structures.Player('Boa')],
+                [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_chip = 5,
                 smallest_bet = '10'
             )
@@ -92,7 +93,7 @@ class TestTableClass(TestCase):
         # Argument 'smallest_bet' is not a multiple of 'smallest_chip'
         with self.assertRaises(ValueError) as cm:
             structures.Table(
-                [structures.Player('Andy'), structures.Player('Boa')],
+                [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_chip = 5,
                 smallest_bet = 7,
             )
@@ -101,7 +102,7 @@ class TestTableClass(TestCase):
         # Argument 'smallest_bet' is not positive
         with self.assertRaises(ValueError) as cm:
             structures.Table(
-                [structures.Player('Andy'), structures.Player('Boa')],
+                [create_standard_player('Andy'), create_standard_player('Boa')],
                 smallest_chip = 5,
                 smallest_bet = -10
             )
@@ -117,9 +118,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
 
@@ -158,11 +159,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            table.activate_player(structures.Player('Dino'))
+            table.activate_player(create_standard_player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
-            table.fold_player(structures.Player('Dino'))
+            table.fold_player(create_standard_player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
 
         with self.assertRaises(ValueError) as cm:
@@ -179,9 +180,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
         table.activate_player(Andy)
@@ -204,7 +205,7 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_not_player_instance_message.format(str.__name__))
         
         with self.assertRaises(ValueError) as cm:
-            table.set_stopping_player(structures.Player('Dino'))
+            table.set_stopping_player(create_standard_player('Dino'))
         self.assertEqual(cm.exception.args[0], messages.table_player_not_in_table_message.format('Dino'))
 
 
@@ -217,9 +218,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
         for player in all_players:
@@ -258,9 +259,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
 
@@ -295,9 +296,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players, smallest_chip=10)
 
@@ -339,9 +340,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players, smallest_chip=10)
 
@@ -387,9 +388,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players, smallest_chip=10)
 
@@ -431,9 +432,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            Andy := create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
 
@@ -456,9 +457,9 @@ class TestTableClass(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
+            Andy := create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
         ]
         table = structures.Table(all_players)
 

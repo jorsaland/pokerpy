@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, structures
+from standard_instances import create_standard_player
 
 
 class TestBettingRoundActionIsValidFunction(TestCase):
@@ -55,10 +56,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         all_players = [
-            (Andy := structures.Player('Andy')),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            (Andy := create_standard_player('Andy')),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
         table = structures.Table(
@@ -107,10 +108,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         all_players = [
-            (Andy := structures.Player('Andy')),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            (Andy := create_standard_player('Andy')),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
         table = structures.Table(
@@ -163,10 +164,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         all_players = [
-            (Andy := structures.Player('Andy')),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            (Andy := create_standard_player('Andy')),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
         table = structures.Table(
@@ -238,10 +239,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         all_players = [
-            (Andy := structures.Player('Andy')),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            (Andy := create_standard_player('Andy')),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
         table = structures.Table(
@@ -314,10 +315,10 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         all_players = [
-            (Andy := structures.Player('Andy')),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            (Andy := create_standard_player('Andy')),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
         table = structures.Table(

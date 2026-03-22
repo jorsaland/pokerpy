@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, structures
+from standard_instances import create_standard_player
 
 
 class TestBettingRoundAlternatePlayersFunction(TestCase):
@@ -30,12 +31,12 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
-            Epa := structures.Player('Epa'),
-            Fomi := structures.Player('Fomi'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
+            Dino := create_standard_player('Dino'),
+            Epa := create_standard_player('Epa'),
+            Fomi := create_standard_player('Fomi'),
         ]
 
 
@@ -211,10 +212,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
+            Dino := create_standard_player('Dino'),
         ]
 
 
@@ -319,10 +320,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         def end_if_single_player_remaining():
 
             all_players = [
-                Andy := structures.Player('Andy'),
-                Boa := structures.Player('Boa'),
-                Coral := structures.Player('Coral'),
-                Dino := structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                Boa := create_standard_player('Boa'),
+                Coral := create_standard_player('Coral'),
+                Dino := create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
             table.activate_player(Andy)
@@ -343,10 +344,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         def end_if_first_player_is_the_stopping_player():
 
             all_players = [
-                Andy := structures.Player('Andy'),
-                Boa := structures.Player('Boa'),
-                Coral := structures.Player('Coral'),
-                Dino := structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                Boa := create_standard_player('Boa'),
+                Coral := create_standard_player('Coral'),
+                Dino := create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
             for player in table.players:
@@ -373,10 +374,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         def end_if_intermediate_position_player_is_the_stopping_player():
 
             all_players = [
-                Andy := structures.Player('Andy'),
-                Boa := structures.Player('Boa'),
-                Coral := structures.Player('Coral'),
-                Dino := structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                Boa := create_standard_player('Boa'),
+                Coral := create_standard_player('Coral'),
+                Dino := create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
             for player in table.players:
@@ -407,10 +408,10 @@ class TestBettingRoundAlternatePlayersFunction(TestCase):
         def end_if_last_player_is_the_stopping_player():
 
             all_players = [
-                Andy := structures.Player('Andy'),
-                Boa := structures.Player('Boa'),
-                Coral := structures.Player('Coral'),
-                Dino := structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                Boa := create_standard_player('Boa'),
+                Coral := create_standard_player('Coral'),
+                Dino := create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
             for player in table.players:

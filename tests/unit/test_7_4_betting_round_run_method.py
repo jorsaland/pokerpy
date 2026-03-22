@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, structures
+from standard_instances import create_standard_player
 
 
 class TestBettingRoundRunMethod(TestCase):
@@ -30,10 +31,10 @@ class TestBettingRoundRunMethod(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
+            Dino := create_standard_player('Dino'),
         ]
 
 
@@ -142,10 +143,10 @@ class TestBettingRoundRunMethod(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
+            Dino := create_standard_player('Dino'),
         ]
 
 

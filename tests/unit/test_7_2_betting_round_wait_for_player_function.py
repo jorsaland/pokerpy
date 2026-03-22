@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, messages, structures
+from standard_instances import create_standard_player
 
 
 class TestBettingRoundWaitForPlayerFunction(TestCase):
@@ -34,10 +35,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
         
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -62,10 +63,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -90,10 +91,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -120,10 +121,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -155,10 +156,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -201,10 +202,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -226,10 +227,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -251,10 +252,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players)
 
@@ -278,10 +279,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players, open_fold_allowed=False)
 
@@ -314,10 +315,10 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
             # Define table and current player
             all_players = [
-                Andy := structures.Player('Andy'),
-                structures.Player('Boa'),
-                structures.Player('Coral'),
-                structures.Player('Dino'),
+                Andy := create_standard_player('Andy'),
+                create_standard_player('Boa'),
+                create_standard_player('Coral'),
+                create_standard_player('Dino'),
             ]
             table = structures.Table(all_players, open_fold_allowed=False)
 

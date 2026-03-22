@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, messages, structures
+from standard_instances import create_standard_player
 
 
 class TestBettingRoundContextManager(TestCase):
@@ -30,10 +31,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         table = structures.Table([
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ])
 
 
@@ -62,10 +63,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
 
@@ -136,10 +137,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            structures.Player('Andy'),
-            structures.Player('Boa'),
-            structures.Player('Coral'),
-            structures.Player('Dino'),
+            create_standard_player('Andy'),
+            create_standard_player('Boa'),
+            create_standard_player('Coral'),
+            create_standard_player('Dino'),
         ]
 
 
@@ -250,10 +251,10 @@ class TestBettingRoundContextManager(TestCase):
 
 
         all_players = [
-            Andy := structures.Player('Andy'),
-            Boa := structures.Player('Boa'),
-            Coral := structures.Player('Coral'),
-            Dino := structures.Player('Dino'),
+            Andy := create_standard_player('Andy'),
+            Boa := create_standard_player('Boa'),
+            Coral := create_standard_player('Coral'),
+            Dino := create_standard_player('Dino'),
         ]
 
 

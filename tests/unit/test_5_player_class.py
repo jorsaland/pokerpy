@@ -11,6 +11,7 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, messages, structures
+from standard_instances import create_standard_player
 
 
 class TestPlayerClass(TestCase):
@@ -31,21 +32,26 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        structures.Player('Andy')
+        create_standard_player('Andy')
+        structures.Player('Andy', stack=1000, smallest_chip=10)
 
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            structures.Player(1933)
+            structures.Player(1933, stack=1000)
         self.assertEqual(cm.exception.args[0], messages.player_not_str_name_message.format(int.__name__))
         
         with self.assertRaises(TypeError) as cm:
-            structures.Player('Andy', smallest_chip='1')
+            structures.Player('Andy', smallest_chip='1', stack=1000)
         self.assertEqual(cm.exception.args[0], messages.player_not_int_smallest_chip_message.format(str.__name__))
 
+        with self.assertRaises(TypeError) as cm:
+            structures.Player('Andy', stack='1000')
+        self.assertEqual(cm.exception.args[0], messages.player_not_int_stack_message.format(str.__name__))
+
         with self.assertRaises(ValueError) as cm:
-            structures.Player('Andy', smallest_chip=0)
+            structures.Player('Andy', smallest_chip=0, stack=1000)
         self.assertEqual(cm.exception.args[0], messages.player_not_positive_smallest_chip_message.format(0))
 
 
@@ -57,7 +63,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = create_standard_player('Andy')
 
 
         # Valid inputs
@@ -96,7 +102,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = create_standard_player('Andy')
 
 
         # Valid inputs
@@ -123,7 +129,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = create_standard_player('Andy')
 
 
         # Valid inputs
@@ -174,7 +180,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', smallest_chip=10)
+        Andy = create_standard_player('Andy')
 
 
         # Valid inputs
@@ -213,7 +219,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = create_standard_player('Andy')
 
         Andy.request_action(structures.Action(constants.ACTION_BET, 200))
         Andy.add_to_current_amount(200)
@@ -232,7 +238,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy')
+        Andy = create_standard_player('Andy')
 
         Andy.request_action(structures.Action(constants.ACTION_BET, 200))
         Andy.add_to_current_amount(200)
