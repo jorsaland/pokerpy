@@ -180,7 +180,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
+        Andy = structures.Player('Andy', smallest_chip=10, stack=1000)
 
 
         # Valid inputs
