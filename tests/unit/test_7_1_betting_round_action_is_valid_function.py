@@ -29,23 +29,33 @@ class TestBettingRoundActionIsValidFunction(TestCase):
         """
 
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, open_fold_allowed=True)),
+            sorted(managers.get_valid_action_names(amount_to_call=0, stack=100, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, open_fold_allowed=False)),
+            sorted(managers.get_valid_action_names(amount_to_call=0, stack=100, open_fold_allowed=False)),
             sorted([constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=10, open_fold_allowed=True)),
+            sorted(managers.get_valid_action_names(amount_to_call=10, stack=100, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
         )
 
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=10, open_fold_allowed=False)),
+            sorted(managers.get_valid_action_names(amount_to_call=10, stack=100, open_fold_allowed=False)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
+        )
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=200, stack=100, open_fold_allowed=True)),
+            sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
+        )
+
+        self.assertListEqual(
+            sorted(managers.get_valid_action_names(amount_to_call=200, stack=100, open_fold_allowed=False)),
+            sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
         )
 
 
