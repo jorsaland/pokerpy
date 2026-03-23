@@ -44,7 +44,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             structures.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_not_five_cards)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
 
         
         # Less cards than expected
@@ -58,7 +58,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             structures.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_not_five_cards)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
 
 
         # No cards
@@ -68,7 +68,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             structures.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_not_five_cards)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
 
 
         # Exactly five cards but some repeated
@@ -84,7 +84,7 @@ class TestHandGetCategory(TestCase):
         with self.assertRaises(ValueError) as cm:
             structures.get_category(cards)
         
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_repeated_cards)
+        self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
 
 
     def test_royal_flush(self):

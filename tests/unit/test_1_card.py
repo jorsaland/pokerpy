@@ -31,8 +31,8 @@ class TestCard(TestCase):
 
         # Resources
 
-        invalid_card_value_full_message = messages.card_msg_invalid_value.format(', '.join(constants.sorted_card_values))
-        invalid_card_suit_full_message = messages.card_msg_invalid_suit.format(', '.join(constants.sorted_card_suits))
+        formatted_msg_invalid_card_value = messages.msg_invalid_card_value.format(', '.join(constants.sorted_card_values))
+        formatted_msg_invalid_card_suit = messages.msg_invalid_card_suit.format(', '.join(constants.sorted_card_suits))
 
 
         # The complete deck
@@ -113,154 +113,154 @@ class TestCard(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             structures.Card(8, 's')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_not_str_value.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
             structures.Card('8', 1)
-        self.assertEqual(cm.exception.args[0], messages.card_msg_not_str_suit.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(int.__name__))
 
 
         # Invalid value parsings that may be valid in future
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('aces', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('kings', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('queens', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('jacks', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('tens', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('10', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('nines', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('eights', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('sevens', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('sixes', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('fives', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('fours', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('threes', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('deuces', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
 
         # Some invalid values NOT to be considered in future
         
         with self.assertRaises(ValueError) as cm:
             structures.Card('', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('1', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('11', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('aces', 's')
-        self.assertEqual(cm.exception.args[0], invalid_card_value_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_value)
 
 
         # Invalid suit parsings that may be valid in future
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'spades')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'hearts')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'diamonds')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'clubs')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
 
         # Invalid suits NOT to be considered in future
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'a')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', '')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'swords')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'cups')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'coins')
-        self.assertEqual(cm.exception.args[0], invalid_card_suit_full_message)
+        self.assertEqual(cm.exception.args[0], formatted_msg_invalid_card_suit)
 
 
         # Just kidding
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('joker', 's')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_joker)
+        self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('joker', 'whatever')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_joker)
+        self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('A', 'joker')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_joker)
+        self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('whatever', 'joker')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_joker)
+        self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
 
         with self.assertRaises(ValueError) as cm:
             structures.Card('joker', 'joker')
-        self.assertEqual(cm.exception.args[0], messages.card_msg_joker)
+        self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
 
 
     def test_comparison(self):

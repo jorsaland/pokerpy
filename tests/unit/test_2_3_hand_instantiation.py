@@ -68,15 +68,15 @@ class TestHandInstantiation(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             structures.Hand(98765)
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_cards_not_iterable_object.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_iterable_object.format(int.__name__))
 
         with self.assertRaises(TypeError) as cm:
             structures.Hand('98765')
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_not_all_card_instances.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_all_card_instances.format(str.__name__))
 
         with self.assertRaises(TypeError) as cm:
             structures.Hand(['Ah', structures.Card('A', 's')])
-        self.assertEqual(cm.exception.args[0], messages.hand_msg_not_all_card_instances)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_all_card_instances)
 
 
 if __name__ == '__main__':
