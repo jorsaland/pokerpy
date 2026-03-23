@@ -3,25 +3,16 @@ Defines the class that represents a poker table.
 """
 
 
-import secrets
-
-
 from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    table_msg_not_int_cards_count,
-    table_msg_not_list_players,
-    table_msg_not_all_player_instances,
-    table_msg_not_player_instance,
-    table_msg_not_int_central_pot,
-    table_msg_not_int_current_amount,
-    table_msg_not_int_smallest_raise,
-    table_msg_not_int_smallest_bet,
-    table_msg_not_positive_smallest_raise,
-    table_msg_not_positive_or_zero_amount,
-    table_msg_not_positive_smallest_bet,
-    table_msg_player_not_in_table,
-    table_msg_player_already_folded,
+    msg_card_not_in_deck,
+    msg_not_all_player_instances,
+    msg_not_card_instance,
+    msg_not_int,
+    msg_not_list,
+    msg_not_positive_or_zero_value,
+    msg_repeated_cards,
 )
 
 
@@ -43,38 +34,26 @@ class Table:
     def __init__(
         self,
         players: list[Player],
-        *,
-        smallest_bet: int = 1,
-        open_fold_allowed = False,
     ):
 
         # Validations
 
         if not isinstance(players, list):
-            raise TypeError(table_msg_not_list_players.format(type(players).__name__))
+            raise TypeError(msg_not_list.format(type(players).__name__))
         if not all(isinstance(player, Player) for player in players):
-            raise TypeError(table_msg_not_all_player_instances)
-
-        if not isinstance(smallest_bet, int):
-            raise TypeError(table_msg_not_int_smallest_bet.format(type(smallest_bet).__name__))
-        if smallest_bet <= 0:
-            raise ValueError(table_msg_not_positive_smallest_bet.format(smallest_bet))
+            raise TypeError(msg_not_all_player_instances)
 
         # Fixed variables
 
         self._players = players
-        self._smallest_bet = smallest_bet
-        self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
 
         # State variables
 
-        self._active_players: list[Player] = []
-        self._smallest_rising_amount = smallest_bet
         self._current_amount = 0
-        self._stopping_player: (Player|None) = None
+        self._central_pot = 0
+
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
-        self._central_pot = 0
     
 
     @property
@@ -82,25 +61,13 @@ class Table:
         return tuple(self._players)
 
     @property
-    def active_players(self):
-        return tuple(self._active_players)
-    
-    @property
-    def smallest_bet(self):
-        return self._smallest_bet
-    
-    @property
-    def smallest_rising_amount(self):
-        return self._smallest_rising_amount
-
-    @property
     def current_amount(self):
         return self._current_amount
 
     @property
-    def stopping_player(self):
-        return self._stopping_player
-    
+    def central_pot(self):
+        return self._central_pot
+
     @property
     def deck(self):
         return tuple(self._deck)
@@ -109,101 +76,41 @@ class Table:
     def common_cards(self):
         return tuple(self._common_cards)
 
-    @property
-    def central_pot(self):
-        return self._central_pot
+
+    # Methods to affect cards
 
 
-    # Methods to affect players behaviour
+    def remove_card_from_deck(self, card: Card):
 
+        """
+        Removes a card from the deck.
+        """
 
-    def activate_player(self, player: Player):
+        if not isinstance(card, Card):
+            raise TypeError(msg_not_card_instance.format(type(card).__name__))
         
+        if card not in self.deck:
+            raise ValueError(msg_card_not_in_deck)
+
+        self._deck.remove(card)
+
+
+    def deal_common_card(self, card: Card):
+
         """
-        Make a single player to become available to play.
+        Deals a common card to the table.
         """
 
-        if not isinstance(player, Player):
-            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
+        if not isinstance(card, Card):
+            raise TypeError(msg_not_card_instance.format(type(card).__name__))
         
-        if player not in self.players:
-            raise ValueError(table_msg_player_not_in_table.format(player.name))
+        if card in self.common_cards:
+            raise ValueError(msg_repeated_cards)
 
-        if player not in self.active_players:
-            self._active_players.append(player)
-
-
-    def fold_player(self, player: Player):
-
-        """
-        Removes a player from a hand cycle.
-        """
-
-        if not isinstance(player, Player):
-            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
-        
-        if player not in self.players:
-            raise ValueError(table_msg_player_not_in_table.format(player.name))
-
-        if player not in self.active_players:
-            raise ValueError(table_msg_player_already_folded.format(player.name))
-
-        self._active_players.remove(player)
+        self._common_cards.append(card)
 
 
-    def set_stopping_player(self, player: Player):
-
-        """
-        Marks a player before whom the betting round is closed.
-        """
-
-        if not isinstance(player, Player):
-            raise TypeError(table_msg_not_player_instance.format(type(player).__name__))
-
-        if player not in self.players:
-            raise ValueError(table_msg_player_not_in_table.format(player.name))
-
-        self._stopping_player = player
-
-
-    # Methods to deal cards
-
-
-    def deal_to_players(self, cards_count: int):
-
-        """
-        Deals cards to players in equal amounts.
-        """
-
-        if not isinstance(cards_count, int):
-            raise TypeError(table_msg_not_int_cards_count.format(type(cards_count).__name__))
-
-        for _ in range(cards_count):
-            for player in self.active_players:
-                card = secrets.choice(self.deck)
-                logger.info(f'Dealer deals card {card} to {player.name}.')
-                self._deck.remove(card)
-                player.deal_card(card)
-
-
-    def deal_common_cards(self, cards_count: int):
-
-        """
-        Deals common cards to table.
-        """
-
-        if not isinstance(cards_count, int):
-            raise TypeError(table_msg_not_int_cards_count.format(type(cards_count).__name__))
-
-        for _ in range(cards_count):
-            card = secrets.choice(self.deck)
-            self._deck.remove(card)
-            self._common_cards.append(card)
-        
-        logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.common_cards[-cards_count:])}.')
-
-
-    # Methods to affect current amount to be responded and central pot
+    # Methods to affect money
 
 
     def add_to_current_amount(self, amount: int):
@@ -213,27 +120,12 @@ class Table:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(table_msg_not_int_current_amount.format(type(amount).__name__))
+            raise TypeError(msg_not_int.format(type(amount).__name__))
         
         if amount < 0:
-            raise ValueError(table_msg_not_positive_or_zero_amount.format(amount))
+            raise ValueError(msg_not_positive_or_zero_value.format(amount))
 
         self._current_amount += amount
-
-
-    def overwrite_smallest_rising_amount(self, amount: int):
-
-        """
-        Overwrites the smallest amount expected to make a raise.
-        """
-
-        if not isinstance(amount, int):
-            raise TypeError(table_msg_not_int_smallest_raise.format(type(amount).__name__))
-        
-        if amount <= 0:
-            raise ValueError(table_msg_not_positive_smallest_raise.format(amount))
-
-        self._smallest_rising_amount = amount
 
 
     def add_to_central_pot(self, amount: int):
@@ -243,67 +135,12 @@ class Table:
         """
 
         if not isinstance(amount, int):
-            raise TypeError(table_msg_not_int_central_pot.format(type(amount).__name__))
+            raise TypeError(msg_not_int.format(type(amount).__name__))
 
         if amount < 0:
-            raise ValueError(table_msg_not_positive_or_zero_amount.format(amount))
+            raise ValueError(msg_not_positive_or_zero_value.format(amount))
 
         self._central_pot += amount
-
-
-    # Methods to determine winner(s)
-
-
-    def no_showdown(self):
-
-        """
-        Makes the dealer to announce the winner when there is only one remaining player.
-        """
-
-        winner = self.active_players[0]
-        logger.info(f'{winner.name} wins {self.central_pot}!')
-
-
-    def showdown(self):
-
-        """
-        Makes the dealer to determine who is the winner among remaining players.
-        """
-
-        logger.info(f'Remaining players: {", ".join(p.name for p in self.active_players)}')
-
-        winners: list[Player] = []
-        for player in self.active_players:
-
-            player_is_unbeaten = True
-            for oponent in self.active_players:
-                if oponent.name == player.name:
-                    continue
-                if oponent.hand > player.hand:
-                    player_is_unbeaten = False
-                    break
-
-            if player_is_unbeaten:
-                winners.append(player)
-
-        if len(winners) == 1:
-            logger.info(f'{winners[0].name} wins {self.central_pot}!')
-            return
-
-        logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-        profit_per_player = self.central_pot // len(winners)
-        remainder = self.central_pot % len(winners)
-        profit_by_player = {player: profit_per_player for player in winners}
-
-        for player in winners:
-            if remainder == 0:
-                break
-            profit_by_player[player] += 1
-            remainder -= 1
-
-        for player in winners:
-            logger.info(f'{player.name} wins {profit_by_player[player]}.')
-        return
 
 
     # Methods to reset managers
@@ -316,9 +153,6 @@ class Table:
         """
 
         self._current_amount = 0
-        self._smallest_rising_amount = self.smallest_bet
-        self._stopping_player = None
-
         for player in self.players:
             player.reset_betting_round_states()
 
@@ -331,10 +165,6 @@ class Table:
 
         # Reset betting_round_states
         self.reset_betting_round_states()
-
-        # Reset players
-        self._active_players.clear()
-        self._active_players.extend(self._players)
 
         # Reset deck
         self._deck.clear()

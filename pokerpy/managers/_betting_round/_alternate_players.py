@@ -3,18 +3,22 @@ Defines the function that alternates players within the betting round.
 """
 
 
+from typing import TYPE_CHECKING
+
+
 from pokerpy.constants import ACTION_FOLD, aggressive_action_names
 from pokerpy.logger import get_logger
-from pokerpy.structures import Player, Table
 
 
 from ._wait_for_player import wait_for_player
+if TYPE_CHECKING:
+    from ._betting_round import BettingRound
 
 
 logger = get_logger()
 
 
-def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_actions: bool):
+def alternate_players(betting_round: "BettingRound"):
 
     """
     Alternates players within the betting round. Once the generator ends, returns whether round must stop or not.
@@ -23,26 +27,26 @@ def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_a
     round_must_stop = False
 
     # All players are itered but only active ones are allowed to act
-    for player in table.players:
+    for player in betting_round.table.players:
 
         # Stop if there is one player remaining
-        if len(table.active_players) == 1:
+        if len(betting_round.active_players) == 1:
             round_must_stop = True
             break
 
         # Jump until the starting player has to play
-        if table.players.index(player) < table.players.index(starting_player):
+        if betting_round.table.players.index(player) < betting_round.table.players.index(betting_round.starting_player):
             continue
 
         # Determine whether player should be allowed to choose an action
-        if player in table.active_players:
+        if player in betting_round.active_players:
             if player.stack == 0:
-                if player == table.stopping_player:
+                if player == betting_round.stopping_player:
                     round_must_stop = True
                     break
                 continue
         else:
-            if player == table.stopping_player:
+            if player == betting_round.stopping_player:
                 round_must_stop = True
                 break
             continue
@@ -50,28 +54,31 @@ def alternate_players(*, table: Table, starting_player: Player, ignore_invalid_a
         # Player keeps its turn until selects a valid action
         action = yield from wait_for_player(
             player = player,
-            table = table,
-            ignore_invalid_actions = ignore_invalid_actions,
+            table_current_amount = betting_round.table.current_amount,
+            smallest_bet = betting_round.smallest_bet,
+            smallest_raising_amount = betting_round.smallest_rising_amount,
+            open_fold_allowed = betting_round.open_fold_allowed,
+            ignore_invalid_actions = betting_round.ignore_invalid_actions,
         )
 
         # Set consequences of aggressive actions
         if action.name in aggressive_action_names:
-            raising_amount = player.current_amount - table.current_amount
-            table.overwrite_smallest_rising_amount(raising_amount) 
-            table.add_to_current_amount(raising_amount)
-            player_index = table.players.index(player)
-            stopping_player = table.players[player_index-1] if player_index != 0 else table.players[-1]
-            table.set_stopping_player(stopping_player)
+            raising_amount = player.current_amount - betting_round.table.current_amount
+            betting_round.overwrite_smallest_rising_amount(raising_amount) 
+            betting_round.table.add_to_current_amount(raising_amount)
+            player_index = betting_round.table.players.index(player)
+            stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
+            betting_round.set_stopping_player(stopping_player)
 
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
-            table.fold_player(player)
+            betting_round.deactivate_player(player)
 
         # Log table current amount before breaking (or not) in the next block
-        logger.info(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
+        logger.info(f'TABLE CURRENT AMOUNT: {betting_round.table.current_amount}\n')
 
         # Stop if the current player still is the stopping player
-        if player == table.stopping_player:
+        if player == betting_round.stopping_player:
             round_must_stop = True
             break
 

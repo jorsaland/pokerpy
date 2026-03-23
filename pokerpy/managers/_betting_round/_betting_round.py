@@ -8,18 +8,28 @@ from collections.abc import Generator
 
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    betting_round_msg_exiting_unended_round,
-    betting_round_msg_not_str_name,
-    betting_round_msg_not_table_instance,
-    betting_round_msg_not_starting_player_instance,
-    betting_round_msg_not_stopping_player_instance,
-    betting_round_msg_overloaded_round,
-    betting_round_msg_already_ended_round,
+    msg_not_all_player_instances,
+    msg_not_int,
+    msg_not_list,
+    msg_not_player_instance,
+    msg_not_positive_value,
+    msg_not_str,
+    msg_not_table_instance,
+    msg_open_betting_round,
+    msg_overloaded_betting_round,
+    msg_some_players_not_in_table,
 )
 from pokerpy.structures import Player, Table
 
 
-from ._alternate_players import alternate_players
+from ._methods_to_affect_money import method_overwrite_smallest_rising_amount
+from ._methods_to_affect_players import (
+    method_activate_player,
+    method_deactivate_player,
+    method_set_stopping_player,
+)
+from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
+from ._method_to_run import method_run
 
 
 logger = get_logger()
@@ -38,44 +48,75 @@ class BettingRound:
         name: str,
         table: Table,
         *,
+        smallest_bet: int = 1,
+        active_players: (list[Player]|None) = None,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
+        open_fold_allowed = False,
         ignore_invalid_actions = True
     ):
 
         # Validations
 
         if not isinstance(name, str):
-            raise TypeError(betting_round_msg_not_str_name.format(type(name).__name__))
+            raise TypeError(msg_not_str.format(type(name).__name__))
 
         if not isinstance(table, Table):
-            raise TypeError(betting_round_msg_not_table_instance.format(type(table).__name__))
+            raise TypeError(msg_not_table_instance.format(type(table).__name__))
+
+        if not isinstance(smallest_bet, int):
+            raise TypeError(msg_not_int.format(type(smallest_bet).__name__))
+        if smallest_bet <= 0:
+            raise ValueError(msg_not_positive_value.format(smallest_bet))
+        
+        if active_players is None:
+            active_players = [player for player in table.players]
+        else:
+            if not isinstance(active_players, list):
+                raise TypeError(msg_not_list.format(type(active_players).__name__))
+            if not all(isinstance(player, Player) for player in active_players):
+                raise TypeError(msg_not_all_player_instances)
+            if not all(player in table.players for player in active_players):
+                raise ValueError(msg_some_players_not_in_table)
 
         if starting_player is None:
             starting_player = table.players[0]
-        if not isinstance(starting_player, Player):
-            raise TypeError(betting_round_msg_not_starting_player_instance.format(type(starting_player).__name__))
+        else:
+            if not isinstance(starting_player, Player):
+                raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
 
         if stopping_player is None:
             stopping_player = table.players[-1]
-        if not isinstance(stopping_player, Player):
-            raise TypeError(betting_round_msg_not_stopping_player_instance.format(type(stopping_player).__name__))
+        else:
+            if not isinstance(stopping_player, Player):
+                raise TypeError(msg_not_player_instance.format(type(stopping_player).__name__))
 
         # Fixed variables
+
+        self._generator: (Generator[Player]|None) = None
 
         self._name = name
         self._table = table
 
-        self._starting_player = starting_player
-        self._initial_stopping_player = stopping_player
-        self._ignore_invalid_actions = bool(ignore_invalid_actions)
+        self._smallest_bet = smallest_bet
 
-        self._generator: (Generator[Player]|None) = None
+        self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
+        self._ignore_invalid_actions = bool(ignore_invalid_actions)
 
         # State variables
 
         self._has_ended = False
 
+        self._smallest_rising_amount = smallest_bet
+
+        self._active_players = active_players
+        self._starting_player = starting_player
+        self._stopping_player = stopping_player
+
+
+    @property
+    def generator(self):
+        return self._generator
 
     @property
     def name(self):
@@ -84,18 +125,26 @@ class BettingRound:
     @property
     def table(self):
         return self._table
-    
+
+    @property
+    def active_players(self):
+        return tuple(self._active_players)
+
     @property
     def starting_player(self):
         return self._starting_player
 
     @property
-    def initial_stopping_player(self):
-        return self._initial_stopping_player
-    
+    def stopping_player(self):
+        return self._stopping_player
+
     @property
-    def generator(self):
-        return self._generator
+    def smallest_bet(self):
+        return self._smallest_bet
+
+    @property
+    def smallest_rising_amount(self):
+        return self._smallest_rising_amount
     
     @property
     def has_ended(self):
@@ -104,18 +153,18 @@ class BettingRound:
     @property
     def ignore_invalid_actions(self):
         return self._ignore_invalid_actions
-    
+
 
     def __enter__(self):
         self._generator = self.run()
         yield from self.generator
-    
-    
+
+
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
 
         # Stopping before executing all parsed actions
         if exception_type is StopIteration:
-            raise RuntimeError(betting_round_msg_overloaded_round)
+            raise RuntimeError(msg_overloaded_betting_round)
         
         # Raising unexpected exceptions
         if exception is not None:
@@ -129,7 +178,10 @@ class BettingRound:
 
         # Check generator has ended successfully
         if not self.has_ended:
-            raise RuntimeError(betting_round_msg_exiting_unended_round)
+            raise RuntimeError(msg_open_betting_round)
+
+
+    # Main method
 
 
     def run(self):
@@ -138,37 +190,67 @@ class BettingRound:
         Runs the betting round, letting players to alternate turns.
         """
 
-        # Check betting round has not ended yet
-        if self.has_ended:
-            raise RuntimeError(betting_round_msg_already_ended_round)
+        return method_run(self)
+
+
+    # Methods to affect players
+
+
+    def activate_player(self, player: Player):
         
-        # Prepare betting round before players start their actions
-        self.table.set_stopping_player(self.initial_stopping_player)
+        """
+        Make a single player to become available to play.
+        """
 
-        # Define state variables
-        starting_player = self.starting_player
-        round_must_stop = False
-        lap_counter = 0
-                
-        # Extend betting round until the last aggressive action has been responded
-        while not round_must_stop:
+        return method_activate_player(self, player)
 
-            # Add to lap counter
-            lap_counter += 1
 
-            # All players are itered but only active ones are allowed to act
-            round_must_stop = yield from alternate_players(
-                table = self.table,
-                starting_player = starting_player,
-                ignore_invalid_actions = self.ignore_invalid_actions
-            )
+    def deactivate_player(self, player: Player):
 
-            # After the first lap, reset the starting player as the first one on the list
-            starting_player = self.table.players[0]
-        
-        # Move chips to the center of the table
-        for player in self.table.players:
-            self.table.add_to_central_pot(player.current_amount)
+        """
+        Removes a player from a hand cycle.
+        """
 
-        # Mark betting round as ended
-        self._has_ended = True
+        return method_deactivate_player(self, player)
+
+
+    def set_stopping_player(self, player: Player):
+
+        """
+        Marks a player before whom the betting round is closed.
+        """
+
+        return method_set_stopping_player(self, player)
+    
+
+    # Methods to affect money
+
+
+    def overwrite_smallest_rising_amount(self, amount: int):
+
+        """
+        Overwrites the smallest amount expected to make a raise.
+        """
+
+        return method_overwrite_smallest_rising_amount(self, amount)
+    
+
+    # Methods to deal cards
+
+    
+    def deal_cards_to_players(self, cards_count: int):
+
+        """
+        Deals cards to players in equal amounts.
+        """
+
+        return method_deal_cards_to_players(self, cards_count)
+
+
+    def deal_common_cards(self, cards_count: int):
+
+        """
+        Deals common cards to table.
+        """
+
+        return method_deal_common_cards(self, cards_count)

@@ -4,17 +4,25 @@ Defines the function that waits for a player to choose a valid action.
 
 
 from pokerpy.logger import get_logger
-from pokerpy.messages import betting_round_msg_invalid_action
-from pokerpy.structures import Player, Table
+from pokerpy.messages import msg_forbidden_action
+from pokerpy.structures import Player
 
 
 from ._action_is_valid import action_is_valid
 
 
+
 logger = get_logger()
 
 
-def wait_for_player(*, player: Player, table: Table, ignore_invalid_actions: bool):
+def wait_for_player(
+    *, player: Player,
+    table_current_amount: int,
+    smallest_bet: int,
+    smallest_raising_amount: int,
+    open_fold_allowed: bool,
+    ignore_invalid_actions: bool
+):
 
     """
     Waits for a player to choose a valid action. Once the generator ends, returns the chosen action.
@@ -34,7 +42,15 @@ def wait_for_player(*, player: Player, table: Table, ignore_invalid_actions: boo
         if action is None:
             continue
 
-        if action_is_valid(action=action, table=table, player=player):
+        if action_is_valid(
+            action = action,
+            table_current_amount = table_current_amount,
+            player_current_amount = player.current_amount,
+            player_stack = player.stack,
+            smallest_bet = smallest_bet,
+            smallest_raising_amount = smallest_raising_amount,
+            open_fold_allowed = open_fold_allowed
+        ):
             player.remove_from_stack(action.amount)
             player.add_to_current_amount(action.amount)
             logger.info(
@@ -45,7 +61,7 @@ def wait_for_player(*, player: Player, table: Table, ignore_invalid_actions: boo
 
         logger.debug(f'--- invalid action: {action.name}s {action.amount}')
         if not ignore_invalid_actions:
-            raise RuntimeError(betting_round_msg_invalid_action.format(f'{action.name} {action.amount}'))
+            raise RuntimeError(msg_forbidden_action)
 
     # Reset player and return requested action
 

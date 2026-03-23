@@ -7,7 +7,7 @@ from typing import NewType
 
 
 from pokerpy import constants
-from pokerpy.messages import hand_msg_not_five_cards, hand_msg_repeated_cards
+from pokerpy.messages import msg_not_five_cards_hand, msg_repeated_cards
 
 
 from .._card import Card
@@ -27,9 +27,9 @@ def arrange_cards(cards: list[Card]):
     # Validate input
 
     if len(cards) != 5:
-        raise ValueError(hand_msg_not_five_cards)
+        raise ValueError(msg_not_five_cards_hand)
     if len(cards) != len(set(cards)):
-        raise ValueError(hand_msg_repeated_cards)
+        raise ValueError(msg_repeated_cards)
 
     # Sort from higher to lower value
 
