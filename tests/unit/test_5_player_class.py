@@ -11,7 +11,6 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, messages, structures
-from standard_instances import create_standard_player
 
 
 class TestPlayerClass(TestCase):
@@ -32,7 +31,6 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        create_standard_player('Andy')
         structures.Player('Andy', stack=1000)
 
 
@@ -40,11 +38,11 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             structures.Player(1933, stack=1000)
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_str_name.format(int.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(int.__name__))
         
         with self.assertRaises(TypeError) as cm:
             structures.Player('Andy', stack='1000')
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_int_stack.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
 
     def test_request_action_and_reset_action_methods(self):
@@ -55,8 +53,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
-
+        Andy = structures.Player('Andy', stack=1000)
 
         # Valid inputs
 
@@ -83,7 +80,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.request_action(constants.ACTION_BET)
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_action_instance.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_action_instance.format(str.__name__))
 
 
     def test_deal_card_method(self):
@@ -94,7 +91,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
+        Andy = structures.Player('Andy', stack=1000)
 
 
         # Valid inputs
@@ -110,7 +107,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.deal_card('As')
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_card_instance.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
 
     def test_assign_hand_method(self):
@@ -121,7 +118,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
+        Andy = structures.Player('Andy', stack=1000)
 
 
         # Valid inputs
@@ -161,7 +158,7 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.assign_hand(structures.Card('J', 's'))
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_hand_instance.format(structures.Card.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_hand_instance.format(structures.Card.__name__))
 
 
     def test_add_to_current_amount_method(self):
@@ -175,7 +172,9 @@ class TestPlayerClass(TestCase):
         Andy = structures.Player('Andy', stack=1000)
 
 
-        # Valid inputs
+        # Before and after effects
+
+        self.assertEqual(Andy.current_amount, 0)
 
         Andy.add_to_current_amount(0)
         Andy.add_to_current_amount(50)
@@ -188,11 +187,77 @@ class TestPlayerClass(TestCase):
 
         with self.assertRaises(TypeError) as cm:
             Andy.add_to_current_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_int_amount.format(str.__name__))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
             Andy.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.player_msg_not_positive_or_zero_amount.format(-100))
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
+
+
+    def test_add_to_stack_method(self):
+
+
+        """
+        Runs test cases on add_to_stack_method method.
+        """
+
+
+        Andy = structures.Player('Andy', stack=1000)
+
+
+        # Before and after effects
+
+        self.assertEqual(Andy.stack, 1000)
+
+        Andy.add_to_stack(0)
+        Andy.add_to_stack(50)
+        Andy.add_to_stack(100)
+
+        self.assertEqual(Andy.stack, 1150)
+
+
+        # Invalid inputs
+
+        with self.assertRaises(TypeError) as cm:
+            Andy.add_to_stack('100')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.add_to_stack(-100)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
+
+
+    def test_remove_from_stack_method(self):
+
+
+        """
+        Runs test cases on add_stack_method method.
+        """
+
+
+        Andy = structures.Player('Andy', stack=1000)
+
+
+        # Before and after effects
+
+        self.assertEqual(Andy.stack, 1000)
+
+        Andy.remove_from_stack(0)
+        Andy.remove_from_stack(50)
+        Andy.remove_from_stack(100)
+
+        self.assertEqual(Andy.stack, 850)
+
+
+        # Invalid inputs
+
+        with self.assertRaises(TypeError) as cm:
+            Andy.remove_from_stack('100')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.remove_from_stack(-100)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
     def test_reset_betting_round_states_method(self):
@@ -203,13 +268,15 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
+        Andy = structures.Player('Andy', stack=1000)
 
+        # Set previous states
         Andy.request_action(structures.Action(constants.ACTION_BET, 200))
         Andy.add_to_current_amount(200)
 
         Andy.reset_betting_round_states()
 
+        # Evaluate after states
         self.assertIsNone(Andy.requested_action)
         self.assertEqual(Andy.current_amount, 0)
 
@@ -222,8 +289,9 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = create_standard_player('Andy')
+        Andy = structures.Player('Andy', stack=1000)
 
+        # Set previous states
         Andy.request_action(structures.Action(constants.ACTION_BET, 200))
         Andy.add_to_current_amount(200)
         Andy.deal_card(structures.Card('J', 'd'))
@@ -237,6 +305,7 @@ class TestPlayerClass(TestCase):
 
         Andy.reset_cycle_states()
 
+        # Evaluate after states
         self.assertIsNone(Andy.requested_action)
         self.assertEqual(Andy.current_amount, 0)
         self.assertTupleEqual(Andy.cards, ())
