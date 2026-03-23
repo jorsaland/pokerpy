@@ -1,5 +1,5 @@
 """
-Defines unit tests on action_is_valid function.
+Defines unit tests on action_is_valid function and its helper functions.
 """
 
 
@@ -11,342 +11,947 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, structures
-from standard_instances import create_standard_player
 
 
-class TestBettingRoundActionIsValidFunction(TestCase):
+class TestBettingRoundGetValidActionNamesFuction(TestCase):
 
 
     """
-    Runs unit tests on get_valid_action_names and action_is_valid functions.
+    Runs unit tests on get_valid_action_names function.
     """
 
 
-    def test_get_valid_action_names(self):
+    def test_not_facing_a_bet_or_raise(self):
 
         """
-        Runs test cases on function get_valid_action_names.
+        Runs test cases when the player is not facing a bet or a raise.
         """
 
+        # Open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, stack=100, open_fold_allowed=True)),
+            sorted(managers.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
+        # Open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, stack=100, open_fold_allowed=False)),
+            sorted(managers.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
+
+    def test_not_facing_a_bet_or_raise(self):
+
+        """
+        Runs test cases when the player is facing a bet or a raise.
+        """
+
+        # Player has enough chips and open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=10, stack=100, open_fold_allowed=True)),
+            sorted(managers.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
         )
 
+        # Player has enough chips and open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=10, stack=100, open_fold_allowed=False)),
+            sorted(managers.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
         )
 
+        # Player does not have enough chips and open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=200, stack=100, open_fold_allowed=True)),
+            sorted(managers.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
         )
 
+        # Player does not have enough chips and open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=200, stack=100, open_fold_allowed=False)),
+            sorted(managers.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
-        )
+        )    
 
 
-    def test_actions_if_nobody_has_bet_and_folding_is_allowed(self):
-
-        """
-        Runs test cases where nobody has bet and folding is allowed.
-        """
-
-        all_players = [
-            (Andy := create_standard_player('Andy')),
-            create_standard_player('Boa'),
-            create_standard_player('Coral'),
-            create_standard_player('Dino'),
-        ]
-
-        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=True)
-
-        # Valid actions
-
-        action = structures.Action(constants.ACTION_FOLD)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_CHECK)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_BET, 100)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
+class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
 
 
-        # Invalid actions because of their names
-
-        action = structures.Action(constants.ACTION_CALL, 100)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 100)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+    """
+    Runs unit tests on function action_is_valid when the requested action is fold.
+    """
 
 
-        # Invalid actions because of their amounts
-
-        # Betting amount smaller than the smallest bet
-        action = structures.Action(constants.ACTION_BET, 40)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-    def test_actions_if_nobody_has_bet_and_folding_is_forbidden(self):
+    def test_not_facing_a_bet_or_raise(self):
 
         """
-        Runs test cases where nobody has bet and folding is forbidden.
+        Runs test cases when the player is not facing a bet or a raise.
         """
 
-        all_players = [
-            (Andy := create_standard_player('Andy')),
-            create_standard_player('Boa'),
-            create_standard_player('Coral'),
-            create_standard_player('Dino'),
-        ]
+        # Open fold (allowed) not facing a bet
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = True
+        ))
 
-        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
+        # Open fold (allowed) not facing a bet, but having previously placed a blind bet
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 1,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = True
+        ))
 
+        # Open fold (forbidden) not facing a bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
-        # Valid actions
-
-        action = structures.Action(constants.ACTION_CHECK)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_BET, 50)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_BET, 60)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-        # Invalid actions because of their names
-
-        action = structures.Action(constants.ACTION_FOLD)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_CALL, 100)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 100)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-        # Invalid actions because of their amounts
-
-        # Betting an amount smaller than the smallest bet
-        action = structures.Action(constants.ACTION_BET, 40)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-    def test_actions_to_answer_a_bet(self):
-
-        """
-        Runs test cases where you have checked or not played yet, one player bets afterwards, and now you have to play again.
-        """
-
-        all_players = [
-            (Andy := create_standard_player('Andy')),
-            create_standard_player('Boa'),
-            create_standard_player('Coral'),
-            create_standard_player('Dino'),
-        ]
-
-        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
-
-        table.add_to_current_amount(60) # Someone bets 60
-        table.overwrite_smallest_rising_amount(60) # The bet of +60
+        # Open fold (forbidden) not facing a bet, but having previously placed a blind bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 1,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
 
-        # Valid actions
-
-        action = structures.Action(constants.ACTION_FOLD)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_CALL, 60) # Andy has not put money yet
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 120) # Smallest valid raise (60 to call plus 60 to raise)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 130) # Larger raise
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-        # Invalid actions because of their names
-
-        action = structures.Action(constants.ACTION_CHECK)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_BET, 50)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-        # Invalid actions because of their amounts
-
-        # Calling less than calling amount
-        action = structures.Action(constants.ACTION_CALL, 50)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Calling more than calling amount
-        action = structures.Action(constants.ACTION_CALL, 70)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising less than calling amount
-        action = structures.Action(constants.ACTION_RAISE, 50)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising the calling amount
-        action = structures.Action(constants.ACTION_RAISE, 60)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising more than the calling amount but less than the smallest rising amount
-        action = structures.Action(constants.ACTION_RAISE, 110)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-
-    def test_actions_to_answer_a_single_raise(self):
+    def test_facing_a_bet_or_raise(self):
 
         """
-        Runs test cases where you have bet or called, one player has raised afterwards, and now you have to play again.
+        Runs test cases when the player is facing a bet or a raise.
         """
 
-        all_players = [
-            (Andy := create_standard_player('Andy')),
-            create_standard_player('Boa'),
-            create_standard_player('Coral'),
-            create_standard_player('Dino'),
-        ]
+        # Facing a bet
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 1,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
-        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
-
-        Andy.add_to_current_amount(60) # Andy bets or calls 60
-        table.add_to_current_amount(130) # Someone raises to 130 (+70)
-        table.overwrite_smallest_rising_amount(70) # The raise of +70
-
-
-        # Valid actions
-
-        action = structures.Action(constants.ACTION_FOLD)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_CALL, 70) # Andy already put an amount of 60
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 140) # Smallest valid raise (70 to call plus 70 to raise)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 150) # Larger raise
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
+        # Facing a raise
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_FOLD),
+            table_current_amount = 2,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
 
-        # Invalid actions because of their names
-
-        action = structures.Action(constants.ACTION_CHECK)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_BET, 50)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
 
 
-        # Invalid actions because of their amounts
-
-        # Calling less than calling amount
-        action = structures.Action(constants.ACTION_CALL, 60)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Calling more than calling amount
-        action = structures.Action(constants.ACTION_CALL, 80)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising less than calling amount
-        action = structures.Action(constants.ACTION_RAISE, 60)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising the calling amount
-        action = structures.Action(constants.ACTION_RAISE, 70)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        # Raising more than the calling amount but less than the smallest rising amount
-        action = structures.Action(constants.ACTION_RAISE, 130)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+    """
+    Runs unit tests on function action_is_valid when the requested action is check.
+    """
 
 
-    def test_actions_to_answer_multiple_raises(self):
+    def test_not_facing_a_bet_or_raise(self):
 
         """
-        Runs test cases where you have bet or called, multiple players have raised afterwards, and now you have to play again.
+        Runs test cases when the player is not facing a bet or a raise.
         """
 
-        all_players = [
-            (Andy := create_standard_player('Andy')),
-            create_standard_player('Boa'),
-            create_standard_player('Coral'),
-            create_standard_player('Dino'),
-        ]
+        # Not facing a bet
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CHECK),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
-        table = structures.Table(all_players, smallest_bet=50, open_fold_allowed=False)
-
-        Andy.add_to_current_amount(60) # Andy bets or calls 60
-        table.add_to_current_amount(200) # Someone raises to 120 (+60), and someone else to 200 (+80)
-        table.overwrite_smallest_rising_amount(80) # The second raise of +80
-
-
-        # Valid actions
-
-        action = structures.Action(constants.ACTION_FOLD)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_CALL, 140) # Andy already put an amount of 60
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-        
-        action = structures.Action(constants.ACTION_RAISE, 220) # Smallest valid raise (140 to call plus 80 to raise)
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
-
-        action = structures.Action(constants.ACTION_RAISE, 230) # Larger raise
-        self.assertTrue(managers.action_is_valid(table=table, player=Andy, action=action))
+        # Not facing a raise, having previously placed a blind bet
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CHECK),
+            table_current_amount = 1,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
 
-        # Invalid actions because of their names
+    def test_facing_a_bet_or_raise(self):
 
-        action = structures.Action(constants.ACTION_CHECK)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+        """
+        Runs test cases when the player is facing a bet or a raise.
+        """
 
-        action = structures.Action(constants.ACTION_BET, 50)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+        # Facing a bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CHECK),
+            table_current_amount = 1,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+        # Facing a raise
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CHECK),
+            table_current_amount = 2,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
 
 
-        # Invalid actions because of their amounts
+class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
 
-        # Calling less than calling amount
-        action = structures.Action(constants.ACTION_CALL, 130)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
 
-        # Calling more than calling amount
-        action = structures.Action(constants.ACTION_CALL, 150)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+    """
+    Runs unit tests on function action_is_valid when the requested action is call.
+    """
 
-        # Raising less than calling amount
-        action = structures.Action(constants.ACTION_RAISE, 130)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
 
-        # Raising the calling amount
-        action = structures.Action(constants.ACTION_RAISE, 140)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+    def test_not_facing_a_bet_or_raise(self):
 
-        # Raising more than the calling amount but less than the smallest rising amount
-        action = structures.Action(constants.ACTION_RAISE, 210)
-        self.assertFalse(managers.action_is_valid(table=table, player=Andy, action=action))
+        """
+        Runs test cases when the player is not facing a bet or a raise.
+        """
+
+        # Not facing a bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 1),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+        # Not facing a raise
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 1),
+            table_current_amount = 3,
+            player_current_amount = 3,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_bet_with_enough_chips_to_call(self):
+
+        """
+        Runs test cases when the player is facing a bet and has enough chips to call.
+        """
+
+        # Attempting to call less than the call amount (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 1),
+            table_current_amount = 2,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Calling the call amount (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 2),
+            table_current_amount = 2,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call more than call amount (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 3),
+            table_current_amount = 2,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_bet_without_enough_chips_to_call(self):
+
+        """
+        Runs test cases when the player is facing a bet and does not have enough chips to call.
+        """
+
+        # Attempting to call less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 9),
+            table_current_amount = 12,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10) (PENDING IMPLEMENTATION)
+        # self.assertTrue(managers.action_is_valid(
+        #     action = structures.Action(constants.ACTION_CALL, 10),
+        #     table_current_amount = 12,
+        #     player_current_amount = 0,
+        #     player_stack = 10,
+        #     smallest_bet = 1,
+        #     smallest_raising_amount = 12,
+        #     open_fold_allowed = False
+        # ))
+
+        # Attempting to call more than the all-in amount (10) and less than the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 11),
+            table_current_amount = 12,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 12),
+            table_current_amount = 12,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call more than the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 13),
+            table_current_amount = 12,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_raise_with_enough_chips_to_call(self):
+
+        """
+        Runs test cases when the player is facing a raise and has enough chips to call.
+        """
+
+        # Attempting to call less than call amount (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 1),
+            table_current_amount = 3,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Calling the call amount (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 2),
+            table_current_amount = 3,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call more than call amount (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 3),
+            table_current_amount = 3,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_raise_without_enough_chips_to_call(self):
+
+        """
+        Runs test cases when the player is facing a raise and does not have enough chips to call.
+        """
+
+        # Attempting to call less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 9),
+            table_current_amount = 13,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10) (PENDING IMPLEMENTATION)
+        # self.assertTrue(managers.action_is_valid(
+        #     action = structures.Action(constants.ACTION_CALL, 10),
+        #     table_current_amount = 13,
+        #     player_current_amount = 1,
+        #     player_stack = 10,
+        #     smallest_bet = 1,
+        #     smallest_raising_amount = 12,
+        #     open_fold_allowed = False
+        # ))
+
+        # Attempting to call more than the all-in amount (10) and less than the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 11),
+            table_current_amount = 13,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 12),
+            table_current_amount = 13,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to call more than the call amount (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 13),
+            table_current_amount = 13,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+
+class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
+
+
+    """
+    Runs unit tests on function action_is_valid when the requested action is bet.
+    """
+
+
+    def test_not_facing_a_bet_with_enough_chips_to_bet(self):
+
+        """
+        Runs test cases when the player is not facing a bet and has enough chips to make a full
+        bet.
+        """
+
+        # Attempting to bet less than a full bet (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 1),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Betting a full bet (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 2),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Betting more than a full bet (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 3),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+
+    def test_not_facing_a_bet_without_enough_chips_to_bet(self):
+
+        """
+        Runs test cases when the player is not facing a bet or a raise and does not have enough
+        chips to make a full bet.
+        """
+
+        # Attempting to bet less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 9),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 10),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet more than the all-in amount (10) and less than a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 11),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 12),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet more than a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 13),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+
+    def test_not_facing_a_raise_with_enough_chips_to_bet(self):
+
+        """
+        Runs test cases when the player made a blind bet, is not facing a raise and has enough chips to make a full
+        bet, having placed a blind bet before.
+        """
+
+        # Attempting to bet less than a full bet (2)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 1),
+            table_current_amount = 2,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Betting a full bet (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 2),
+            table_current_amount = 2,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+        # Betting more than a full bet (2)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 3),
+            table_current_amount = 2,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False
+        ))
+
+
+    def test_not_facing_a_raise_without_enough_chips_to_bet(self):
+
+        """
+        Runs test cases when the player made a blind bet, is not facing a raise and does not have enough
+        chips to make a full bet.
+        """
+
+        # Attempting to bet less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 9),
+            table_current_amount = 12,
+            player_current_amount = 12,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 10),
+            table_current_amount = 12,
+            player_current_amount = 12,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet more than the all-in amount (10) and less than a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 11),
+            table_current_amount = 12,
+            player_current_amount = 12,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 12),
+            table_current_amount = 12,
+            player_current_amount = 12,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to bet more than a full bet (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 13),
+            table_current_amount = 12,
+            player_current_amount = 12,
+            player_stack = 10,
+            smallest_bet = 12,
+            smallest_raising_amount = 12,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_bet_or_raise(self):
+
+        """
+        Runs test cases when the player is facing a bet or a raise.
+        """
+
+        # Facing a bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 1),
+            table_current_amount = 1,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+        # Facing a raise
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_BET, 1),
+            table_current_amount = 2,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+
+class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
+
+
+    """
+    Runs unit tests on function action_is_valid when the requested action is raise.
+    """
+
+
+    def test_not_facing_a_bet_or_raise(self):
+
+        """
+        Runs test cases when the player is not facing a bet or a raise.
+        """
+
+        # Not facing a bet
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 1),
+            table_current_amount = 0,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+        # Not facing a raise
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 1),
+            table_current_amount = 1,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet = 1,
+            smallest_raising_amount = 1,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_bet_with_enough_chips_to_raise(self):
+
+        """
+        Runs test cases when the player is facing a bet and has enough chips to make a full raise.
+        """
+
+        # Attempting to raise less than a full raise (+3)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 7),
+            table_current_amount = 5,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+        # Raising a full raise (+3)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 8),
+            table_current_amount = 5,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+        # Raising more than a full raise (+3)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 9),
+            table_current_amount = 5,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_bet_without_enough_chips_to_raise(self):
+
+        """
+        Runs test cases when the player is facing a bet and does not have enough chips to make a
+        full raise.
+        """
+
+        # Attempting to raise less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 9),
+            table_current_amount = 6,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 10),
+            table_current_amount = 6,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to raise more than the all-in amount (10) and less than a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 11),
+            table_current_amount = 6,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 12),
+            table_current_amount = 6,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to raise more than a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 13),
+            table_current_amount = 6,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_raise_with_enough_chips_to_raise(self):
+
+        """
+        Runs test cases when the player is facing a bet and has enough chips to make a full raise.
+        """
+
+        # Attempting to raise less than a full raise (+3)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 5),
+            table_current_amount = 5,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+        # Raising a full raise (+3)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 6),
+            table_current_amount = 5,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+        # Raising more than a full raise (+3)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 7),
+            table_current_amount = 5,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 3,
+            open_fold_allowed = False
+        ))
+
+
+    def test_facing_a_raise_without_enough_chips_to_raise(self):
+
+        """
+        Runs test cases when the player is facing a raise and does not have enough chips to make a
+        full raise.
+        """
+
+        # Attempting to raise less than the all-in amount (10)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 9),
+            table_current_amount = 8,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Going all-in (10)
+        self.assertTrue(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 10),
+            table_current_amount = 8,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to raise more than the all-in amount (10) and less than a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 11),
+            table_current_amount = 8,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 12),
+            table_current_amount = 8,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
+
+        # Attempting to raise more than a full raise (12)
+        self.assertFalse(managers.action_is_valid(
+            action = structures.Action(constants.ACTION_RAISE, 13),
+            table_current_amount = 8,
+            player_current_amount = 2,
+            player_stack = 10,
+            smallest_bet = 2,
+            smallest_raising_amount = 6,
+            open_fold_allowed = False
+        ))
 
 
 if __name__ == '__main__':
