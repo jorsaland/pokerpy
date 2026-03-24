@@ -27,7 +27,6 @@ msg_card_not_in_deck = "the requested card is not in the deck"
 msg_invalid_action_name = "invalid action name, must be one of the following: {}"
 msg_invalid_card_suit = "invalid card suit, must be be one of the following: {}"
 msg_invalid_card_value = "invalid card value, must be one of the following: {}"
-msg_overloaded_betting_round = "the betting round ended before parsing all the requested actions"
 msg_not_five_cards_hand = "a hand expects exactly five cards"
 msg_player_is_inactive = "player '{}' is not active"
 msg_player_not_in_table = "player '{}' is not in the table"
@@ -37,7 +36,7 @@ msg_wildcard = "we live in a society"
 
 # Runtime errors
 msg_closed_betting_round = "the betting round is closed"
-msg_open_betting_round = "the betting round has not finished yet"
+msg_betting_round_did_not_end = "the betting round stoped before ending"
 
 # Invalid action error
 msg_forbidden_action = "the requested action is not allowed in this situation"

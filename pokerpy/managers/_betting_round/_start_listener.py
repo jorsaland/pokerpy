@@ -1,9 +1,9 @@
 """
-Defines the method that runs the betting round, letting players to alternate turns.
+Defines the function that starts the betting round generator that rotates the player turns.
 """
 
 
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 
 
 from pokerpy.messages import msg_closed_betting_round
@@ -14,10 +14,10 @@ if TYPE_CHECKING:
     from ._betting_round import BettingRound
 
 
-def method_run(self: "BettingRound"):
+def start_listener(self: "BettingRound"):
 
     """
-    Runs the betting round, letting players to alternate turns.
+    Starts the betting round generator that rotates the player turns.
     """
 
     # Check betting round has not ended yet

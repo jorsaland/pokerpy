@@ -15,8 +15,7 @@ from pokerpy.messages import (
     msg_not_positive_value,
     msg_not_str,
     msg_not_table_instance,
-    msg_open_betting_round,
-    msg_overloaded_betting_round,
+    msg_betting_round_did_not_end,
     msg_some_players_not_in_table,
 )
 from pokerpy.structures import Player, Table
@@ -29,7 +28,7 @@ from ._methods_to_affect_players import (
     method_set_stopping_player,
 )
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
-from ._method_to_run import method_run
+from ._start_listener import start_listener
 
 
 logger = get_logger()
@@ -68,7 +67,7 @@ class BettingRound:
             raise TypeError(msg_not_int.format(type(smallest_bet).__name__))
         if smallest_bet <= 0:
             raise ValueError(msg_not_positive_value.format(smallest_bet))
-        
+
         if active_players is None:
             active_players = [player for player in table.players]
         else:
@@ -93,7 +92,7 @@ class BettingRound:
 
         # Fixed variables
 
-        self._generator: (Generator[Player]|None) = None
+        self._listener: (Generator[Player]|None) = None
 
         self._name = name
         self._table = table
@@ -113,15 +112,10 @@ class BettingRound:
         self._starting_player = starting_player
         self._stopping_player = stopping_player
 
-
-    @property
-    def generator(self):
-        return self._generator
-
     @property
     def name(self):
         return self._name
-    
+
     @property
     def table(self):
         return self._table
@@ -145,7 +139,7 @@ class BettingRound:
     @property
     def smallest_rising_amount(self):
         return self._smallest_rising_amount
-    
+
     @property
     def has_ended(self):
         return self._has_ended
@@ -156,41 +150,44 @@ class BettingRound:
 
 
     def __enter__(self):
-        self._generator = self.run()
-        yield from self.generator
+        self.listen()
+        return self
 
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
 
         # Stopping before executing all parsed actions
         if exception_type is StopIteration:
-            raise RuntimeError(msg_overloaded_betting_round)
-        
+            logger.critical('====== THE BETTING ROUND WAS STOPPED BEFORE ENDING ======')
+            raise RuntimeError(msg_betting_round_did_not_end)
+
         # Raising unexpected exceptions
         if exception is not None:
             raise exception
 
         # End running iteration after last yield
         try:
-            next(self.generator)
+            next(self.listen())
         except StopIteration:
             self._has_ended = True
 
         # Check generator has ended successfully
         if not self.has_ended:
-            raise RuntimeError(msg_open_betting_round)
+            raise RuntimeError(msg_betting_round_did_not_end)
 
 
-    # Main method
+    # Start-up method
 
 
-    def run(self):
+    def listen(self):
 
         """
-        Runs the betting round, letting players to alternate turns.
+        Starts and retrieves the generator object that listens for player actions.
         """
 
-        return method_run(self)
+        if self._listener is None:
+            self._listener = start_listener(self)
+        return self._listener
 
 
     # Methods to affect players
