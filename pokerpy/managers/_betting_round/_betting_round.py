@@ -28,7 +28,7 @@ from ._methods_to_affect_players import (
     method_set_stopping_player,
 )
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
-from ._start_listener import start_listener
+from ._run_listener import run_listener
 
 
 logger = get_logger()
@@ -164,6 +164,29 @@ class BettingRound:
         # Raising unexpected exceptions
         if exception is not None:
             raise exception
+        
+        self.stop()
+
+
+    # Methods to control the listener
+
+
+    def listen(self):
+
+        """
+        Starts and retrieves the generator object that listens for player actions.
+        """
+
+        if self._listener is None:
+            self._listener = run_listener(self)
+        return self._listener
+
+
+    def stop(self):
+
+        """
+        Runs the last step in 
+        """
 
         # End running iteration after last yield
         try:
@@ -174,20 +197,6 @@ class BettingRound:
         # Check generator has ended successfully
         if not self.has_ended:
             raise RuntimeError(msg_betting_round_did_not_end)
-
-
-    # Start-up method
-
-
-    def listen(self):
-
-        """
-        Starts and retrieves the generator object that listens for player actions.
-        """
-
-        if self._listener is None:
-            self._listener = start_listener(self)
-        return self._listener
 
 
     # Methods to affect players

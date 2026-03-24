@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from ._betting_round import BettingRound
 
 
-def start_listener(self: "BettingRound"):
+def run_listener(self: "BettingRound"):
 
     """
     Starts the betting round generator that rotates the player turns.
