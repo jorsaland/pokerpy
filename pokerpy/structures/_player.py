@@ -29,7 +29,7 @@ class Player:
     """
 
 
-    def __init__(self, name: str, *, stack: int):
+    def __init__(self, name: str, stack: int):
 
         # Validations
 
@@ -79,7 +79,7 @@ class Player:
 
 
     def __repr__(self):
-        return f'Player(name={self.name})'
+        return f'Player(name={self.name}, stack={self.stack})'
 
 
     # Methods to affect actions
