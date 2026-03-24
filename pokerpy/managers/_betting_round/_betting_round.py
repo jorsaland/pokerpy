@@ -15,7 +15,8 @@ from pokerpy.messages import (
     msg_not_positive_value,
     msg_not_str,
     msg_not_table_instance,
-    msg_betting_round_did_not_end,
+    msg_betting_round_was_not_completed,
+    msg_overloaded_betting_round_message,
     msg_some_players_not_in_table,
 )
 from pokerpy.structures import Player, Table
@@ -104,7 +105,7 @@ class BettingRound:
 
         # State variables
 
-        self._has_ended = False
+        self._is_completed = False
 
         self._smallest_rising_amount = smallest_bet
 
@@ -141,8 +142,8 @@ class BettingRound:
         return self._smallest_rising_amount
 
     @property
-    def has_ended(self):
-        return self._has_ended
+    def is_completed(self):
+        return self._is_completed
 
     @property
     def ignore_invalid_actions(self):
@@ -156,16 +157,11 @@ class BettingRound:
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
 
-        try:
-            if exception_type is StopIteration:
-                self._has_ended = True
-                raise RuntimeError(msg_betting_round_did_not_end)
-            if exception is not None:
-                self._has_ended = True
-                raise exception
+        if exception_type is StopIteration:
+            self._is_completed = True
+            exception = RuntimeError(msg_overloaded_betting_round_message)
 
-        finally:
-            self.close()
+        self.close(exception)
 
 
     # Methods to control the listener
@@ -183,7 +179,7 @@ class BettingRound:
         return self._listener
 
 
-    def close(self):
+    def close(self, exception: (BaseException|None) = None):
 
         """
         Runs the last step in the betting round.
@@ -191,16 +187,21 @@ class BettingRound:
 
         # End running iteration after last yield
         try:
-            next(self.listen())
+            if not self.is_completed:
+                next(self.listen())
         except StopIteration:
-            self._has_ended = True
+            self._is_completed = True
         finally:
             self.table.reset_betting_round_states()
 
-        # Check generator has ended successfully
-        if not self.has_ended:
+        # Raise catched exceptions
+        if exception is not None:
+            raise exception
+
+        # Validate the listener has ended
+        if not self.is_completed:
             logger.critical('====== THE BETTING ROUND WAS CLOSED BEFORE ENDING ======')
-            raise RuntimeError(msg_betting_round_did_not_end)
+            raise RuntimeError(msg_betting_round_was_not_completed)
 
 
     # Methods to affect players

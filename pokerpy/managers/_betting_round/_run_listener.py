@@ -36,6 +36,3 @@ def run_listener(self: "BettingRound"):
     # Move chips to the center of the table
     for player in self.table.players:
         self.table.add_to_central_pot(player.current_amount)
-
-    # Mark betting round as ended
-    self._has_ended = True
