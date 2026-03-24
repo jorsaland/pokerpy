@@ -156,16 +156,16 @@ class BettingRound:
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
 
-        # Stopping before executing all parsed actions
-        if exception_type is StopIteration:
-            logger.critical('====== THE BETTING ROUND WAS STOPPED BEFORE ENDING ======')
-            raise RuntimeError(msg_betting_round_did_not_end)
+        try:
+            if exception_type is StopIteration:
+                self._has_ended = True
+                raise RuntimeError(msg_betting_round_did_not_end)
+            if exception is not None:
+                self._has_ended = True
+                raise exception
 
-        # Raising unexpected exceptions
-        if exception is not None:
-            raise exception
-        
-        self.close()
+        finally:
+            self.close()
 
 
     # Methods to control the listener
@@ -186,7 +186,7 @@ class BettingRound:
     def close(self):
 
         """
-        Runs the last step in 
+        Runs the last step in the betting round.
         """
 
         # End running iteration after last yield
@@ -194,10 +194,12 @@ class BettingRound:
             next(self.listen())
         except StopIteration:
             self._has_ended = True
+        finally:
             self.table.reset_betting_round_states()
 
         # Check generator has ended successfully
         if not self.has_ended:
+            logger.critical('====== THE BETTING ROUND WAS CLOSED BEFORE ENDING ======')
             raise RuntimeError(msg_betting_round_did_not_end)
 
 
