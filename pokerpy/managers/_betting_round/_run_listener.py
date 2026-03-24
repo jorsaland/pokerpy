@@ -6,9 +6,6 @@ Defines the function that starts the betting round generator that rotates the pl
 from typing import TYPE_CHECKING
 
 
-from pokerpy.messages import msg_closed_betting_round
-
-
 from ._alternate_players import alternate_players
 if TYPE_CHECKING:
     from ._betting_round import BettingRound
@@ -19,10 +16,6 @@ def run_listener(self: "BettingRound"):
     """
     Starts the betting round generator that rotates the player turns.
     """
-
-    # Check betting round has not ended yet
-    if self.has_ended:
-        raise RuntimeError(msg_closed_betting_round)
 
     # Define state variables
     round_must_stop = False

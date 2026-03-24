@@ -35,7 +35,6 @@ msg_some_players_not_in_table = "some players are not in the table"
 msg_wildcard = "we live in a society"
 
 # Runtime errors
-msg_closed_betting_round = "the betting round is closed"
 msg_betting_round_did_not_end = "the betting round stoped before ending"
 
 # Invalid action error
