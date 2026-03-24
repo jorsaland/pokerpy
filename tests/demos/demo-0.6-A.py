@@ -71,9 +71,6 @@ def ante_round(table: pk.Table, open_fold_allowed: bool):
 
     with pk.BettingRound(ANTE_ROUND, table, open_fold_allowed=open_fold_allowed) as betting_round:
 
-        # Reset betting round states regarding to table and players
-        table.reset_betting_round_states()
-
         # Place antes
         for player in table.players:
             player.remove_from_stack(ANTE)
@@ -105,10 +102,6 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
     )
 
     with betting_round:
-
-        # Reset betting round states regarding to table and players
-
-        table.reset_betting_round_states()
 
         # Place small blind
 
@@ -217,10 +210,6 @@ def postflop(table: pk.Table, betting_round_name: str, active_players: list[pk.P
     )
 
     with betting_round:
-
-        # Reset betting round states regarding to table and players
-
-        table.reset_betting_round_states()
 
         # Deal three cards to table if round is flop and one if is turn or river
 

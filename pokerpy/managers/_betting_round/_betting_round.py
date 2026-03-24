@@ -165,7 +165,7 @@ class BettingRound:
         if exception is not None:
             raise exception
         
-        self.stop()
+        self.close()
 
 
     # Methods to control the listener
@@ -178,11 +178,12 @@ class BettingRound:
         """
 
         if self._listener is None:
+            self.table.reset_betting_round_states()
             self._listener = run_listener(self)
         return self._listener
 
 
-    def stop(self):
+    def close(self):
 
         """
         Runs the last step in 
@@ -193,6 +194,7 @@ class BettingRound:
             next(self.listen())
         except StopIteration:
             self._has_ended = True
+            self.table.reset_betting_round_states()
 
         # Check generator has ended successfully
         if not self.has_ended:
