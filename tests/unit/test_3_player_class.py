@@ -31,7 +31,7 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        structures.Player('Andy', stack=1000)
+        structures.Player('Andy', 1000)
 
 
         # Invalid inputs
@@ -53,7 +53,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
         # Valid inputs
 
@@ -91,7 +91,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
 
         # Valid inputs
@@ -118,7 +118,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
 
         # Valid inputs
@@ -169,7 +169,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
 
         # Before and after effects
@@ -202,7 +202,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
 
         # Before and after effects
@@ -235,7 +235,7 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
 
         # Before and after effects
@@ -260,6 +260,23 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
+    def test_fold_method(self):
+
+
+        """
+        Runs test cases on fold method.
+        """
+
+
+        Andy = structures.Player('Andy', 1000)
+
+        # Before and after effects
+
+        self.assertFalse(Andy.is_folded)
+        Andy.fold()
+        self.assertTrue(Andy.is_folded)
+
+
     def test_reset_betting_round_states_method(self):
 
 
@@ -268,17 +285,45 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
+
+        action = structures.Action(constants.ACTION_BET, 200)
+        cards = [
+            structures.Card('7', 's'),
+            structures.Card('7', 'd'),
+        ]
+        hand = structures.Hand([
+            structures.Card('7', 's'),
+            structures.Card('7', 'd'),
+            structures.Card('7', 'c'),
+            structures.Card('2', 's'),
+            structures.Card('2', 'c'),
+        ])
 
         # Set previous states
-        Andy.request_action(structures.Action(constants.ACTION_BET, 200))
+        Andy.request_action(action)
         Andy.add_to_current_amount(200)
+        for card in cards:
+            Andy.deal_card(card)
+        Andy.assign_hand(hand)
+        Andy.fold()
 
+        # Evaluate before states
+        self.assertEqual(Andy.requested_action, action)
+        self.assertEqual(Andy.current_amount, 200)
+        self.assertTupleEqual(Andy.cards, tuple(cards))
+        self.assertEqual(Andy.hand, hand)
+        self.assertTrue(Andy.is_folded)
+
+        # Reset states
         Andy.reset_betting_round_states()
 
         # Evaluate after states
         self.assertIsNone(Andy.requested_action)
         self.assertEqual(Andy.current_amount, 0)
+        self.assertTupleEqual(Andy.cards, tuple(cards))
+        self.assertEqual(Andy.hand, hand)
+        self.assertTrue(Andy.is_folded)
 
 
     def test_reset_cycle_states_method(self):
@@ -289,20 +334,37 @@ class TestPlayerClass(TestCase):
         """
 
 
-        Andy = structures.Player('Andy', stack=1000)
+        Andy = structures.Player('Andy', 1000)
 
-        # Set previous states
-        Andy.request_action(structures.Action(constants.ACTION_BET, 200))
-        Andy.add_to_current_amount(200)
-        Andy.deal_card(structures.Card('J', 'd'))
-        Andy.assign_hand(structures.Hand([
+        action = structures.Action(constants.ACTION_BET, 200)
+        cards = [
+            structures.Card('7', 's'),
+            structures.Card('7', 'd'),
+        ]
+        hand = structures.Hand([
             structures.Card('7', 's'),
             structures.Card('7', 'd'),
             structures.Card('7', 'c'),
             structures.Card('2', 's'),
             structures.Card('2', 'c'),
-        ]))
+        ])
 
+        # Set previous states
+        Andy.request_action(action)
+        Andy.add_to_current_amount(200)
+        for card in cards:
+            Andy.deal_card(card)
+        Andy.assign_hand(hand)
+        Andy.fold()
+
+        # Evaluate before states
+        self.assertEqual(Andy.requested_action, action)
+        self.assertEqual(Andy.current_amount, 200)
+        self.assertTupleEqual(Andy.cards, tuple(cards))
+        self.assertEqual(Andy.hand, hand)
+        self.assertTrue(Andy.is_folded)
+
+        # Reset states
         Andy.reset_cycle_states()
 
         # Evaluate after states
@@ -310,6 +372,7 @@ class TestPlayerClass(TestCase):
         self.assertEqual(Andy.current_amount, 0)
         self.assertTupleEqual(Andy.cards, ())
         self.assertIsNone(Andy.hand)
+        self.assertFalse(Andy.is_folded)
 
 
 if __name__ == '__main__':
