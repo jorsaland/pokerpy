@@ -71,7 +71,7 @@ def alternate_players(betting_round: "BettingRound"):
             player = player,
             table_current_amount = betting_round.table.current_amount,
             smallest_bet = betting_round.smallest_bet,
-            smallest_raising_amount = betting_round.smallest_rising_amount,
+            smallest_raising_amount = betting_round.smallest_raise_amount,
             open_fold_allowed = betting_round.open_fold_allowed,
             ignore_invalid_actions = betting_round.ignore_invalid_actions,
         )
@@ -81,9 +81,9 @@ def alternate_players(betting_round: "BettingRound"):
             player.remove_from_stack(action.amount)
             player.add_to_current_amount(action.amount)
         if action.name in aggressive_action_names:
-            raising_amount = player.current_amount - betting_round.table.current_amount
-            betting_round.overwrite_smallest_rising_amount(raising_amount) 
-            betting_round.table.add_to_current_amount(raising_amount)
+            raise_amount = player.current_amount - betting_round.table.current_amount
+            betting_round.overwrite_smallest_raise_amount(raise_amount) 
+            betting_round.table.add_to_current_amount(raise_amount)
             player_index = betting_round.table.players.index(player)
             stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
             betting_round.set_stopping_player(stopping_player)

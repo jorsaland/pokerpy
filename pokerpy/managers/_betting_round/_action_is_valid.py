@@ -75,7 +75,7 @@ def action_is_valid(
         return (
             (action.amount > amount_to_call) and ## the action amount must be larger than the amount to call (otherwise would be call)
             (
-                (action.amount - amount_to_call >= smallest_raising_amount) or ## by default, the raise component of the action amount must be at least the smallest rising amount
+                (action.amount - amount_to_call >= smallest_raising_amount) or ## by default, the raise component of the action amount must be at least the smallest raising amount
                 (amount_to_call + smallest_raising_amount > player_stack and action.amount == player_stack) ## if the player cannot raise the smallest raising amount, then has to go all-in
             )
         )

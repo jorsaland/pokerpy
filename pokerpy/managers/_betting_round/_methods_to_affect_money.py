@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from ._betting_round import BettingRound
 
 
-def method_overwrite_smallest_rising_amount(self: "BettingRound", amount: int):
+def method_overwrite_smallest_raise_amount(self: "BettingRound", amount: int):
 
     """
     Overwrites the smallest amount expected to make a raise.
@@ -40,4 +40,4 @@ def method_overwrite_smallest_rising_amount(self: "BettingRound", amount: int):
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
 
-    self._smallest_rising_amount = amount
+    self._smallest_raise_amount = amount

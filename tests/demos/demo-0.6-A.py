@@ -159,7 +159,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
                     amount = player.stack
                 action = pk.Action(action_name, amount)
             elif action_name == pk.ACTION_RAISE:
-                smallest_amount = amount_to_call + betting_round.smallest_rising_amount
+                smallest_amount = amount_to_call + betting_round.smallest_raise_amount
                 amount = random.randint(smallest_amount, smallest_amount*3)
                 if amount > player.stack:
                     amount = player.stack
@@ -170,7 +170,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
             if amount_to_call == 0:
                 print(f'To bet: {betting_round.smallest_bet} | current amount: {player.current_amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount} | current amount: {player.current_amount}')
+                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_raise_amount} | current amount: {player.current_amount}')
             player.request_action(action)
 
     display_cards_and_money(table)
@@ -228,7 +228,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
                     amount = player.stack
                 action = pk.Action(action_name, amount)
             elif action_name == pk.ACTION_RAISE:
-                smallest_amount = amount_to_call + betting_round.smallest_rising_amount
+                smallest_amount = amount_to_call + betting_round.smallest_raise_amount
                 amount = random.randint(smallest_amount, smallest_amount*3)
                 if amount > player.stack:
                     amount = player.stack
@@ -239,7 +239,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
             if amount_to_call == 0:
                 print(f'To bet: {betting_round.smallest_bet} | current amount: {player.current_amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount} | current amount: {player.current_amount}')
+                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_raise_amount} | current amount: {player.current_amount}')
             player.request_action(action)
 
 

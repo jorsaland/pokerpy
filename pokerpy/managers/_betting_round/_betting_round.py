@@ -37,7 +37,7 @@ from pokerpy.messages import (
 from pokerpy.structures import Player, Table
 
 
-from ._methods_to_affect_money import method_overwrite_smallest_rising_amount
+from ._methods_to_affect_money import method_overwrite_smallest_raise_amount
 from ._methods_to_affect_players import method_set_stopping_player
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
 from ._run_listener import run_listener
@@ -107,7 +107,7 @@ class BettingRound:
 
         self._is_completed = False
 
-        self._smallest_rising_amount = smallest_bet
+        self._smallest_raise_amount = smallest_bet
 
         self._starting_player = starting_player
         self._stopping_player = stopping_player
@@ -134,8 +134,8 @@ class BettingRound:
         return self._smallest_bet
 
     @property
-    def smallest_rising_amount(self):
-        return self._smallest_rising_amount
+    def smallest_raise_amount(self):
+        return self._smallest_raise_amount
 
     @property
     def is_completed(self):
@@ -215,13 +215,13 @@ class BettingRound:
     # Methods to affect money
 
 
-    def overwrite_smallest_rising_amount(self, amount: int):
+    def overwrite_smallest_raise_amount(self, amount: int):
 
         """
         Overwrites the smallest amount expected to make a raise.
         """
 
-        return method_overwrite_smallest_rising_amount(self, amount)
+        return method_overwrite_smallest_raise_amount(self, amount)
     
 
     # Methods to deal cards
