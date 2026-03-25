@@ -76,7 +76,10 @@ def alternate_players(betting_round: "BettingRound"):
             ignore_invalid_actions = betting_round.ignore_invalid_actions,
         )
 
-        # Set consequences of aggressive actions
+        # Set effects of action
+        if action.amount > 0:
+            player.remove_from_stack(action.amount)
+            player.add_to_current_amount(action.amount)
         if action.name in aggressive_action_names:
             raising_amount = player.current_amount - betting_round.table.current_amount
             betting_round.overwrite_smallest_rising_amount(raising_amount) 
@@ -84,10 +87,12 @@ def alternate_players(betting_round: "BettingRound"):
             player_index = betting_round.table.players.index(player)
             stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
             betting_round.set_stopping_player(stopping_player)
-
-        # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
             player.fold()
+        logger.info(
+            f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
+            f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
+        )
 
         # Log table current amount before breaking (or not) in the next block
         logger.info(f'TABLE CURRENT AMOUNT: {betting_round.table.current_amount}\n')

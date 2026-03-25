@@ -66,12 +66,6 @@ def wait_for_player(
             smallest_raising_amount = smallest_raising_amount,
             open_fold_allowed = open_fold_allowed
         ):
-            player.remove_from_stack(action.amount)
-            player.add_to_current_amount(action.amount)
-            logger.info(
-                f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
-                f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
-            )
             break
 
         logger.debug(f'--- invalid action: {action.name}s {action.amount}')
