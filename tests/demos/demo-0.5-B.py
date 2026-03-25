@@ -2,8 +2,8 @@
 Demo 0.5-B
 
 This demo is based on Demo 0.5-A. Now, in the pre-flop, the first player places a single blind bet.
-The second player has two options: folding or rising. If all players take passive actions, the
-first player still has the chance to check or bet (rising its own blind bet). In the following
+The second player has two options: folding or raise. If all players take passive actions, the
+first player still has the chance to check or bet (raise its own blind bet). In the following
 betting rounds (flop, turn and river), the mechanics are as in Demo 0.5-A.
 """
 
@@ -110,7 +110,7 @@ def cycle(table: pk.Table):
             elif action_name == pk. ACTION_BET:
                 action = pk.Action(action_name, random.randint(BLIND_BET, BLIND_BET*5))
             elif action_name == pk.ACTION_RAISE:
-                smallest_amount = amount_to_call + table.smallest_rising_amount
+                smallest_amount = amount_to_call + table.smallest_raise_amount
                 action_value = random.randint(smallest_amount, smallest_amount*3)
                 action = pk.Action(action_name, action_value)
             else:
@@ -158,7 +158,7 @@ def cycle(table: pk.Table):
                 elif action_name == pk. ACTION_BET:
                     action = pk.Action(action_name, random.randint(table.central_pot//2, table.central_pot*2))
                 elif action_name == pk.ACTION_RAISE:
-                    smallest_amount = amount_to_call + table.smallest_rising_amount
+                    smallest_amount = amount_to_call + table.smallest_raise_amount
                     action_value = random.randint(smallest_amount, smallest_amount*3)
                     action = pk.Action(action_name, action_value)
                 else:

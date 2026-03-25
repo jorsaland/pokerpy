@@ -65,7 +65,7 @@ def action_is_valid(*, action: Action, table: Table, player: Player):
     if action.name == ACTION_RAISE:
         validation_conditions = [
             action.amount > amount_to_call,
-            action.amount - amount_to_call >= table.smallest_rising_amount,
+            action.amount - amount_to_call >= table.smallest_raise_amount,
         ]
         return all(validation_conditions)
 

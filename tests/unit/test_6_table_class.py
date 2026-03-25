@@ -330,11 +330,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.table_increase_not_multiple_of_smallest_chip_message.format(10, 107))
 
 
-    def test_overwrite_smallest_rising_amount(self):
+    def test_overwrite_smallest_raise_amount(self):
 
 
         """
-        Runs test cases on overwrite_smallest_rising_amount method.
+        Runs test cases on overwrite_smallest_raise_amount method.
         """
 
 
@@ -348,33 +348,33 @@ class TestTableClass(TestCase):
 
         # Valid inputs
 
-        table.overwrite_smallest_rising_amount(50)
-        self.assertEqual(table.smallest_rising_amount, 50)
+        table.overwrite_smallest_raise_amount(50)
+        self.assertEqual(table.smallest_raise_amount, 50)
 
-        table.overwrite_smallest_rising_amount(100)
-        self.assertEqual(table.smallest_rising_amount, 100)
+        table.overwrite_smallest_raise_amount(100)
+        self.assertEqual(table.smallest_raise_amount, 100)
 
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            table.overwrite_smallest_rising_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_rising_amount_message.format(str.__name__))
+            table.overwrite_smallest_raise_amount('100')
+        self.assertEqual(cm.exception.args[0], messages.table_not_int_smallest_raise_amount_message.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(-100)
+            table.overwrite_smallest_raise_amount(-100)
         self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, -100))
 
         with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(0)
+            table.overwrite_smallest_raise_amount(0)
         self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 0))
 
         with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(5)
+            table.overwrite_smallest_raise_amount(5)
         self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 5))
 
         with self.assertRaises(ValueError) as cm:
-            table.overwrite_smallest_rising_amount(107)
+            table.overwrite_smallest_raise_amount(107)
         self.assertEqual(cm.exception.args[0], messages.table_sra_not_multiple_of_smallest_chip_message.format(10, 107))
 
 

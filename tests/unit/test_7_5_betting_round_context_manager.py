@@ -270,7 +270,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Andy
                 awaited_players.append(player)
@@ -279,7 +279,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Boa
                 awaited_players.append(player)
@@ -288,7 +288,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Coral
                 awaited_players.append(player)
@@ -297,7 +297,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Dino
                 awaited_players.append(player)
@@ -320,7 +320,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
                 
                 player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
                 awaited_players.append(player)
@@ -329,7 +329,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Boa, responding to Andy
                 awaited_players.append(player)
@@ -338,7 +338,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Andy
                 awaited_players.append(player)
@@ -347,7 +347,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Andy
                 awaited_players.append(player)
@@ -370,7 +370,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
                 awaited_players.append(player)
@@ -379,7 +379,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Boa, responding to Andy
                 awaited_players.append(player)
@@ -388,7 +388,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Coral, responding to Andy
                 awaited_players.append(player)
@@ -397,7 +397,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 100)) # Dino, responding to Andy
                 awaited_players.append(player)
@@ -420,7 +420,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
                 awaited_players.append(player)
@@ -429,7 +429,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
                 awaited_players.append(player)
@@ -438,7 +438,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Boa
                 awaited_players.append(player)
@@ -447,7 +447,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -456,7 +456,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 100)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Andy, responding to Dino
                 awaited_players.append(player)
@@ -465,7 +465,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 200)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Boa, responding to Dino
                 awaited_players.append(player)
@@ -476,7 +476,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 400)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 800)
-                self.assertEqual(table.smallest_rising_amount, 400)
+                self.assertEqual(table.smallest_raise_amount, 400)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -503,7 +503,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_BET, 50)) # Andy
                 awaited_players.append(player)
@@ -512,7 +512,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 50)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
                 awaited_players.append(player)
@@ -521,7 +521,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 150)
+                self.assertEqual(table.smallest_raise_amount, 150)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 200)) # Coral, responding to Boa
                 awaited_players.append(player)
@@ -530,7 +530,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 150)
+                self.assertEqual(table.smallest_raise_amount, 150)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -539,7 +539,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 50)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 350)) # Andy, responding to Dino
                 awaited_players.append(player)
@@ -548,7 +548,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 200)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 500)) # Boa, responding to Dino
                 awaited_players.append(player)
@@ -557,7 +557,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 200)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 700)
-                self.assertEqual(table.smallest_rising_amount, 300)
+                self.assertEqual(table.smallest_raise_amount, 300)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 500)) # Coral, responding to Boa
                 awaited_players.append(player)
@@ -566,7 +566,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 400)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 700)
-                self.assertEqual(table.smallest_rising_amount, 300)
+                self.assertEqual(table.smallest_raise_amount, 300)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -575,7 +575,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 400)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 700)
-                self.assertEqual(table.smallest_rising_amount, 300)
+                self.assertEqual(table.smallest_raise_amount, 300)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Andy, responding to Boa
                 awaited_players.append(player)
@@ -600,7 +600,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_BET, 100)) # Andy
                 awaited_players.append(player)
@@ -609,7 +609,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 100)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Andy
                 awaited_players.append(player)
@@ -618,7 +618,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Coral, responding to Boa
                 awaited_players.append(player)
@@ -627,7 +627,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 100)
+                self.assertEqual(table.smallest_raise_amount, 100)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 400)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -636,7 +636,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 100)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Andy, responding to Dino
                 awaited_players.append(player)
@@ -645,7 +645,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 200)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 400)
-                self.assertEqual(table.smallest_rising_amount, 200)
+                self.assertEqual(table.smallest_raise_amount, 200)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 600)) # Boa, responding to Dino
                 awaited_players.append(player)
@@ -656,7 +656,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 400)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 800)
-                self.assertEqual(table.smallest_rising_amount, 400)
+                self.assertEqual(table.smallest_raise_amount, 400)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Dino, responding to Boa
                 awaited_players.append(player)
@@ -665,7 +665,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 400)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 800)
-                self.assertEqual(table.smallest_rising_amount, 400)
+                self.assertEqual(table.smallest_raise_amount, 400)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 400)) # Andy, responding to Boa
                 awaited_players.append(player)
@@ -690,7 +690,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Andy
                 awaited_players.append(player)
@@ -699,7 +699,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Boa
                 awaited_players.append(player)
@@ -708,7 +708,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_CHECK)) # Coral
                 awaited_players.append(player)
@@ -717,7 +717,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 0)
                 self.assertEqual(table.stopping_player, Dino)
                 self.assertEqual(table.current_amount, 0)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_BET, 50)) # Dino
                 awaited_players.append(player)
@@ -726,7 +726,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Andy.current_amount, 0)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 50)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_FOLD)) # Andy, responding to Dino
                 awaited_players.append(player)
@@ -735,7 +735,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 0)
                 self.assertEqual(table.stopping_player, Coral)
                 self.assertEqual(table.current_amount, 50)
-                self.assertEqual(table.smallest_rising_amount, 50)
+                self.assertEqual(table.smallest_raise_amount, 50)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 200)) # Boa, responding to Dino
                 awaited_players.append(player)
@@ -744,7 +744,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Coral.current_amount, 0)
                 self.assertEqual(table.stopping_player, Andy)
                 self.assertEqual(table.current_amount, 200)
-                self.assertEqual(table.smallest_rising_amount, 150)
+                self.assertEqual(table.smallest_raise_amount, 150)
 
                 player.request_action(structures.Action(constants.ACTION_RAISE, 350)) # Coral, responding to Boa
                 awaited_players.append(player)
@@ -753,7 +753,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Dino.current_amount, 50)
                 self.assertEqual(table.stopping_player, Boa)
                 self.assertEqual(table.current_amount, 350)
-                self.assertEqual(table.smallest_rising_amount, 150)
+                self.assertEqual(table.smallest_raise_amount, 150)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 300)) # Dino, responding to Coral
                 awaited_players.append(player)
@@ -764,7 +764,7 @@ class TestBettingRoundContextManager(TestCase):
                 self.assertEqual(Boa.current_amount, 200)
                 self.assertEqual(table.stopping_player, Boa)
                 self.assertEqual(table.current_amount, 350)
-                self.assertEqual(table.smallest_rising_amount, 150)
+                self.assertEqual(table.smallest_raise_amount, 150)
 
                 player.request_action(structures.Action(constants.ACTION_CALL, 150)) # Boa, responding to Coral
                 awaited_players.append(player)

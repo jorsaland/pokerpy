@@ -144,7 +144,7 @@ def cycle(table: pk.Table):
             elif action_name == pk. ACTION_BET:
                 action = pk.Action(action_name, random.randint(BIG_BLIND, BIG_BLIND*5))
             elif action_name == pk.ACTION_RAISE:
-                smallest_amount = amount_to_call + table.smallest_rising_amount
+                smallest_amount = amount_to_call + table.smallest_raise_amount
                 action_value = random.randint(smallest_amount, smallest_amount*3)
                 action = pk.Action(action_name, action_value)
             else:
@@ -192,7 +192,7 @@ def cycle(table: pk.Table):
                 elif action_name == pk. ACTION_BET:
                     action = pk.Action(action_name, random.randint(table.central_pot//2, table.central_pot*2))
                 elif action_name == pk.ACTION_RAISE:
-                    smallest_amount = amount_to_call + table.smallest_rising_amount
+                    smallest_amount = amount_to_call + table.smallest_raise_amount
                     action_value = random.randint(smallest_amount, smallest_amount*3)
                     action = pk.Action(action_name, action_value)
                 else:

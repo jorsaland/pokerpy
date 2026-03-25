@@ -104,7 +104,7 @@ def cycle(table: pk.Table):
                 elif action_name == pk.ACTION_CALL:
                     action_value = amount_to_call
                 elif action_name == pk.ACTION_RAISE:
-                    smallest_amount = amount_to_call + table.smallest_rising_amount
+                    smallest_amount = amount_to_call + table.smallest_raise_amount
                     action_value = random.randint(smallest_amount, smallest_amount*3)
                 elif action_name == pk. ACTION_BET:
                     if table.central_pot < 2:
