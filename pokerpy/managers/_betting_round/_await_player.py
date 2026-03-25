@@ -14,7 +14,7 @@
 
 
 """
-Defines the function that waits for a player to choose a valid action.
+Defines the function that listens to a player until it chooses a valid action.
 """
 
 
@@ -30,7 +30,7 @@ from ._action_is_valid import action_is_valid
 logger = get_logger()
 
 
-def wait_for_player(
+def await_player(
     *, player: Player,
     table_current_amount: int,
     smallest_bet: int,
@@ -40,7 +40,7 @@ def wait_for_player(
 ):
 
     """
-    Waits for a player to choose a valid action. Once the generator ends, returns the chosen action.
+    Listens to a player until it chooses a valid action.
     """
 
     # Player keeps its turn until selects a valid action

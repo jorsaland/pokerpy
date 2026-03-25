@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 def method_set_stopping_player(self: "BettingRound", player: Player):
 
     """
-    Marks a player before whom the betting round is closed.
+    Marks the player before whom the betting round is closed.
     """
 
     if not isinstance(player, Player):
