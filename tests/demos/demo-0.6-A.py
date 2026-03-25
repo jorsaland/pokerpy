@@ -20,7 +20,6 @@ import pokerpy as pk
 
 # Constants
 
-ANTE_ROUND = 'ante round'
 PREFLOP = 'pre-flop'
 after_preflop_round_names = [
     (FLOP := 'flop'),
@@ -63,27 +62,16 @@ def figure_out_hand(cards: list[pk.Card]):
     return max(possible_hands)
 
 
-def ante_round(table: pk.Table, open_fold_allowed: bool):
+def ante_round(table: pk.Table):
 
-    print(f'\n============ STARTING {ANTE_ROUND.upper()} ============\n')
+    print(f'\n============ PLACING ANTES ============\n')
 
-    with pk.BettingRound(ANTE_ROUND, table, open_fold_allowed=open_fold_allowed) as betting_round:
-
-        # Place antes
-        for player in table.players:
-            player.remove_from_stack(ANTE)
-            player.add_to_current_amount(ANTE)
-            print(f"{player.name} PLACES ANTE {ANTE} ({player.name}'s current amount: {player.current_amount} | stack: {player.stack})")
-        table.add_to_current_amount(ANTE)
-        print(f'TABLE CURRENT AMOUNT: {table.current_amount}\n')
-
-        # Let players to check
-        for player in betting_round.listen():
-            action = pk.Action(pk.ACTION_CHECK)
-            player.request_action(action)
+    for player in table.players:
+        player.remove_from_stack(ANTE)
+        table.add_to_central_pot(ANTE)
 
     display_cards_and_money(table)
-    print(f'\n============ ENDING {ANTE_ROUND.upper()} ============\n')
+    print(f'\n============ ANTES PLACED ============\n')
 
 
 def preflop(table: pk.Table, open_fold_allowed: bool):
@@ -274,7 +262,7 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
         print(  '==============================================\n')
 
     display_cards_and_money(table)
-    ante_round(table, open_fold_allowed)
+    ante_round(table)
     preflop(table, open_fold_allowed)
 
     for betting_round_name in after_preflop_round_names:
