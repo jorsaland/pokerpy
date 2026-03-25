@@ -1,5 +1,5 @@
 """
-Defines unit tests on wait_for_player function.
+Defines unit tests on await_player function.
 """
 
 
@@ -13,11 +13,11 @@ from unittest import main, TestCase
 from pokerpy import constants, managers, messages, structures
 
 
-class TestBettingRoundWaitForPlayerFunction(TestCase):
+class TestBettingRoundAwaitPlayerFunction(TestCase):
 
 
     """
-    Runs unit tests on wait_for_player function.
+    Runs unit tests on await_player function.
     """
 
 
@@ -38,7 +38,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.wait_for_player(
+        generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet = 2,
@@ -89,7 +89,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.wait_for_player(
+        generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet = 2,
@@ -137,7 +137,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.wait_for_player(
+        generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet = 2,
@@ -185,7 +185,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             structures.Action(constants.ACTION_RAISE, 1),
         ]
 
-        generator = managers.wait_for_player(
+        generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet = 2,
@@ -233,7 +233,7 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
             structures.Action(constants.ACTION_FOLD),
         ]
 
-        generator = managers.wait_for_player(
+        generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet = 2,
