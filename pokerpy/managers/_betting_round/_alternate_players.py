@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING
 
 from pokerpy.constants import ACTION_FOLD, aggressive_action_names
 from pokerpy.logger import get_logger
+from pokerpy.structures import Action, Player
 
 
 from ._wait_for_player import wait_for_player
@@ -31,6 +32,35 @@ if TYPE_CHECKING:
 
 
 logger = get_logger()
+
+
+def set_action_effects(*, betting_round: "BettingRound", action: Action):
+
+    """
+    Updates the status of the betting round according to the chosen action.
+    """
+
+    assert betting_round.current_player is not None
+
+    if action.amount > 0:
+        betting_round.current_player.remove_from_stack(action.amount)
+        betting_round.current_player.add_to_current_amount(action.amount)
+
+    if action.name in aggressive_action_names:
+        raise_amount = betting_round.current_player.current_amount - betting_round.table.current_amount
+        betting_round.overwrite_smallest_raise_amount(raise_amount)
+        betting_round.table.add_to_current_amount(raise_amount)
+        player_index = betting_round.table.players.index(betting_round.current_player)
+        stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
+        betting_round.set_stopping_player(stopping_player)
+
+    if action.name == ACTION_FOLD:
+        betting_round.current_player.fold()
+
+    logger.info(
+        f"{''.join(str(card) for card in betting_round.current_player.cards)} {betting_round.current_player.name} {action.name.upper()}S {action.amount} "
+        f"({betting_round.current_player.name}'s current amount: {betting_round.current_player.current_amount} | stack: {betting_round.current_player.stack})"
+    )
 
 
 def alternate_players(betting_round: "BettingRound"):
@@ -53,18 +83,22 @@ def alternate_players(betting_round: "BettingRound"):
         if betting_round.table.players.index(player) < betting_round.table.players.index(betting_round.starting_player):
             continue
 
-        # Determine whether player should be allowed to choose an action
-        if player in betting_round.table.players_in_hand:
-            if player.stack == 0:
-                if player == betting_round.stopping_player:
-                    round_must_stop = True
-                    break
+        # Player already folded
+        if player not in betting_round.table.players_in_hand:
+            if player != betting_round.stopping_player:
                 continue
-        else:
-            if player == betting_round.stopping_player:
-                round_must_stop = True
-                break
-            continue
+            round_must_stop = True
+            break
+
+        # Player is all-in
+        if player.stack == 0:
+            if player != betting_round.stopping_player:
+                continue
+            round_must_stop = True
+            break
+
+        # Mark player as current player
+        betting_round._current_player = player
 
         # Player keeps its turn until selects a valid action
         action = yield from wait_for_player(
@@ -75,24 +109,7 @@ def alternate_players(betting_round: "BettingRound"):
             open_fold_allowed = betting_round.open_fold_allowed,
             ignore_invalid_actions = betting_round.ignore_invalid_actions,
         )
-
-        # Set effects of action
-        if action.amount > 0:
-            player.remove_from_stack(action.amount)
-            player.add_to_current_amount(action.amount)
-        if action.name in aggressive_action_names:
-            raise_amount = player.current_amount - betting_round.table.current_amount
-            betting_round.overwrite_smallest_raise_amount(raise_amount) 
-            betting_round.table.add_to_current_amount(raise_amount)
-            player_index = betting_round.table.players.index(player)
-            stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
-            betting_round.set_stopping_player(stopping_player)
-        if action.name == ACTION_FOLD:
-            player.fold()
-        logger.info(
-            f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
-            f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
-        )
+        set_action_effects(betting_round=betting_round, action=action)
 
         # Log table current amount before breaking (or not) in the next block
         logger.info(f'TABLE CURRENT AMOUNT: {betting_round.table.current_amount}\n')

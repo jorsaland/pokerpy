@@ -111,6 +111,7 @@ class BettingRound:
 
         self._starting_player = starting_player
         self._stopping_player = stopping_player
+        self._current_player: (Player|None) = None
 
 
     @property
@@ -128,6 +129,10 @@ class BettingRound:
     @property
     def stopping_player(self):
         return self._stopping_player
+
+    @property
+    def current_player(self):
+        return self._current_player
 
     @property
     def smallest_bet(self):
@@ -187,6 +192,7 @@ class BettingRound:
                 next(self.listen())
         except StopIteration:
             self._is_completed = True
+            self._current_player is None
         finally:
             self.table.reset_betting_round_states()
 
