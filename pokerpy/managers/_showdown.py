@@ -18,6 +18,9 @@ Defines the functions to distribute the pot at the end of a cycle.
 """
 
 
+from collections.abc import Sequence
+
+
 from pokerpy.logger import get_logger
 from pokerpy.structures import Player
 
@@ -25,17 +28,17 @@ from pokerpy.structures import Player
 logger = get_logger()
 
 
-def no_showdown(active_players: list[Player], central_pot: int):
+def no_showdown(players_in_hand: Sequence[Player], central_pot: int):
 
     """
     Displays a message on distributing the central pot to the only remaining player.
     """
 
-    winner = active_players[0]
+    winner = players_in_hand[0]
     logger.info(f'{winner.name} wins {central_pot}!')
 
 
-def break_tie(winners: list[Player], central_pot: int):
+def break_tie(winners: Sequence[Player], central_pot: int):
 
     """
     Displays a message on how to distribute the central pot between the tied winners.
@@ -58,19 +61,19 @@ def break_tie(winners: list[Player], central_pot: int):
     return
 
 
-def showdown(active_players: list[Player], central_pot: int):
+def showdown(players_in_hand: list[Player], central_pot: int):
 
     """
     Determines who are the winners among remaining players and displays a message on how to distribute the pot.
     """
 
-    logger.info(f'Remaining players: {", ".join(p.name for p in active_players)}')
+    logger.info(f'Remaining players: {", ".join(player.name for player in players_in_hand)}')
 
     winners: list[Player] = []
-    for player in active_players:
+    for player in players_in_hand:
 
         player_is_unbeaten = True
-        for oponent in active_players:
+        for oponent in players_in_hand:
             if oponent.name == player.name:
                 continue
             if oponent.hand > player.hand:

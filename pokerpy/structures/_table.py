@@ -76,6 +76,10 @@ class Table:
         return tuple(self._players)
 
     @property
+    def players_in_hand(self):
+        return tuple(player for player in self.players if not player.is_folded)
+
+    @property
     def current_amount(self):
         return self._current_amount
 

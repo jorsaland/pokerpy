@@ -38,11 +38,7 @@ from pokerpy.structures import Player, Table
 
 
 from ._methods_to_affect_money import method_overwrite_smallest_rising_amount
-from ._methods_to_affect_players import (
-    method_activate_player,
-    method_deactivate_player,
-    method_set_stopping_player,
-)
+from ._methods_to_affect_players import method_set_stopping_player
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
 from ._run_listener import run_listener
 
@@ -64,7 +60,6 @@ class BettingRound:
         table: Table,
         *,
         smallest_bet: int = 1,
-        active_players: (list[Player]|None) = None,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
         open_fold_allowed = False,
@@ -83,16 +78,6 @@ class BettingRound:
             raise TypeError(msg_not_int.format(type(smallest_bet).__name__))
         if smallest_bet <= 0:
             raise ValueError(msg_not_positive_value.format(smallest_bet))
-
-        if active_players is None:
-            active_players = [player for player in table.players]
-        else:
-            if not isinstance(active_players, list):
-                raise TypeError(msg_not_list.format(type(active_players).__name__))
-            if not all(isinstance(player, Player) for player in active_players):
-                raise TypeError(msg_not_all_player_instances)
-            if not all(player in table.players for player in active_players):
-                raise ValueError(msg_some_players_not_in_table)
 
         if starting_player is None:
             starting_player = table.players[0]
@@ -124,9 +109,9 @@ class BettingRound:
 
         self._smallest_rising_amount = smallest_bet
 
-        self._active_players = active_players
         self._starting_player = starting_player
         self._stopping_player = stopping_player
+
 
     @property
     def name(self):
@@ -135,10 +120,6 @@ class BettingRound:
     @property
     def table(self):
         return self._table
-
-    @property
-    def active_players(self):
-        return tuple(self._active_players)
 
     @property
     def starting_player(self):
@@ -220,24 +201,6 @@ class BettingRound:
 
 
     # Methods to affect players
-
-
-    def activate_player(self, player: Player):
-        
-        """
-        Make a single player to become available to play.
-        """
-
-        return method_activate_player(self, player)
-
-
-    def deactivate_player(self, player: Player):
-
-        """
-        Removes a player from a hand cycle.
-        """
-
-        return method_deactivate_player(self, player)
 
 
     def set_stopping_player(self, player: Player):

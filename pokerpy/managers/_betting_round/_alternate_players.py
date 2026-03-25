@@ -45,7 +45,7 @@ def alternate_players(betting_round: "BettingRound"):
     for player in betting_round.table.players:
 
         # Stop if there is one player remaining
-        if len(betting_round.active_players) == 1:
+        if len(betting_round.table.players_in_hand) == 1:
             round_must_stop = True
             break
 
@@ -54,7 +54,7 @@ def alternate_players(betting_round: "BettingRound"):
             continue
 
         # Determine whether player should be allowed to choose an action
-        if player in betting_round.active_players:
+        if player in betting_round.table.players_in_hand:
             if player.stack == 0:
                 if player == betting_round.stopping_player:
                     round_must_stop = True
@@ -87,7 +87,7 @@ def alternate_players(betting_round: "BettingRound"):
 
         # Determine whether the player becomes inactive or not
         if action.name == ACTION_FOLD:
-            betting_round.deactivate_player(player)
+            player.fold()
 
         # Log table current amount before breaking (or not) in the next block
         logger.info(f'TABLE CURRENT AMOUNT: {betting_round.table.current_amount}\n')

@@ -43,7 +43,7 @@ def method_deal_cards_to_players(self: "BettingRound", cards_count: int):
         raise TypeError(msg_not_int.format(type(cards_count).__name__))
 
     for _ in range(cards_count):
-        for player in self.active_players:
+        for player in self.table.players_in_hand:
             card = secrets.choice(self.table.deck)
             self.table.remove_card_from_deck(card)
             player.deal_card(card)

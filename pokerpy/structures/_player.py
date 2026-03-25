@@ -66,6 +66,7 @@ class Player:
         self._hand: (Hand|None) = None
         self._current_amount = 0 # this is set by instance methods
         self._stack = stack
+        self._is_folded = False
 
 
     @property
@@ -91,6 +92,10 @@ class Player:
     @property
     def stack(self):
         return self._stack
+    
+    @property
+    def is_folded(self):
+        return self._is_folded
 
 
     def __repr__(self):
@@ -202,6 +207,18 @@ class Player:
         self._stack -= amount
 
 
+    # Methods to affect fold status
+
+
+    def fold(self):
+
+        """
+        Marks the player as folded
+        """
+
+        self._is_folded = True
+
+
     # Methods to reset managers
 
 
@@ -221,9 +238,8 @@ class Player:
         Resets all state variables that are restricted to cycles.
         """
 
-        # Reset betting_round_states
         self.reset_betting_round_states()
 
-        # Drop cards and reset hand
         self._cards.clear()
         self._hand: (Hand|None) = None
+        self._is_folded = False

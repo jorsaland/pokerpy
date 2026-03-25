@@ -36,12 +36,10 @@ STACK_SIZE = 10_000
 player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 
-def display_cards_and_money(table: pk.Table, active_players: list[pk.Player] | None = None):
-    if active_players is None:
-        active_players = table.players
+def display_cards_and_money(table: pk.Table):
     print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
-    for player in active_players:
+    for player in table.players_in_hand:
         hand = figure_out_hand(player.cards + table.common_cards)
         if hand is not None:
             player.assign_hand(hand)
@@ -84,7 +82,7 @@ def ante_round(table: pk.Table, open_fold_allowed: bool):
             action = pk.Action(pk.ACTION_CHECK)
             player.request_action(action)
 
-    display_cards_and_money(table, betting_round.active_players)
+    display_cards_and_money(table)
     print(f'\n============ ENDING {ANTE_ROUND.upper()} ============\n')
 
 
@@ -182,22 +180,20 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
                 raise RuntimeError('we live in a society')
 
             if amount_to_call == 0:
-                print(f'To bet: {betting_round.smallest_bet}')
+                print(f'To bet: {betting_round.smallest_bet} | current amount: {player.current_amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount}')
+                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount} | current amount: {player.current_amount}')
             player.request_action(action)
 
-    display_cards_and_money(table, betting_round.active_players)
+    display_cards_and_money(table)
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
 
-    return betting_round.active_players
 
-
-def postflop(table: pk.Table, betting_round_name: str, active_players: list[pk.Player], open_fold_allowed: bool):
+def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
 
     # Break before starting if only remains one player
-    if len(active_players) == 1:
-        return False, active_players
+    if len(table.players_in_hand) == 1:
+        return False
 
     print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
 
@@ -205,7 +201,6 @@ def postflop(table: pk.Table, betting_round_name: str, active_players: list[pk.P
         name = betting_round_name,
         table = table,
         smallest_bet = BIG_BLIND,
-        active_players = active_players,
         open_fold_allowed = open_fold_allowed,
     )
 
@@ -254,15 +249,16 @@ def postflop(table: pk.Table, betting_round_name: str, active_players: list[pk.P
                 raise RuntimeError('we live in a society')
 
             if amount_to_call == 0:
-                print(f'To bet: {betting_round.smallest_bet}')
+                print(f'To bet: {betting_round.smallest_bet} | current amount: {player.current_amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount}')
+                print(f'To call: {amount_to_call} | to raise: {amount_to_call + betting_round.smallest_rising_amount} | current amount: {player.current_amount}')
             player.request_action(action)
 
-    display_cards_and_money(table, betting_round.active_players)
+
+    display_cards_and_money(table)
     print(f'\n============ ENDING {betting_round_name.upper()} ============\n')
 
-    return True, betting_round.active_players
+    return True
 
 
 def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
@@ -279,19 +275,19 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
     display_cards_and_money(table)
     ante_round(table, open_fold_allowed)
-    active_players = preflop(table, open_fold_allowed)
+    preflop(table, open_fold_allowed)
 
     for betting_round_name in after_preflop_round_names:
-        keep_playing, active_players = postflop(table, betting_round_name, list(active_players), open_fold_allowed)
+        keep_playing = postflop(table, betting_round_name, open_fold_allowed)
         if not keep_playing:
             break
 
-    if len(active_players) > 1:
+    if len(table.players_in_hand) > 1:
         print(f'\n============ SHOWDOWN! ============\n')
-        pk.showdown(active_players, table.central_pot)
+        pk.showdown(table.players_in_hand, table.central_pot)
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        pk.no_showdown(active_players, table.central_pot)
+        pk.no_showdown(table.players_in_hand, table.central_pot)
 
 
 def game():
