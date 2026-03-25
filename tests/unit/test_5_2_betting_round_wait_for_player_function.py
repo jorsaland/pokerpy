@@ -11,7 +11,6 @@ from unittest import main, TestCase
 
 
 from pokerpy import constants, managers, messages, structures
-from standard_instances import create_standard_player
 
 
 class TestBettingRoundWaitForPlayerFunction(TestCase):
@@ -22,330 +21,248 @@ class TestBettingRoundWaitForPlayerFunction(TestCase):
     """
 
 
-    def test_under_bet_parsing(self):
-
+    def test_parse_a_valid_action(self):
 
         """
-        Runs test cases to check actions are correctly parsed into the generator object when round is under bet.
+        Runs test cases where a valid action is parsed.
         """
-
-
-        valid_action = structures.Action(constants.ACTION_CALL, 100)
-        def parse_single_valid_action():
         
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
+        players = [
+            Andy := structures.Player('Andy', 10),
+            structures.Player('Boa', 10),
+            structures.Player('Coral', 10),
+            structures.Player('Dino', 10),
+        ]
 
-            # Make the table to have an amount to be answered
-            table.add_to_current_amount(100)
+        table = structures.Table(players)
 
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(valid_action)
+        action = structures.Action(constants.ACTION_CHECK)
 
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
+        generator = managers.wait_for_player(
+            player = Andy,
+            table_current_amount = table.current_amount,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False,
+            ignore_invalid_actions = False,
+        )
 
-        self.assertEqual(parse_single_valid_action(), valid_action)
+        # Evaluate states before request
 
+        player = next(generator)
+        self.assertIsNone(player.requested_action)
 
-        def parse_single_invalid_action_while_ignoring_the_error():
+        # Evaluate states after request
 
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
+        player.request_action(action)
+        self.assertEqual(player.requested_action, action)
 
-            # Make the table to have an amount to be answered
-            table.add_to_current_amount(100)
+        # Evaluate next states
 
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
+        try:
+            next(generator)
+        except StopIteration as ex:
+            generator_ended = True
+            return_value = ex.value
+        else:
+            generator_ended = False
+            return_value = None
 
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertIsNone(parse_single_invalid_action_while_ignoring_the_error())
+        self.assertTrue(generator_ended)
+        self.assertEqual(return_value, action)
+        self.assertIsNone(player.requested_action)
 
 
-        def parse_single_invalid_action_while_not_ignoring_the_error():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
-
-            # Make the table to have an amount to be answered
-            table.add_to_current_amount(100)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=False)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        with self.assertRaises(RuntimeError) as cm:
-            self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
-        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_invalid_action.format(f'{constants.ACTION_CHECK} {0}'))
-
-
-        def parse_multiple_invalid_actions():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
-
-            # Make the table to have an amount to be answered
-            table.add_to_current_amount(100)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_BET, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_BET, 200))
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertIsNone(parse_multiple_invalid_actions())       
-
-
-        valid_action = structures.Action(constants.ACTION_CALL, 100)
-        def parse_multiple_invalid_actions_and_final_valid_action():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
-
-            # Make the table to have an amount to be answered
-            table.add_to_current_amount(100)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_BET, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CHECK))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_BET, 200))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_BET, 150))
-            player = next(generator)
-            player.request_action(valid_action)
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), valid_action)
-
-
-    def test_not_under_bet_parsing(self):
-
+    def test_soft_parse_an_invalid_action(self):
 
         """
-        Runs test cases to check actions are correctly parsed into the generator object when round is not under bet.
+        Runs test cases where an invalid action is parsed, with the generator set to ignore it.
         """
+        
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            structures.Player('Boa', 10),
+            structures.Player('Coral', 10),
+            structures.Player('Dino', 10),
+        ])
+        table.add_to_current_amount(2)
 
-        valid_action = structures.Action(constants.ACTION_CHECK)
-        def parse_single_valid_action():
+        action = structures.Action(constants.ACTION_CHECK)
 
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
+        generator = managers.wait_for_player(
+            player = Andy,
+            table_current_amount = table.current_amount,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False,
+            ignore_invalid_actions = True,
+        )
 
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
+        # Evaluate states before request
+
+        player = next(generator)
+        self.assertIsNone(player.requested_action)
+
+        # Evaluate states after request
+
+        player.request_action(action)
+        self.assertEqual(player.requested_action, action)
+
+        # Evaluate next states
+
+        try:
+            next(generator)
+        except StopIteration:
+            generator_ended = True
+        else:
+            generator_ended = False
+
+        self.assertFalse(generator_ended)
+        self.assertEqual(player.requested_action, action)
+
+
+    def test_hard_parse_an_invalid_action(self):
+
+        """
+        Runs test cases where an invalid action is parsed, with the generator set to raise an error.
+        """
+        
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            structures.Player('Boa', 10),
+            structures.Player('Coral', 10),
+            structures.Player('Dino', 10),
+        ])
+        table.add_to_current_amount(2)
+
+        action = structures.Action(constants.ACTION_CHECK)
+
+        generator = managers.wait_for_player(
+            player = Andy,
+            table_current_amount = table.current_amount,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False,
+            ignore_invalid_actions = False,
+        )
+
+        # Evaluate states before request
+
+        player = next(generator)
+        self.assertIsNone(player.requested_action)
+
+        # Evaluate states after request
+
+        player.request_action(action)
+        self.assertEqual(player.requested_action, action)
+
+        # Evaluate next states
+
+        with self.assertRaises(RuntimeError) as context:
+            next(generator)
+
+        self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
+        self.assertEqual(player.requested_action, action)
+
+
+    def test_soft_parse_multiple_invalid_actions(self):
+
+        """
+        Runs test cases where multiple invalid actions are parsed (with the generator set to ignore them).
+        """
+        
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            structures.Player('Boa', 10),
+            structures.Player('Coral', 10),
+            structures.Player('Dino', 10),
+        ])
+        table.add_to_current_amount(2)
+
+        actions = [
+            structures.Action(constants.ACTION_CHECK),
+            structures.Action(constants.ACTION_CALL, 1),
+            structures.Action(constants.ACTION_RAISE, 1),
+        ]
+
+        generator = managers.wait_for_player(
+            player = Andy,
+            table_current_amount = table.current_amount,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False,
+            ignore_invalid_actions = True,
+        )
+
+        # Evaluate states after actions
+
+        for action in actions:
             player = next(generator)
-            player.request_action(valid_action)
+            player.request_action(action)
+            self.assertEqual(player.requested_action, action)
 
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
+        # Evaluate final states
 
-        self.assertEqual(parse_single_valid_action(), valid_action)        
+        try:
+            next(generator)
+        except StopIteration:
+            generator_ended = True
+        else:
+            generator_ended = False
+
+        self.assertFalse(generator_ended)
 
 
-        def parse_single_invalid_action_while_ignoring_the_error():
+    def test_soft_parse_multiple_invalid_actions_and_a_valid_action(self):
 
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
+        """
+        Runs test cases where multiple invalid actions are parsed (with the generator set to ignore them) and finally a valid action is parsed.
+        """
+        
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            structures.Player('Boa', 10),
+            structures.Player('Coral', 10),
+            structures.Player('Dino', 10),
+        ])
+        table.add_to_current_amount(2)
 
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
+        actions = [
+            structures.Action(constants.ACTION_CHECK),
+            structures.Action(constants.ACTION_CALL, 1),
+            structures.Action(constants.ACTION_FOLD),
+        ]
+
+        generator = managers.wait_for_player(
+            player = Andy,
+            table_current_amount = table.current_amount,
+            smallest_bet = 2,
+            smallest_raising_amount = 2,
+            open_fold_allowed = False,
+            ignore_invalid_actions = True,
+        )
+
+        # Evaluate states after actions
+
+        for action in actions:
             player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
+            player.request_action(action)
+            self.assertEqual(player.requested_action, action)
 
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
+        # Evaluate final states
 
-        self.assertIsNone(parse_single_invalid_action_while_ignoring_the_error())
+        try:
+            next(generator)
+        except StopIteration as ex:
+            generator_ended = True
+            return_value = ex.value
+        else:
+            generator_ended = False
+            return_value = None
 
-
-        def parse_single_invalid_action_while_not_ignoring_the_error():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=False)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        with self.assertRaises(RuntimeError) as cm:
-            self.assertIsNone(parse_single_invalid_action_while_not_ignoring_the_error())
-        self.assertEqual(cm.exception.args[0], messages.betting_round_msg_invalid_action.format(f'{constants.ACTION_RAISE} {100}'))
-
-
-        def parse_multiple_invalid_actions():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players, open_fold_allowed=False)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_FOLD))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_FOLD))
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertIsNone(parse_multiple_invalid_actions())
-
-
-        valid_action = structures.Action(constants.ACTION_CHECK)
-        def parse_multiple_invalid_actions_and_final_valid_action():
-
-            # Define table and current player
-            all_players = [
-                Andy := create_standard_player('Andy'),
-                create_standard_player('Boa'),
-                create_standard_player('Coral'),
-                create_standard_player('Dino'),
-            ]
-            table = structures.Table(all_players, open_fold_allowed=False)
-
-            # Request action
-            generator = managers.wait_for_player(player=Andy, table=table, ignore_invalid_actions=True)
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_FOLD))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_RAISE, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_CALL, 100))
-            player = next(generator)
-            player.request_action(structures.Action(constants.ACTION_FOLD))
-            player = next(generator)
-            player.request_action(valid_action)
-
-            # End iteration and retrieve returned value
-            try:
-                next(generator)
-            except StopIteration as ex:
-                return ex.value
-
-        self.assertEqual(parse_multiple_invalid_actions_and_final_valid_action(), valid_action)
+        self.assertTrue(generator_ended)
+        self.assertEqual(return_value, actions[-1])
+        self.assertIsNone(player.requested_action)
 
 
 if __name__ == '__main__':
