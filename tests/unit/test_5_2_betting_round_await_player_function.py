@@ -27,14 +27,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         Runs test cases where a valid action is parsed.
         """
         
-        players = [
+        table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
             structures.Player('Boa', 10),
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
-        ]
-
-        table = structures.Table(players)
+        ])
 
         action = structures.Action(constants.ACTION_CHECK)
 
@@ -48,29 +46,18 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate next states
-
-        try:
-            player = next(generator)
-        except StopIteration as ex:
-            generator_ended = True
-            return_value = ex.value
-        else:
-            generator_ended = False
-            return_value = None
-
-        self.assertTrue(generator_ended)
-        self.assertEqual(return_value, action)
-        self.assertIsNone(player.requested_action)
+        with self.assertRaises(StopIteration) as context:
+            next(generator)
+        self.assertEqual(context.exception.value, action)
+        self.assertIsNone(Andy.requested_action)
 
 
     def test_skip_actions(self):
@@ -96,26 +83,17 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(5):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate final states
-
-        try:
-            player = next(generator)
-        except StopIteration:
-            generator_ended = True
-        else:
-            generator_ended = False
-
-        self.assertFalse(generator_ended)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
 
     def test_skip_actions_and_parse_a_valid_action(self):
@@ -143,35 +121,23 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(4):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate final states
-
-        try:
-            player = next(generator)
-        except StopIteration as ex:
-            generator_ended = True
-            return_value = ex.value
-        else:
-            generator_ended = False
-            return_value = None
-
-        self.assertTrue(generator_ended)
-        self.assertEqual(return_value, action)
-        self.assertIsNone(player.requested_action)
+        with self.assertRaises(StopIteration) as context:
+            next(generator)
+        self.assertEqual(context.exception.value, action)
+        self.assertIsNone(Andy.requested_action)
 
 
 class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
@@ -208,26 +174,16 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate next states
-
-        try:
-            player = next(generator)
-        except StopIteration:
-            generator_ended = True
-        else:
-            generator_ended = False
-
-        self.assertFalse(generator_ended)
-        self.assertEqual(player.requested_action, action)
+        self.assertEqual(next(generator), Andy)
+        self.assertEqual(Andy.requested_action, action)
 
 
     def test_hard_parse_an_invalid_action(self):
@@ -256,22 +212,18 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate next states
-
         with self.assertRaises(RuntimeError) as context:
-            player = next(generator)
-
+            next(generator)
         self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
-        self.assertEqual(player.requested_action, action)
+        self.assertEqual(Andy.requested_action, action)
 
 
     def test_skip_actions_and_soft_parse_an_invalid_action(self):
@@ -300,32 +252,21 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(4):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate next states
-
-        try:
-            player = next(generator)
-        except StopIteration:
-            generator_ended = True
-        else:
-            generator_ended = False
-
-        self.assertFalse(generator_ended)
-        self.assertEqual(player.requested_action, action)
+        self.assertEqual(next(generator), Andy)
+        self.assertEqual(Andy.requested_action, action)
 
 
     def test_skip_actions_and_hard_parse_an_invalid_action(self):
@@ -354,28 +295,23 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(4):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after request
-
-        player.request_action(action)
-        self.assertEqual(player.requested_action, action)
+        Andy.request_action(action)
+        self.assertEqual(Andy.requested_action, action)
 
         # Evaluate next states
-
         with self.assertRaises(RuntimeError) as context:
-            player = next(generator)
-
+            next(generator)
         self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
-        self.assertEqual(player.requested_action, action)
+        self.assertEqual(Andy.requested_action, action)
 
 
     def test_skip_actions_and_soft_parse_multiple_invalid_actions(self):
@@ -408,33 +344,23 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(2):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after actions
-
         for action in actions:
-            player = next(generator)
-            player.request_action(action)
-            self.assertEqual(player.requested_action, action)
+            self.assertEqual(next(generator), Andy)
+            Andy.request_action(action)
+            self.assertEqual(Andy.requested_action, action)
 
         # Evaluate final states
-
-        try:
-            player = next(generator)
-        except StopIteration:
-            generator_ended = True
-        else:
-            generator_ended = False
-
-        self.assertFalse(generator_ended)
+        self.assertEqual(next(generator), Andy)
+        self.assertEqual(Andy.requested_action, action)
 
 
     def test_skip_actions_soft_parse_multiple_invalid_actions_and_parse_a_valid_action(self):
@@ -467,37 +393,25 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         )
 
         # Evaluate states before request
-
-        player = next(generator)
-        self.assertIsNone(player.requested_action)
+        self.assertEqual(next(generator), Andy)
+        self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after skipping
-
         for _ in range(2):
-            player = next(generator)
-            self.assertIsNone(player.requested_action)
+            self.assertEqual(next(generator), Andy)
+            self.assertIsNone(Andy.requested_action)
 
         # Evaluate states after actions
-
         for action in actions:
-            player = next(generator)
-            player.request_action(action)
-            self.assertEqual(player.requested_action, action)
+            self.assertEqual(next(generator), Andy)
+            Andy.request_action(action)
+            self.assertEqual(Andy.requested_action, action)
 
         # Evaluate final states
-
-        try:
-            player = next(generator)
-        except StopIteration as ex:
-            generator_ended = True
-            return_value = ex.value
-        else:
-            generator_ended = False
-            return_value = None
-
-        self.assertTrue(generator_ended)
-        self.assertEqual(return_value, actions[-1])
-        self.assertIsNone(player.requested_action)
+        with self.assertRaises(StopIteration) as context:
+            next(generator)
+        self.assertEqual(context.exception.value, actions[-1])
+        self.assertIsNone(Andy.requested_action)
 
 
 if __name__ == '__main__':
