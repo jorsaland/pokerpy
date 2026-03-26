@@ -223,7 +223,6 @@ class TestTableClass(TestCase):
         ])
         Dino = structures.Player('Dino', 10)
 
-
         # Valid inputs
 
         self.assertEqual(table.get_next_player(Andy), Boa)
@@ -252,7 +251,6 @@ class TestTableClass(TestCase):
         ])
         Dino = structures.Player('Dino', 10)
 
-
         # Valid inputs
 
         self.assertEqual(table.get_previous_player(Andy), Coral)
@@ -266,11 +264,11 @@ class TestTableClass(TestCase):
         self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
 
 
-    def test_get_previous_player_method(self):
+    def test_iter_players_method_going_forward(self):
 
 
         """
-        Runs test cases on get_previous_player method.
+        Runs test cases on iter_players method going forward.
         """
 
 
@@ -333,6 +331,124 @@ class TestTableClass(TestCase):
 
         with self.assertRaises(ValueError) as context:
             table.iter_players(Dino)
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+
+
+    def test_iter_players_method_going_backwards(self):
+
+
+        """
+        Runs test cases on iter_players method going backwards.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+        ])
+        Dino = structures.Player('Dino', 10)
+
+        # Iteration
+
+        iterator = table.iter_players(reverse=True)
+        self.assertEqual(next(iterator), Andy)
+        self.assertEqual(next(iterator), Coral)
+        self.assertEqual(next(iterator), Boa)
+        with self.assertRaises(StopIteration) as context:
+            next(iterator)
+        self.assertIsNone(context.exception.value)
+
+        iterator = table.iter_players(Andy, reverse=True)
+        self.assertEqual(next(iterator), Andy)
+        self.assertEqual(next(iterator), Coral)
+        self.assertEqual(next(iterator), Boa)
+        with self.assertRaises(StopIteration) as context:
+            next(iterator)
+        self.assertIsNone(context.exception.value)
+
+        iterator = table.iter_players(Boa, reverse=True)
+        self.assertEqual(next(iterator), Boa)
+        self.assertEqual(next(iterator), Andy)
+        self.assertEqual(next(iterator), Coral)
+        with self.assertRaises(StopIteration) as context:
+            next(iterator)
+        self.assertIsNone(context.exception.value)
+
+        iterator = table.iter_players(Coral, reverse=True)
+        self.assertEqual(next(iterator), Coral)
+        self.assertEqual(next(iterator), Boa)
+        self.assertEqual(next(iterator), Andy)
+        with self.assertRaises(StopIteration) as context:
+            next(iterator)
+        self.assertIsNone(context.exception.value)
+
+        # For loop
+
+        iterated_players = [player for player in table.iter_players(reverse=True)]
+        self.assertEqual(iterated_players, [Andy, Coral, Boa])
+
+        iterated_players = [player for player in table.iter_players(Andy, reverse=True)]
+        self.assertEqual(iterated_players, [Andy, Coral, Boa])
+
+        iterated_players = [player for player in table.iter_players(Boa, reverse=True)]
+        self.assertEqual(iterated_players, [Boa, Andy, Coral])
+
+        iterated_players = [player for player in table.iter_players(Coral, reverse=True)]
+        self.assertEqual(iterated_players, [Coral, Boa, Andy])
+
+        # Invalid inputs
+
+        with self.assertRaises(ValueError) as context:
+            table.iter_players(Dino, reverse=True)
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+
+
+    def test_get_previous_active_player_method(self):
+
+
+        """
+        Runs test cases on get_previous_active_player method
+        """
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+        ])
+        Dino = structures.Player('Dino', 10)
+
+        # Everybody active
+
+        self.assertEqual(table.get_previous_active_player(Andy), Coral)
+        self.assertEqual(table.get_previous_active_player(Boa), Andy)
+        self.assertEqual(table.get_previous_active_player(Coral), Boa)
+
+        # One folded
+
+        Andy.fold()
+        self.assertEqual(table.get_previous_active_player(Andy), Coral)
+        self.assertEqual(table.get_previous_active_player(Boa), Coral)
+        self.assertEqual(table.get_previous_active_player(Coral), Boa)
+
+        # One folded and one all-in
+
+        Boa.remove_from_stack(10)
+        self.assertEqual(table.get_previous_active_player(Andy), Coral)
+        self.assertEqual(table.get_previous_active_player(Boa), Coral)
+        self.assertEqual(table.get_previous_active_player(Coral), Coral)
+
+        # Nobody active
+
+        Coral.fold()
+        self.assertIsNone(table.get_previous_active_player(Andy))
+        self.assertIsNone(table.get_previous_active_player(Boa))
+        self.assertIsNone(table.get_previous_active_player(Coral))
+
+        # Invalid inputs
+
+        with self.assertRaises(ValueError) as context:
+            table.get_previous_player(Dino)
         self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
 
 
