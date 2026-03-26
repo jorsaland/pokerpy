@@ -202,23 +202,6 @@ class Table:
         return self.players[player_index - 1]
 
 
-    def get_previous_player_in_hand(self, reference_player: Player):
-
-        """
-        Retrieves the first player before who is still in the hand cycle, or None if everybody is marked as folded.
-        """
-
-        if not isinstance(reference_player, Player):
-            raise TypeError(msg_not_player_instance.format(type(reference_player).__name__))
-
-        if reference_player not in self.players:
-            raise ValueError(msg_player_not_in_table.format(reference_player.name))
-
-        for player in self.iter_players(self.get_previous_player(reference_player), reverse=True):
-            if not player.is_folded and player.stack > 0:
-                return player
-
-
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
 
         """
@@ -249,6 +232,23 @@ class Table:
                 next_player = get_player(next_player)
         
         return generator()
+
+
+    def get_previous_active_player(self, reference_player: Player):
+
+        """
+        Retrieves the first player before who is still in the hand cycle, or None if everybody is marked as folded.
+        """
+
+        if not isinstance(reference_player, Player):
+            raise TypeError(msg_not_player_instance.format(type(reference_player).__name__))
+
+        if reference_player not in self.players:
+            raise ValueError(msg_player_not_in_table.format(reference_player.name))
+
+        for player in self.iter_players(self.get_previous_player(reference_player), reverse=True):
+            if not player.is_folded and player.stack > 0:
+                return player
 
 
     # Methods to reset manager states
