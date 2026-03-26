@@ -208,6 +208,11 @@ class Table:
         Iterates over every player.
         """
 
+        if not self.players:
+            def generator():
+                yield from ()
+            return generator()
+
         if starting_player is None:
             starting_player = self.players[0]
 
@@ -223,10 +228,8 @@ class Table:
             get_player = self.get_next_player
 
         def generator():
-
             yield starting_player
             next_player = get_player(starting_player)
-
             while next_player != starting_player:
                 yield next_player
                 next_player = get_player(next_player)
