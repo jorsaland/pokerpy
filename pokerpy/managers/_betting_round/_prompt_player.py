@@ -22,6 +22,14 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.exceptions import CloseBettingRoundSignal, JumpToNextPlayerSignal
+from pokerpy.messages import (
+    signal_all_in_player,
+    signal_all_in_stopping_player,
+    signal_folded_player,
+    signal_folded_stopping_player,
+    signal_last_player_in_hand,
+    signal_passive_stopping_player,
+)
 from pokerpy.structures import Player
 
 
@@ -39,13 +47,19 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
 
     # Close the betting round if there is one player remaining
     if len(betting_round.table.players_in_hand) == 1:
-        raise CloseBettingRoundSignal
+        raise CloseBettingRoundSignal(signal_last_player_in_hand)
+
+    # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
+    if current_player not in betting_round.table.players_in_hand:
+        if current_player != betting_round.stopping_player:
+            raise JumpToNextPlayerSignal(signal_folded_player)
+        raise CloseBettingRoundSignal(signal_folded_stopping_player)
 
     # If the player is folded or all-in, jump to the next one (or close the betting round if is also the stopping player)
-    if current_player not in betting_round.table.players_in_hand or current_player.stack == 0:
+    if current_player.stack == 0:
         if current_player != betting_round.stopping_player:
-            raise JumpToNextPlayerSignal
-        raise CloseBettingRoundSignal
+            raise JumpToNextPlayerSignal(signal_all_in_player)
+        raise CloseBettingRoundSignal(signal_all_in_stopping_player)
 
     # Listen to player until it chooses a valid action
     action = yield from await_player(
@@ -60,4 +74,4 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
 
     # Stop if the current player still is the stopping player
     if current_player == betting_round.stopping_player:
-        raise CloseBettingRoundSignal
+        raise CloseBettingRoundSignal(signal_passive_stopping_player)
