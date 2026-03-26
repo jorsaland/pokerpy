@@ -26,7 +26,9 @@ from pokerpy.messages import (
     msg_not_card_instance,
     msg_not_int,
     msg_not_list,
+    msg_not_player_instance,
     msg_not_positive_or_zero_value,
+    msg_player_not_in_table,
     msg_repeated_cards,
 )
 
@@ -96,7 +98,7 @@ class Table:
         return tuple(self._common_cards)
 
 
-    # Methods to affect cards
+    # Methods related to cards
 
 
     def remove_card_from_deck(self, card: Card):
@@ -129,7 +131,7 @@ class Table:
         self._common_cards.append(card)
 
 
-    # Methods to affect money
+    # Methods related to money
 
 
     def add_to_current_amount(self, amount: int):
@@ -162,7 +164,72 @@ class Table:
         self._central_pot += amount
 
 
-    # Methods to reset managers
+    # Methods related to players
+
+
+    def get_next_player(self, reference_player: Player):
+
+        """
+        Retrieves the player next.
+        """
+
+        if reference_player not in self.players:
+            raise ValueError(msg_player_not_in_table.format(reference_player.name))
+
+        if reference_player == self.players[-1]:
+            return self.players[0]
+
+        reference_player_index = self.players.index(reference_player)
+        return self.players[reference_player_index + 1]
+
+
+    def get_previous_player(self, reference_player: Player):
+
+        """
+        Retrieves the player before.
+        """
+
+        if not isinstance(reference_player, Player):
+            raise TypeError(msg_not_player_instance.format(type(reference_player).__name__))
+
+        if reference_player not in self.players:
+            raise ValueError(msg_player_not_in_table.format(reference_player.name))
+
+        if reference_player == self.players[0]:
+            return self.players[-1]
+
+        player_index = self.players.index(reference_player)
+        return self.players[player_index - 1]
+
+
+    def iter_players(self, starting_player: (Player|None) = None):
+
+        """
+        Iterates forward over every player.
+        """
+
+        if starting_player is None:
+            starting_player = self.players[0]
+
+        if not isinstance(starting_player, Player):
+            raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
+
+        if starting_player not in self.players:
+            raise ValueError(msg_player_not_in_table.format(starting_player.name))
+
+        def generator():
+
+            yield starting_player
+            next_player = self.get_next_player(starting_player)
+
+            while next_player != starting_player:
+                yield next_player
+                next_player = self.get_next_player(next_player)
+        
+        return generator()
+
+
+    # Methods to reset manager states
 
 
     def reset_betting_round_states(self):

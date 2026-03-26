@@ -40,20 +40,10 @@ def run_listener(betting_round: "BettingRound"):
     Starts the betting round generator that rotates the player turns.
     """
 
-    # Define state variables
-    lap_counter = 0
-
-    # Add to lap counter
-    starting_player_index = betting_round.table.players.index(betting_round.starting_player)
-    shifted_players = [
-        *betting_round.table.players[starting_player_index : ],
-        *betting_round.table.players[ : starting_player_index],
-    ]
-
     # All players are itered but only active ones are allowed to act
-    for player in cycle(shifted_players):
+    for player in cycle(betting_round.table.iter_players(betting_round.starting_player)):
         if player == betting_round.starting_player:
-            lap_counter += 1
+            betting_round.increase_counter()
         try:
             yield from prompt_player(betting_round, player)
         except JumpToNextPlayerSignal:
@@ -61,7 +51,7 @@ def run_listener(betting_round: "BettingRound"):
         except CloseBettingRoundSignal:
             break
     
-    logger.info(f'Number of laps: {lap_counter}')
+    logger.info(f'Number of laps: {betting_round.lap_counts}')
     
     # Move chips to the center of the table
     for player in betting_round.table.players:

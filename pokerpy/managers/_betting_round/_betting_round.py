@@ -86,7 +86,7 @@ class BettingRound:
                 raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
 
         if stopping_player is None:
-            stopping_player = table.players[-1]
+            stopping_player = table.get_previous_player(starting_player)
         else:
             if not isinstance(stopping_player, Player):
                 raise TypeError(msg_not_player_instance.format(type(stopping_player).__name__))
@@ -106,6 +106,7 @@ class BettingRound:
 
         # State variables
 
+        self._lap_counts = 0
         self._is_completed = False
         self._smallest_raise_amount = smallest_bet
         self._stopping_player = stopping_player
@@ -118,6 +119,10 @@ class BettingRound:
     @property
     def table(self):
         return self._table
+
+    @property
+    def lap_counts(self):
+        return self._lap_counts
 
     @property
     def starting_player(self):
@@ -196,6 +201,18 @@ class BettingRound:
         if not self.is_completed:
             logger.critical('====== THE BETTING ROUND WAS CLOSED BEFORE ENDING ======')
             raise RuntimeError(msg_betting_round_was_not_completed)
+
+
+    # Methods to affect counter
+
+
+    def increase_counter(self):
+
+        """
+        Registers a new lap.
+        """
+
+        self._lap_counts += 1
 
 
     # Methods to affect players

@@ -47,9 +47,7 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
         raise_amount = player.current_amount - betting_round.table.current_amount
         betting_round.overwrite_smallest_raise_amount(raise_amount)
         betting_round.table.add_to_current_amount(raise_amount)
-        player_index = betting_round.table.players.index(player)
-        stopping_player = betting_round.table.players[player_index-1] if player_index != 0 else betting_round.table.players[-1]
-        betting_round.set_stopping_player(stopping_player)
+        betting_round.set_stopping_player(betting_round.table.get_previous_player(player))
 
     if action.name == ACTION_FOLD:
         player.fold()
