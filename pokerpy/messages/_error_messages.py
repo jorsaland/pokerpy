@@ -1,5 +1,5 @@
 """
-Defines messages used in exceptions.
+Defines messages used to raise errors.
 """
 
 
