@@ -202,10 +202,27 @@ class Table:
         return self.players[player_index - 1]
 
 
-    def iter_players(self, starting_player: (Player|None) = None):
+    def get_previous_player_in_hand(self, reference_player: Player):
 
         """
-        Iterates forward over every player.
+        Retrieves the first player before who is still in the hand cycle, or None if everybody is marked as folded.
+        """
+
+        if not isinstance(reference_player, Player):
+            raise TypeError(msg_not_player_instance.format(type(reference_player).__name__))
+
+        if reference_player not in self.players:
+            raise ValueError(msg_player_not_in_table.format(reference_player.name))
+
+        for player in self.iter_players(self.get_previous_player(reference_player), reverse=True):
+            if not player.is_folded and player.stack > 0:
+                return player
+
+
+    def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
+
+        """
+        Iterates over every player.
         """
 
         if starting_player is None:
@@ -217,14 +234,19 @@ class Table:
         if starting_player not in self.players:
             raise ValueError(msg_player_not_in_table.format(starting_player.name))
 
+        if reverse:
+            get_player = self.get_previous_player
+        else:
+            get_player = self.get_next_player
+
         def generator():
 
             yield starting_player
-            next_player = self.get_next_player(starting_player)
+            next_player = get_player(starting_player)
 
             while next_player != starting_player:
                 yield next_player
-                next_player = self.get_next_player(next_player)
+                next_player = get_player(next_player)
         
         return generator()
 
