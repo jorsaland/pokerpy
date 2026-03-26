@@ -23,16 +23,14 @@ from collections.abc import Generator
 
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    msg_not_all_player_instances,
     msg_not_int,
-    msg_not_list,
     msg_not_player_instance,
     msg_not_positive_value,
     msg_not_str,
     msg_not_table_instance,
     msg_betting_round_was_not_completed,
     msg_overloaded_betting_round_message,
-    msg_some_players_not_in_table,
+    msg_player_not_in_table,
 )
 from pokerpy.structures import Player, Table
 
@@ -66,7 +64,7 @@ class BettingRound:
         ignore_invalid_actions = True
     ):
 
-        # Validations
+        # Type validations
 
         if not isinstance(name, str):
             raise TypeError(msg_not_str.format(type(name).__name__))
@@ -76,8 +74,6 @@ class BettingRound:
 
         if not isinstance(smallest_bet, int):
             raise TypeError(msg_not_int.format(type(smallest_bet).__name__))
-        if smallest_bet <= 0:
-            raise ValueError(msg_not_positive_value.format(smallest_bet))
 
         if starting_player is None:
             starting_player = table.players[0]
@@ -90,6 +86,17 @@ class BettingRound:
         else:
             if not isinstance(stopping_player, Player):
                 raise TypeError(msg_not_player_instance.format(type(stopping_player).__name__))
+
+        # Value errors
+
+        if smallest_bet <= 0:
+            raise ValueError(msg_not_positive_value.format(smallest_bet))
+
+        if starting_player not in table.players:
+            raise ValueError(msg_player_not_in_table.format(starting_player.name))
+
+        if stopping_player not in table.players:
+            raise ValueError(msg_player_not_in_table.format(stopping_player.name))
 
         # Fixed variables
 
