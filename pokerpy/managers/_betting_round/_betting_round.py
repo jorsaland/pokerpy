@@ -199,6 +199,8 @@ class BettingRound:
             self._is_completed = True
         finally:
             self.table.reset_betting_round_states()
+            for player in self.table.players:
+                player.reset_betting_round_states()
 
         # Raise catched exceptions
         if exception is not None:

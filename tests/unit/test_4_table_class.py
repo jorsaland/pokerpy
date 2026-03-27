@@ -587,6 +587,8 @@ class TestTableClass(TestCase):
         # Reset states
 
         table.reset_betting_round_states()
+        for player in table.players:
+            player.reset_betting_round_states()
 
         # Evaluate after states
 
@@ -669,6 +671,8 @@ class TestTableClass(TestCase):
         # Reset states
 
         table.reset_cycle_states()
+        for player in table.players:
+            player.reset_cycle_states()
 
         # Evaluate after states
 

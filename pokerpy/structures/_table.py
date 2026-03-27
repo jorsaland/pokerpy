@@ -264,8 +264,6 @@ class Table:
         """
 
         self._current_amount = 0
-        for player in self.players:
-            player.reset_betting_round_states()
 
 
     def reset_cycle_states(self):
@@ -274,17 +272,11 @@ class Table:
         Resets all state variables that are restricted to cycles.
         """
 
-        # Reset betting_round_states
         self.reset_betting_round_states()
 
-        # Reset deck
         self._deck.clear()
         self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
 
-        # Reset pot
-        self._central_pot = 0
-
-        # Reset common and player cards
         self._common_cards.clear()
-        for player in self.players:
-            player.reset_cycle_states()
+
+        self._central_pot = 0
