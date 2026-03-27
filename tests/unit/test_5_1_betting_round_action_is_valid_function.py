@@ -91,8 +91,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = True
         ))
 
@@ -102,8 +102,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 1,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = True
         ))
 
@@ -113,8 +113,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -124,8 +124,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 1,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -142,8 +142,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 1,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -153,8 +153,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
             table_current_amount = 2,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -179,8 +179,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -190,8 +190,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
             table_current_amount = 1,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -208,8 +208,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
             table_current_amount = 1,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -219,8 +219,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
             table_current_amount = 2,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -245,8 +245,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -256,8 +256,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 3,
             player_current_amount = 3,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -274,8 +274,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 2,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -285,8 +285,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 2,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -296,8 +296,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 2,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -314,8 +314,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 12,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -325,8 +325,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         #     table_current_amount = 12,
         #     player_current_amount = 0,
         #     player_stack = 10,
-        #     smallest_bet = 1,
-        #     smallest_raising_amount = 12,
+        #     smallest_bet_amount = 1,
+        #     smallest_raise_amount = 12,
         #     open_fold_allowed = False
         # ))
 
@@ -336,8 +336,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 12,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -347,8 +347,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 12,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -358,8 +358,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 12,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -376,8 +376,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 3,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -387,8 +387,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 3,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -398,8 +398,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 3,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -416,8 +416,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 13,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -427,8 +427,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         #     table_current_amount = 13,
         #     player_current_amount = 1,
         #     player_stack = 10,
-        #     smallest_bet = 1,
-        #     smallest_raising_amount = 12,
+        #     smallest_bet_amount = 1,
+        #     smallest_raise_amount = 12,
         #     open_fold_allowed = False
         # ))
 
@@ -438,8 +438,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 13,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -449,8 +449,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 13,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -460,8 +460,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             table_current_amount = 13,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -487,8 +487,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -498,8 +498,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -509,8 +509,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -528,8 +528,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -539,8 +539,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -550,8 +550,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -561,8 +561,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -572,8 +572,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -591,8 +591,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 2,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -602,8 +602,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 2,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -613,8 +613,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 2,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False
         ))
 
@@ -632,8 +632,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 12,
             player_current_amount = 12,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -643,8 +643,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 12,
             player_current_amount = 12,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -654,8 +654,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 12,
             player_current_amount = 12,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -665,8 +665,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 12,
             player_current_amount = 12,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -676,8 +676,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 12,
             player_current_amount = 12,
             player_stack = 10,
-            smallest_bet = 12,
-            smallest_raising_amount = 12,
+            smallest_bet_amount = 12,
+            smallest_raise_amount = 12,
             open_fold_allowed = False
         ))
 
@@ -694,8 +694,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 1,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -705,8 +705,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
             table_current_amount = 2,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -731,8 +731,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 0,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -742,8 +742,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 1,
             player_current_amount = 1,
             player_stack = 10,
-            smallest_bet = 1,
-            smallest_raising_amount = 1,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 1,
             open_fold_allowed = False
         ))
 
@@ -760,8 +760,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -771,8 +771,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -782,8 +782,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -801,8 +801,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 6,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -812,8 +812,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 6,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -823,8 +823,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 6,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -834,8 +834,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 6,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -845,8 +845,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 6,
             player_current_amount = 0,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -863,8 +863,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -874,8 +874,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -885,8 +885,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 5,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 3,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 3,
             open_fold_allowed = False
         ))
 
@@ -904,8 +904,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 8,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -915,8 +915,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 8,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -926,8 +926,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 8,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -937,8 +937,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 8,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 
@@ -948,8 +948,8 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
             table_current_amount = 8,
             player_current_amount = 2,
             player_stack = 10,
-            smallest_bet = 2,
-            smallest_raising_amount = 6,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 6,
             open_fold_allowed = False
         ))
 

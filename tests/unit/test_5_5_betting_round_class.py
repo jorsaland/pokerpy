@@ -44,9 +44,9 @@ class TestBettingRoundMethods(TestCase):
         self.assertEqual(betting_round.name, 'test round')
         self.assertEqual(betting_round.table, table)
         self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(betting_round.starting_player, Andy)
-        self.assertEqual(betting_round.stopping_player, Dino)
-        self.assertEqual(betting_round.smallest_bet, 1)
+        self.assertEqual(betting_round.table.starting_player, Andy)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_bet_amount, 1)
         self.assertFalse(betting_round.is_completed)
         self.assertFalse(betting_round.open_fold_allowed)
         self.assertTrue(betting_round.ignore_invalid_actions)
@@ -54,7 +54,7 @@ class TestBettingRoundMethods(TestCase):
         betting_round = managers.BettingRound(
             'test round',
             table,
-            smallest_bet = 10,
+            smallest_bet_amount = 10,
             starting_player = Coral,
             stopping_player = Boa,
             open_fold_allowed = True,
@@ -63,9 +63,9 @@ class TestBettingRoundMethods(TestCase):
         self.assertEqual(betting_round.name, 'test round')
         self.assertEqual(betting_round.table, table)
         self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(betting_round.starting_player, Coral)
-        self.assertEqual(betting_round.stopping_player, Boa)
-        self.assertEqual(betting_round.smallest_bet, 10)
+        self.assertEqual(betting_round.table.starting_player, Coral)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
+        self.assertEqual(betting_round.table.smallest_bet_amount, 10)
         self.assertFalse(betting_round.is_completed)
         self.assertTrue(betting_round.open_fold_allowed)
         self.assertFalse(betting_round.ignore_invalid_actions)
@@ -93,7 +93,7 @@ class TestBettingRoundMethods(TestCase):
 
         # Invalid smallest bet
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound('test round', table, smallest_bet='zero')
+            managers.BettingRound('test round', table, smallest_bet_amount='zero')
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         # Invalid starting player
@@ -110,12 +110,12 @@ class TestBettingRoundMethods(TestCase):
 
         # Zero smallest bet
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, smallest_bet=0)
+            managers.BettingRound('test round', table, smallest_bet_amount=0)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
 
         # Negative smallest bet
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, smallest_bet=-1)
+            managers.BettingRound('test round', table, smallest_bet_amount=-1)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-1))
 
         # Starting player not in table
@@ -162,23 +162,23 @@ class TestBettingRoundMethods(TestCase):
 
         # Stopping player
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
-        betting_round.set_stopping_player(Boa)
-        self.assertEqual(betting_round.stopping_player, Boa)
+        betting_round.table.set_stopping_player(Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
 
-        betting_round.set_stopping_player(Andy)
-        self.assertEqual(betting_round.stopping_player, Andy)
+        betting_round.table.set_stopping_player(Andy)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
         # Smallest raise amount
 
-        self.assertEqual(betting_round.smallest_raise_amount, 1)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
 
-        betting_round.overwrite_smallest_raise_amount(3)
-        self.assertEqual(betting_round.smallest_raise_amount, 3)
+        betting_round.table.set_smallest_raise_amount(3)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
 
-        betting_round.overwrite_smallest_raise_amount(5)
-        self.assertEqual(betting_round.smallest_raise_amount, 5)
+        betting_round.table.set_smallest_raise_amount(5)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 5)
 
 
     def test_dealing_methods(self):
@@ -271,27 +271,27 @@ class TestBettingRoundListener(TestCase):
 
         # Actions
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Andy.request_action(structures.Action(constants.ACTION_BET, 1))
         self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
         self.assertEqual(next(listener), Coral)
 
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
         Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
         self.assertEqual(next(listener), Dino)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Dino.request_action(structures.Action(constants.ACTION_FOLD))
         self.assertEqual(next(listener), Andy)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
         self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
         
         # After states
@@ -380,23 +380,23 @@ class TestBettingRoundListener(TestCase):
 
         # Actions
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Andy.request_action(structures.Action(constants.ACTION_BET, 1))
         self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
         self.assertEqual(next(listener), Coral)
 
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
         Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
         self.assertEqual(next(listener), Dino)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Dino.request_action(structures.Action(constants.ACTION_FOLD))
         self.assertEqual(next(listener), Andy)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
         self.assertEqual(next(listener), Boa)
 
@@ -491,27 +491,27 @@ class TestBettingRoundListener(TestCase):
 
         # Actions
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Andy.request_action(structures.Action(constants.ACTION_BET, 1))
         self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
         Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
         self.assertEqual(next(listener), Coral)
 
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
         Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
         self.assertEqual(next(listener), Dino)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Dino.request_action(structures.Action(constants.ACTION_FOLD))
         self.assertEqual(next(listener), Andy)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
         self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.stopping_player, Boa)
+        self.assertEqual(betting_round.table.stopping_player, Boa)
         Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
         with self.assertRaises(StopIteration) as context:
             next(listener)

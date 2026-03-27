@@ -39,8 +39,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -76,8 +76,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -114,8 +114,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -167,8 +167,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -205,8 +205,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -245,8 +245,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -288,8 +288,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -337,8 +337,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -386,8 +386,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
         generator = managers.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
-            smallest_bet = 2,
-            smallest_raising_amount = 2,
+            smallest_bet_amount = 2,
+            smallest_raise_amount = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )

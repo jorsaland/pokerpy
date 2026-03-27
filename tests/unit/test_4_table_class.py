@@ -38,15 +38,59 @@ class TestTableClass(TestCase):
         ])
 
 
-        # Invalid inputs
+        # Type errors
 
+        # Invalid table
         with self.assertRaises(TypeError) as cm:
             structures.Table('Wood')
         self.assertEqual(cm.exception.args[0], messages.msg_not_list.format(str.__name__))
-        
+
+        # Invalid player in table
         with self.assertRaises(TypeError) as cm:
             structures.Table([structures.Player('Andy', 10), 'Boa'])
         self.assertEqual(cm.exception.args[0], messages.msg_not_all_player_instances)
+
+        # Invalid smallest bet
+        with self.assertRaises(TypeError) as cm:
+            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount='zero')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        # Invalid starting player
+        with self.assertRaises(TypeError) as cm:
+            structures.Table([structures.Player('Andy', 10)], starting_player='Andy')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+        # Invalid stopping player
+        with self.assertRaises(TypeError) as cm:
+            structures.Table([structures.Player('Andy', 10)], stopping_player='Andy')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+        # Value errors
+
+        # Empty table
+        with self.assertRaises(ValueError) as cm:
+            structures.Table([])
+        self.assertEqual(cm.exception.args[0], messages.msg_no_players_in_table)
+
+        # Zero smallest bet
+        with self.assertRaises(ValueError) as cm:
+            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount=0)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(0))
+
+        # Negative smallest bet
+        with self.assertRaises(ValueError) as cm:
+            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount=-1)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(-1))
+
+        # Starting player not in table
+        with self.assertRaises(ValueError) as cm:
+            structures.Table([structures.Player('Andy', 10)], starting_player=structures.Player('Boa', 10))
+        self.assertEqual(cm.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
+
+        # Stopping player not in table
+        with self.assertRaises(ValueError) as cm:
+            structures.Table([structures.Player('Andy', 10)], stopping_player=structures.Player('Boa', 10))
+        self.assertEqual(cm.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
 
 
     def test_remove_card_from_deck_method(self):
@@ -418,30 +462,6 @@ class TestTableClass(TestCase):
         """
         Runs test cases on iter_players method edge cases.
         """
-
-        # Iteration without players
-
-        table = structures.Table([])
-
-        iterator = table.iter_players()
-        with self.assertRaises(StopIteration) as context:
-            next(iterator)
-        self.assertIsNone(context.exception.value)
-
-        iterator = table.iter_players(reverse=True)
-        with self.assertRaises(StopIteration) as context:
-            next(iterator)
-        self.assertIsNone(context.exception.value)
-
-        # For loop without players
-
-        table = structures.Table([])
-
-        iterated_players = [player for player in table.iter_players()]
-        self.assertEqual(iterated_players, [])
-
-        iterated_players = [player for player in table.iter_players(reverse=True)]
-        self.assertEqual(iterated_players, [])
 
         # Iteration with a single player
 

@@ -48,8 +48,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 1)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 1)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -67,8 +67,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 1)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 1)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
 
     def test_parse_a_check(self):
@@ -97,8 +97,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 1)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -116,8 +116,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 1)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
 
     def test_parse_a_call_smaller_than_a_full_call(self):
@@ -137,7 +137,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CALL, 1)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -147,8 +147,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 2)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -166,8 +166,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 2)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
 
     def test_parse_a_call_equal_to_a_full_call(self):
@@ -187,7 +187,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CALL, 2)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -197,8 +197,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 2)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -216,8 +216,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 2)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
 
     def test_parse_a_bet_smaller_than_a_full_bet(self):
@@ -238,7 +238,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # action = structures.Action(constants.ACTION_BET, 1)
 
-        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
+        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # # States before
 
@@ -248,8 +248,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # self.assertEqual(table.current_amount, 0)
 
-        # self.assertEqual(betting_round.smallest_raise_amount, 2)
-        # self.assertEqual(betting_round.stopping_player, Dino)
+        # self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        # self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # # Run function
 
@@ -267,8 +267,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # self.assertEqual(table.current_amount, 1)
 
-        # self.assertEqual(betting_round.smallest_raise_amount, 2)
-        # self.assertEqual(betting_round.stopping_player, Andy)
+        # self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        # self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_bet_equal_to_a_full_bet(self):
@@ -287,7 +287,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 2)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -297,8 +297,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -316,8 +316,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 2)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_bet_larger_than_a_full_bet(self):
@@ -336,7 +336,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 3)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -346,8 +346,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 2)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -365,8 +365,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 3)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 3)
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_raise_smaller_than_a_full_raise(self):
@@ -388,8 +388,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # action = structures.Action(constants.ACTION_RAISE, 7)
 
-        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
-        # betting_round.overwrite_smallest_raise_amount(3)
+        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        # betting_round.table.set_smallest_raise_amount(3)
 
         # # States before
 
@@ -399,8 +399,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # self.assertEqual(table.current_amount, 5)
 
-        # self.assertEqual(betting_round.smallest_raise_amount, 3)
-        # self.assertEqual(betting_round.stopping_player, Dino)
+        # self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        # self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # # Run function
 
@@ -418,8 +418,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # self.assertEqual(table.current_amount, 7)
 
-        # self.assertEqual(betting_round.smallest_raise_amount, 3)
-        # self.assertEqual(betting_round.stopping_player, Andy)
+        # self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        # self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_raise_equal_to_a_full_raise(self):
@@ -439,8 +439,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_RAISE, 8)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
-        betting_round.overwrite_smallest_raise_amount(3)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round.table.set_smallest_raise_amount(3)
 
         # States before
 
@@ -450,8 +450,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 5)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 3)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -469,8 +469,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 8)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 3)
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_raise_larger_than_a_full_raise(self):
@@ -490,8 +490,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_RAISE, 9)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet=2)
-        betting_round.overwrite_smallest_raise_amount(3)
+        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round.table.set_smallest_raise_amount(3)
 
         # States before
 
@@ -501,8 +501,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 5)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 3)
-        self.assertEqual(betting_round.stopping_player, Dino)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
         # Run function
 
@@ -520,8 +520,8 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         self.assertEqual(table.current_amount, 9)
 
-        self.assertEqual(betting_round.smallest_raise_amount, 4)
-        self.assertEqual(betting_round.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 4)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
 if __name__ == '__main__':
