@@ -23,20 +23,14 @@ from collections.abc import Generator
 
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    msg_not_int,
-    msg_not_player_instance,
-    msg_not_positive_value,
     msg_not_str,
     msg_not_table_instance,
     msg_betting_round_was_not_completed,
     msg_overloaded_betting_round_message,
-    msg_player_not_in_table,
 )
 from pokerpy.structures import Player, Table
 
 
-from ._methods_to_affect_money import method_overwrite_smallest_raise_amount
-from ._methods_to_affect_players import method_set_stopping_player
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
 from ._run_listener import run_listener
 
@@ -57,7 +51,7 @@ class BettingRound:
         name: str,
         table: Table,
         *,
-        smallest_bet: int = 1,
+        smallest_bet_amount: (int|None) = None,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
         open_fold_allowed = False,
@@ -72,41 +66,12 @@ class BettingRound:
         if not isinstance(table, Table):
             raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-        if not isinstance(smallest_bet, int):
-            raise TypeError(msg_not_int.format(type(smallest_bet).__name__))
-
-        if starting_player is None:
-            starting_player = table.players[0]
-        else:
-            if not isinstance(starting_player, Player):
-                raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
-
-        if stopping_player is None:
-            stopping_player = table.get_previous_player(starting_player)
-        else:
-            if not isinstance(stopping_player, Player):
-                raise TypeError(msg_not_player_instance.format(type(stopping_player).__name__))
-
-        # Value errors
-
-        if smallest_bet <= 0:
-            raise ValueError(msg_not_positive_value.format(smallest_bet))
-
-        if starting_player not in table.players:
-            raise ValueError(msg_player_not_in_table.format(starting_player.name))
-
-        if stopping_player not in table.players:
-            raise ValueError(msg_player_not_in_table.format(stopping_player.name))
-
         # Fixed variables
 
         self._listener: (Generator[Player]|None) = None
 
         self._name = name
         self._table = table
-
-        self._smallest_bet = smallest_bet
-        self._starting_player = starting_player
 
         self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
         self._ignore_invalid_actions = bool(ignore_invalid_actions)
@@ -115,8 +80,13 @@ class BettingRound:
 
         self._lap_counts = 0
         self._is_completed = False
-        self._smallest_raise_amount = smallest_bet
-        self._stopping_player = stopping_player
+
+        if smallest_bet_amount is not None:
+            table.set_smallest_bet_amount(smallest_bet_amount)
+        if starting_player is not None:
+            table.set_starting_player(starting_player)
+        if stopping_player is not None:
+            table.set_stopping_player(stopping_player)
 
 
     @property
@@ -130,22 +100,6 @@ class BettingRound:
     @property
     def lap_counts(self):
         return self._lap_counts
-
-    @property
-    def starting_player(self):
-        return self._starting_player
-
-    @property
-    def stopping_player(self):
-        return self._stopping_player
-
-    @property
-    def smallest_bet(self):
-        return self._smallest_bet
-
-    @property
-    def smallest_raise_amount(self):
-        return self._smallest_raise_amount
 
     @property
     def is_completed(self):
@@ -222,30 +176,6 @@ class BettingRound:
         """
 
         self._lap_counts += 1
-
-
-    # Methods to affect players
-
-
-    def set_stopping_player(self, player: Player):
-
-        """
-        Marks the player before whom the betting round is closed.
-        """
-
-        return method_set_stopping_player(self, player)
-    
-
-    # Methods to affect money
-
-
-    def overwrite_smallest_raise_amount(self, amount: int):
-
-        """
-        Overwrites the smallest amount expected to make a raise.
-        """
-
-        return method_overwrite_smallest_raise_amount(self, amount)
     
 
     # Methods to deal cards

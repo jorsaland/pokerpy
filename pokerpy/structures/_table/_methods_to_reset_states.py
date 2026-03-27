@@ -14,31 +14,28 @@
 
 
 """
-Defines the methods that affect player attributes.
+Defines the methods to reset states.
 """
 
 
 from typing import TYPE_CHECKING
 
 
-from pokerpy.messages import msg_not_player_instance, msg_player_not_in_table
-from pokerpy.structures import Player
+from pokerpy.constants import full_sorted_values_and_suits
 
 
+from .._card import Card
 if TYPE_CHECKING:
-    from ._betting_round import BettingRound
+    from ._table import Table
 
 
-def method_set_stopping_player(self: "BettingRound", player: Player):
+def method_reset_betting_round_states(self: "Table"):
+    self._current_amount = 0
 
-    """
-    Marks the player before whom the betting round is closed.
-    """
 
-    if not isinstance(player, Player):
-        raise TypeError(msg_not_player_instance.format(type(player).__name__))
-
-    if player not in self.table.players:
-        raise ValueError(msg_player_not_in_table.format(player.name))
-
-    self._stopping_player = player
+def method_reset_cycle_states(self: "Table"):
+    self.reset_betting_round_states()
+    self._deck.clear()
+    self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)
+    self._common_cards.clear()
+    self._central_pot = 0

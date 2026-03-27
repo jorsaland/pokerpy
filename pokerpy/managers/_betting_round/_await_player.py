@@ -33,8 +33,8 @@ logger = get_logger()
 def await_player(
     *, player: Player,
     table_current_amount: int,
-    smallest_bet: int,
-    smallest_raising_amount: int,
+    smallest_bet_amount: int,
+    smallest_raise_amount: int,
     open_fold_allowed: bool,
     ignore_invalid_actions: bool
 ):
@@ -62,8 +62,8 @@ def await_player(
             table_current_amount = table_current_amount,
             player_current_amount = player.current_amount,
             player_stack = player.stack,
-            smallest_bet = smallest_bet,
-            smallest_raising_amount = smallest_raising_amount,
+            smallest_bet_amount = smallest_bet_amount,
+            smallest_raise_amount = smallest_raise_amount,
             open_fold_allowed = open_fold_allowed
         ):
             break

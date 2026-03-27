@@ -4,6 +4,7 @@ Defines messages used to raise errors.
 
 
 # Type errors
+msg_no_players_in_table = "at least one player is expected in the table"
 msg_not_action_instance = "an instance of Action is expected, not {}"
 msg_not_all_card_instances = "all entries are expected to be Card instances"
 msg_not_all_player_instances = "all entries are expected to be Player instances"

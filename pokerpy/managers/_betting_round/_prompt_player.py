@@ -51,13 +51,13 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
 
     # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
     if current_player not in betting_round.table.players_in_hand:
-        if current_player != betting_round.stopping_player:
+        if current_player != betting_round.table.stopping_player:
             raise JumpToNextPlayerSignal(signal_folded_player)
         raise CloseBettingRoundSignal(signal_folded_stopping_player)
 
     # If the player is folded or all-in, jump to the next one (or close the betting round if is also the stopping player)
     if current_player.stack == 0:
-        if current_player != betting_round.stopping_player:
+        if current_player != betting_round.table.stopping_player:
             raise JumpToNextPlayerSignal(signal_all_in_player)
         raise CloseBettingRoundSignal(signal_all_in_stopping_player)
 
@@ -65,13 +65,13 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
     action = yield from await_player(
         player = current_player,
         table_current_amount = betting_round.table.current_amount,
-        smallest_bet = betting_round.smallest_bet,
-        smallest_raising_amount = betting_round.smallest_raise_amount,
+        smallest_bet_amount = betting_round.table.smallest_bet_amount,
+        smallest_raise_amount = betting_round.table.smallest_raise_amount,
         open_fold_allowed = betting_round.open_fold_allowed,
         ignore_invalid_actions = betting_round.ignore_invalid_actions,
     )
     set_action_effects(betting_round=betting_round, player=current_player, action=action)
 
     # Stop if the current player still is the stopping player
-    if current_player == betting_round.stopping_player:
+    if current_player == betting_round.table.stopping_player:
         raise CloseBettingRoundSignal(signal_passive_stopping_player)

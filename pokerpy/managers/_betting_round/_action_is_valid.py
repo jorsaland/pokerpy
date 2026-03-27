@@ -34,8 +34,8 @@ def action_is_valid(
     table_current_amount: int,
     player_current_amount: int,
     player_stack: int,
-    smallest_bet: int,
-    smallest_raising_amount: int,
+    smallest_bet_amount: int,
+    smallest_raise_amount: int,
     open_fold_allowed: bool
 ):
 
@@ -66,8 +66,8 @@ def action_is_valid(
     # Validate betting amount
     if action.name == ACTION_BET:
         return (
-            (action.amount >= smallest_bet) or ## by default, the bet amount must be at least the smallest bet
-            (smallest_bet > player_stack and action.amount == player_stack) ## if the player cannot cover the smallest bet, then has to go all-in
+            (action.amount >= smallest_bet_amount) or ## by default, the bet amount must be at least the smallest bet
+            (smallest_bet_amount > player_stack and action.amount == player_stack) ## if the player cannot cover the smallest bet, then has to go all-in
         )
 
     # Validate raising amount
@@ -75,8 +75,8 @@ def action_is_valid(
         return (
             (action.amount > amount_to_call) and ## the action amount must be larger than the amount to call (otherwise would be call)
             (
-                (action.amount - amount_to_call >= smallest_raising_amount) or ## by default, the raise component of the action amount must be at least the smallest raising amount
-                (amount_to_call + smallest_raising_amount > player_stack and action.amount == player_stack) ## if the player cannot raise the smallest raising amount, then has to go all-in
+                (action.amount - amount_to_call >= smallest_raise_amount) or ## by default, the raise component of the action amount must be at least the smallest raising amount
+                (amount_to_call + smallest_raise_amount > player_stack and action.amount == player_stack) ## if the player cannot raise the smallest raising amount, then has to go all-in
             )
         )
 

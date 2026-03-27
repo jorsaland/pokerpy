@@ -41,8 +41,8 @@ def run_listener(betting_round: "BettingRound"):
     """
 
     # All players are itered but only active ones are allowed to act
-    for player in cycle(betting_round.table.iter_players(betting_round.starting_player)):
-        if player == betting_round.starting_player:
+    for player in cycle(betting_round.table.iter_players()):
+        if player == betting_round.table.starting_player:
             betting_round.increase_counter()
         try:
             yield from prompt_player(betting_round, player)
