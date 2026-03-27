@@ -107,7 +107,8 @@ class Table:
             raise ValueError(msg_player_not_in_table.format(starting_player.name))
 
         if stopping_player is None:
-            stopping_player = players[-1]
+            player_index = players.index(starting_player)
+            stopping_player = players[player_index - 1]
         if stopping_player not in players:
             raise ValueError(msg_player_not_in_table.format(stopping_player.name))
 

@@ -71,11 +71,8 @@ def method_get_previous_player(self: "Table", reference_player: Player):
     if reference_player not in self.players:
         raise ValueError(msg_player_not_in_table.format(reference_player.name))
 
-    if reference_player == self.players[0]:
-        return self.players[-1]
-
-    player_index = self.players.index(reference_player)
-    return self.players[player_index - 1]
+    reference_player_index = self.players.index(reference_player)
+    return self.players[reference_player_index - 1]
 
 
 def method_iter_players(self: "Table", starting_player: (Player|None) = None, reverse: bool = False):
@@ -105,6 +102,10 @@ def method_iter_players(self: "Table", starting_player: (Player|None) = None, re
 
 
 def method_get_previous_active_player(self: "Table", reference_player: Player):
+
+    # This method exists to set the stopping player to the previous active player when the current
+    # player takes an aggressive action (bet or raise), in order to avoid iterating over players
+    # who are already folded or all-in. It should be used carefully in other contexts.
 
     if not isinstance(reference_player, Player):
         raise TypeError(msg_not_player_instance.format(type(reference_player).__name__))

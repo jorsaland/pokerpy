@@ -83,10 +83,13 @@ class BettingRound:
 
         if smallest_bet_amount is not None:
             table.set_smallest_bet_amount(smallest_bet_amount)
+
         if starting_player is not None:
             table.set_starting_player(starting_player)
-        if stopping_player is not None:
-            table.set_stopping_player(stopping_player)
+
+        if stopping_player is None:
+            stopping_player = table.get_previous_player(table.starting_player)
+        table.set_stopping_player(stopping_player)
 
 
     @property

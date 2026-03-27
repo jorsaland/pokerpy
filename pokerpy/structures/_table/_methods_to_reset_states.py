@@ -30,7 +30,9 @@ if TYPE_CHECKING:
 
 
 def method_reset_betting_round_states(self: "Table"):
+    self._smallest_raise_amount = self.smallest_bet_amount
     self._current_amount = 0
+    self._stopping_player = self.get_previous_player(self.starting_player)
 
 
 def method_reset_cycle_states(self: "Table"):
