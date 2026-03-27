@@ -31,7 +31,7 @@ flowchart LR
 
     T(Table)@{ shape: circle }
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text }
-    T.deal_common_card(deal_common_card)@{ shape: text }
+    T.assign_common_card(assign_common_card)@{ shape: text }
     T.add_to_current_amount(add_to_current_amount)@{ shape: text }
     T.add_to_central_pot(add_to_central_pot)@{ shape: text }
     T.get_previous_player(get_previous_player)@{ shape: text }
@@ -43,7 +43,7 @@ flowchart LR
     P(Player)@{ shape: circle }
     P.request_action(request_action)@{ shape: text }
     P.reset_action(reset_action)@{ shape: text }
-    P.deal_card(deal_card)@{ shape: text }
+    P.assign_card(assign_card)@{ shape: text }
     P.add_to_current_amount(add_to_current_amount)@{ shape: text }
     P.remove_from_stack(remove_from_stack)@{ shape: text }
     P.fold(fold)@{ shape: text }
@@ -68,7 +68,7 @@ flowchart LR
     BR.deal_common_cards --> BR
 
     T.remove_card_from_deck --> T
-    T.deal_common_card --> T
+    T.assign_common_card --> T
     T.add_to_current_amount --> T
     T.add_to_central_pot --> T
     T.get_previous_player --> T
@@ -79,7 +79,7 @@ flowchart LR
 
     P.request_action --> P
     P.reset_action --> P
-    P.deal_card --> P
+    P.assign_card --> P
     P.add_to_current_amount --> P
     P.remove_from_stack --> P
     P.fold --> P
@@ -104,7 +104,7 @@ flowchart LR
     HC ----> P.reset_cycle_states
 
     BR ----> T.remove_card_from_deck
-    BR ----> T.deal_common_card
+    BR ----> T.assign_common_card
     BR ----> T.add_to_current_amount
     BR ----> T.add_to_central_pot
     BR ----> T.get_previous_player
@@ -113,7 +113,7 @@ flowchart LR
     BR ----> T.reset_betting_round_states
 
     BR ----> P.reset_action
-    BR ----> P.deal_card
+    BR ----> P.assign_card
     BR ----> P.add_to_current_amount
     BR ----> P.remove_from_stack
     BR ----> P.fold

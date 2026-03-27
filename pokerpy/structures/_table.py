@@ -116,7 +116,7 @@ class Table:
         self._deck.remove(card)
 
 
-    def deal_common_card(self, card: Card):
+    def assign_common_card(self, card: Card):
 
         """
         Deals a common card to the table.

@@ -95,11 +95,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_card_not_in_deck)
 
 
-    def test_deal_common_card_method(self):
+    def test_assign_common_card_method(self):
 
 
         """
-        Runs test cases on deal_common_card method.
+        Runs test cases on assign_common_card method.
         """
 
 
@@ -114,9 +114,9 @@ class TestTableClass(TestCase):
 
         self.assertSetEqual(set(table.common_cards), set())
 
-        table.deal_common_card(structures.Card('7', 'c'))
-        table.deal_common_card(structures.Card('T', 'd'))
-        table.deal_common_card(structures.Card('2', 's'))
+        table.assign_common_card(structures.Card('7', 'c'))
+        table.assign_common_card(structures.Card('T', 'd'))
+        table.assign_common_card(structures.Card('2', 's'))
 
         self.assertEqual(
             set(table.common_cards), {structures.Card('7', 'c'), structures.Card('T', 'd'), structures.Card('2', 's')}
@@ -126,11 +126,11 @@ class TestTableClass(TestCase):
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            table.deal_common_card('7c')
+            table.assign_common_card('7c')
         self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            table.deal_common_card(structures.Card('7', 'c'))
+            table.assign_common_card(structures.Card('7', 'c'))
         self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
 
 
@@ -560,13 +560,13 @@ class TestTableClass(TestCase):
         Andy.add_to_current_amount(200)
         for card in player_cards:
             table.remove_card_from_deck(card)
-            Andy.deal_card(card)
+            Andy.assign_card(card)
         Andy.assign_hand(hand)
         Andy.fold()
 
         for card in common_cards:
             table.remove_card_from_deck(card)
-            table.deal_common_card(card)
+            table.assign_common_card(card)
         table.add_to_current_amount(200)
         table.add_to_central_pot(500)
 
@@ -644,13 +644,13 @@ class TestTableClass(TestCase):
         Andy.add_to_current_amount(200)
         for card in player_cards:
             table.remove_card_from_deck(card)
-            Andy.deal_card(card)
+            Andy.assign_card(card)
         Andy.assign_hand(hand)
         Andy.fold()
 
         for card in common_cards:
             table.remove_card_from_deck(card)
-            table.deal_common_card(card)
+            table.assign_common_card(card)
         table.add_to_current_amount(200)
         table.add_to_central_pot(500)
 

@@ -129,7 +129,7 @@ class Player:
     # Methods to affect cards and hand
 
 
-    def deal_card(self, card: Card):
+    def assign_card(self, card: Card):
 
         """
         Deals a card to the player.

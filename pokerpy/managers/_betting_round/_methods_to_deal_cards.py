@@ -46,7 +46,7 @@ def method_deal_cards_to_players(self: "BettingRound", cards_count: int):
         for player in self.table.players_in_hand:
             card = secrets.choice(self.table.deck)
             self.table.remove_card_from_deck(card)
-            player.deal_card(card)
+            player.assign_card(card)
             logger.info(f'Dealer deals card {card} to {player.name}.')
 
 
@@ -62,6 +62,6 @@ def method_deal_common_cards(self: "BettingRound", cards_count: int):
     for _ in range(cards_count):
         card = secrets.choice(self.table.deck)
         self.table.remove_card_from_deck(card)
-        self.table.deal_common_card(card)
+        self.table.assign_common_card(card)
     
     logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.table.common_cards[-cards_count:])}.')

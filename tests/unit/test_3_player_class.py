@@ -87,7 +87,7 @@ class TestPlayerClass(TestCase):
 
 
         """
-        Runs test cases on deal_card method.
+        Runs test cases on assign_card method.
         """
 
 
@@ -96,17 +96,17 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        Andy.deal_card(structures.Card('A', 's'))
+        Andy.assign_card(structures.Card('A', 's'))
         self.assertEqual(Andy.cards, (structures.Card('A', 's'),))
 
-        Andy.deal_card(structures.Card('J', 'd'))
+        Andy.assign_card(structures.Card('J', 'd'))
         self.assertEqual(Andy.cards, (structures.Card('A', 's'), structures.Card('J', 'd')))
 
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.deal_card('As')
+            Andy.assign_card('As')
         self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
 
@@ -304,7 +304,7 @@ class TestPlayerClass(TestCase):
         Andy.request_action(action)
         Andy.add_to_current_amount(200)
         for card in cards:
-            Andy.deal_card(card)
+            Andy.assign_card(card)
         Andy.assign_hand(hand)
         Andy.fold()
 
@@ -353,7 +353,7 @@ class TestPlayerClass(TestCase):
         Andy.request_action(action)
         Andy.add_to_current_amount(200)
         for card in cards:
-            Andy.deal_card(card)
+            Andy.assign_card(card)
         Andy.assign_hand(hand)
         Andy.fold()
 
