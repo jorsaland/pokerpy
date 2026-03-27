@@ -1,7 +1,16 @@
-# Communication model
-
 ```mermaid
 flowchart LR
+
+    subgraph legend
+        i1(obj)@{ shape: circle }
+        i2(obj)@{ shape: circle }
+        m1(method)@{ shape: text }
+        m2(helper method)@{ shape: text }
+        i1 -->|calls| m1
+        m1 --> |from| i2
+        m1 -.-> |calls| m2
+        m2 --> |from| i2
+    end
 
     %% Classes and methods
 
