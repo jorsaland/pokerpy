@@ -93,7 +93,6 @@ flowchart LR
     %% Class-method
 
     C -----> P.request_action
-    C -----> P.reset_action
 
     HC ----> BR.listen
     HC ----> BR.close
