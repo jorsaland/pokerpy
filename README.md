@@ -1,4 +1,5 @@
 # PokerPy 0.6 - alpha (under development)
+
 Money logic is improved with the introduction of stack sizes and all-in scenarios. The communication model between betting round, table and player instances is simplified by exchanging some responsibilities between them. Once the communication model is stable, the logic to handle side pots will be coded.
 
 ## License
@@ -10,6 +11,10 @@ See the [`LICENSE.txt`](LICENSE.txt) and [`NOTICE.txt`](NOTICE.txt) files for de
 ## Disclaimer
 
 This package is a general-purpose game logic tool intended for lawful use only. The author and the contributors make no representation about the legality of online poker or gambling in any given jurisdiction. You are solely responsible for ensuring that your use of this package complies with all applicable laws and regulations. The author and the contributors assume no liability whatsoever for how this software is used.
+
+## Communication model
+
+A diagram representing the communication between instances is available. See [`MODEL.md`](MODEL.md) for details.
 
 ## Current version
 
