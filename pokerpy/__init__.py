@@ -20,7 +20,7 @@ PokerPy under development! (Alpha)
 
 # Info
 __author__ = 'Andrés Saldarriaga Jordan (jorsaland)'
-__version__ = '0.5.0'
+__version__ = '0.6.0'
 
 
 # Content

@@ -1,6 +1,11 @@
-# PokerPy 0.6 - alpha (under development)
+# PokerPy 0.6-stage-A - alpha (under development)
 
-Money logic is improved with the introduction of stack sizes and all-in scenarios. The communication model between betting round, table and player instances is simplified by exchanging some responsibilities between them. Once the communication model is stable, the logic to handle side pots will be coded.
+Development for this version is divided into two stages (A and B).
+
+- Stage A focuses on two main improvements. First, the money logic is enhanced through the introduction of stack sizes, which are tested exclusively in scenarios where all players start with equal stacks. Second, the communication model between instances is redesigned, leading to a cleaner and more solid architecture with clearer responsibilities: Table and Player instances are responsible for holding the game state and exposing simple methods to update it, while BettingRound instances hold no game state; instead, they implement the core game control logic by consuming Table and Player methods.
+
+- Stage B will introduce support for side pots and variable stack sizes. At this point, the BettingRound class logic will be complete and fully usable, though full game logic will have to wait. A basic documentation on the fully powered BettingRound class will also be included.
+
 
 ## License
 
@@ -18,9 +23,9 @@ A diagram representing the communication between instances is available. See [`M
 
 ## Current version
 
-### 0.6.0
+### 0.6.0 (stage A)
 - Detached from tag *0.5.0*.
-- Under development...
+- Stage A features and refactors are implemented.
 
 ## Upcoming versions
 
