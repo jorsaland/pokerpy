@@ -11,4 +11,4 @@ from ._betting_round._set_action_effects import set_action_effects
 from ._betting_round._run_listener import run_listener
 
 from ._reset_cycle_states import reset_cycle_states
-from ._showdown import showdown, no_showdown
+from ._showdown import showdown

@@ -21,59 +21,53 @@ Defines the functions to distribute the pot at the end of a cycle.
 from collections.abc import Sequence
 
 
+from pokerpy.messages import msg_not_table_instance
 from pokerpy.logger import get_logger
-from pokerpy.structures import Player
+from pokerpy.structures import Player, Table
 
 
 logger = get_logger()
 
 
-def no_showdown(players_in_hand: Sequence[Player], central_pot: int):
-
-    """
-    Displays a message on distributing the central pot to the only remaining player.
-    """
-
-    winner = players_in_hand[0]
-    logger.info(f'{winner.name} wins {central_pot}!')
-
-
 def break_tie(winners: Sequence[Player], central_pot: int):
 
     """
-    Displays a message on how to distribute the central pot between the tied winners.
+    Distributes the central pot between the tied winners.
     """
 
     logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-    profit_per_player = central_pot // len(winners)
+    profit_per_winner = central_pot // len(winners)
     remainder = central_pot % len(winners)
-    profit_by_player = {player: profit_per_player for player in winners}
+    profit_by_winner = {winner: profit_per_winner for winner in winners}
 
     for player in winners:
         if remainder == 0:
             break
-        profit_by_player[player] += 1
+        profit_by_winner[player] += 1
         remainder -= 1
 
-    for player in winners:
-        logger.info(f'{player.name} wins {profit_by_player[player]}.')
+    for winner in winners:
+        profit = profit_by_winner[winner]
+        logger.info(f'{winner.name} wins {profit}.')
+        winner.add_to_stack(profit)
 
-    return
 
-
-def showdown(players_in_hand: list[Player], central_pot: int):
+def showdown(table: Table):
 
     """
-    Determines who are the winners among remaining players and displays a message on how to distribute the pot.
+    Determines who are the winners among the remaining players and distributes the pot between them.
     """
 
-    logger.info(f'Remaining players: {", ".join(player.name for player in players_in_hand)}')
+    if not isinstance(table, Table):
+        raise TypeError(msg_not_table_instance.format(type(table).__name__))
+
+    logger.info(f'Remaining players: {", ".join(player.name for player in table.players_in_hand)}')
 
     winners: list[Player] = []
-    for player in players_in_hand:
+    for player in table.players_in_hand:
 
         player_is_unbeaten = True
-        for oponent in players_in_hand:
+        for oponent in table.players_in_hand:
             if oponent.name == player.name:
                 continue
             if oponent.hand > player.hand:
@@ -84,7 +78,9 @@ def showdown(players_in_hand: list[Player], central_pot: int):
             winners.append(player)
 
     if len(winners) == 1:
-        logger.info(f'{winners[0].name} wins {central_pot}!')
+        winner = winners[0]
+        logger.info(f'{winner.name} wins {table.central_pot}!')
+        winner.add_to_stack(table.central_pot)
         return
 
-    return break_tie(winners, central_pot)
+    return break_tie(winners, table.central_pot)

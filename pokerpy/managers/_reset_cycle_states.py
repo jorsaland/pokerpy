@@ -18,6 +18,7 @@ Defines the functions to reset cycle states.
 """
 
 
+from pokerpy.messages import msg_not_table_instance
 from pokerpy.structures import Table
 
 
@@ -29,6 +30,9 @@ def reset_cycle_states(table: Table):
     """
     Resets the states for a table and its players to prepare them for a new hand cycle.
     """
+
+    if not isinstance(table, Table):
+        raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
     BettingRound.reset_betting_round_states(table)
 
