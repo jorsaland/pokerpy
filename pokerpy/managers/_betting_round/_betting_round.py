@@ -137,7 +137,7 @@ class BettingRound:
         """
 
         if self._listener is None:
-            self.table.reset_betting_round_states()
+            self.reset_betting_round_states(self.table)
             self._listener = run_listener(self)
         return self._listener
 
@@ -155,9 +155,7 @@ class BettingRound:
         except StopIteration:
             self._is_completed = True
         finally:
-            self.table.reset_betting_round_states()
-            for player in self.table.players:
-                player.reset_betting_round_states()
+            self.reset_betting_round_states(self.table)
 
         # Raise catched exceptions
         if exception is not None:

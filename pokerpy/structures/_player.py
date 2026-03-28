@@ -253,29 +253,3 @@ class Player:
         """
 
         self._is_folded = False
-
-
-    # Methods to reset managers
-
-
-    def reset_betting_round_states(self):
-        
-        """
-        Resets all state variables that are restricted to betting rounds.
-        """
-
-        self._requested_action: (Action|None) = None
-        self._current_amount = 0
-    
-
-    def reset_cycle_states(self):
-
-        """
-        Resets all state variables that are restricted to cycles.
-        """
-
-        self.reset_betting_round_states()
-
-        self._cards.clear()
-        self._hand: (Hand|None) = None
-        self._is_folded = False

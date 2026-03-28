@@ -53,10 +53,6 @@ from ._methods_related_to_players import (
     method_set_starting_player,
     method_set_stopping_player,
 )
-from ._methods_to_reset_states import (
-    method_reset_betting_round_states,
-    method_reset_cycle_states,
-)
 from .._card import Card
 from .._player import Player
 
@@ -323,24 +319,3 @@ class Table:
         """
 
         return method_get_previous_active_player(self, reference_player)
-
-
-    # Methods to reset manager states
-
-
-    def reset_betting_round_states(self):
-        
-        """
-        Resets all state variables that are restricted to betting rounds.
-        """
-
-        return method_reset_betting_round_states(self)
-
-
-    def reset_cycle_states(self):
-
-        """
-        Resets all state variables that are restricted to cycles.
-        """
-
-        return method_reset_cycle_states(self)

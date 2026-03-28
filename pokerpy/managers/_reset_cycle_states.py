@@ -18,7 +18,7 @@ Defines the functions to reset cycle states.
 """
 
 
-from structures import Table
+from pokerpy.structures import Table
 
 
 from ..managers import BettingRound
