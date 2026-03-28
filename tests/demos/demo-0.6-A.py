@@ -272,10 +272,10 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
     if len(table.players_in_hand) > 1:
         print(f'\n============ SHOWDOWN! ============\n')
-        pk.showdown(table.players_in_hand, table.central_pot)
+        pk.showdown(table)
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        pk.no_showdown(table.players_in_hand, table.central_pot)
+        pk.showdown(table)
 
 
 def game():

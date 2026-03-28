@@ -702,6 +702,5 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
         self.assertEqual(betting_round.lap_counts, 4)
 
 
-
 if __name__ == '__main__':
     main()

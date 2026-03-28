@@ -14,11 +14,11 @@ from unittest import main, TestCase
 from pokerpy import constants, managers, messages, structures
 
 
-class TestBettingRoundMethods(TestCase):
+class TestBettingRoundBasicMethods(TestCase):
 
 
     """
-    Run unit tests on BettingRound class methods.
+    Run unit tests on BettingRound basic methods.
     """
 
 
@@ -236,13 +236,34 @@ class TestBettingRoundMethods(TestCase):
         for player in betting_round.table.players:
             self.assertEqual(len(player.cards), 5)
 
+class TestResetBettingRoundStatesFunction(TestCase):
 
-    def test_reset_betting_round_states_method(self):
+
+    """
+    Runs unit tests on reset_betting_round static method.
+    """
+
+
+    def test_invalid_input(self):
 
 
         """
-        Runs test cases on reset_betting_round_states method.
+        Runs test cases on reset_betting_round static method with an invalid input.
         """
+
+
+        with self.assertRaises(TypeError) as context:
+            managers.BettingRound.reset_betting_round_states('Wood')
+        self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
+
+    
+    def test_reset_betting_round_states_function(self):
+
+
+        """
+        Runs test cases on reset_betting_round_states function effects.
+        """
+
 
 
         table = structures.Table([
@@ -980,3 +1001,7 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(Boa.current_amount, 0)
         self.assertEqual(Coral.current_amount, 0)
         self.assertEqual(Dino.current_amount, 0)
+
+
+if __name__ == '__main__':
+    main()

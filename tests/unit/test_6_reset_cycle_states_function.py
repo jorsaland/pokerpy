@@ -1,5 +1,5 @@
 """
-Defines unit tests on functions that are part of the managers module.
+Defines unit unit tests on reset_cycle_states function.
 """
 
 
@@ -13,19 +13,32 @@ from unittest import main, TestCase
 from pokerpy import constants, managers, messages, structures
 
 
-class TestManagerModuleFunctions(TestCase):
+class TestResetCycleStatesFunction(TestCase):
 
 
     """
-    Runs unit tests on functions that are part of the managers module
+    Runs unit tests on reset_cycle_states function.
     """
 
-    
-    def test_reset_cycle_states_method(self):
+
+    def test_invalid_input(self):
 
 
         """
-        Runs test cases on reset_cycle_states method.
+        Runs test cases on reset_cycle_states function with an invalid input.
+        """
+
+
+        with self.assertRaises(TypeError) as context:
+            managers.reset_cycle_states('Wood')
+        self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
+
+    
+    def test_reset_cycle_states_function(self):
+
+
+        """
+        Runs test cases on reset_cycle_states function effects.
         """
 
 
@@ -101,3 +114,7 @@ class TestManagerModuleFunctions(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertTupleEqual(table.common_cards, ())
         self.assertSetEqual(set(table.deck), set(deck))
+
+
+if __name__ == '__main__':
+    main()
