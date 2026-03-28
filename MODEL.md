@@ -1,6 +1,7 @@
 ```mermaid
 flowchart LR
 
+
     %% Legend
 
     subgraph " "
@@ -14,11 +15,14 @@ flowchart LR
         m2 --> |from| i2
     end
 
+
     %% Classes and methods
 
-    C(Controller)@{ shape: cloud }
+    G(Game)@{ shape: circle }
+    G.reset_cycle_states(reset_cycle_states)@{ shape: text }
 
     HC(HandCycle)@{ shape: circle }
+    HC.reset_betting_round_states(reset_betting_round_states)@{ shape: text }
 
     BR(BettingRound)@{ shape: circle }
     BR.listen(listen)@{ shape: text }
@@ -40,8 +44,8 @@ flowchart LR
     T.get_next_player(get_next_player)@{ shape: text }
     T.iter_players(iter_players)@{ shape: text }
     T.get_previous_active_player(get_previous_active_player)@{ shape: text }
-    T.reset_betting_round_states(reset_betting_round_states)@{ shape: text }
-    T.reset_cycle_states(reset_cycle_states)@{ shape: text }
+
+    C(Controller)@{ shape: cloud }
 
     P(Player)@{ shape: circle }
     P.request_action(request_action)@{ shape: text }
@@ -52,114 +56,83 @@ flowchart LR
     P.add_to_stack(add_to_stack)@{ shape: text }
     P.remove_from_stack(remove_from_stack)@{ shape: text }
     P.fold(fold)@{ shape: text }
-    P.reset_betting_round_states(reset_betting_round_states)@{ shape: text }
-    P.reset_cycle_states(reset_cycle_states)@{ shape: text }
 
     H(Hand)@{ shape: circle }
 
     Cd(Card)@{ shape: circle }
     Cd.get_deck_position(get_deck_position)@{ shape: text }
 
-    %% HandCycle to BettingRound relations
+
+    %% Relations from Controller
 
 
-    HC --> BR.close -->  BR
+    C --> G.reset_cycle_states --> G
+    C --> P.request_action
 
 
-    HC --> BR.listen
-    BR.close -.-> BR.listen
-        BR.listen --> BR
-        BR.listen -.-> BR.increase_counter --> BR
+    %% Relations from Game
+
+
+    G --> HC.reset_betting_round_states --> HC
+
+
+    %% Relations from HandCycle
+
+
+    HC --> BR.close --> BR
+           BR.close -.-> BR.listen --> BR
+
+    HC --> BR.listen -.-> BR.increase_counter  --> BR
 
     HC --> BR.deal_common_cards -->  BR
 
-
     HC --> BR.deal_cards_to_players -->  BR
 
+    HC --> P.assign_hand --> P
 
-        BR --> T.remove_card_from_deck --> T
-
-        BR --> T.assign_common_card --> T
-
-        BR --> T.set_smallest_bet_amount --> T
-
-        BR --> T.set_smallest_raise_amount --> T
-
-        BR --> T.add_to_current_amount --> T
-
-        BR --> T.add_to_central_pot --> T
-
-        BR --> T.set_starting_player --> T
-
-        BR --> T.set_stopping_player --> T
-
-        BR --> T.get_previous_active_player --> T
-
-        BR --> T.iter_players
-        T.get_previous_active_player -.-> T.iter_players
-            T.iter_players --> T
-            T.iter_players -.-> T.get_next_player --> T
-
-        BR --> T.get_previous_player
-        T.get_previous_active_player -.-> T.get_previous_player
-        T.iter_players -.-> T.get_previous_player
-            T.get_previous_player --> T
-
-        BR --> T.reset_betting_round_states --> T
+    HC --> P.add_to_stack --> P
 
 
+    %% Relations from BettingRound
 
 
-    T.reset_cycle_states --> T
+    BR --> T.remove_card_from_deck --> T
 
-    P.request_action --> P
-    P.reset_action --> P
-    P.assign_card --> P
-    P.assign_hand --> P
-    P.add_to_current_amount --> P
-    P.add_to_stack --> P
-    P.remove_from_stack --> P
-    P.fold --> P
-    P.reset_betting_round_states --> P
-    P.reset_cycle_states --> P
+    BR --> T.assign_common_card --> T
 
-    Cd.get_deck_position --> Cd
+    BR --> T.set_smallest_bet_amount --> T
 
-    %% Class-method
+    BR --> T.set_smallest_raise_amount --> T
 
-    C -------> P.request_action
+    BR --> T.add_to_current_amount --> T
 
-    HC --> T.reset_cycle_states
+    BR --> T.add_to_central_pot --> T
 
-    HC --> P.assign_hand
-    HC --> P.add_to_stack
-    HC --> P.reset_cycle_states
+    BR --> T.set_starting_player --> T
 
+    BR --> T.set_stopping_player --> T
 
+    BR --> T.get_previous_active_player --> T
+           T.get_previous_active_player -.-> T.iter_players --> T
+           T.get_previous_active_player -.-> T.get_previous_player --> T
 
+    BR --> T.iter_players -.-> T.get_next_player --> T
+           T.iter_players -.-> T.get_previous_player
 
+    BR --> T.get_previous_player
 
+    BR --> P.reset_action --> P
 
+    BR --> P.assign_card --> P
 
-    BR --> P.reset_action
-    BR --> P.assign_card
-    BR --> P.add_to_current_amount
-    BR --> P.remove_from_stack
-    BR --> P.fold
-    BR --> P.reset_betting_round_states
-
-    H --> Cd.get_deck_position
-
-    %% Helper method relations
-
-    P.reset_cycle_states -.-> P.reset_betting_round_states
+    BR --> P.add_to_current_amount --> P
+    BR --> P.remove_from_stack --> P
+    BR --> P.fold --> P
+    BR --> P.request_action --> P
 
 
+    %% Relations from Hand
 
 
-    %%T.reset_betting_round_states -.-> T.get_previous_player
-
-
-
-
+    H --> Cd.get_deck_position --> Cd
 ```
