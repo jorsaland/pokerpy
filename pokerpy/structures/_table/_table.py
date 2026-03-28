@@ -33,11 +33,15 @@ from pokerpy.messages import (
 
 from ._methods_related_to_cards import (
     method_assign_common_card,
+    method_reset_common_cards,
     method_remove_card_from_deck,
+    method_reset_deck,
 )
 from ._methods_related_to_money import (
     method_add_to_central_pot,
+    method_reset_central_pot,
     method_add_to_current_amount,
+    method_reset_current_amount,
     method_set_smallest_bet_amount,
     method_set_smallest_raise_amount,
 )
@@ -180,6 +184,15 @@ class Table:
         return method_remove_card_from_deck(self, card)
 
 
+    def reset_deck(self):
+
+        """
+        Resets the deck by restoring all its cards.
+        """
+
+        return method_reset_deck(self)
+
+
     def assign_common_card(self, card: Card):
 
         """
@@ -187,6 +200,15 @@ class Table:
         """
 
         return method_assign_common_card(self, card)
+
+
+    def reset_common_cards(self):
+
+        """
+        Resets the common cards by clearing them.
+        """
+
+        return method_reset_common_cards(self)
 
 
     # Methods related to money
@@ -217,6 +239,15 @@ class Table:
         """
 
         return method_add_to_current_amount(self, amount)
+    
+
+    def reset_current_amount(self):
+
+        """
+        Resets the current amount to zero.
+        """
+
+        return method_reset_current_amount(self)
 
 
     def add_to_central_pot(self, amount: int):
@@ -226,6 +257,15 @@ class Table:
         """
 
         return method_add_to_central_pot(self, amount)
+
+
+    def reset_central_pot(self):
+
+        """
+        Resets the central pot to zero.
+        """
+
+        return method_reset_central_pot(self)
 
 
     # Methods related to players

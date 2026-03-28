@@ -144,6 +144,15 @@ class Player:
         self._cards.append(card)
 
 
+    def reset_cards(self):
+
+        """
+        Reset the cards of the player by clearing them.
+        """
+
+        self._cards.clear()
+
+
     def assign_hand(self, hand: Hand):
 
         """
@@ -154,6 +163,15 @@ class Player:
             raise TypeError(msg_not_hand_instance.format(type(hand).__name__))
 
         self._hand = hand
+
+
+    def reset_hand(self):
+
+        """
+        Resets the hand of the player by assigning it to None.
+        """
+
+        self._hand = None
 
 
     # Methods to affect stack and current amount
@@ -172,6 +190,15 @@ class Player:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
 
         self._current_amount += amount
+    
+
+    def reset_current_amount(self):
+
+        """
+        Resets the current amount to zero.
+        """
+
+        self._current_amount = 0
 
 
     def add_to_stack(self, amount: int):
@@ -210,13 +237,22 @@ class Player:
     # Methods to affect fold status
 
 
-    def fold(self):
+    def set_as_folded(self):
 
         """
-        Marks the player as folded
+        Sets the player as folded.
         """
 
         self._is_folded = True
+
+
+    def unset_as_folded(self):
+
+        """
+        Unsets the player as folded.
+        """
+
+        self._is_folded = False
 
 
     # Methods to reset managers

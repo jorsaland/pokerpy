@@ -83,11 +83,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_action_instance.format(str.__name__))
 
 
-    def test_deal_card_method(self):
+    def test_card_methods(self):
 
 
         """
-        Runs test cases on assign_card method.
+        Runs test cases on assign_card and reset_cards methods.
         """
 
 
@@ -102,6 +102,8 @@ class TestPlayerClass(TestCase):
         Andy.assign_card(structures.Card('J', 'd'))
         self.assertEqual(Andy.cards, (structures.Card('A', 's'), structures.Card('J', 'd')))
 
+        Andy.reset_cards()
+        self.assertEqual(Andy.cards, ())
 
         # Invalid inputs
 
@@ -109,12 +111,17 @@ class TestPlayerClass(TestCase):
             Andy.assign_card('As')
         self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
+        Andy.assign_card(structures.Card('A', 's'))
+        with self.assertRaises(ValueError) as cm:
+            Andy.assign_card(structures.Card('A', 's'))
+        self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
 
-    def test_assign_hand_method(self):
+
+    def test_hand_methods(self):
 
 
         """
-        Runs test cases on assign_hand method.
+        Runs test cases on assign_hand and reset_hand methods.
         """
 
 
@@ -153,6 +160,9 @@ class TestPlayerClass(TestCase):
             structures.Card('2', 'c'),
         ]))
 
+        Andy.reset_hand()
+        self.assertIsNone(Andy.hand)
+
 
         # Invalid inputs
 
@@ -161,11 +171,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_hand_instance.format(structures.Card.__name__))
 
 
-    def test_add_to_current_amount_method(self):
+    def test_current_amount_methods(self):
 
 
         """
-        Runs test cases on add_to_current_amount method.
+        Runs test cases on add_to_current_amount and reset_current_amount methods.
         """
 
 
@@ -182,6 +192,9 @@ class TestPlayerClass(TestCase):
 
         self.assertEqual(Andy.current_amount, 150)
 
+        Andy.reset_current_amount()
+
+        self.assertEqual(Andy.current_amount, 0)
 
         # Invalid inputs
 
@@ -260,11 +273,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
-    def test_fold_method(self):
+    def test_fold_methods(self):
 
 
         """
-        Runs test cases on fold method.
+        Runs test cases on set_as_folded and unset_as_folded methods.
         """
 
 
@@ -273,8 +286,10 @@ class TestPlayerClass(TestCase):
         # Before and after effects
 
         self.assertFalse(Andy.is_folded)
-        Andy.fold()
+        Andy.set_as_folded()
         self.assertTrue(Andy.is_folded)
+        Andy.unset_as_folded()
+        self.assertFalse(Andy.is_folded)
 
 
     def test_reset_betting_round_states_method(self):
@@ -306,7 +321,7 @@ class TestPlayerClass(TestCase):
         for card in cards:
             Andy.assign_card(card)
         Andy.assign_hand(hand)
-        Andy.fold()
+        Andy.set_as_folded()
 
         # Evaluate before states
         self.assertEqual(Andy.requested_action, action)
@@ -355,7 +370,7 @@ class TestPlayerClass(TestCase):
         for card in cards:
             Andy.assign_card(card)
         Andy.assign_hand(hand)
-        Andy.fold()
+        Andy.set_as_folded()
 
         # Evaluate before states
         self.assertEqual(Andy.requested_action, action)

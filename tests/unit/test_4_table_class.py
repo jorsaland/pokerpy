@@ -93,11 +93,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
 
 
-    def test_remove_card_from_deck_method(self):
+    def test_deck_methods(self):
 
 
         """
-        Runs test cases on remove_card_from_deck method.
+        Runs test cases on remove_card_from_deck and reset_deck methods.
         """
 
 
@@ -127,6 +127,13 @@ class TestTableClass(TestCase):
             }
         )
 
+        table.reset_deck()
+
+        self.assertEqual(
+            set(table.deck),
+            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits},
+        )
+
 
         # Invalid inputs
 
@@ -134,16 +141,17 @@ class TestTableClass(TestCase):
             table.remove_card_from_deck('7c')
         self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
+        table.remove_card_from_deck(structures.Card('2', 's'))
         with self.assertRaises(ValueError) as cm:
-            table.remove_card_from_deck(structures.Card('7', 'c'))
+            table.remove_card_from_deck(structures.Card('2', 's'))
         self.assertEqual(cm.exception.args[0], messages.msg_card_not_in_deck)
 
 
-    def test_assign_common_card_method(self):
+    def test_common_card_methods(self):
 
 
         """
-        Runs test cases on assign_common_card method.
+        Runs test cases on assign_common_card and reset_common_cards methods.
         """
 
 
@@ -166,6 +174,9 @@ class TestTableClass(TestCase):
             set(table.common_cards), {structures.Card('7', 'c'), structures.Card('T', 'd'), structures.Card('2', 's')}
         )
 
+        table.reset_common_cards()
+        self.assertEqual(set(table.common_cards), set())
+
 
         # Invalid inputs
 
@@ -173,16 +184,17 @@ class TestTableClass(TestCase):
             table.assign_common_card('7c')
         self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
+        table.assign_common_card(structures.Card('7', 'c'))
         with self.assertRaises(ValueError) as cm:
             table.assign_common_card(structures.Card('7', 'c'))
         self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
 
 
-    def test_add_to_current_amount_method(self):
+    def test_current_amount_methods(self):
 
 
         """
-        Runs test cases on add_to_current_amount method.
+        Runs test cases on add_to_current_amount and reset_current_amount methods.
         """
 
 
@@ -203,6 +215,9 @@ class TestTableClass(TestCase):
 
         self.assertEqual(table.current_amount, 150)
 
+        table.reset_current_amount()
+
+        self.assertEqual(table.current_amount, 0)
 
         # Invalid inputs
 
@@ -215,11 +230,11 @@ class TestTableClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
-    def test_add_to_central_pot_method(self):
+    def test_central_pot_methods(self):
 
 
         """
-        Runs test cases on add_to_central_pot method.
+        Runs test cases on add_to_central_pot and reset_central_pot methods.
         """
 
 
@@ -240,6 +255,9 @@ class TestTableClass(TestCase):
 
         self.assertEqual(table.central_pot, 150)
 
+        table.reset_central_pot()
+
+        self.assertEqual(table.central_pot, 0)
 
         # Invalid inputs
 
@@ -512,7 +530,7 @@ class TestTableClass(TestCase):
         self.assertEqual(table.get_previous_active_player(Coral), Boa)
 
         # One folded
-        Andy.fold()
+        Andy.set_as_folded()
         self.assertEqual(table.get_previous_active_player(Andy), Coral)
         self.assertEqual(table.get_previous_active_player(Boa), Coral)
         self.assertEqual(table.get_previous_active_player(Coral), Boa)
@@ -524,7 +542,7 @@ class TestTableClass(TestCase):
         self.assertEqual(table.get_previous_active_player(Coral), Coral)
 
         # Nobody active
-        Coral.fold()
+        Coral.set_as_folded()
         self.assertIsNone(table.get_previous_active_player(Andy))
         self.assertIsNone(table.get_previous_active_player(Boa))
         self.assertIsNone(table.get_previous_active_player(Coral))
@@ -582,7 +600,7 @@ class TestTableClass(TestCase):
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
         Andy.assign_hand(hand)
-        Andy.fold()
+        Andy.set_as_folded()
 
         for card in common_cards:
             table.remove_card_from_deck(card)
@@ -666,7 +684,7 @@ class TestTableClass(TestCase):
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
         Andy.assign_hand(hand)
-        Andy.fold()
+        Andy.set_as_folded()
 
         for card in common_cards:
             table.remove_card_from_deck(card)

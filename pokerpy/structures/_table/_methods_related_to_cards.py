@@ -21,6 +21,7 @@ Defines the methods related to cards.
 from typing import TYPE_CHECKING
 
 
+from pokerpy.constants import full_sorted_values_and_suits
 from pokerpy.messages import msg_not_card_instance, msg_card_not_in_deck, msg_repeated_cards
 
 
@@ -30,22 +31,25 @@ if TYPE_CHECKING:
 
 
 def method_remove_card_from_deck(self: "Table", card: Card):
-
     if not isinstance(card, Card):
         raise TypeError(msg_not_card_instance.format(type(card).__name__))
-    
     if card not in self.deck:
         raise ValueError(msg_card_not_in_deck)
-
     self._deck.remove(card)
 
 
 def method_assign_common_card(self: "Table", card: Card):
-
     if not isinstance(card, Card):
         raise TypeError(msg_not_card_instance.format(type(card).__name__))
-    
     if card in self.common_cards:
         raise ValueError(msg_repeated_cards)
-
     self._common_cards.append(card)
+
+
+def method_reset_common_cards(self: "Table"):
+    self._common_cards.clear()
+
+
+def method_reset_deck(self: "Table"):
+    self._deck.clear()
+    self._deck.extend(Card(value, suit) for value, suit in full_sorted_values_and_suits)

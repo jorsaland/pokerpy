@@ -200,3 +200,22 @@ class BettingRound:
         """
 
         return method_deal_common_cards(self, cards_count)
+    
+
+    # Methods to reset states
+
+
+    @staticmethod
+    def reset_betting_round_states(table: Table):
+
+        """
+        Resets the states for a table and its players to prepare them for a new betting round.
+        """
+
+        table.set_smallest_raise_amount(table.smallest_bet_amount)
+        table.reset_current_amount()
+        table.set_stopping_player(table.get_previous_player(table.starting_player))
+
+        for player in table.players:
+            player.reset_action()
+            player.reset_current_amount()

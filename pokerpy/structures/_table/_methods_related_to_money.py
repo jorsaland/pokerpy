@@ -29,45 +29,41 @@ if TYPE_CHECKING:
 
 
 def method_set_smallest_bet_amount(self: "Table", amount: int):
-
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
-
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
-
     self.set_smallest_raise_amount(amount)
     self._smallest_bet_amount = amount
 
 
 def method_set_smallest_raise_amount(self: "Table", amount: int):
-
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
-
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
-
     self._smallest_raise_amount = amount
 
 
 def method_add_to_current_amount(self: "Table", amount: int):
-
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
-    
     if amount < 0:
         raise ValueError(msg_not_positive_or_zero_value.format(amount))
-
     self._current_amount += amount
 
 
-def method_add_to_central_pot(self: "Table", amount: int):
+def method_reset_current_amount(self: "Table"):
+    self._current_amount = 0
 
+
+def method_add_to_central_pot(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
-
     if amount < 0:
         raise ValueError(msg_not_positive_or_zero_value.format(amount))
-
     self._central_pot += amount
+
+
+def method_reset_central_pot(self: "Table"):
+    self._central_pot = 0

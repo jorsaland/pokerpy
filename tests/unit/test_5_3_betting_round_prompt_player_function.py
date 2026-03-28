@@ -34,9 +34,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
         table.add_to_current_amount(1)
-        Boa.fold()
-        Coral.fold()
-        Dino.fold()
+        Boa.set_as_folded()
+        Coral.set_as_folded()
+        Dino.set_as_folded()
 
         betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
 
@@ -61,7 +61,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Dino', 10),       
         ])
         table.add_to_current_amount(1)
-        Andy.fold()
+        Andy.set_as_folded()
 
         betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
 
@@ -86,7 +86,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Dino', 10),       
         ])
         table.add_to_current_amount(1)
-        Andy.fold()
+        Andy.set_as_folded()
 
         betting_round = managers.BettingRound('test round', table, stopping_player=Andy)
 

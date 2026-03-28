@@ -51,7 +51,7 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
         betting_round.table.set_stopping_player(previous_player_in_hand)
 
     if action.name == ACTION_FOLD:
-        player.fold()
+        player.set_as_folded()
 
     logger.info(
         f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
