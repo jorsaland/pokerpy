@@ -226,49 +226,47 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         Runs test cases where a bet smaller than a full bet is parsed (all-in).
         """
 
-        # PENDING IMPLEMENTATION
+        table = structures.Table(players = [
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 1),
+            structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+            structures.Player('Epa', 10),    
+        ])
 
-        # table = structures.Table(players = [
-        #     Andy := structures.Player('Andy', 10),
-        #     Boa := structures.Player('Boa', 1),
-        #     structures.Player('Coral', 10),
-        #     Dino := structures.Player('Dino', 10),
-        #     structures.Player('Epa', 10),    
-        # ])
+        action = structures.Action(constants.ACTION_BET, 1)
 
-        # action = structures.Action(constants.ACTION_BET, 1)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
-        # betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        # States before
 
-        # # States before
+        self.assertEqual(Boa.stack, 1)
+        self.assertEqual(Boa.current_amount, 0)
+        self.assertFalse(Boa.is_folded)
 
-        # self.assertEqual(Boa.stack, 1)
-        # self.assertEqual(Boa.current_amount, 0)
-        # self.assertFalse(Boa.is_folded)
+        self.assertEqual(table.current_amount, 0)
 
-        # self.assertEqual(table.current_amount, 0)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
-        # self.assertEqual(betting_round.table.smallest_raise_amount, 2)
-        # self.assertEqual(betting_round.table.stopping_player, Dino)
+        # Run function
 
-        # # Run function
+        engines.set_action_effects(
+            betting_round = betting_round,
+            player = Boa,
+            action = action,
+        )
 
-        # engines.set_action_effects(
-        #     betting_round = betting_round,
-        #     player = Boa,
-        #     action = action,
-        # )
+        # States after
 
-        # # States after
+        self.assertEqual(Boa.stack, 0)
+        self.assertEqual(Boa.current_amount, 1)
+        self.assertFalse(Boa.is_folded)
 
-        # self.assertEqual(Boa.stack, 0)
-        # self.assertEqual(Boa.current_amount, 1)
-        # self.assertFalse(Boa.is_folded)
+        self.assertEqual(table.current_amount, 1)
 
-        # self.assertEqual(table.current_amount, 1)
-
-        # self.assertEqual(betting_round.table.smallest_raise_amount, 2)
-        # self.assertEqual(betting_round.table.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 2)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_bet_equal_to_a_full_bet(self):
@@ -375,51 +373,49 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         Runs test cases where a raise with an amount smaller than a full raise is parsed (all-in).
         """
 
-        # PENDING IMPLEMENTATION
+        table = structures.Table(players = [
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 7),
+            structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+            structures.Player('Epa', 10),    
+        ])
+        table.add_to_current_amount(5)
 
-        # table = structures.Table(players = [
-        #     Andy := structures.Player('Andy', 10),
-        #     Boa := structures.Player('Boa', 7),
-        #     structures.Player('Coral', 10),
-        #     Dino := structures.Player('Dino', 10),
-        #     structures.Player('Epa', 10),    
-        # ])
-        # table.add_to_current_amount(5)
+        action = structures.Action(constants.ACTION_RAISE, 7)
 
-        # action = structures.Action(constants.ACTION_RAISE, 7)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round.table.set_smallest_raise_amount(3)
 
-        # betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
-        # betting_round.table.set_smallest_raise_amount(3)
+        # States before
 
-        # # States before
+        self.assertEqual(Boa.stack, 7)
+        self.assertEqual(Boa.current_amount, 0)
+        self.assertFalse(Boa.is_folded)
 
-        # self.assertEqual(Boa.stack, 7)
-        # self.assertEqual(Boa.current_amount, 0)
-        # self.assertFalse(Boa.is_folded)
+        self.assertEqual(table.current_amount, 5)
 
-        # self.assertEqual(table.current_amount, 5)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Dino)
 
-        # self.assertEqual(betting_round.table.smallest_raise_amount, 3)
-        # self.assertEqual(betting_round.table.stopping_player, Dino)
+        # Run function
 
-        # # Run function
+        engines.set_action_effects(
+            betting_round = betting_round,
+            player = Boa,
+            action = action,
+        )
 
-        # engines.set_action_effects(
-        #     betting_round = betting_round,
-        #     player = Boa,
-        #     action = action,
-        # )
+        # States after
 
-        # # States after
+        self.assertEqual(Boa.stack, 0)
+        self.assertEqual(Boa.current_amount, 7)
+        self.assertFalse(Boa.is_folded)
 
-        # self.assertEqual(Boa.stack, 0)
-        # self.assertEqual(Boa.current_amount, 7)
-        # self.assertFalse(Boa.is_folded)
+        self.assertEqual(table.current_amount, 7)
 
-        # self.assertEqual(table.current_amount, 7)
-
-        # self.assertEqual(betting_round.table.smallest_raise_amount, 3)
-        # self.assertEqual(betting_round.table.stopping_player, Andy)
+        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
+        self.assertEqual(betting_round.table.stopping_player, Andy)
 
 
     def test_parse_a_raise_equal_to_a_full_raise(self):

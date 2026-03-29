@@ -45,7 +45,8 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
 
     if action.name in aggressive_action_names:
         raise_amount = player.current_amount - betting_round.table.current_amount
-        betting_round.table.set_smallest_raise_amount(raise_amount)
+        if raise_amount > betting_round.table.smallest_raise_amount:
+            betting_round.table.set_smallest_raise_amount(raise_amount)
         betting_round.table.add_to_current_amount(raise_amount)
         assert (previous_player_in_hand := betting_round.table.get_previous_active_player(player)) is not None
         betting_round.table.set_stopping_player(previous_player_in_hand)
