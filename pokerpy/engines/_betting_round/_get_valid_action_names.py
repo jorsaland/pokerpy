@@ -27,22 +27,35 @@ from pokerpy.constants import (
 )
 
 
-def get_valid_action_names(*, amount_to_call: int, stack: int, open_fold_allowed: bool):
+def get_valid_action_names(
+        *,
+        stack: int,
+        amount_to_call: int,
+        table_current_amount: int,
+        smallest_bet_amount: int,
+        smallest_raise_amount: int,
+        open_fold_allowed: bool
+    ):
 
     """
     Lists the valid possible actions depending on previous actions taken during the betting round.
     """
 
-    if amount_to_call != 0:
-        if amount_to_call >= stack:
-            valid_action_names = [ACTION_FOLD, ACTION_CALL]
-        else:
-            valid_action_names = [ACTION_FOLD, ACTION_CALL, ACTION_RAISE]
-
-    else:
+    # No previous bet/raise
+    if amount_to_call == 0:
         if open_fold_allowed:
-            valid_action_names = [ACTION_CHECK, ACTION_BET, ACTION_FOLD]
-        else:
-            valid_action_names = [ACTION_CHECK, ACTION_BET]
+            return [ACTION_CHECK, ACTION_BET, ACTION_FOLD]
+        return [ACTION_CHECK, ACTION_BET]
 
-    return valid_action_names
+    # Not enough chips for a full call
+    if amount_to_call >= stack:
+        return [ACTION_FOLD, ACTION_CALL]
+
+    # Facing an incomplete bet/raise
+    if amount_to_call < smallest_raise_amount:
+        if table_current_amount < smallest_bet_amount:
+            return [ACTION_FOLD, ACTION_CALL, ACTION_BET] ## facing an incomplete bet, completing a bet is an option
+        return [ACTION_FOLD, ACTION_CALL] ## facing an incomplete raise, re-raising is locked
+
+    # Enough chips for a full raise
+    return [ACTION_FOLD, ACTION_CALL, ACTION_RAISE]

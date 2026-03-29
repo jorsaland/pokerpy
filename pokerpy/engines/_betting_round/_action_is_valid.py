@@ -48,8 +48,11 @@ def action_is_valid(
 
     # Validate action name makes sense in context
     valid_action_names = get_valid_action_names(
-        amount_to_call = amount_to_call,
         stack = player_stack,
+        amount_to_call = amount_to_call,
+        table_current_amount = table_current_amount,
+        smallest_bet_amount = smallest_bet_amount,
+        smallest_raise_amount = smallest_raise_amount,
         open_fold_allowed = open_fold_allowed,
     )
     if action.name not in valid_action_names:
