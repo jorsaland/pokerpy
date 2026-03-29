@@ -61,8 +61,11 @@ def action_is_valid(
 
     # Validate calling amount
     if action.name == ACTION_CALL:
-        return action.amount == amount_to_call
-    
+        return (
+            (action.amount == amount_to_call) or
+            (amount_to_call > player_stack and action.amount == player_stack)
+        )
+
     # Validate betting amount
     if action.name == ACTION_BET:
         return (

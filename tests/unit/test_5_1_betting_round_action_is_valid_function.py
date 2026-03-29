@@ -319,16 +319,16 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             open_fold_allowed = False
         ))
 
-        # Going all-in (10) (PENDING IMPLEMENTATION)
-        # self.assertTrue(engines.action_is_valid(
-        #     action = structures.Action(constants.ACTION_CALL, 10),
-        #     table_current_amount = 12,
-        #     player_current_amount = 0,
-        #     player_stack = 10,
-        #     smallest_bet_amount = 1,
-        #     smallest_raise_amount = 12,
-        #     open_fold_allowed = False
-        # ))
+        # Going all-in (10)
+        self.assertTrue(engines.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 10),
+            table_current_amount = 12,
+            player_current_amount = 0,
+            player_stack = 10,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
+            open_fold_allowed = False
+        ))
 
         # Attempting to call more than the all-in amount (10) and less than the call amount (12)
         self.assertFalse(engines.action_is_valid(
@@ -421,16 +421,16 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
             open_fold_allowed = False
         ))
 
-        # Going all-in (10) (PENDING IMPLEMENTATION)
-        # self.assertTrue(engines.action_is_valid(
-        #     action = structures.Action(constants.ACTION_CALL, 10),
-        #     table_current_amount = 13,
-        #     player_current_amount = 1,
-        #     player_stack = 10,
-        #     smallest_bet_amount = 1,
-        #     smallest_raise_amount = 12,
-        #     open_fold_allowed = False
-        # ))
+        # Going all-in (10)
+        self.assertTrue(engines.action_is_valid(
+            action = structures.Action(constants.ACTION_CALL, 10),
+            table_current_amount = 13,
+            player_current_amount = 1,
+            player_stack = 10,
+            smallest_bet_amount = 1,
+            smallest_raise_amount = 12,
+            open_fold_allowed = False
+        ))
 
         # Attempting to call more than the all-in amount (10) and less than the call amount (12)
         self.assertFalse(engines.action_is_valid(
