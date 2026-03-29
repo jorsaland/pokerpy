@@ -1,2 +1,3 @@
 PokerPy
-Copyright 2026 Andrés Saldarriaga Jordan (jorsaland)
+Copyright 2026 Andrés Saldarriaga Jordan (https://github.com/jorsaland)
+Licensed under the Apache License, Version 2.0
