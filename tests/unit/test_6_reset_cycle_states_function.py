@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, messages, structures
+from pokerpy import constants, engines, messages, structures
 
 
 class TestResetCycleStatesFunction(TestCase):
@@ -30,7 +30,7 @@ class TestResetCycleStatesFunction(TestCase):
 
 
         with self.assertRaises(TypeError) as context:
-            managers.reset_cycle_states('Wood')
+            engines.reset_cycle_states('Wood')
         self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
 
     
@@ -99,7 +99,7 @@ class TestResetCycleStatesFunction(TestCase):
 
         # Reset states
 
-        managers.reset_cycle_states(table)
+        engines.reset_cycle_states(table)
 
         # Evaluate after states
 

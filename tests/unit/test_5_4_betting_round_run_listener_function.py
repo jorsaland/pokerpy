@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, messages, structures
+from pokerpy import constants, engines, messages, structures
 
 
 class TestBettingRoundRunListenerFunctionWithInvalidParsing(TestCase):
@@ -34,11 +34,11 @@ class TestBettingRoundRunListenerFunctionWithInvalidParsing(TestCase):
             structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
         self.assertEqual(betting_round.lap_counts, 0)
@@ -68,11 +68,11 @@ class TestBettingRoundRunListenerFunctionWithInvalidParsing(TestCase):
             structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False)
 
         action = structures.Action(constants.ACTION_RAISE, 1)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
         self.assertEqual(betting_round.lap_counts, 0)
@@ -104,7 +104,7 @@ class TestBettingRoundRunListenerFunctionWithInvalidParsing(TestCase):
             structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         valid_action = structures.Action(constants.ACTION_CHECK)
         invalid_actions = [
@@ -113,7 +113,7 @@ class TestBettingRoundRunListenerFunctionWithInvalidParsing(TestCase):
             structures.Action(constants.ACTION_CALL, 1),
         ]
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
         self.assertEqual(betting_round.lap_counts, 0)
@@ -156,9 +156,9 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(TestCase):
             structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -201,9 +201,9 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -250,9 +250,9 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -307,9 +307,9 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -356,9 +356,9 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -405,9 +405,9 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -474,9 +474,9 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -523,9 +523,9 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 
@@ -580,9 +580,9 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
             Dino := structures.Player('Dino', 10),     
         ])
 
-        betting_round = managers.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
+        betting_round = engines.BettingRound('test round', table, ignore_invalid_actions=False, open_fold_allowed=True)
 
-        generator = managers.run_listener(betting_round)
+        generator = engines.run_listener(betting_round)
 
         # Before states
 

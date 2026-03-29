@@ -22,7 +22,7 @@ from pokerpy.messages import msg_not_table_instance
 from pokerpy.structures import Table
 
 
-from ..managers import BettingRound
+from ..engines import BettingRound
 
 
 def reset_cycle_states(table: Table):

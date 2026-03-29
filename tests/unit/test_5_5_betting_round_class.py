@@ -11,7 +11,7 @@ from collections.abc import Generator
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, messages, structures
+from pokerpy import constants, engines, messages, structures
 
 
 class TestBettingRoundBasicMethods(TestCase):
@@ -40,7 +40,7 @@ class TestBettingRoundBasicMethods(TestCase):
 
         # Valid instantiation
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
         self.assertEqual(betting_round.name, 'test round')
         self.assertEqual(betting_round.table, table)
         self.assertEqual(betting_round.lap_counts, 0)
@@ -51,7 +51,7 @@ class TestBettingRoundBasicMethods(TestCase):
         self.assertFalse(betting_round.open_fold_allowed)
         self.assertTrue(betting_round.ignore_invalid_actions)
 
-        betting_round = managers.BettingRound(
+        betting_round = engines.BettingRound(
             'test round',
             table,
             smallest_bet_amount = 10,
@@ -70,7 +70,7 @@ class TestBettingRoundBasicMethods(TestCase):
         self.assertTrue(betting_round.open_fold_allowed)
         self.assertFalse(betting_round.ignore_invalid_actions)
 
-        betting_round = managers.BettingRound(
+        betting_round = engines.BettingRound(
             'test round',
             table,
             open_fold_allowed = 1, ## expected boolean, but not enforced
@@ -83,49 +83,49 @@ class TestBettingRoundBasicMethods(TestCase):
 
         # Invalid name
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound(123456, table)
+            engines.BettingRound(123456, table)
         self.assertEqual(context.exception.args[0], messages.msg_not_str.format(int.__name__))
 
         # Invalid table
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound('test round', 'wood')
+            engines.BettingRound('test round', 'wood')
         self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
 
         # Invalid smallest bet
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound('test round', table, smallest_bet_amount='zero')
+            engines.BettingRound('test round', table, smallest_bet_amount='zero')
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         # Invalid starting player
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound('test round', table, starting_player='first')
+            engines.BettingRound('test round', table, starting_player='first')
         self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
 
         # Invalid stopping player
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound('test round', table, stopping_player='last')
+            engines.BettingRound('test round', table, stopping_player='last')
         self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
 
         # Value errors
 
         # Zero smallest bet
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, smallest_bet_amount=0)
+            engines.BettingRound('test round', table, smallest_bet_amount=0)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
 
         # Negative smallest bet
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, smallest_bet_amount=-1)
+            engines.BettingRound('test round', table, smallest_bet_amount=-1)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-1))
 
         # Starting player not in table
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, starting_player=Epa)
+            engines.BettingRound('test round', table, starting_player=Epa)
         self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Epa.name))
 
         # Stopping player not in table
         with self.assertRaises(ValueError) as context:
-            managers.BettingRound('test round', table, stopping_player=Epa)
+            engines.BettingRound('test round', table, stopping_player=Epa)
         self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Epa.name))
 
 
@@ -144,7 +144,7 @@ class TestBettingRoundBasicMethods(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         # Listen
 
@@ -198,7 +198,7 @@ class TestBettingRoundBasicMethods(TestCase):
             structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         self.assertEqual(len(table.deck), 52)
         self.assertEqual(len(betting_round.table.common_cards), 0)
@@ -220,7 +220,7 @@ class TestBettingRoundBasicMethods(TestCase):
             structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         self.assertEqual(len(table.deck), 52)
         for player in betting_round.table.players:
@@ -253,7 +253,7 @@ class TestResetBettingRoundStatesFunction(TestCase):
 
 
         with self.assertRaises(TypeError) as context:
-            managers.BettingRound.reset_betting_round_states('Wood')
+            engines.BettingRound.reset_betting_round_states('Wood')
         self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
 
     
@@ -323,7 +323,7 @@ class TestResetBettingRoundStatesFunction(TestCase):
 
         # Reset states
 
-        managers.BettingRound.reset_betting_round_states(table)
+        engines.BettingRound.reset_betting_round_states(table)
 
         # Evaluate after states
 
@@ -363,7 +363,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
         listener = betting_round.listen()
 
         # Before states
@@ -424,7 +424,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         actions_to_parse = [
             structures.Action(constants.ACTION_BET, 1),
@@ -472,7 +472,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
         listener = betting_round.listen()
 
         # Before states
@@ -532,7 +532,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         actions_to_parse = [
             structures.Action(constants.ACTION_BET, 1),
@@ -583,7 +583,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
         listener = betting_round.listen()
 
         # Before states
@@ -646,7 +646,7 @@ class TestBettingRoundListener(TestCase):
             Dino := structures.Player('Dino', 10),
         ])
 
-        betting_round = managers.BettingRound('test round', table)
+        betting_round = engines.BettingRound('test round', table)
 
         actions_to_parse = [
             structures.Action(constants.ACTION_BET, 1),
@@ -708,7 +708,7 @@ class TestBettingRoundContextManager(TestCase):
 
         # Actions
 
-        with managers.BettingRound('test round', table) as betting_round:
+        with engines.BettingRound('test round', table) as betting_round:
 
             next(betting_round.listen())
             Andy.request_action(structures.Action(constants.ACTION_BET, 1))
@@ -770,7 +770,7 @@ class TestBettingRoundContextManager(TestCase):
 
         # Actions
 
-        with managers.BettingRound('test round', table) as betting_round:
+        with engines.BettingRound('test round', table) as betting_round:
             for action, player in zip(actions_to_parse, betting_round.listen()):
                 player.request_action(action)
 
@@ -809,7 +809,7 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as context:
 
-            with managers.BettingRound('test round', table) as betting_round:
+            with engines.BettingRound('test round', table) as betting_round:
 
                 next(betting_round.listen())
                 Andy.request_action(structures.Action(constants.ACTION_BET, 1))
@@ -874,7 +874,7 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as context:
 
-            with managers.BettingRound('test round', table) as betting_round:
+            with engines.BettingRound('test round', table) as betting_round:
                 for action, player in zip(actions_to_parse, betting_round.listen()):
                     player.request_action(action)
 
@@ -915,7 +915,7 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as context:
 
-            with managers.BettingRound('test round', table) as betting_round:
+            with engines.BettingRound('test round', table) as betting_round:
 
                 next(betting_round.listen())
                 Andy.request_action(structures.Action(constants.ACTION_BET, 1))
@@ -985,7 +985,7 @@ class TestBettingRoundContextManager(TestCase):
 
         with self.assertRaises(RuntimeError) as context:
 
-            with managers.BettingRound('test round', table) as betting_round:
+            with engines.BettingRound('test round', table) as betting_round:
                 for action, player in zip(actions_to_parse, betting_round.listen()):
                     player.request_action(action)
                 next(betting_round.listen()) ## try to parse the last action

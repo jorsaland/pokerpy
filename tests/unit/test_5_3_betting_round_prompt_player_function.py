@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, exceptions, managers, messages, structures
+from pokerpy import constants, exceptions, engines, messages, structures
 
 
 class TestBettingRoundPromptPlayerFunction(TestCase):
@@ -38,9 +38,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         Coral.set_as_folded()
         Dino.set_as_folded()
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -63,9 +63,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         table.add_to_current_amount(1)
         Andy.set_as_folded()
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
@@ -88,9 +88,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         table.add_to_current_amount(1)
         Andy.set_as_folded()
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Andy)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -114,9 +114,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         Andy.add_to_current_amount(10)
         table.add_to_current_amount(10)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
@@ -140,9 +140,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         Andy.add_to_current_amount(10)
         table.add_to_current_amount(10)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Andy)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -165,9 +165,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         self.assertEqual(next(generator), Andy)
@@ -194,9 +194,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Andy)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         self.assertEqual(next(generator), Andy)
@@ -223,9 +223,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 1)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Coral)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         self.assertEqual(next(generator), Andy)
@@ -252,9 +252,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 1)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Andy)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
 
-        generator = managers.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
         self.assertEqual(next(generator), Andy)

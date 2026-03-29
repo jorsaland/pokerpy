@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, structures
+from pokerpy import constants, engines, structures
 
 
 class TestBettingRoundGetValidActionNamesFuction(TestCase):
@@ -29,13 +29,13 @@ class TestBettingRoundGetValidActionNamesFuction(TestCase):
 
         # Open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=True)),
+            sorted(engines.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
         # Open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=False)),
+            sorted(engines.get_valid_action_names(amount_to_call=0, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_CHECK, constants.ACTION_BET])
         )
 
@@ -48,25 +48,25 @@ class TestBettingRoundGetValidActionNamesFuction(TestCase):
 
         # Player has enough chips and open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=True)),
+            sorted(engines.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
         )
 
         # Player has enough chips and open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=False)),
+            sorted(engines.get_valid_action_names(amount_to_call=1, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL, constants.ACTION_RAISE])
         )
 
         # Player does not have enough chips and open fold is allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=True)),
+            sorted(engines.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=True)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
         )
 
         # Player does not have enough chips and open fold is not allowed
         self.assertListEqual(
-            sorted(managers.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=False)),
+            sorted(engines.get_valid_action_names(amount_to_call=20, stack=10, open_fold_allowed=False)),
             sorted([constants.ACTION_FOLD, constants.ACTION_CALL])
         )    
 
@@ -86,7 +86,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         """
 
         # Open fold (allowed) not facing a bet
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -97,7 +97,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         ))
 
         # Open fold (allowed) not facing a bet, but having previously placed a blind bet
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 1,
             player_current_amount = 1,
@@ -108,7 +108,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         ))
 
         # Open fold (forbidden) not facing a bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -119,7 +119,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         ))
 
         # Open fold (forbidden) not facing a bet, but having previously placed a blind bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 1,
             player_current_amount = 1,
@@ -137,7 +137,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         """
 
         # Facing a bet
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 1,
             player_current_amount = 0,
@@ -148,7 +148,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsFold(TestCase):
         ))
 
         # Facing a raise
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_FOLD),
             table_current_amount = 2,
             player_current_amount = 1,
@@ -174,7 +174,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
         """
 
         # Not facing a bet
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CHECK),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -185,7 +185,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
         ))
 
         # Not facing a raise, having previously placed a blind bet
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CHECK),
             table_current_amount = 1,
             player_current_amount = 1,
@@ -203,7 +203,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
         """
 
         # Facing a bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CHECK),
             table_current_amount = 1,
             player_current_amount = 0,
@@ -214,7 +214,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCheck(TestCase):
         ))
 
         # Facing a raise
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CHECK),
             table_current_amount = 2,
             player_current_amount = 1,
@@ -240,7 +240,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         """
 
         # Not facing a bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 1),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -251,7 +251,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Not facing a raise
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 1),
             table_current_amount = 3,
             player_current_amount = 3,
@@ -269,7 +269,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         """
 
         # Attempting to call less than the call amount (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 1),
             table_current_amount = 2,
             player_current_amount = 0,
@@ -280,7 +280,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Calling the call amount (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 2),
             table_current_amount = 2,
             player_current_amount = 0,
@@ -291,7 +291,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call more than call amount (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 3),
             table_current_amount = 2,
             player_current_amount = 0,
@@ -309,7 +309,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         """
 
         # Attempting to call less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 9),
             table_current_amount = 12,
             player_current_amount = 0,
@@ -320,7 +320,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Going all-in (10) (PENDING IMPLEMENTATION)
-        # self.assertTrue(managers.action_is_valid(
+        # self.assertTrue(engines.action_is_valid(
         #     action = structures.Action(constants.ACTION_CALL, 10),
         #     table_current_amount = 12,
         #     player_current_amount = 0,
@@ -331,7 +331,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         # ))
 
         # Attempting to call more than the all-in amount (10) and less than the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 11),
             table_current_amount = 12,
             player_current_amount = 0,
@@ -342,7 +342,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 12),
             table_current_amount = 12,
             player_current_amount = 0,
@@ -353,7 +353,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call more than the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 13),
             table_current_amount = 12,
             player_current_amount = 0,
@@ -371,7 +371,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         """
 
         # Attempting to call less than call amount (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 1),
             table_current_amount = 3,
             player_current_amount = 1,
@@ -382,7 +382,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Calling the call amount (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 2),
             table_current_amount = 3,
             player_current_amount = 1,
@@ -393,7 +393,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call more than call amount (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 3),
             table_current_amount = 3,
             player_current_amount = 1,
@@ -411,7 +411,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         """
 
         # Attempting to call less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 9),
             table_current_amount = 13,
             player_current_amount = 1,
@@ -422,7 +422,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Going all-in (10) (PENDING IMPLEMENTATION)
-        # self.assertTrue(managers.action_is_valid(
+        # self.assertTrue(engines.action_is_valid(
         #     action = structures.Action(constants.ACTION_CALL, 10),
         #     table_current_amount = 13,
         #     player_current_amount = 1,
@@ -433,7 +433,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         # ))
 
         # Attempting to call more than the all-in amount (10) and less than the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 11),
             table_current_amount = 13,
             player_current_amount = 1,
@@ -444,7 +444,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 12),
             table_current_amount = 13,
             player_current_amount = 1,
@@ -455,7 +455,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsCall(TestCase):
         ))
 
         # Attempting to call more than the call amount (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_CALL, 13),
             table_current_amount = 13,
             player_current_amount = 1,
@@ -482,7 +482,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         """
 
         # Attempting to bet less than a full bet (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 1),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -493,7 +493,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Betting a full bet (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 2),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -504,7 +504,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Betting more than a full bet (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 3),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -523,7 +523,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         """
 
         # Attempting to bet less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 9),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -534,7 +534,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Going all-in (10)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 10),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -545,7 +545,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet more than the all-in amount (10) and less than a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 11),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -556,7 +556,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 12),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -567,7 +567,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet more than a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 13),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -586,7 +586,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         """
 
         # Attempting to bet less than a full bet (2)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 1),
             table_current_amount = 2,
             player_current_amount = 2,
@@ -597,7 +597,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Betting a full bet (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 2),
             table_current_amount = 2,
             player_current_amount = 2,
@@ -608,7 +608,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Betting more than a full bet (2)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 3),
             table_current_amount = 2,
             player_current_amount = 2,
@@ -627,7 +627,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         """
 
         # Attempting to bet less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 9),
             table_current_amount = 12,
             player_current_amount = 12,
@@ -638,7 +638,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Going all-in (10)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 10),
             table_current_amount = 12,
             player_current_amount = 12,
@@ -649,7 +649,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet more than the all-in amount (10) and less than a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 11),
             table_current_amount = 12,
             player_current_amount = 12,
@@ -660,7 +660,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 12),
             table_current_amount = 12,
             player_current_amount = 12,
@@ -671,7 +671,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Attempting to bet more than a full bet (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 13),
             table_current_amount = 12,
             player_current_amount = 12,
@@ -689,7 +689,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         """
 
         # Facing a bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 1),
             table_current_amount = 1,
             player_current_amount = 0,
@@ -700,7 +700,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsBet(TestCase):
         ))
 
         # Facing a raise
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_BET, 1),
             table_current_amount = 2,
             player_current_amount = 1,
@@ -726,7 +726,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         """
 
         # Not facing a bet
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 1),
             table_current_amount = 0,
             player_current_amount = 0,
@@ -737,7 +737,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Not facing a raise
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 1),
             table_current_amount = 1,
             player_current_amount = 1,
@@ -755,7 +755,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         """
 
         # Attempting to raise less than a full raise (+3)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 7),
             table_current_amount = 5,
             player_current_amount = 0,
@@ -766,7 +766,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Raising a full raise (+3)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 8),
             table_current_amount = 5,
             player_current_amount = 0,
@@ -777,7 +777,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Raising more than a full raise (+3)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 9),
             table_current_amount = 5,
             player_current_amount = 0,
@@ -796,7 +796,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         """
 
         # Attempting to raise less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 9),
             table_current_amount = 6,
             player_current_amount = 0,
@@ -807,7 +807,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Going all-in (10)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 10),
             table_current_amount = 6,
             player_current_amount = 0,
@@ -818,7 +818,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting to raise more than the all-in amount (10) and less than a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 11),
             table_current_amount = 6,
             player_current_amount = 0,
@@ -829,7 +829,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 12),
             table_current_amount = 6,
             player_current_amount = 0,
@@ -840,7 +840,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting to raise more than a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 13),
             table_current_amount = 6,
             player_current_amount = 0,
@@ -858,7 +858,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         """
 
         # Attempting to raise less than a full raise (+3)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 5),
             table_current_amount = 5,
             player_current_amount = 2,
@@ -869,7 +869,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Raising a full raise (+3)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 6),
             table_current_amount = 5,
             player_current_amount = 2,
@@ -880,7 +880,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Raising more than a full raise (+3)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 7),
             table_current_amount = 5,
             player_current_amount = 2,
@@ -899,7 +899,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         """
 
         # Attempting to raise less than the all-in amount (10)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 9),
             table_current_amount = 8,
             player_current_amount = 2,
@@ -910,7 +910,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Going all-in (10)
-        self.assertTrue(managers.action_is_valid(
+        self.assertTrue(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 10),
             table_current_amount = 8,
             player_current_amount = 2,
@@ -921,7 +921,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting to raise more than the all-in amount (10) and less than a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 11),
             table_current_amount = 8,
             player_current_amount = 2,
@@ -932,7 +932,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 12),
             table_current_amount = 8,
             player_current_amount = 2,
@@ -943,7 +943,7 @@ class TestBettingRoundActionIsValidFunctionWhenActionIsRaise(TestCase):
         ))
 
         # Attempting to raise more than a full raise (12)
-        self.assertFalse(managers.action_is_valid(
+        self.assertFalse(engines.action_is_valid(
             action = structures.Action(constants.ACTION_RAISE, 13),
             table_current_amount = 8,
             player_current_amount = 2,

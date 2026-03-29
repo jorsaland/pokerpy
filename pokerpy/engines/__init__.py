@@ -1,5 +1,5 @@
 """
-Namespace for manager-like classes.
+Namespace for engine classes.
 """
 
 

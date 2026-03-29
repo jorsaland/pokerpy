@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, messages, structures
+from pokerpy import constants, engines, messages, structures
 
 
 class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
@@ -36,7 +36,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -73,7 +73,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
             structures.Player('Dino', 10),
         ])
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -111,7 +111,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -164,7 +164,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -202,7 +202,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -242,7 +242,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -285,7 +285,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -334,7 +334,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Action(constants.ACTION_RAISE, 1),
         ]
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,
@@ -383,7 +383,7 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Action(constants.ACTION_FOLD),
         ]
 
-        generator = managers.await_player(
+        generator = engines.await_player(
             player = Andy,
             table_current_amount = table.current_amount,
             smallest_bet_amount = 2,

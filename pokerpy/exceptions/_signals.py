@@ -1,5 +1,5 @@
 """
-Defines the exceptions that send signals to the managers.
+Defines the exceptions that send signals to the engines.
 """
 
 

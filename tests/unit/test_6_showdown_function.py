@@ -1,5 +1,5 @@
 """
-Defines unit tests on functions that are part of the managers module.
+Defines unit tests on functions that are part of the engines module.
 """
 
 
@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import managers, messages, structures
+from pokerpy import engines, messages, structures
 
 
 class TestInput(TestCase):
@@ -30,7 +30,7 @@ class TestInput(TestCase):
 
 
         with self.assertRaises(TypeError) as context:
-            managers.reset_cycle_states('Wood')
+            engines.reset_cycle_states('Wood')
         self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
 
 
@@ -73,7 +73,7 @@ class TestShowdownOneWinner(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -119,7 +119,7 @@ class TestShowdownOneWinner(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -177,7 +177,7 @@ class TestShowdownOneWinner(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -243,7 +243,7 @@ class TestShowdownTie(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -301,7 +301,7 @@ class TestShowdownTie(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -359,7 +359,7 @@ class TestShowdownTie(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)
@@ -417,7 +417,7 @@ class TestShowdownTie(TestCase):
         self.assertEqual(Coral.stack, 10)
         self.assertEqual(Dino.stack, 10)
 
-        managers.showdown(table)
+        engines.showdown(table)
 
         # After states
         self.assertEqual(Andy.stack, 15)

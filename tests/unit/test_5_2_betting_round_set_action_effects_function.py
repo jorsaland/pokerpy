@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, managers, structures
+from pokerpy import constants, engines, structures
 
 
 class TestBettingRoundSetActionEffectsFunction(TestCase):
@@ -38,7 +38,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_FOLD)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino)
 
         # States before
 
@@ -53,7 +53,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -87,7 +87,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CHECK)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino)
 
         # States before
 
@@ -102,7 +102,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -137,7 +137,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CALL, 1)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -152,7 +152,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -187,7 +187,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_CALL, 2)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -202,7 +202,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -238,7 +238,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # action = structures.Action(constants.ACTION_BET, 1)
 
-        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        # betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # # States before
 
@@ -253,7 +253,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # # Run function
 
-        # managers.set_action_effects(
+        # engines.set_action_effects(
         #     betting_round = betting_round,
         #     player = Boa,
         #     action = action,
@@ -287,7 +287,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 2)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -302,7 +302,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -336,7 +336,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_BET, 3)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
 
         # States before
 
@@ -351,7 +351,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -388,7 +388,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # action = structures.Action(constants.ACTION_RAISE, 7)
 
-        # betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        # betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
         # betting_round.table.set_smallest_raise_amount(3)
 
         # # States before
@@ -404,7 +404,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # # Run function
 
-        # managers.set_action_effects(
+        # engines.set_action_effects(
         #     betting_round = betting_round,
         #     player = Boa,
         #     action = action,
@@ -439,7 +439,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_RAISE, 8)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
         betting_round.table.set_smallest_raise_amount(3)
 
         # States before
@@ -455,7 +455,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
@@ -490,7 +490,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         action = structures.Action(constants.ACTION_RAISE, 9)
 
-        betting_round = managers.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
+        betting_round = engines.BettingRound('test round', table, stopping_player=Dino, smallest_bet_amount=2)
         betting_round.table.set_smallest_raise_amount(3)
 
         # States before
@@ -506,7 +506,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
 
         # Run function
 
-        managers.set_action_effects(
+        engines.set_action_effects(
             betting_round = betting_round,
             player = Boa,
             action = action,
