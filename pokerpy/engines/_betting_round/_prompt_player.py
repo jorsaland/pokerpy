@@ -50,7 +50,7 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
         raise CloseBettingRoundSignal(signal_last_player_in_hand)
 
     # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
-    if current_player not in betting_round.table.players_in_hand:
+    if current_player.is_folded:
         if current_player != betting_round.table.stopping_player:
             raise JumpToNextPlayerSignal(signal_folded_player)
         raise CloseBettingRoundSignal(signal_folded_stopping_player)
