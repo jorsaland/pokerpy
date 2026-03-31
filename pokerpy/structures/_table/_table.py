@@ -40,10 +40,10 @@ from ._methods_related_to_cards import (
 from ._methods_related_to_money import (
     method_add_to_central_pot,
     method_reset_central_pot,
-    method_add_to_current_amount,
-    method_reset_current_amount,
-    method_set_smallest_bet_amount,
-    method_set_smallest_raise_amount,
+    method_set_current_level,
+    method_set_complete_current_level,
+    method_set_full_bet,
+    method_set_full_raise_increase,
 )
 from ._methods_related_to_players import (
     method_get_next_player,
@@ -72,7 +72,7 @@ class Table:
         self,
         players: list[Player],
         *,
-        smallest_bet_amount: int = 1,
+        full_bet: int = 1,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
     ):
@@ -84,8 +84,8 @@ class Table:
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(msg_not_all_player_instances)
         
-        if not isinstance(smallest_bet_amount, int):
-            raise TypeError(msg_not_int.format(type(smallest_bet_amount).__name__))
+        if not isinstance(full_bet, int):
+            raise TypeError(msg_not_int.format(type(full_bet).__name__))
         
         if starting_player is not None and not isinstance(starting_player, Player):
             raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
@@ -98,8 +98,8 @@ class Table:
         if not players:
             raise ValueError(msg_no_players_in_table)
 
-        if smallest_bet_amount <= 0:
-            raise ValueError(msg_not_positive_value.format(smallest_bet_amount))
+        if full_bet <= 0:
+            raise ValueError(msg_not_positive_value.format(full_bet))
 
         if starting_player is None:
             starting_player = players[0]
@@ -115,12 +115,13 @@ class Table:
         # Assign attributes
 
         self._players = players
-        self._smallest_bet_amount = smallest_bet_amount
-        self._smallest_raise_amount = smallest_bet_amount
+        self._full_bet = full_bet
+        self._full_raise_increase = full_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
 
-        self._current_amount = 0
+        self._current_level = 0
+        self._complete_current_level = 0
         self._central_pot = 0
 
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
@@ -144,16 +145,20 @@ class Table:
         return tuple(player for player in self.players if not player.is_folded)
 
     @property
-    def smallest_bet_amount(self):
-        return self._smallest_bet_amount
+    def full_bet(self):
+        return self._full_bet
 
     @property
-    def smallest_raise_amount(self):
-        return self._smallest_raise_amount
+    def full_raise_increase(self):
+        return self._full_raise_increase
 
     @property
-    def current_amount(self):
-        return self._current_amount
+    def current_level(self):
+        return self._current_level
+
+    @property
+    def complete_current_level(self):
+        return self._complete_current_level
 
     @property
     def central_pot(self):
@@ -201,7 +206,7 @@ class Table:
     def reset_common_cards(self):
 
         """
-        Resets the common cards by clearing them.
+        Clears the space for common cards.
         """
 
         return method_reset_common_cards(self)
@@ -210,40 +215,40 @@ class Table:
     # Methods related to money
 
 
-    def set_smallest_bet_amount(self, amount: int):
+    def set_full_bet(self, amount: int):
 
         """
         Sets the amount needed for a full bet.
         """
 
-        return method_set_smallest_bet_amount(self, amount)
+        return method_set_full_bet(self, amount)
 
 
-    def set_smallest_raise_amount(self, amount: int):
-
-        """
-        Sets the amount needed for a full raise.
-        """
-
-        return method_set_smallest_raise_amount(self, amount)
-
-
-    def add_to_current_amount(self, amount: int):
+    def set_full_raise_increase(self, amount: int):
 
         """
-        Increases the current chip amount that needs to be responded by players.
+        Sets the amount needed to increase the current complete level for a full raise.
         """
 
-        return method_add_to_current_amount(self, amount)
-    
+        return method_set_full_raise_increase(self, amount)
 
-    def reset_current_amount(self):
+
+    def set_current_level(self, amount: int):
 
         """
-        Resets the current amount to zero.
+        Sets the current level.
         """
 
-        return method_reset_current_amount(self)
+        return method_set_current_level(self, amount)
+
+
+    def set_complete_current_level(self, amount: int):
+
+        """
+        Sets the current full raise or full bet.
+        """
+
+        return method_set_complete_current_level(self, amount)
 
 
     def add_to_central_pot(self, amount: int):

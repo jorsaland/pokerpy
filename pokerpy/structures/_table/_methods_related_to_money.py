@@ -28,33 +28,37 @@ if TYPE_CHECKING:
     from ._table import Table
 
 
-def method_set_smallest_bet_amount(self: "Table", amount: int):
+def method_set_full_bet(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
-    self.set_smallest_raise_amount(amount)
-    self._smallest_bet_amount = amount
+    self._full_bet = amount
+    self.set_full_raise_increase(amount)
 
 
-def method_set_smallest_raise_amount(self: "Table", amount: int):
+def method_set_full_raise_increase(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
-    self._smallest_raise_amount = amount
+    self._full_raise_increase = amount
 
 
-def method_add_to_current_amount(self: "Table", amount: int):
+def method_set_current_level(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
     if amount < 0:
         raise ValueError(msg_not_positive_or_zero_value.format(amount))
-    self._current_amount += amount
+    self._current_level = amount
 
 
-def method_reset_current_amount(self: "Table"):
-    self._current_amount = 0
+def method_set_complete_current_level(self: "Table", amount: int):
+    if not isinstance(amount, int):
+        raise TypeError(msg_not_int.format(type(amount).__name__))
+    if amount < 0:
+        raise ValueError(msg_not_positive_or_zero_value.format(amount))
+    self._complete_current_level = amount
 
 
 def method_add_to_central_pot(self: "Table", amount: int):

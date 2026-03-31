@@ -82,7 +82,7 @@ class BettingRound:
         self._is_completed = False
 
         if smallest_bet_amount is not None:
-            table.set_smallest_bet_amount(smallest_bet_amount)
+            table.set_full_bet(smallest_bet_amount)
 
         if starting_player is not None:
             table.set_starting_player(starting_player)
@@ -213,10 +213,12 @@ class BettingRound:
         if not isinstance(table, Table):
             raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-        table.set_smallest_raise_amount(table.smallest_bet_amount)
-        table.reset_current_amount()
+        table.set_full_raise_increase(table.full_bet)
+        table.set_current_level(0)
+        table.set_complete_current_level(0)
         table.set_stopping_player(table.get_previous_player(table.starting_player))
 
         for player in table.players:
+            player.unset_as_played()
             player.reset_action()
             player.reset_current_amount()

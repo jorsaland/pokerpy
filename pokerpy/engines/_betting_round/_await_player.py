@@ -23,8 +23,7 @@ from pokerpy.messages import msg_forbidden_action
 from pokerpy.structures import Player
 
 
-from ._action_is_valid import action_is_valid
-
+from ._get_valid_actions import get_valid_actions
 
 
 logger = get_logger()
@@ -32,9 +31,10 @@ logger = get_logger()
 
 def await_player(
     *, player: Player,
-    table_current_amount: int,
-    smallest_bet_amount: int,
-    smallest_raise_amount: int,
+    current_level: int,
+    complete_current_level: int,
+    full_bet: int,
+    full_raise_increase: int,
     open_fold_allowed: bool,
     ignore_invalid_actions: bool
 ):
@@ -57,15 +57,16 @@ def await_player(
         if action is None:
             continue
 
-        if action_is_valid(
-            action = action,
-            table_current_amount = table_current_amount,
-            player_current_amount = player.current_amount,
-            player_stack = player.stack,
-            smallest_bet_amount = smallest_bet_amount,
-            smallest_raise_amount = smallest_raise_amount,
-            open_fold_allowed = open_fold_allowed
-        ):
+        amount_range_by_action = get_valid_actions(
+            player = player,
+            current_level = current_level,
+            complete_current_level = complete_current_level,
+            full_bet = full_bet,
+            full_raise_increase = full_raise_increase,
+            open_fold_allowed = open_fold_allowed,
+        )
+        amount_range = amount_range_by_action.get(action.name)
+        if amount_range is not None and action.amount in amount_range:
             break
 
         logger.debug(f'--- invalid action: {action.name}s {action.amount}')

@@ -20,5 +20,3 @@ aggressive_action_names = [
     ACTION_BET,
     ACTION_RAISE
 ]
-
-passive_action_names = [action for action in possible_action_names if action not in aggressive_action_names]

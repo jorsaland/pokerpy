@@ -66,6 +66,7 @@ class Player:
         self._hand: (Hand|None) = None
         self._current_amount = 0 # this is set by instance methods
         self._stack = stack
+        self._has_played = False
         self._is_folded = False
 
 
@@ -96,6 +97,10 @@ class Player:
     @property
     def is_folded(self):
         return self._is_folded
+
+    @property
+    def has_played(self):
+        return self._has_played
 
 
     def __repr__(self):
@@ -234,7 +239,25 @@ class Player:
         self._stack -= amount
 
 
-    # Methods to affect fold status
+    # Methods to affect play status
+
+
+    def set_as_played(self):
+
+        """
+        Sets the player as played.
+        """
+
+        self._has_played = True
+
+
+    def unset_as_played(self):
+
+        """
+        Unsets the player as played.
+        """
+
+        self._has_played = False
 
 
     def set_as_folded(self):

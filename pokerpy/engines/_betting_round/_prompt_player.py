@@ -64,9 +64,10 @@ def prompt_player(betting_round: "BettingRound", current_player: Player):
     # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = current_player,
-        table_current_amount = betting_round.table.current_amount,
-        smallest_bet_amount = betting_round.table.smallest_bet_amount,
-        smallest_raise_amount = betting_round.table.smallest_raise_amount,
+        current_level = betting_round.table.current_level,
+        complete_current_level = betting_round.table.complete_current_level,
+        full_bet = betting_round.table.full_bet,
+        full_raise_increase = betting_round.table.full_raise_increase,
         open_fold_allowed = betting_round.open_fold_allowed,
         ignore_invalid_actions = betting_round.ignore_invalid_actions,
     )
