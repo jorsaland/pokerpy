@@ -44,10 +44,10 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
     complete_current_level = betting_round.table.complete_current_level
     full_raise_increase = betting_round.table.full_raise_increase
 
-    player.set_as_played()
+    player.mark_has_played()
 
     if action.name == ACTION_FOLD:
-        player.set_as_folded()
+        player.mark_is_folded()
 
     if action.amount > 0:
         player.remove_from_stack(action.amount)

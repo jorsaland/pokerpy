@@ -219,6 +219,6 @@ class BettingRound:
         table.set_stopping_player(table.get_previous_player(table.starting_player))
 
         for player in table.players:
-            player.unset_as_played()
+            player.unmark_has_played()
             player.reset_action()
             player.reset_current_amount()

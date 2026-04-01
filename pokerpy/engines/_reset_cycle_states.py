@@ -43,4 +43,4 @@ def reset_cycle_states(table: Table):
     for player in table.players:
         player.reset_cards()
         player.reset_hand()
-        player.unset_as_folded()
+        player.unmark_is_folded()
