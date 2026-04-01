@@ -27,10 +27,10 @@ flowchart LR
     T(Table)@{ shape: circle }
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text } --> T
     T.assign_common_card(assign_common_card)@{ shape: text } --> T
-    T.set_smallest_bet_amount(set_smallest_bet_amount)@{ shape: text } --> T
-    T.set_smallest_raise_amount(set_smallest_raise_amount)@{ shape: text } --> T
-    T.add_to_current_amount(add_to_current_amount)@{ shape: text } --> T
-    T.reset_current_amount(reset_current_amount)@{ shape: text } --> T
+    T.set_full_bet(set_full_bet)@{ shape: text } --> T
+    T.set_full_raise_increase(set_full_raise_increase)@{ shape: text } --> T
+    T.set_current_level(set_current_level)@{ shape: text } --> T
+    T.set_complete_current_level(set_complete_current_level)@{ shape: text } --> T
     T.add_to_central_pot(add_to_central_pot)@{ shape: text } --> T
     T.set_starting_player(set_starting_player)@{ shape: text } --> T
     T.set_stopping_player(set_stopping_player)@{ shape: text } --> T
@@ -45,11 +45,11 @@ flowchart LR
     P.request_action(request_action)@{ shape: text } --> P
     P.reset_action(reset_action)@{ shape: text } --> P
     P.assign_card(assign_card)@{ shape: text } --> P
-    P.reset_cards(reset_cards)@{ shape: text } --> P
     P.add_to_current_amount(add_to_current_amount)@{ shape: text } --> P
-    P.reset_current_amount(reset_current_amount)@{ shape: text } --> P
     P.remove_from_stack(remove_from_stack)@{ shape: text } --> P
-    P.set_as_folded(set_as_folded)@{ shape: text } --> P
+    P.mark_has_played(mark_has_played)@{ shape: text } --> P
+    P.unmark_has_played(unmark_has_played)@{ shape: text } --> P
+    P.mark_is_folded(mark_is_folded)@{ shape: text } --> P
 
     H(Hand)@{ shape: circle }
 
@@ -61,27 +61,29 @@ flowchart LR
 
     C --> BR.close
     C --> BR.listen
+
     C --> P.request_action
 
     BR --> T.remove_card_from_deck
     BR --> T.assign_common_card
-    BR --> T.set_smallest_bet_amount
-    BR --> T.set_smallest_raise_amount
-    BR --> T.add_to_current_amount
-    BR --> T.reset_current_amount
+    BR --> T.set_full_bet
+    BR --> T.set_full_raise_increase
+    BR --> T.set_current_level
+    BR --> T.set_complete_current_level
     BR --> T.add_to_central_pot
     BR --> T.set_starting_player
     BR --> T.set_stopping_player
     BR --> T.get_previous_active_player
     BR --> T.iter_players
     BR --> T.get_previous_player
+
     BR --> P.reset_action
     BR --> P.assign_card
-    BR --> P.reset_cards
     BR --> P.add_to_current_amount
-    BR --> P.reset_current_amount
     BR --> P.remove_from_stack
-    BR --> P.set_as_folded
+    BR --> P.mark_has_played
+    BR --> P.unmark_has_played
+    BR --> P.mark_is_folded
 
     H ---> Cd.get_deck_position
 
