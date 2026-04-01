@@ -130,46 +130,63 @@ class Table:
 
     @property
     def players(self):
+        "Players that are part of the table."
         return tuple(self._players)
 
     @property
     def starting_player(self):
+        "Player who acts first in the betting round."
         return self._starting_player
 
     @property
     def stopping_player(self):
+        "Player who acts last in the betting round."
         return self._stopping_player
 
     @property
     def players_in_hand(self):
+        "Players that are playing for the pot."
         return tuple(player for player in self.players if not player.is_folded)
 
     @property
     def full_bet(self):
+        "Minimum amount to bet (unless going all-in)."
         return self._full_bet
 
     @property
     def full_raise_increase(self):
+        "Minimum amount to raise (unless going all-in)."
         return self._full_raise_increase
 
     @property
     def current_level(self):
+        "Largest amount a player has placed in front during the current betting round."
         return self._current_level
 
     @property
     def complete_current_level(self):
+        """
+        Largest amount a player has placed in front during the current betting round that can be
+        considered as a full bet or raise.
+        """
         return self._complete_current_level
 
     @property
     def central_pot(self):
+        """
+        Pot chips that have already been placed in the center of the table in previous betting
+        rounds.
+        """
         return self._central_pot
 
     @property
     def deck(self):
+        "Cards that are available to be dealt."
         return tuple(self._deck)
     
     @property
     def common_cards(self):
+        "Dealt cards that are common to all players."
         return tuple(self._common_cards)
 
 
@@ -177,38 +194,22 @@ class Table:
 
 
     def remove_card_from_deck(self, card: Card):
-
-        """
-        Removes a card from the deck.
-        """
-
+        "Removes a card from the deck property."
         return method_remove_card_from_deck(self, card)
 
 
     def reset_deck(self):
-
-        """
-        Resets the deck by restoring all its cards.
-        """
-
+        "Resets the deck property back to have all the cards."
         return method_reset_deck(self)
 
 
     def assign_common_card(self, card: Card):
-
-        """
-        Deals a common card to the table.
-        """
-
+        "Adds a card to the common_cards property."
         return method_assign_common_card(self, card)
 
 
     def reset_common_cards(self):
-
-        """
-        Clears the space for common cards.
-        """
-
+        "Clears the common_cards property."
         return method_reset_common_cards(self)
 
 
@@ -216,56 +217,32 @@ class Table:
 
 
     def set_full_bet(self, amount: int):
-
-        """
-        Sets the amount needed for a full bet.
-        """
-
+        "Sets the full_bet property."
         return method_set_full_bet(self, amount)
 
 
     def set_full_raise_increase(self, amount: int):
-
-        """
-        Sets the amount needed to increase the current complete level for a full raise.
-        """
-
+        "Sets the full_raise_increase property."
         return method_set_full_raise_increase(self, amount)
 
 
     def set_current_level(self, amount: int):
-
-        """
-        Sets the current level.
-        """
-
+        "Sets the current_level property."
         return method_set_current_level(self, amount)
 
 
     def set_complete_current_level(self, amount: int):
-
-        """
-        Sets the current full raise or full bet.
-        """
-
+        "Sets the complete_current_level property."
         return method_set_complete_current_level(self, amount)
 
 
     def add_to_central_pot(self, amount: int):
-        
-        """
-        Increases the pot in the center of the table by an amount.
-        """
-
+        "Adds an amount to the central_pot property."
         return method_add_to_central_pot(self, amount)
 
 
     def reset_central_pot(self):
-
-        """
-        Resets the central pot to zero.
-        """
-
+        "Resets the central_pot property back to zero."
         return method_reset_central_pot(self)
 
 
@@ -273,54 +250,30 @@ class Table:
 
 
     def set_starting_player(self, player: Player):
-
-        """
-        Marks the player who acts first in the betting round.
-        """
-
+        "Sets the starting_player property."
         return method_set_starting_player(self, player)
     
 
     def set_stopping_player(self, player: Player):
-
-        """
-        Marks the player who acts last before closing the betting round is closed.
-        """
-
+        "Sets the stopping_player property."
         return method_set_stopping_player(self, player)
 
 
     def get_next_player(self, reference_player: Player):
-
-        """
-        Retrieves the player next.
-        """
-
+        "Retrieves the player next to a reference player."
         return method_get_next_player(self, reference_player)
 
 
     def get_previous_player(self, reference_player: Player):
-
-        """
-        Retrieves the player before.
-        """
-
+        "Retrieves the player before a reference player."
         return method_get_previous_player(self, reference_player)
 
 
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
-
-        """
-        Iterates over every player.
-        """
-
+        "Iterates over all the players."
         return method_iter_players(self, starting_player, reverse)
 
 
     def get_previous_active_player(self, reference_player: Player):
-
-        """
-        Retrieves the first player before who is still in the hand cycle, or None if everybody is marked as folded.
-        """
-
+        "Retrieves the player before a reference player that is not either folded or all-in."
         return method_get_previous_active_player(self, reference_player)
