@@ -92,7 +92,7 @@ class Player:
 
     @property
     def current_amount(self):
-        "Current chip amount that the player has placed in front."
+        "Amount of chips that the player has placed in front during the betting round."
         return self._current_amount
     
     @property
@@ -143,7 +143,7 @@ class Player:
 
 
     def reset_cards(self):
-        "Clears the cards of the player."
+        "Clears the cards property."
         self._cards.clear()
 
 

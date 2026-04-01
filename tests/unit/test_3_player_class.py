@@ -277,19 +277,34 @@ class TestPlayerClass(TestCase):
 
 
         """
-        Runs test cases on set_as_folded and unset_as_folded methods.
+        Runs test cases on mark_is_folded and unmark_is_folded methods.
         """
 
 
         Andy = structures.Player('Andy', 1000)
 
-        # Before and after effects
-
         self.assertFalse(Andy.is_folded)
-        Andy.set_as_folded()
+        Andy.mark_is_folded()
         self.assertTrue(Andy.is_folded)
-        Andy.unset_as_folded()
+        Andy.unmark_is_folded()
         self.assertFalse(Andy.is_folded)
+
+
+    def test_playing_status_methods(self):
+
+
+        """
+        Runs test cases on mark_is_folded and unmark_is_folded methods.
+        """
+
+
+        Andy = structures.Player('Andy', 1000)
+
+        self.assertFalse(Andy.has_played)
+        Andy.mark_has_played()
+        self.assertTrue(Andy.has_played)
+        Andy.unmark_has_played()
+        self.assertFalse(Andy.has_played)
 
 
 if __name__ == '__main__':
