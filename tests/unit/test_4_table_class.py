@@ -13,11 +13,11 @@ from unittest import main, TestCase
 from pokerpy import constants, messages, structures
 
 
-class TestTableClass(TestCase):
+class TestTableClassInstantiation(TestCase):
 
 
     """
-    Runs unit tests on Table class.
+    Runs unit tests on Table class instantiation.
     """
 
 
@@ -31,69 +31,115 @@ class TestTableClass(TestCase):
 
         # Valid inputs
 
-        structures.Table([
-            structures.Player('Andy', 10),
-            structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
         ])
+        self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
+        self.assertEqual(table.starting_player, Andy)
+        self.assertEqual(table.stopping_player, Coral)
+        self.assertSetEqual(set(table.players_in_hand), {Andy, Boa, Coral})
+        self.assertEqual(table.full_bet, 1)
+        self.assertEqual(table.full_raise_increase, 1)
+        self.assertEqual(table.current_level, 0)
+        self.assertEqual(table.complete_current_level, 0)
+        self.assertEqual(table.central_pot, 0)
+        self.assertSetEqual(
+            set(table.deck),
+            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits}
+        )
+        self.assertSetEqual(set(table.common_cards), set())
 
+        table = structures.Table(
+            players = [
+                Andy := structures.Player('Andy', 10),
+                Boa := structures.Player('Boa', 10),
+                Coral := structures.Player('Coral', 10),
+            ],
+            full_bet = 5,
+            starting_player = Boa,
+            stopping_player = Andy,
+        )
+        self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
+        self.assertEqual(table.starting_player, Boa)
+        self.assertEqual(table.stopping_player, Andy)
+        self.assertSetEqual(set(table.players_in_hand), {Andy, Boa, Coral})
+        self.assertEqual(table.full_bet, 5)
+        self.assertEqual(table.full_raise_increase, 5)
+        self.assertEqual(table.current_level, 0)
+        self.assertEqual(table.complete_current_level, 0)
+        self.assertEqual(table.central_pot, 0)
+        self.assertSetEqual(
+            set(table.deck),
+            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits}
+        )
+        self.assertSetEqual(set(table.common_cards), set())
 
         # Type errors
 
         # Invalid table
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             structures.Table('Wood')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_list.format(str.__name__))
+        self.assertEqual(context.exception.args[0], messages.msg_not_list.format(str.__name__))
 
         # Invalid player in table
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             structures.Table([structures.Player('Andy', 10), 'Boa'])
-        self.assertEqual(cm.exception.args[0], messages.msg_not_all_player_instances)
+        self.assertEqual(context.exception.args[0], messages.msg_not_all_player_instances)
 
         # Invalid smallest bet
-        with self.assertRaises(TypeError) as cm:
-            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount='zero')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+        with self.assertRaises(TypeError) as context:
+            structures.Table([structures.Player('Andy', 10)], full_bet='zero')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         # Invalid starting player
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             structures.Table([structures.Player('Andy', 10)], starting_player='Andy')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
 
         # Invalid stopping player
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             structures.Table([structures.Player('Andy', 10)], stopping_player='Andy')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
 
         # Value errors
 
         # Empty table
-        with self.assertRaises(ValueError) as cm:
+        with self.assertRaises(ValueError) as context:
             structures.Table([])
-        self.assertEqual(cm.exception.args[0], messages.msg_no_players_in_table)
+        self.assertEqual(context.exception.args[0], messages.msg_no_players_in_table)
 
         # Zero smallest bet
-        with self.assertRaises(ValueError) as cm:
-            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount=0)
-        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(0))
+        with self.assertRaises(ValueError) as context:
+            structures.Table([structures.Player('Andy', 10)], full_bet=0)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
 
         # Negative smallest bet
-        with self.assertRaises(ValueError) as cm:
-            structures.Table([structures.Player('Andy', 10)], smallest_bet_amount=-1)
-        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(-1))
+        with self.assertRaises(ValueError) as context:
+            structures.Table([structures.Player('Andy', 10)], full_bet=-1)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-1))
 
         # Starting player not in table
-        with self.assertRaises(ValueError) as cm:
-            structures.Table([structures.Player('Andy', 10)], starting_player=structures.Player('Boa', 10))
-        self.assertEqual(cm.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
+        with self.assertRaises(ValueError) as context:
+            structures.Table([structures.Player('Andy', 10)], starting_player=structures.Player('Dino', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
 
         # Stopping player not in table
-        with self.assertRaises(ValueError) as cm:
-            structures.Table([structures.Player('Andy', 10)], stopping_player=structures.Player('Boa', 10))
-        self.assertEqual(cm.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
+        with self.assertRaises(ValueError) as context:
+            structures.Table([structures.Player('Andy', 10)], stopping_player=structures.Player('Dino', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
 
 
-    def test_deck_methods(self):
+class TestTableClassMethodsForCards(TestCase):
+
+
+    """
+    Runs unit tests on Table class related to cards.
+    """
+
+
+    def test_methods_for_deck(self):
 
 
         """
@@ -137,17 +183,17 @@ class TestTableClass(TestCase):
 
         # Invalid inputs
 
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             table.remove_card_from_deck('7c')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
+        self.assertEqual(context.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
         table.remove_card_from_deck(structures.Card('2', 's'))
-        with self.assertRaises(ValueError) as cm:
+        with self.assertRaises(ValueError) as context:
             table.remove_card_from_deck(structures.Card('2', 's'))
-        self.assertEqual(cm.exception.args[0], messages.msg_card_not_in_deck)
+        self.assertEqual(context.exception.args[0], messages.msg_card_not_in_deck)
 
 
-    def test_common_card_methods(self):
+    def test_methods_for_common_cards(self):
 
 
         """
@@ -180,21 +226,30 @@ class TestTableClass(TestCase):
 
         # Invalid inputs
 
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError) as context:
             table.assign_common_card('7c')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
+        self.assertEqual(context.exception.args[0], messages.msg_not_card_instance.format(str.__name__))
 
         table.assign_common_card(structures.Card('7', 'c'))
-        with self.assertRaises(ValueError) as cm:
+        with self.assertRaises(ValueError) as context:
             table.assign_common_card(structures.Card('7', 'c'))
-        self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
+        self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
 
 
-    def test_current_amount_methods(self):
+class TestTableClassMethodsForCards(TestCase):
+
+
+    """
+    Runs unit tests on Table class related to money.
+    """
+
+
+    def test_methods_to_set_amounts(self):
 
 
         """
-        Runs test cases on add_to_current_amount and reset_current_amount methods.
+        Runs test cases on method_set_full_bet, method_set_full_raise_increase,
+        method_set_current_level and method_set_complete_current_level methods.
         """
 
 
@@ -204,30 +259,71 @@ class TestTableClass(TestCase):
             structures.Player('Coral', 10),
         ])
 
+        # Valid inputs
 
-        # Before and after effects
+        table.set_full_bet(5)
+        self.assertEqual(table.full_bet, 5)
+        table.set_full_bet(10)
+        self.assertEqual(table.full_bet, 10)
 
-        self.assertEqual(table.current_amount, 0)
+        table.set_full_raise_increase(5)
+        self.assertEqual(table.full_raise_increase, 5)
+        table.set_full_raise_increase(10)
+        self.assertEqual(table.full_raise_increase, 10)
 
-        table.add_to_current_amount(0)
-        table.add_to_current_amount(50)
-        table.add_to_current_amount(100)
+        table.set_current_level(5)
+        self.assertEqual(table.current_level, 5)
+        table.set_current_level(10)
+        self.assertEqual(table.current_level, 10)
 
-        self.assertEqual(table.current_amount, 150)
+        table.set_complete_current_level(5)
+        self.assertEqual(table.complete_current_level, 5)
+        table.set_complete_current_level(10)
+        self.assertEqual(table.complete_current_level, 10)
 
-        table.reset_current_amount()
+        # Type errors
 
-        self.assertEqual(table.current_amount, 0)
+        with self.assertRaises(TypeError) as context:
+            table.set_full_bet('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
-        # Invalid inputs
+        with self.assertRaises(TypeError) as context:
+            table.set_full_raise_increase('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
-        with self.assertRaises(TypeError) as cm:
-            table.add_to_current_amount('100')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+        with self.assertRaises(TypeError) as context:
+            table.set_current_level('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_current_amount(-100)
-        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
+        with self.assertRaises(TypeError) as context:
+            table.set_complete_current_level('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        # Value errors
+
+        with self.assertRaises(ValueError) as context:
+            table.set_full_bet(-10)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-10))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_full_bet(0)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_full_raise_increase(-10)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-10))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_full_raise_increase(0)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_complete_current_level(-10)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_complete_current_level(-10)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
 
 
     def test_central_pot_methods(self):
@@ -250,10 +346,10 @@ class TestTableClass(TestCase):
         self.assertEqual(table.central_pot, 0)
 
         table.add_to_central_pot(0)
-        table.add_to_central_pot(50)
-        table.add_to_central_pot(100)
+        table.add_to_central_pot(5)
+        table.add_to_central_pot(10)
 
-        self.assertEqual(table.central_pot, 150)
+        self.assertEqual(table.central_pot, 15)
 
         table.reset_central_pot()
 
@@ -261,13 +357,22 @@ class TestTableClass(TestCase):
 
         # Invalid inputs
 
-        with self.assertRaises(TypeError) as cm:
-            table.add_to_central_pot('100')
-        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+        with self.assertRaises(TypeError) as context:
+            table.add_to_central_pot('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
-        with self.assertRaises(ValueError) as cm:
-            table.add_to_central_pot(-100)
-        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
+        with self.assertRaises(ValueError) as context:
+            table.add_to_central_pot(-10)
+        self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
+
+
+
+class TestTableClassMethodsForIteration(TestCase):
+
+
+    """
+    Runs unit tests on Table class related to iteration.
+    """
 
 
     def test_get_next_player_method(self):
@@ -530,7 +635,7 @@ class TestTableClass(TestCase):
         self.assertEqual(table.get_previous_active_player(Coral), Boa)
 
         # One folded
-        Andy.set_as_folded()
+        Andy.mark_is_folded()
         self.assertEqual(table.get_previous_active_player(Andy), Coral)
         self.assertEqual(table.get_previous_active_player(Boa), Coral)
         self.assertEqual(table.get_previous_active_player(Coral), Boa)
@@ -542,7 +647,7 @@ class TestTableClass(TestCase):
         self.assertEqual(table.get_previous_active_player(Coral), Coral)
 
         # Nobody active
-        Coral.set_as_folded()
+        Coral.mark_is_folded()
         self.assertIsNone(table.get_previous_active_player(Andy))
         self.assertIsNone(table.get_previous_active_player(Boa))
         self.assertIsNone(table.get_previous_active_player(Coral))
