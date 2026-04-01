@@ -28,7 +28,7 @@ from ._arrange_cards import arrange_cards
 def get_category(cards: list[Card]):
 
     """
-    Determines the name of the hand.
+    Determines the hand category.
     """
 
     # Convert cards iterable

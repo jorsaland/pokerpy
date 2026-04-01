@@ -99,10 +99,9 @@ class Card:
 
 
     def get_deck_position(self):
-
         """
-        Gets the card position in a sorted deck.
+        Retrieves the position of the card in a deck that is sorted from lowest value to highest
+        value, and from lowest suit to highest suit.
         """
-
         value_and_suit = (self.value, self.suit)
         return full_sorted_values_and_suits.index(value_and_suit)

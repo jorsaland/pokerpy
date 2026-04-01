@@ -64,10 +64,12 @@ class Hand:
 
     @property
     def cards(self):
+        "Cards that are part of the hand."
         return self._cards
 
     @property
     def category(self):
+        "Hand category."
         return self._category
 
 

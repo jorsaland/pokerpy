@@ -68,10 +68,12 @@ class Action:
 
     @property
     def name(self):
+        "Name of the action."
         return self._name
     
     @property
     def amount(self):
+        "Amount put by the player when performing the action."
         return self._amount
 
 
