@@ -38,9 +38,10 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -75,9 +76,10 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -113,9 +115,10 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -160,15 +163,17 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -198,15 +203,17 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -238,15 +245,17 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -281,15 +290,17 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = False,
         )
@@ -326,7 +337,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),
@@ -336,9 +348,10 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
@@ -375,7 +388,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.add_to_current_amount(2)
+        table.set_current_level(2)
+        table.set_complete_current_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),
@@ -385,9 +399,10 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            table_current_amount = table.current_amount,
-            smallest_bet_amount = 2,
-            smallest_raise_amount = 2,
+            current_level = table.current_level,
+            complete_current_level = table.complete_current_level,
+            full_bet = 2,
+            full_raise_increase = 2,
             open_fold_allowed = False,
             ignore_invalid_actions = True,
         )
