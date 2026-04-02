@@ -58,7 +58,9 @@ def await_player(
             continue
 
         amount_range_by_action = get_valid_actions(
-            player = player,
+            player_stack = player.stack,
+            player_current_amount = player.current_amount,
+            player_has_played = player.has_played,
             current_level = current_level,
             complete_current_level = complete_current_level,
             full_bet = full_bet,

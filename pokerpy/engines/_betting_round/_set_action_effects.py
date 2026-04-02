@@ -21,7 +21,7 @@ Defines the function that updates statuses according to the chosen action.
 from typing import TYPE_CHECKING
 
 
-from pokerpy.constants import ACTION_FOLD, aggressive_action_names
+from pokerpy.constants import ACTION_BET, ACTION_FOLD, ACTION_RAISE
 from pokerpy.logger import get_logger
 from pokerpy.structures import Action, Player
 
@@ -53,7 +53,7 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
         player.remove_from_stack(action.amount)
         player.add_to_current_amount(action.amount)
 
-    if action.name in aggressive_action_names:
+    if action.name in (ACTION_BET, ACTION_RAISE):
         new_current_amount = player_current_amount + action.amount
         raise_increase = new_current_amount - current_level
         new_level = complete_current_level + raise_increase
