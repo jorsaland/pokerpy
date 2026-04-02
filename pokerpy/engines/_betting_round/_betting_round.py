@@ -26,11 +26,14 @@ from pokerpy.messages import (
     msg_not_str,
     msg_not_table_instance,
     msg_betting_round_was_not_completed,
+    msg_not_player_instance,
     msg_overloaded_betting_round_message,
+    msg_player_not_in_table,
 )
 from pokerpy.structures import Player, Table
 
 
+from ._get_valid_actions import get_valid_actions
 from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
 from ._run_listener import run_listener
 
@@ -80,6 +83,7 @@ class BettingRound:
 
         self._lap_counts = 0
         self._is_completed = False
+        self._current_player: Player|None = None
 
         if smallest_bet_amount is not None:
             table.set_full_bet(smallest_bet_amount)
@@ -103,6 +107,10 @@ class BettingRound:
     @property
     def lap_counts(self):
         return self._lap_counts
+
+    @property
+    def current_player(self):
+        return self._current_player
 
     @property
     def is_completed(self):
@@ -131,11 +139,7 @@ class BettingRound:
 
 
     def listen(self):
-
-        """
-        Starts and retrieves the generator object that listens for player actions.
-        """
-
+        "Starts and retrieves the generator object that listens for player actions."
         if self._listener is None:
             self.reset_betting_round_states(self.table)
             self._listener = run_listener(self)
@@ -144,9 +148,7 @@ class BettingRound:
 
     def close(self, exception: (BaseException|None) = None):
 
-        """
-        Runs the last step in the betting round.
-        """
+        "Runs the last step in the betting round."
 
         # End running iteration after last yield
         try:
@@ -167,48 +169,54 @@ class BettingRound:
             raise RuntimeError(msg_betting_round_was_not_completed)
 
 
-    # Methods to affect counter
-
-
-    def increase_counter(self):
-
-        """
-        Registers a new lap.
-        """
-
-        self._lap_counts += 1
-    
-
     # Methods to deal cards
 
     
     def deal_cards_to_players(self, cards_count: int):
-
-        """
-        Deals cards to players in equal amounts.
-        """
-
+        "Deals cards to players in equal amounts."
         return method_deal_cards_to_players(self, cards_count)
 
 
     def deal_common_cards(self, cards_count: int):
-
-        """
-        Deals common cards to table.
-        """
-
+        "Deals common cards to table."
         return method_deal_common_cards(self, cards_count)
     
 
-    # Methods to reset states
+    # Methods related to state
+
+
+    def set_current_player(self, player: Player):
+        "Sets a player as the current player."
+        if not isinstance(player, Player):
+            raise TypeError(msg_not_player_instance.format(type(player).__name__))
+        if player not in self.table.players:
+            raise ValueError(msg_player_not_in_table.format(player.name))
+        self._current_player = player
+
+
+    def get_action_ranges(self):
+        "Retrieves the current player and its available actions"
+        return get_valid_actions(
+            player_stack = self.current_player.stack,
+            player_current_amount = self.current_player.current_amount,
+            player_has_played = self.current_player.has_played,
+            current_level = self.table.current_level,
+            complete_current_level = self.table.complete_current_level,
+            full_bet = self.table.full_bet,
+            full_raise_increase = self.table.full_raise_increase,
+            open_fold_allowed = self.open_fold_allowed,
+        )
+
+
+    def increase_counter(self):
+        "Registers a new lap."
+        self._lap_counts += 1
 
 
     @staticmethod
     def reset_betting_round_states(table: Table):
 
-        """
-        Resets the states for a table and its players to prepare them for a new betting round.
-        """
+        "Resets the states for a table and its players to prepare them for a new betting round."
 
         if not isinstance(table, Table):
             raise TypeError(msg_not_table_instance.format(type(table).__name__))

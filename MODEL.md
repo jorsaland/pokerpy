@@ -23,6 +23,8 @@ flowchart LR
     BR.listen(listen)@{ shape: text } -->  BR
     BR.reset_betting_round_states(reset_betting_round_states)@{ shape: text } -->  BR
     BR.increase_counter(increase_counter)@{ shape: text } -->  BR
+    BR.set_current_player(set_current_player)@{ shape: text } -->  BR
+    BR.get_action_ranges(get_action_ranges)@{ shape: text } --> BR
 
     T(Table)@{ shape: circle }
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text } --> T
@@ -61,6 +63,7 @@ flowchart LR
 
     C --> BR.close
     C --> BR.listen
+    C --> BR.get_action_ranges
 
     C --> P.request_action
 
@@ -85,7 +88,7 @@ flowchart LR
     BR --> P.unmark_has_played
     BR --> P.mark_is_folded
 
-    H ---> Cd.get_deck_position
+    H --> Cd.get_deck_position
 
 
     %% Helper method relations
@@ -95,6 +98,7 @@ flowchart LR
 
     BR.listen -.-> BR.reset_betting_round_states
     BR.listen -.-> BR.increase_counter
+    BR.listen -.-> BR.set_current_player
 
     T.get_previous_active_player -.-> T.iter_players
     T.get_previous_active_player -.-> T.get_previous_player
