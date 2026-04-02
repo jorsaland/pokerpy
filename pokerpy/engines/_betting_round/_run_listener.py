@@ -45,7 +45,12 @@ def run_listener(betting_round: "BettingRound"):
         if player == betting_round.table.starting_player:
             betting_round.increase_counter()
         try:
-            yield from prompt_player(betting_round, player)
+            yield from prompt_player(
+                table = betting_round.table,
+                current_player = player,
+                open_fold_allowed = betting_round.open_fold_allowed,
+                ignore_invalid_actions = betting_round.ignore_invalid_actions
+            )
         except JumpToNextPlayerSignal:
             continue
         except CloseBettingRoundSignal:

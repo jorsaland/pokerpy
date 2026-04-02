@@ -18,31 +18,24 @@ Defines the function that updates statuses according to the chosen action.
 """
 
 
-from typing import TYPE_CHECKING
-
-
 from pokerpy.constants import ACTION_BET, ACTION_FOLD, ACTION_RAISE
 from pokerpy.logger import get_logger
-from pokerpy.structures import Action, Player
-
-
-if TYPE_CHECKING:
-    from ._betting_round import BettingRound
+from pokerpy.structures import Action, Player, Table
 
 
 logger = get_logger()
 
 
-def set_action_effects(*, betting_round: "BettingRound", player: Player, action: Action):
+def set_action_effects(*, table: Table, player: Player, action: Action):
 
     """
     Updates statuses according to the chosen action.
     """
 
     player_current_amount = player.current_amount
-    current_level = betting_round.table.current_level
-    complete_current_level = betting_round.table.complete_current_level
-    full_raise_increase = betting_round.table.full_raise_increase
+    current_level = table.current_level
+    complete_current_level = table.complete_current_level
+    full_raise_increase = table.full_raise_increase
 
     player.mark_has_played()
 
@@ -57,16 +50,16 @@ def set_action_effects(*, betting_round: "BettingRound", player: Player, action:
         new_current_amount = player_current_amount + action.amount
         raise_increase = new_current_amount - current_level
         new_level = complete_current_level + raise_increase
-        betting_round.table.set_current_level(new_level)
+        table.set_current_level(new_level)
         if new_level >= complete_current_level + full_raise_increase:
-            betting_round.table.set_complete_current_level(new_level)
+            table.set_complete_current_level(new_level)
             if (new_full_raise_increase := new_level - complete_current_level) > 0:
-                betting_round.table.set_full_raise_increase(new_full_raise_increase)
-        assert (previous_player_in_hand := betting_round.table.get_previous_active_player(player)) is not None
-        betting_round.table.set_stopping_player(previous_player_in_hand) 
+                table.set_full_raise_increase(new_full_raise_increase)
+        assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None
+        table.set_stopping_player(previous_player_in_hand) 
 
     logger.info(
         f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
         f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
     )
-    logger.info(f'TABLE CURRENT LEVEL: {betting_round.table.current_level}\n')
+    logger.info(f'TABLE CURRENT LEVEL: {table.current_level}\n')

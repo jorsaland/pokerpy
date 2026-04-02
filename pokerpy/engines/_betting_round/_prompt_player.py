@@ -18,9 +18,6 @@ Defines the function that evaluates if the current player is able to request an 
 """
 
 
-from typing import TYPE_CHECKING
-
-
 from pokerpy.exceptions import CloseBettingRoundSignal, JumpToNextPlayerSignal
 from pokerpy.messages import (
     signal_all_in_player,
@@ -30,49 +27,53 @@ from pokerpy.messages import (
     signal_last_player_in_hand,
     signal_passive_stopping_player,
 )
-from pokerpy.structures import Player
+from pokerpy.structures import Player, Table
 
 
 from ._await_player import await_player
 from ._set_action_effects import set_action_effects
-if TYPE_CHECKING:
-    from ._betting_round import BettingRound
 
 
-def prompt_player(betting_round: "BettingRound", current_player: Player):
+def prompt_player(
+        *,
+        table: Table,
+        current_player: Player,
+        open_fold_allowed: bool,
+        ignore_invalid_actions: bool
+    ):
 
     """
     Evaluates if the current player is able to request an action and listens to it.
     """
 
     # Close the betting round if there is one player remaining
-    if len(betting_round.table.players_in_hand) == 1:
+    if len(table.players_in_hand) == 1:
         raise CloseBettingRoundSignal(signal_last_player_in_hand)
 
     # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
     if current_player.is_folded:
-        if current_player != betting_round.table.stopping_player:
+        if current_player != table.stopping_player:
             raise JumpToNextPlayerSignal(signal_folded_player)
         raise CloseBettingRoundSignal(signal_folded_stopping_player)
 
     # If the player is folded or all-in, jump to the next one (or close the betting round if is also the stopping player)
     if current_player.stack == 0:
-        if current_player != betting_round.table.stopping_player:
+        if current_player != table.stopping_player:
             raise JumpToNextPlayerSignal(signal_all_in_player)
         raise CloseBettingRoundSignal(signal_all_in_stopping_player)
 
     # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = current_player,
-        current_level = betting_round.table.current_level,
-        complete_current_level = betting_round.table.complete_current_level,
-        full_bet = betting_round.table.full_bet,
-        full_raise_increase = betting_round.table.full_raise_increase,
-        open_fold_allowed = betting_round.open_fold_allowed,
-        ignore_invalid_actions = betting_round.ignore_invalid_actions,
+        current_level = table.current_level,
+        complete_current_level = table.complete_current_level,
+        full_bet = table.full_bet,
+        full_raise_increase = table.full_raise_increase,
+        open_fold_allowed = open_fold_allowed,
+        ignore_invalid_actions = ignore_invalid_actions,
     )
-    set_action_effects(betting_round=betting_round, player=current_player, action=action)
+    set_action_effects(table=table, player=current_player, action=action)
 
     # Stop if the current player still is the stopping player
-    if current_player == betting_round.table.stopping_player:
+    if current_player == table.stopping_player:
         raise CloseBettingRoundSignal(signal_passive_stopping_player)
