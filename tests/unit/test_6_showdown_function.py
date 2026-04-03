@@ -63,9 +63,9 @@ class TestShowdownOneWinner(TestCase):
             structures.Card('J', 's'),
             structures.Card('T', 's'),
         ]))
-        Boa.set_as_folded()
-        Coral.set_as_folded()
-        Dino.set_as_folded()
+        Boa.mark_is_folded()
+        Coral.mark_is_folded()
+        Dino.mark_is_folded()
 
         # Before states
         self.assertEqual(Andy.stack, 10)
@@ -110,8 +110,8 @@ class TestShowdownOneWinner(TestCase):
             structures.Card('2', 's'),
             structures.Card('2', 'h'),
         ]))
-        Coral.set_as_folded()
-        Dino.set_as_folded()
+        Coral.mark_is_folded()
+        Dino.mark_is_folded()
 
         # Before states
         self.assertEqual(Andy.stack, 10)

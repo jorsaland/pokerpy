@@ -299,7 +299,7 @@ class TestResetBettingRoundStatesFunction(TestCase):
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
         Andy.assign_hand(hand)
-        Andy.set_as_folded()
+        Andy.mark_is_folded()
 
         for card in common_cards:
             table.remove_card_from_deck(card)
