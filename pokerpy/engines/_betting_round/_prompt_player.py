@@ -69,6 +69,7 @@ def prompt_player(
         complete_current_level = table.complete_current_level,
         full_bet = table.full_bet,
         full_raise_increase = table.full_raise_increase,
+        is_last_active_player = (current_player in table.active_players and len(table.active_players) == 1),
         open_fold_allowed = open_fold_allowed,
         ignore_invalid_actions = ignore_invalid_actions,
     )
