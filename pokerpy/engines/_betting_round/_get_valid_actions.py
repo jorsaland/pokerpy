@@ -31,11 +31,12 @@ def get_valid_actions(
     *,
     player_stack: int,
     player_current_amount: int,
-    player_has_played: bool,
     current_level: int,
     complete_current_level: int,
     full_bet: int,
     full_raise_increase: int,
+    player_has_played: bool,
+    is_last_active_player: bool,
     open_fold_allowed: bool
 ):
 
@@ -90,6 +91,10 @@ def get_valid_actions(
         amount_range_by_action[ACTION_CHECK] = get_check_range()
         if open_fold_allowed:
             amount_range_by_action[ACTION_FOLD] = get_fold_range()
+
+    # there may not be anyone to respond a bet/raise
+    if is_last_active_player:
+        return amount_range_by_action
 
     # the player stack may be enough only to call
     if player_stack <= amount_to_call:

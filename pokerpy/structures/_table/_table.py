@@ -148,6 +148,11 @@ class Table:
     def players_in_hand(self):
         "Players that are playing for the pot."
         return tuple(player for player in self.players if not player.is_folded)
+    
+    @property
+    def active_players(self):
+        "Players that are playing for the pot and are not all-in"
+        return tuple(player for player in self.players if not player.is_folded and player.stack > 0)
 
     @property
     def full_bet(self):

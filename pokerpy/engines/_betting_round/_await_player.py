@@ -35,6 +35,7 @@ def await_player(
     complete_current_level: int,
     full_bet: int,
     full_raise_increase: int,
+    is_last_active_player: bool,
     open_fold_allowed: bool,
     ignore_invalid_actions: bool
 ):
@@ -61,6 +62,7 @@ def await_player(
             player_stack = player.stack,
             player_current_amount = player.current_amount,
             player_has_played = player.has_played,
+            is_last_active_player = is_last_active_player,
             current_level = current_level,
             complete_current_level = complete_current_level,
             full_bet = full_bet,

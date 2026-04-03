@@ -56,7 +56,10 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
             table.set_complete_current_level(new_level)
             if (new_full_raise_increase := new_level - complete_current_level) > 0:
                 table.set_full_raise_increase(new_full_raise_increase)
-        assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None
+        try:
+            assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None
+        except AssertionError:
+            breakpoint()
         table.set_stopping_player(previous_player_in_hand) 
 
     logger.info(

@@ -204,6 +204,10 @@ class BettingRound:
             complete_current_level = self.table.complete_current_level,
             full_bet = self.table.full_bet,
             full_raise_increase = self.table.full_raise_increase,
+            is_last_active_player = (
+                self.current_player in self.table.active_players
+                and len(self.table.active_players) == 1
+            ),
             open_fold_allowed = self.open_fold_allowed,
         )
 
