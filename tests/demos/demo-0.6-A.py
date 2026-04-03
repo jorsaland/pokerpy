@@ -37,7 +37,7 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 def display_cards_and_money(table: pk.Table):
     print('\n--------------------------------------------------')
-    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
+    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot} | split pot: {table.split_pot}')
     for player in table.players_in_hand:
         hand = figure_out_hand(player.cards + table.common_cards)
         if hand is not None:
@@ -68,6 +68,7 @@ def ante_round(table: pk.Table):
 
     for player in table.players:
         player.remove_from_stack(ANTE)
+        player.add_to_pot_participation(ANTE)
         table.add_to_central_pot(ANTE)
 
     display_cards_and_money(table)
@@ -93,6 +94,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
         small_blind_player = table.players[0]
         small_blind_player.remove_from_stack(SMALL_BLIND)
         small_blind_player.add_to_current_amount(SMALL_BLIND)
+        small_blind_player.add_to_pot_participation(SMALL_BLIND)
 
         print(
             f"{small_blind_player.name} PLACES SMALL BLIND {SMALL_BLIND} "
@@ -105,6 +107,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
         big_blind_player = table.players[1]
         big_blind_player.remove_from_stack(BIG_BLIND)
         big_blind_player.add_to_current_amount(BIG_BLIND)
+        big_blind_player.add_to_pot_participation(BIG_BLIND)
         table.set_current_level(BIG_BLIND)
         table.set_complete_current_level(BIG_BLIND)
 
@@ -121,6 +124,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
             if random.randint(0, 1):
                 player.remove_from_stack(BIG_BLIND)
                 player.add_to_current_amount(BIG_BLIND)
+                player.add_to_pot_participation(BIG_BLIND)
                 print(
                     f"{player.name} PLACES BIG BLIND {BIG_BLIND} TO ENTER THE GAME WITHOUT WAITING "
                     f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
