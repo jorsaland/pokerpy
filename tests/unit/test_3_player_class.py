@@ -207,6 +207,42 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
+    def test_pot_participation_methods(self):
+
+
+        """
+        Runs test cases on add_to_pot_participation and reset_pot_participation methods.
+        """
+
+
+        Andy = structures.Player('Andy', 1000)
+
+
+        # Before and after effects
+
+        self.assertEqual(Andy.pot_participation, 0)
+
+        Andy.add_to_pot_participation(0)
+        Andy.add_to_pot_participation(50)
+        Andy.add_to_pot_participation(100)
+
+        self.assertEqual(Andy.pot_participation, 150)
+
+        Andy.reset_pot_participation()
+
+        self.assertEqual(Andy.pot_participation, 0)
+
+        # Invalid inputs
+
+        with self.assertRaises(TypeError) as cm:
+            Andy.add_to_pot_participation('100')
+        self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        with self.assertRaises(ValueError) as cm:
+            Andy.add_to_pot_participation(-100)
+        self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
+
+
     def test_add_to_stack_method(self):
 
 
