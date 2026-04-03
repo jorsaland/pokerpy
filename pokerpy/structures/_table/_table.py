@@ -31,6 +31,7 @@ from pokerpy.messages import (
 )
 
 
+from ._get_split_pot import get_split_pot
 from ._methods_related_to_cards import (
     method_assign_common_card,
     method_reset_common_cards,
@@ -178,6 +179,16 @@ class Table:
         rounds.
         """
         return self._central_pot
+
+    @property
+    def split_pot(self):
+        """
+        Pot chips that have already been placed in the center of the table in previous betting
+        rounds.
+        """
+        return get_split_pot(self.central_pot, [player.pot_participation for player in self.players_in_hand])
+
+
 
     @property
     def deck(self):

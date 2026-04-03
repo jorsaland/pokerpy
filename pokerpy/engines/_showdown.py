@@ -18,6 +18,7 @@ Defines the functions to distribute the pot at the end of a cycle.
 """
 
 
+from collections import defaultdict
 from collections.abc import Sequence
 
 
@@ -29,15 +30,16 @@ from pokerpy.structures import Player, Table
 logger = get_logger()
 
 
-def break_tie(winners: Sequence[Player], central_pot: int):
+def break_tie(winners: Sequence[Player], pot: int, pot_index: int):
 
     """
     Distributes the central pot between the tied winners.
     """
 
-    logger.info(f'It is a tie! Winners: {", ".join([w.name for w in winners])}.')
-    profit_per_winner = central_pot // len(winners)
-    remainder = central_pot % len(winners)
+    pot_name = 'main pot' if pot_index == 0 else f'side pot {pot_index}'
+    logger.info(f'it is a tie for {pot_name}! winners: {", ".join([w.name for w in winners])}.')
+    profit_per_winner = pot // len(winners)
+    remainder = pot % len(winners)
     profit_by_winner = {winner: profit_per_winner for winner in winners}
 
     for player in winners:
@@ -48,7 +50,10 @@ def break_tie(winners: Sequence[Player], central_pot: int):
 
     for winner in winners:
         profit = profit_by_winner[winner]
-        logger.info(f'{winner.name} wins {profit}.')
+        if pot_index == 0:
+            logger.info(f'{winner.name} wins {profit}.')
+        else:
+            logger.info(f'{winner.name} wins {profit}.')
         winner.add_to_stack(profit)
 
 
@@ -62,25 +67,47 @@ def showdown(table: Table):
         raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
     logger.info(f'Remaining players: {", ".join(player.name for player in table.players_in_hand)}')
+    
+    # PENSABA PONER ESTE FOR EN UNA FUNCIÓN RECURSIVA. CUÁL ES LA IDEA:
+    # - Primero, se busca el monto más pequeño que tenga algún jugador no foldeado
+    # - Luego, se itera sobre todos los jugadores que hayan puesto ese monto o más (o sea todos los no foldeados)
+    # - Entonces, se reparte entre ellos esa cantidad del pot (bote principal)
+    # - Ahora, se busca el segundo monto más pequeño que tenga algún jugador no foldeado
+    # - Luego, se itera sobre todos los jugadores que haya puesto ese monto o más (ahora sí son menos)
+    # - Entonces, se reparte entre ellos esa cantidad del pot (bote secundario A)
+    # - Se continúa con el tercer monto más pequeño y así sucesivamente hasta gastar todo el bote
 
-    winners: list[Player] = []
-    for player in table.players_in_hand:
+    players_by_participation: dict[int, list[Player]] = {player.pot_participation: [] for player in table.players_in_hand}
+    for participation, participating_players in players_by_participation.items():
+        for player in table.players_in_hand:
+            if player.pot_participation >= participation:
+                participating_players.append(player)
 
-        player_is_unbeaten = True
-        for oponent in table.players_in_hand:
-            if oponent.name == player.name:
-                continue
-            if oponent.hand > player.hand:
-                player_is_unbeaten = False
-                break
+    print(f'{table.split_pot = }')
+    for i, side_pot in enumerate(table.split_pot):
 
-        if player_is_unbeaten:
-            winners.append(player)
+        winners: list[Player] = []
 
-    if len(winners) == 1:
-        winner = winners[0]
-        logger.info(f'{winner.name} wins {table.central_pot}!')
-        winner.add_to_stack(table.central_pot)
-        return
+        min_pot_participation = min(players_by_participation.keys())
+        participating_players = players_by_participation.pop(min_pot_participation)
 
-    return break_tie(winners, table.central_pot)
+        for player in participating_players:
+            player_is_unbeaten = True
+            for oponent in participating_players:
+                if oponent.name == player.name:
+                    continue
+                if oponent.hand > player.hand:
+                    player_is_unbeaten = False
+                    break
+            if player_is_unbeaten:
+                winners.append(player)
+
+        if len(winners) == 1:
+            winner = winners[0]
+            if i == 0:
+                logger.info(f'{winner.name} wins main pot: {side_pot}!')
+            else:
+                logger.info(f'{winner.name} wins side pot {i}: {side_pot}!')
+            winner.add_to_stack(side_pot)
+        else:
+            break_tie(winners, side_pot, i)

@@ -45,6 +45,7 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
     if action.amount > 0:
         player.remove_from_stack(action.amount)
         player.add_to_current_amount(action.amount)
+        player.add_to_pot_participation(action.amount)
 
     if action.name in (ACTION_BET, ACTION_RAISE):
         new_current_amount = player_current_amount + action.amount

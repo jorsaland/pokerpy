@@ -64,7 +64,8 @@ class Player:
         self._requested_action: (Action|None) = None
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
-        self._current_amount = 0 # this is set by instance methods
+        self._current_amount = 0
+        self._pot_participation = 0
         self._stack = stack
         self._has_played = False
         self._is_folded = False
@@ -94,7 +95,12 @@ class Player:
     def current_amount(self):
         "Amount of chips that the player has placed in front during the betting round."
         return self._current_amount
-    
+
+    @property
+    def pot_participation(self):
+        "Amount of chips that the player has placed in the pot so far."
+        return self._pot_participation
+
     @property
     def stack(self):
         "Amount of chips the player has available to bet."
@@ -168,13 +174,23 @@ class Player:
             raise TypeError(msg_not_int.format(type(amount).__name__))
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        self._current_amount += amount
-    
+        self._current_amount += amount    
 
     def reset_current_amount(self):
         "Resets the current_amount property back to zero."
         self._current_amount = 0
 
+    def add_to_pot_participation(self, amount: int):
+        "Adds an amount to the pot_participation property."
+        if not isinstance(amount, int):
+            raise TypeError(msg_not_int.format(type(amount).__name__))
+        if amount < 0:
+            raise ValueError(msg_not_positive_or_zero_value.format(amount))
+        self._pot_participation += amount
+
+    def reset_pot_participation(self):
+        "Resets the pot_participation property back to zero."
+        self._pot_participation = 0
 
     def add_to_stack(self, amount: int):
         "Adds an amount to the stack property."
@@ -212,6 +228,7 @@ class Player:
     def mark_is_folded(self):
         "Marks the is_folded property."
         self._is_folded = True
+        self.reset_pot_participation()
 
 
     def unmark_is_folded(self):
