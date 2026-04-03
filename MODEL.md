@@ -48,6 +48,7 @@ flowchart LR
     P.reset_action(reset_action)@{ shape: text } --> P
     P.assign_card(assign_card)@{ shape: text } --> P
     P.add_to_current_amount(add_to_current_amount)@{ shape: text } --> P
+    P.add_to_pot_participation(add_to_pot_participation)@{ shape: text } --> P
     P.remove_from_stack(remove_from_stack)@{ shape: text } --> P
     P.mark_has_played(mark_has_played)@{ shape: text } --> P
     P.unmark_has_played(unmark_has_played)@{ shape: text } --> P
@@ -83,6 +84,7 @@ flowchart LR
     BR --> P.reset_action
     BR --> P.assign_card
     BR --> P.add_to_current_amount
+    BR --> P.add_to_pot_participation
     BR --> P.remove_from_stack
     BR --> P.mark_has_played
     BR --> P.unmark_has_played
