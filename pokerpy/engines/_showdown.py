@@ -67,15 +67,6 @@ def showdown(table: Table):
         raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
     logger.info(f'Remaining players: {", ".join(player.name for player in table.players_in_hand)}')
-    
-    # PENSABA PONER ESTE FOR EN UNA FUNCIÓN RECURSIVA. CUÁL ES LA IDEA:
-    # - Primero, se busca el monto más pequeño que tenga algún jugador no foldeado
-    # - Luego, se itera sobre todos los jugadores que hayan puesto ese monto o más (o sea todos los no foldeados)
-    # - Entonces, se reparte entre ellos esa cantidad del pot (bote principal)
-    # - Ahora, se busca el segundo monto más pequeño que tenga algún jugador no foldeado
-    # - Luego, se itera sobre todos los jugadores que haya puesto ese monto o más (ahora sí son menos)
-    # - Entonces, se reparte entre ellos esa cantidad del pot (bote secundario A)
-    # - Se continúa con el tercer monto más pequeño y así sucesivamente hasta gastar todo el bote
 
     players_by_participation: dict[int, list[Player]] = {player.pot_participation: [] for player in table.players_in_hand}
     for participation, participating_players in players_by_participation.items():
@@ -83,7 +74,6 @@ def showdown(table: Table):
             if player.pot_participation >= participation:
                 participating_players.append(player)
 
-    print(f'{table.split_pot = }')
     for i, side_pot in enumerate(table.split_pot):
 
         winners: list[Player] = []

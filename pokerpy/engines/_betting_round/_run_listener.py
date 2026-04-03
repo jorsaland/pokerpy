@@ -40,22 +40,25 @@ def run_listener(betting_round: "BettingRound"):
     Starts the betting round generator that rotates the player turns.
     """
 
-    # All players are itered but only active ones are allowed to act
-    for player in cycle(betting_round.table.iter_players()):
-        betting_round.set_current_player(player)
-        if player == betting_round.table.starting_player:
-            betting_round.increase_counter()
-        try:
-            yield from prompt_player(
-                table = betting_round.table,
-                current_player = player,
-                open_fold_allowed = betting_round.open_fold_allowed,
-                ignore_invalid_actions = betting_round.ignore_invalid_actions
-            )
-        except JumpToNextPlayerSignal:
-            continue
-        except CloseBettingRoundSignal:
-            break
+    # Do not even iterate if there is only one non-folded player who still has a stack to bet
+    if len([player for player in betting_round.table.players_in_hand if player.stack > 0]) > 1:
+
+        # All players are itered, prompt_player decides if plays or not
+        for player in cycle(betting_round.table.iter_players()):
+            betting_round.set_current_player(player)
+            if player == betting_round.table.starting_player:
+                betting_round.increase_counter()
+            try:
+                yield from prompt_player(
+                    table = betting_round.table,
+                    current_player = player,
+                    open_fold_allowed = betting_round.open_fold_allowed,
+                    ignore_invalid_actions = betting_round.ignore_invalid_actions
+                )
+            except JumpToNextPlayerSignal:
+                continue
+            except CloseBettingRoundSignal:
+                break
     
     logger.info(f'Number of laps: {betting_round.lap_counts}')
     

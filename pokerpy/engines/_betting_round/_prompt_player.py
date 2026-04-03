@@ -47,7 +47,7 @@ def prompt_player(
     """
 
     # Close the betting round if every player is folded or all-in
-    if len([player for player in table.players_in_hand if player.stack > 0]) in (0, 1):
+    if len(table.players_in_hand) == 1:
         raise CloseBettingRoundSignal(signal_last_player_in_hand)
 
     # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
