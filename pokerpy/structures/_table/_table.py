@@ -28,7 +28,6 @@ from pokerpy.messages import (
     msg_not_player_instance,
     msg_not_positive_value,
     msg_player_not_in_table,
-    msg_unset_current_player,
 )
 
 
@@ -122,7 +121,7 @@ class Table:
         self._full_raise_increase = full_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
-        self._current_player: Player|None = None
+        self._current_player = starting_player
 
         self._amount_level = 0
         self._full_amount_level = 0
@@ -178,9 +177,7 @@ class Table:
 
     @property
     def current_player(self):
-        "Player who is being awaited to play."
-        if self._current_player is None:
-            raise RuntimeError(msg_unset_current_player)
+        "Player who is being awaited to play. Defaults to the starting player."
         return self._current_player
 
     @property

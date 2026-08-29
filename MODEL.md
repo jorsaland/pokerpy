@@ -59,7 +59,7 @@
 
 - **Stopping player (`stopping_player`):** Player who acts last in the betting round. This may be updated during the betting round, depending on the actions taken by other players. Defaults to the player before the starting player.
 
-- **Current player (`current_player`):** Player who is being awaited to play.
+- **Current player (`current_player`):** Player who is being awaited to play. Defaults to the starting player.
 
 - **Amount level (`amount_level`):** Largest amount of chips a player has placed in front during the current betting round, which other players must match in order to call.
 
