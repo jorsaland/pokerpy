@@ -38,10 +38,10 @@ def reset_cycle_states(table: Table):
 
     table.reset_deck()
     table.reset_common_cards()
-    table.reset_central_pot()
+    table.clear_central_pot()
 
     for player in table.players:
         player.reset_cards()
-        player.reset_hand()
+        player.clear_hand()
         player.unmark_is_folded()
-        player.reset_pot_participation()
+        player.clear_pot_participation()

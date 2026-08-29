@@ -28,6 +28,7 @@ from pokerpy.messages import (
     msg_not_player_instance,
     msg_not_positive_value,
     msg_player_not_in_table,
+    msg_unset_current_player,
 )
 
 
@@ -39,8 +40,8 @@ from ._methods_related_to_cards import (
     method_reset_deck,
 )
 from ._methods_related_to_money import (
-    method_add_to_central_pot,
-    method_reset_central_pot,
+    method_increase_central_pot,
+    method_clear_central_pot,
     method_set_current_level,
     method_set_complete_current_level,
     method_set_full_bet,
@@ -51,6 +52,7 @@ from ._methods_related_to_players import (
     method_get_previous_active_player,
     method_get_previous_player,
     method_iter_players,
+    method_set_current_player,
     method_set_starting_player,
     method_set_stopping_player,
 )
@@ -108,8 +110,8 @@ class Table:
             raise ValueError(msg_player_not_in_table.format(starting_player.name))
 
         if stopping_player is None:
-            player_index = players.index(starting_player)
-            stopping_player = players[player_index - 1]
+            starting_player_index = players.index(starting_player)
+            stopping_player = players[starting_player_index - 1]
         if stopping_player not in players:
             raise ValueError(msg_player_not_in_table.format(stopping_player.name))
 
@@ -120,90 +122,111 @@ class Table:
         self._full_raise_increase = full_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
+        self._current_player: Player|None = None
 
-        self._current_level = 0
-        self._complete_current_level = 0
+        self._amount_level = 0
+        self._full_amount_level = 0
         self._central_pot = 0
 
         self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
         self._common_cards: list[Card] = []
-    
-
-    @property
-    def players(self):
-        "Players that are part of the table."
-        return tuple(self._players)
-
-    @property
-    def starting_player(self):
-        "Player who acts first in the betting round."
-        return self._starting_player
-
-    @property
-    def stopping_player(self):
-        "Player who acts last in the betting round."
-        return self._stopping_player
-
-    @property
-    def players_in_hand(self):
-        "Players that are playing for the pot."
-        return tuple(player for player in self.players if not player.is_folded)
-    
-    @property
-    def active_players(self):
-        "Players that are playing for the pot and are not all-in"
-        return tuple(player for player in self.players if not player.is_folded and player.stack > 0)
-
-    @property
-    def full_bet(self):
-        "Minimum amount to bet (unless going all-in)."
-        return self._full_bet
-
-    @property
-    def full_raise_increase(self):
-        "Minimum amount to raise (unless going all-in)."
-        return self._full_raise_increase
-
-    @property
-    def current_level(self):
-        "Largest amount a player has placed in front during the current betting round."
-        return self._current_level
-
-    @property
-    def complete_current_level(self):
-        """
-        Largest amount a player has placed in front during the current betting round that can be
-        considered as a full bet or raise.
-        """
-        return self._complete_current_level
-
-    @property
-    def central_pot(self):
-        """
-        Pot chips that have already been placed in the center of the table in previous betting
-        rounds.
-        """
-        return self._central_pot
-
-    @property
-    def split_pot(self):
-        """
-        Pot chips that have already been placed in the center of the table in previous betting
-        rounds.
-        """
-        return get_split_pot(self.central_pot, [player.pot_participation for player in self.players])
-
 
 
     @property
     def deck(self):
-        "Cards that are available to be dealt."
+        "Cards still available to be dealt."
         return tuple(self._deck)
-    
+
     @property
     def common_cards(self):
-        "Dealt cards that are common to all players."
+        "Cards dealt as common to all players."
         return tuple(self._common_cards)
+
+    @property
+    def players(self):
+        "Players sitting at the table, in their respective order."
+        return tuple(self._players)
+
+    @property
+    def participating_players(self):
+        "Players still playing for the pot during a hand cycle."
+        return tuple(player for player in self._players if not player.is_folded)
+
+    @property
+    def active_players(self):
+        "Players still playing for the pot and not all-in during a hand cycle."
+        return tuple(
+            player for player in self._players if not player.is_folded and player.stack > 0
+        )
+
+    @property
+    def starting_player(self):
+        """
+        Player who acts first in the betting round. Defaults to the first player in the players
+        list.
+        """
+        return self._starting_player
+
+    @property
+    def stopping_player(self):
+        """
+        Player who acts last in the betting round. This may be updated during the betting round,
+        depending on the actions taken by other players. Defaults to the player before the starting
+        player.
+        """
+        return self._stopping_player
+
+    @property
+    def current_player(self):
+        "Player who is being awaited to play."
+        if self._current_player is None:
+            raise RuntimeError(msg_unset_current_player)
+        return self._current_player
+
+    @property
+    def amount_level(self):
+        """
+        Largest amount of chips a player has placed in front during the current betting round,
+        which other players must match in order to call.
+        """
+        return self._amount_level
+
+    @property
+    def full_bet(self):
+        "Minimum amount to bet."
+        return self._full_bet
+
+    @property
+    def full_amount_level(self):
+        """
+        Part of the amount level considered a full bet or raise. It may be smaller than a full bet
+        when a player goes all-in for less. In that case, other players can complete the full bet
+        (in addition to folding, calling or raising).
+        """
+        return self._full_amount_level
+
+    @property
+    def full_raise_increase(self):
+        "Minimum amount by which to increase the full amount level."
+        return self._full_raise_increase
+
+    @property
+    def pot(self):
+        "Total amount of chips being played for in the betting round."
+        return self._central_pot + sum(player.amount for player in self._players)
+
+    @property
+    def central_pot(self):
+        "Part of the pot that is already placed at the center of the table."
+        return self._central_pot
+
+    @property
+    def split_pot(self):
+        "Pot split into main pot and side pots."
+        return get_split_pot(
+            self.pot,
+            [player.pot_participation for player in self.participating_players]
+        )
 
 
     # Methods related to cards
@@ -252,14 +275,14 @@ class Table:
         return method_set_complete_current_level(self, amount)
 
 
-    def add_to_central_pot(self, amount: int):
+    def increase_central_pot(self, amount: int):
         "Adds an amount to the central_pot property."
-        return method_add_to_central_pot(self, amount)
+        return method_increase_central_pot(self, amount)
 
 
-    def reset_central_pot(self):
+    def clear_central_pot(self):
         "Resets the central_pot property back to zero."
-        return method_reset_central_pot(self)
+        return method_clear_central_pot(self)
 
 
     # Methods related to players
@@ -273,6 +296,11 @@ class Table:
     def set_stopping_player(self, player: Player):
         "Sets the stopping_player property."
         return method_set_stopping_player(self, player)
+
+
+    def set_current_player(self, player: Player):
+        "Sets a player as the current player."
+        return method_set_current_player(self, player)
 
 
     def get_next_player(self, reference_player: Player):

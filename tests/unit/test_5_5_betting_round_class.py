@@ -49,7 +49,7 @@ class TestBettingRoundBasicMethods(TestCase):
         self.assertEqual(betting_round.table.smallest_bet_amount, 1)
         self.assertFalse(betting_round.is_completed)
         self.assertFalse(betting_round.open_fold_allowed)
-        self.assertTrue(betting_round.ignore_invalid_actions)
+        self.assertFalse(betting_round.raise_invalid_actions)
 
         betting_round = engines.BettingRound(
             'test round',
@@ -58,7 +58,7 @@ class TestBettingRoundBasicMethods(TestCase):
             starting_player = Coral,
             stopping_player = Boa,
             open_fold_allowed = True,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
         self.assertEqual(betting_round.name, 'test round')
         self.assertEqual(betting_round.table, table)
@@ -68,16 +68,16 @@ class TestBettingRoundBasicMethods(TestCase):
         self.assertEqual(betting_round.table.smallest_bet_amount, 10)
         self.assertFalse(betting_round.is_completed)
         self.assertTrue(betting_round.open_fold_allowed)
-        self.assertFalse(betting_round.ignore_invalid_actions)
+        self.assertTrue(betting_round.raise_invalid_actions)
 
         betting_round = engines.BettingRound(
             'test round',
             table,
             open_fold_allowed = 1, ## expected boolean, but not enforced
-            ignore_invalid_actions = 0, ## expected boolean, but not enforced
+            raise_invalid_actions = 0, ## expected boolean, but not enforced
         )
         self.assertEqual(betting_round.open_fold_allowed, 1)
-        self.assertFalse(betting_round.ignore_invalid_actions)
+        self.assertFalse(betting_round.raise_invalid_actions)
 
         # Type errors
 
@@ -294,7 +294,7 @@ class TestResetBettingRoundStatesFunction(TestCase):
         # Set previous states
 
         Andy.request_action(action)
-        Andy.add_to_current_amount(200)
+        Andy.increase_amount(200)
         for card in player_cards:
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
@@ -305,17 +305,17 @@ class TestResetBettingRoundStatesFunction(TestCase):
             table.remove_card_from_deck(card)
             table.assign_common_card(card)
         table.add_to_current_amount(200)
-        table.add_to_central_pot(500)
+        table.increase_central_pot(500)
 
         # Evaluate before states
 
         self.assertEqual(Andy.requested_action, action)
-        self.assertEqual(Andy.current_amount, 200)
+        self.assertEqual(Andy.amount, 200)
         self.assertTupleEqual(Andy.cards, tuple(player_cards))
         self.assertEqual(Andy.hand, hand)
         self.assertTrue(Andy.is_folded)
 
-        self.assertTupleEqual(table.players_in_hand, tuple(player for player in table.players if player != Andy))
+        self.assertTupleEqual(table.participating_players, tuple(player for player in table.players if player != Andy))
         self.assertEqual(table.current_amount, 200)
         self.assertEqual(table.central_pot, 500)
         self.assertTupleEqual(table.common_cards, tuple(common_cards))
@@ -328,12 +328,12 @@ class TestResetBettingRoundStatesFunction(TestCase):
         # Evaluate after states
 
         self.assertEqual(Andy.requested_action, None)
-        self.assertEqual(Andy.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
         self.assertTupleEqual(Andy.cards, tuple(player_cards))
         self.assertEqual(Andy.hand, hand)
         self.assertTrue(Andy.is_folded)
 
-        self.assertTupleEqual(table.players_in_hand, tuple(player for player in table.players if player != Andy))
+        self.assertTupleEqual(table.participating_players, tuple(player for player in table.players if player != Andy))
         self.assertEqual(table.current_amount, 0)
         self.assertEqual(table.central_pot, 500)
         self.assertTupleEqual(table.common_cards, tuple(common_cards))
@@ -403,10 +403,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_successful_parses_and_closure_with_for_loop(self):
@@ -451,10 +451,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_closing_before_completion_with_function_next(self):
@@ -511,10 +511,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_closing_before_completion_with_for_loop(self):
@@ -562,10 +562,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_unclosed_round_with_function_next(self):
@@ -625,10 +625,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 4)
 
-        self.assertEqual(Andy.current_amount, 4)
-        self.assertEqual(Boa.current_amount, 4)
-        self.assertEqual(Coral.current_amount, 4)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 4)
+        self.assertEqual(Boa.amount, 4)
+        self.assertEqual(Coral.amount, 4)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_unclosed_round_with_for_loop(self):
@@ -672,10 +672,10 @@ class TestBettingRoundListener(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertEqual(table.current_amount, 4)
 
-        self.assertEqual(Andy.current_amount, 4)
-        self.assertEqual(Boa.current_amount, 2) # the last action was not actually parsed
-        self.assertEqual(Coral.current_amount, 4)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 4)
+        self.assertEqual(Boa.amount, 2) # the last action was not actually parsed
+        self.assertEqual(Coral.amount, 4)
+        self.assertEqual(Dino.amount, 0)
 
 
 class TestBettingRoundContextManager(TestCase):
@@ -733,10 +733,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_successful_parses_and_closure_with_for_loop(self):
@@ -779,10 +779,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_parse_less_actions_than_required_with_function_next(self):
@@ -835,10 +835,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_parse_less_actions_than_required_with_for_loop(self):
@@ -885,10 +885,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 0)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_parse_more_actions_than_required_with_function_next(self):
@@ -945,10 +945,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
     def test_parse_more_actions_than_required_with_for_loop(self):
@@ -997,10 +997,10 @@ class TestBettingRoundContextManager(TestCase):
         self.assertEqual(table.central_pot, 12)
         self.assertEqual(table.current_amount, 0)
 
-        self.assertEqual(Andy.current_amount, 0)
-        self.assertEqual(Boa.current_amount, 0)
-        self.assertEqual(Coral.current_amount, 0)
-        self.assertEqual(Dino.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Dino.amount, 0)
 
 
 if __name__ == '__main__':

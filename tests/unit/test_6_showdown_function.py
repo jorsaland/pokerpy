@@ -54,7 +54,7 @@ class TestShowdownOneWinner(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(5)
+        table.increase_central_pot(5)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -94,7 +94,7 @@ class TestShowdownOneWinner(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(5)
+        table.increase_central_pot(5)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -140,7 +140,7 @@ class TestShowdownOneWinner(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(5)
+        table.increase_central_pot(5)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -206,7 +206,7 @@ class TestShowdownTie(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(10)
+        table.increase_central_pot(10)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -264,7 +264,7 @@ class TestShowdownTie(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(9)
+        table.increase_central_pot(9)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -322,7 +322,7 @@ class TestShowdownTie(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(20)
+        table.increase_central_pot(20)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),
@@ -380,7 +380,7 @@ class TestShowdownTie(TestCase):
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Coral', 10),
         ])
-        table.add_to_central_pot(18)
+        table.increase_central_pot(18)
 
         Andy.assign_hand(structures.Hand([
             structures.Card('A', 's'),

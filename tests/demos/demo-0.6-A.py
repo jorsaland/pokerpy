@@ -37,14 +37,14 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 def display_cards_and_money(table: pk.Table):
     print('\n--------------------------------------------------')
-    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot} | split pot: {table.split_pot}')
-    for player in table.players_in_hand:
+    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.pot} | split pot: {table.split_pot}')
+    for player in table.participating_players:
         hand = figure_out_hand(player.cards + table.common_cards)
         if hand is not None:
             player.assign_hand(hand)
         print(
             f"{player.name}'s cards: {''.join(str(c) for c in player.cards) if player.cards else None} | "
-            f"hand: {str(player.hand)}{f' ({player.hand.category})' if player.hand is not None else ''} | "
+            f"hand: {f'{str(player.hand)} ({player.hand.category})' if player.hand is not None else ''} | "
             f"stack: {player.stack}"
         )
     print('--------------------------------------------------\n')
@@ -67,9 +67,9 @@ def ante_round(table: pk.Table):
     print(f'\n============ PLACING ANTES ============\n')
 
     for player in table.players:
-        player.remove_from_stack(ANTE)
-        player.add_to_pot_participation(ANTE)
-        table.add_to_central_pot(ANTE)
+        player.decrease_stack(ANTE)
+        player.increase_pot_participation(ANTE)
+        table.increase_central_pot(ANTE)
 
     display_cards_and_money(table)
     print(f'\n============ ANTES PLACED ============\n')
@@ -92,44 +92,44 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
         # Place small blind
 
         small_blind_player = table.players[0]
-        small_blind_player.remove_from_stack(SMALL_BLIND)
-        small_blind_player.add_to_current_amount(SMALL_BLIND)
-        small_blind_player.add_to_pot_participation(SMALL_BLIND)
+        small_blind_player.decrease_stack(SMALL_BLIND)
+        small_blind_player.increase_amount(SMALL_BLIND)
+        small_blind_player.increase_pot_participation(SMALL_BLIND)
 
         print(
             f"{small_blind_player.name} PLACES SMALL BLIND {SMALL_BLIND} "
-            f"({small_blind_player.name}'s current amount: {small_blind_player.current_amount} | stack: {small_blind_player.stack})"
+            f"({small_blind_player.name}'s current amount: {small_blind_player.amount} | stack: {small_blind_player.stack})"
             "\n"
         )
 
         # Place big blind
 
         big_blind_player = table.players[1]
-        big_blind_player.remove_from_stack(BIG_BLIND)
-        big_blind_player.add_to_current_amount(BIG_BLIND)
-        big_blind_player.add_to_pot_participation(BIG_BLIND)
+        big_blind_player.decrease_stack(BIG_BLIND)
+        big_blind_player.increase_amount(BIG_BLIND)
+        big_blind_player.increase_pot_participation(BIG_BLIND)
         table.set_current_level(BIG_BLIND)
         table.set_complete_current_level(BIG_BLIND)
 
         print(
             f"{big_blind_player.name} PLACES BIG BLIND {BIG_BLIND} "
-            f"({big_blind_player.name}'s current amount: {big_blind_player.current_amount} | stack: {big_blind_player.stack})"
+            f"({big_blind_player.name}'s current amount: {big_blind_player.amount} | stack: {big_blind_player.stack})"
         )
-        print(f'TABLE CURRENT LEVEL: {table.current_level}\n')
+        print(f'TABLE CURRENT LEVEL: {table.amount_level}\n')
 
         # Place random big blinds (players who want to enter before waiting for their turn to place the big blind)
 
         for player in table.players[2:]:
 
             if random.randint(0, 1):
-                player.remove_from_stack(BIG_BLIND)
-                player.add_to_current_amount(BIG_BLIND)
-                player.add_to_pot_participation(BIG_BLIND)
+                player.decrease_stack(BIG_BLIND)
+                player.increase_amount(BIG_BLIND)
+                player.increase_pot_participation(BIG_BLIND)
                 print(
                     f"{player.name} PLACES BIG BLIND {BIG_BLIND} TO ENTER THE GAME WITHOUT WAITING "
-                    f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
+                    f"({player.name}'s current amount: {player.amount} | stack: {player.stack})"
                 )
-                print(f'TABLE CURRENT LEVEL: {table.current_level}\n')
+                print(f'TABLE CURRENT LEVEL: {table.amount_level}\n')
 
         # Deal pre-flop
 
@@ -140,7 +140,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
 
         for player in betting_round.listen():
 
-            amount_to_call = table.current_level - player.current_amount
+            amount_to_call = table.amount_level - player.amount
 
             if amount_to_call == 0:
                 if not betting_round.open_fold_allowed:
@@ -171,9 +171,9 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
                 raise RuntimeError('we live in a society')
 
             if amount_to_call == 0:
-                print(f'To bet: {betting_round.table.full_bet} | current amount: {player.current_amount}')
+                print(f'To bet: {betting_round.table.full_bet} | current amount: {player.amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {betting_round.table.complete_current_level + betting_round.table.full_raise_increase} | current amount: {player.current_amount}')
+                print(f'To call: {amount_to_call} | to raise: {betting_round.table.full_amount_level + betting_round.table.full_raise_increase} | current amount: {player.amount}')
             player.request_action(action)
 
     display_cards_and_money(table)
@@ -183,7 +183,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
 def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
 
     # Break before starting if only remains one player
-    if len(table.players_in_hand) == 1:
+    if len(table.participating_players) == 1:
         return False
 
     print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
@@ -209,7 +209,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
         # Let players to play
         for player in betting_round.listen():
 
-            amount_to_call = table.current_level - player.current_amount
+            amount_to_call = table.amount_level - player.amount
 
             if amount_to_call == 0:
                 if not betting_round.open_fold_allowed:
@@ -226,7 +226,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
             elif action_name == pk.ACTION_CALL:
                 action = pk.Action(action_name, amount_to_call)
             elif action_name == pk. ACTION_BET:
-                amount = random.randint(table.central_pot//2, table.central_pot*2)
+                amount = random.randint(table.pot//2, table.pot*2)
                 if amount > player.stack:
                     amount = player.stack
                 action = pk.Action(action_name, amount)
@@ -240,9 +240,9 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
                 raise RuntimeError('we live in a society')
 
             if amount_to_call == 0:
-                print(f'To bet: {betting_round.table.full_bet} | current amount: {player.current_amount}')
+                print(f'To bet: {betting_round.table.full_bet} | current amount: {player.amount}')
             else:
-                print(f'To call: {amount_to_call} | to raise: {betting_round.table.complete_current_level + betting_round.table.full_raise_increase} | current amount: {player.current_amount}')
+                print(f'To call: {amount_to_call} | to raise: {betting_round.table.full_amount_level + betting_round.table.full_raise_increase} | current amount: {player.amount}')
             player.request_action(action)
 
 
@@ -273,7 +273,7 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
         if not keep_playing:
             break
 
-    if len(table.players_in_hand) > 1:
+    if len(table.participating_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')
         pk.showdown(table)
     else:

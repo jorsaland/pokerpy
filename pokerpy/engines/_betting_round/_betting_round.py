@@ -58,7 +58,7 @@ class BettingRound:
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
         open_fold_allowed = False,
-        ignore_invalid_actions = True
+        raise_invalid_actions = False
     ):
 
         # Type validations
@@ -76,14 +76,13 @@ class BettingRound:
         self._name = name
         self._table = table
 
-        self.open_fold_allowed = open_fold_allowed # editable, hopefully boolean but not enforced
-        self._ignore_invalid_actions = bool(ignore_invalid_actions)
+        self._open_fold_allowed = bool(open_fold_allowed)
+        self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State variables
 
         self._lap_counts = 0
         self._is_completed = False
-        self._current_player: Player|None = None
 
         if smallest_bet_amount is not None:
             table.set_full_bet(smallest_bet_amount)
@@ -98,28 +97,40 @@ class BettingRound:
 
     @property
     def name(self):
+        "Betting round's identifier, unique within the hand cycle."
         return self._name
 
     @property
     def table(self):
+        "Table in which the betting round takes place."
         return self._table
 
     @property
     def lap_counts(self):
+        "Number of times the action passes through the starting player (even if folded or all-in)."
         return self._lap_counts
 
     @property
-    def current_player(self):
-        return self._current_player
+    def open_fold_allowed(self):
+        "Whether folding is allowed when there is no bet or raise to respond to."
+        return self._open_fold_allowed
+
+    @open_fold_allowed.setter
+    def open_fold_allowed(self, open_fold_allowed):
+        self._open_fold_allowed = bool(open_fold_allowed)
 
     @property
     def is_completed(self):
+        "Whether the betting round already ended."
         return self._is_completed
 
     @property
-    def ignore_invalid_actions(self):
-        return self._ignore_invalid_actions
-
+    def raise_invalid_actions(self):
+        """
+        Whether an exception should be raised when an invalid action is chosen, or the player
+        should be prompted again.
+        """
+        return self._raise_invalid_actions
 
     def __enter__(self):
         self.listen()
@@ -185,27 +196,18 @@ class BettingRound:
     # Methods related to state
 
 
-    def set_current_player(self, player: Player):
-        "Sets a player as the current player."
-        if not isinstance(player, Player):
-            raise TypeError(msg_not_player_instance.format(type(player).__name__))
-        if player not in self.table.players:
-            raise ValueError(msg_player_not_in_table.format(player.name))
-        self._current_player = player
-
-
     def get_action_ranges(self):
         "Retrieves the current player and its available actions"
         return get_valid_actions(
-            player_stack = self.current_player.stack,
-            player_current_amount = self.current_player.current_amount,
-            player_has_played = self.current_player.has_played,
-            current_level = self.table.current_level,
-            complete_current_level = self.table.complete_current_level,
+            player_stack = self.table.current_player.stack,
+            player_current_amount = self.table.current_player.amount,
+            player_has_played = self.table.current_player.has_played,
+            current_level = self.table.amount_level,
+            complete_current_level = self.table.full_amount_level,
             full_bet = self.table.full_bet,
             full_raise_increase = self.table.full_raise_increase,
             is_last_active_player = (
-                self.current_player in self.table.active_players
+                self.table.current_player in self.table.active_players
                 and len(self.table.active_players) == 1
             ),
             open_fold_allowed = self.open_fold_allowed,
@@ -233,4 +235,4 @@ class BettingRound:
         for player in table.players:
             player.unmark_has_played()
             player.reset_action()
-            player.reset_current_amount()
+            player.clear_amount()

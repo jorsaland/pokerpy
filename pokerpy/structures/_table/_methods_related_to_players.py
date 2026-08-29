@@ -51,6 +51,17 @@ def method_set_stopping_player(self: "Table", player: Player):
     self._stopping_player = player
 
 
+def method_set_current_player(self: "Table", player: Player):
+
+    if not isinstance(player, Player):
+        raise TypeError(msg_not_player_instance.format(type(player).__name__))
+
+    if player not in self.players:
+        raise ValueError(msg_player_not_in_table.format(player.name))
+
+    self._current_player = player
+
+
 def method_get_next_player(self: "Table", reference_player: Player):
 
     if reference_player not in self.players:

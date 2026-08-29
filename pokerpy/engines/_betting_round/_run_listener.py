@@ -41,11 +41,11 @@ def run_listener(betting_round: "BettingRound"):
     """
 
     # Do not even iterate if there is only one non-folded player who still has a stack to bet
-    if len([player for player in betting_round.table.players_in_hand if player.stack > 0]) > 1:
+    if len([player for player in betting_round.table.participating_players if player.stack > 0]) > 1:
 
         # All players are itered, prompt_player decides if plays or not
         for player in cycle(betting_round.table.iter_players()):
-            betting_round.set_current_player(player)
+            betting_round.table.set_current_player(player)
             if player == betting_round.table.starting_player:
                 betting_round.increase_counter()
             try:
@@ -53,7 +53,7 @@ def run_listener(betting_round: "BettingRound"):
                     table = betting_round.table,
                     current_player = player,
                     open_fold_allowed = betting_round.open_fold_allowed,
-                    ignore_invalid_actions = betting_round.ignore_invalid_actions
+                    raise_invalid_actions = betting_round.raise_invalid_actions
                 )
             except JumpToNextPlayerSignal:
                 continue
@@ -64,4 +64,4 @@ def run_listener(betting_round: "BettingRound"):
     
     # Move chips to the center of the table
     for player in betting_round.table.players:
-        betting_round.table.add_to_central_pot(player.current_amount)
+        betting_round.table.increase_central_pot(player.amount)

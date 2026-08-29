@@ -39,11 +39,11 @@ class TestTableClassInstantiation(TestCase):
         self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
         self.assertEqual(table.starting_player, Andy)
         self.assertEqual(table.stopping_player, Coral)
-        self.assertSetEqual(set(table.players_in_hand), {Andy, Boa, Coral})
+        self.assertSetEqual(set(table.participating_players), {Andy, Boa, Coral})
         self.assertEqual(table.full_bet, 1)
         self.assertEqual(table.full_raise_increase, 1)
-        self.assertEqual(table.current_level, 0)
-        self.assertEqual(table.complete_current_level, 0)
+        self.assertEqual(table.amount_level, 0)
+        self.assertEqual(table.full_amount_level, 0)
         self.assertEqual(table.central_pot, 0)
         self.assertSetEqual(
             set(table.deck),
@@ -64,11 +64,11 @@ class TestTableClassInstantiation(TestCase):
         self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
         self.assertEqual(table.starting_player, Boa)
         self.assertEqual(table.stopping_player, Andy)
-        self.assertSetEqual(set(table.players_in_hand), {Andy, Boa, Coral})
+        self.assertSetEqual(set(table.participating_players), {Andy, Boa, Coral})
         self.assertEqual(table.full_bet, 5)
         self.assertEqual(table.full_raise_increase, 5)
-        self.assertEqual(table.current_level, 0)
-        self.assertEqual(table.complete_current_level, 0)
+        self.assertEqual(table.amount_level, 0)
+        self.assertEqual(table.full_amount_level, 0)
         self.assertEqual(table.central_pot, 0)
         self.assertSetEqual(
             set(table.deck),
@@ -272,14 +272,14 @@ class TestTableClassMethodsForCards(TestCase):
         self.assertEqual(table.full_raise_increase, 10)
 
         table.set_current_level(5)
-        self.assertEqual(table.current_level, 5)
+        self.assertEqual(table.amount_level, 5)
         table.set_current_level(10)
-        self.assertEqual(table.current_level, 10)
+        self.assertEqual(table.amount_level, 10)
 
         table.set_complete_current_level(5)
-        self.assertEqual(table.complete_current_level, 5)
+        self.assertEqual(table.full_amount_level, 5)
         table.set_complete_current_level(10)
-        self.assertEqual(table.complete_current_level, 10)
+        self.assertEqual(table.full_amount_level, 10)
 
         # Type errors
 
@@ -345,24 +345,24 @@ class TestTableClassMethodsForCards(TestCase):
 
         self.assertEqual(table.central_pot, 0)
 
-        table.add_to_central_pot(0)
-        table.add_to_central_pot(5)
-        table.add_to_central_pot(10)
+        table.increase_central_pot(0)
+        table.increase_central_pot(5)
+        table.increase_central_pot(10)
 
         self.assertEqual(table.central_pot, 15)
 
-        table.reset_central_pot()
+        table.clear_central_pot()
 
         self.assertEqual(table.central_pot, 0)
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as context:
-            table.add_to_central_pot('10')
+            table.increase_central_pot('10')
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as context:
-            table.add_to_central_pot(-10)
+            table.increase_central_pot(-10)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
 
 
@@ -641,7 +641,7 @@ class TestTableClassMethodsForIteration(TestCase):
         self.assertEqual(table.get_previous_active_player(Coral), Boa)
 
         # One folded and one all-in
-        Boa.remove_from_stack(10)
+        Boa.decrease_stack(10)
         self.assertEqual(table.get_previous_active_player(Andy), Coral)
         self.assertEqual(table.get_previous_active_player(Boa), Coral)
         self.assertEqual(table.get_previous_active_player(Coral), Coral)

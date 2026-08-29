@@ -70,7 +70,7 @@ class TestResetCycleStatesFunction(TestCase):
         # Set previous states
 
         Andy.request_action(action)
-        Andy.add_to_current_amount(200)
+        Andy.increase_amount(200)
         for card in player_cards:
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
@@ -81,17 +81,17 @@ class TestResetCycleStatesFunction(TestCase):
             table.remove_card_from_deck(card)
             table.assign_common_card(card)
         table.add_to_current_amount(200)
-        table.add_to_central_pot(500)
+        table.increase_central_pot(500)
 
         # Evaluate before states
 
         self.assertEqual(Andy.requested_action, action)
-        self.assertEqual(Andy.current_amount, 200)
+        self.assertEqual(Andy.amount, 200)
         self.assertTupleEqual(Andy.cards, tuple(player_cards))
         self.assertEqual(Andy.hand, hand)
         self.assertTrue(Andy.is_folded)
 
-        self.assertTupleEqual(table.players_in_hand, tuple(player for player in table.players if player != Andy))
+        self.assertTupleEqual(table.participating_players, tuple(player for player in table.players if player != Andy))
         self.assertEqual(table.current_amount, 200)
         self.assertEqual(table.central_pot, 500)
         self.assertTupleEqual(table.common_cards, tuple(common_cards))
@@ -104,12 +104,12 @@ class TestResetCycleStatesFunction(TestCase):
         # Evaluate after states
 
         self.assertIsNone(Andy.requested_action)
-        self.assertEqual(Andy.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
         self.assertTupleEqual(Andy.cards, ())
         self.assertIsNone(Andy.hand)
         self.assertFalse(Andy.is_folded)
 
-        self.assertTupleEqual(table.players_in_hand, table.players)
+        self.assertTupleEqual(table.participating_players, table.players)
         self.assertEqual(table.current_amount, 0)
         self.assertEqual(table.central_pot, 0)
         self.assertTupleEqual(table.common_cards, ())

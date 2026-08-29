@@ -32,22 +32,22 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
     Updates statuses according to the chosen action.
     """
 
-    player_current_amount = player.current_amount
-    current_level = table.current_level
-    complete_current_level = table.complete_current_level
+    player_current_amount = player.amount
+    current_level = table.amount_level
+    complete_current_level = table.full_amount_level
     full_raise_increase = table.full_raise_increase
 
     player.mark_has_played()
 
-    if action.name == ACTION_FOLD:
+    if action.category == ACTION_FOLD:
         player.mark_is_folded()
 
     if action.amount > 0:
-        player.remove_from_stack(action.amount)
-        player.add_to_current_amount(action.amount)
-        player.add_to_pot_participation(action.amount)
+        player.decrease_stack(action.amount)
+        player.increase_amount(action.amount)
+        player.increase_pot_participation(action.amount)
 
-    if action.name in (ACTION_BET, ACTION_RAISE):
+    if action.category in (ACTION_BET, ACTION_RAISE):
         new_current_amount = player_current_amount + action.amount
         raise_increase = new_current_amount - current_level
         new_level = complete_current_level + raise_increase
@@ -60,7 +60,7 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
         table.set_stopping_player(previous_player_in_hand) 
 
     logger.info(
-        f"{''.join(str(card) for card in player.cards)} {player.name} {action.name.upper()}S {action.amount} "
-        f"({player.name}'s current amount: {player.current_amount} | stack: {player.stack})"
+        f"{''.join(str(card) for card in player.cards)} {player.name} {action.category.upper()}S {action.amount} "
+        f"({player.name}'s current amount: {player.amount} | stack: {player.stack})"
     )
-    logger.info(f'TABLE CURRENT LEVEL: {table.current_level}\n')
+    logger.info(f'TABLE CURRENT LEVEL: {table.amount_level}\n')

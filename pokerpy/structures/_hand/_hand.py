@@ -64,12 +64,15 @@ class Hand:
 
     @property
     def cards(self):
-        "Cards that are part of the hand."
+        "Set of five cards that make up the hand."
         return self._cards
 
     @property
     def category(self):
-        "Hand category."
+        """
+        Rank of the hand (high card, pair, two pair, three of a kind, straight, flush, full house,
+        four of a kind, straight flush and royal flush).
+        """
         return self._category
 
 

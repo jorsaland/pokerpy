@@ -38,12 +38,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
 
         # Evaluate states before request
@@ -76,12 +76,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
 
         # Evaluate states before request
@@ -115,12 +115,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingAValidAction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
 
         # Evaluate states before request
@@ -170,12 +170,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = True,
+            raise_invalid_actions = False,
         )
 
         # Evaluate states before request
@@ -210,12 +210,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
 
         # Evaluate states before request
@@ -252,12 +252,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = True,
+            raise_invalid_actions = False,
         )
 
         # Evaluate states before request
@@ -297,12 +297,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = False,
+            raise_invalid_actions = True,
         )
 
         # Evaluate states before request
@@ -348,12 +348,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = True,
+            raise_invalid_actions = False,
         )
 
         # Evaluate states before request
@@ -399,12 +399,12 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            current_level = table.current_level,
-            complete_current_level = table.complete_current_level,
+            current_level = table.amount_level,
+            complete_current_level = table.full_amount_level,
             full_bet = 2,
             full_raise_increase = 2,
             open_fold_allowed = False,
-            ignore_invalid_actions = True,
+            raise_invalid_actions = False,
         )
 
         # Evaluate states before request

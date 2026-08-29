@@ -40,45 +40,45 @@ class Action:
     """
 
 
-    def __init__(self, name: str, amount: int = 0):
+    def __init__(self, category: str, amount: int = 0):
 
         # Check types
-        if not isinstance(name, str):
-            raise TypeError(msg_not_str.format(type(name).__name__))
+        if not isinstance(category, str):
+            raise TypeError(msg_not_str.format(type(category).__name__))
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
 
         # Validate input
-        if name not in possible_action_names:
+        if category not in possible_action_names:
             error_message = msg_invalid_action_name.format(', '.join(possible_action_names))
             raise ValueError(error_message)
         
         # Validate amount
-        if name in (ACTION_FOLD, ACTION_CHECK):
+        if category in (ACTION_FOLD, ACTION_CHECK):
             if amount != 0:
-                raise ValueError(msg_not_zero_value.format(name, amount))
+                raise ValueError(msg_not_zero_value.format(category, amount))
         else:
             if amount <= 0:
-                raise ValueError(msg_not_positive_value.format(name, amount))
+                raise ValueError(msg_not_positive_value.format(category, amount))
 
         # Fixed variables
-        self._name = name
+        self._category = category
         self._amount = amount
 
 
     @property
-    def name(self):
-        "Name of the action."
-        return self._name
+    def category(self):
+        "Name of the action (fold, check, call, bet and raise)."
+        return self._category
     
     @property
     def amount(self):
-        "Amount put by the player when performing the action."
+        "Amount of chips placed in front during the action."
         return self._amount
 
 
     def __repr__(self):
-        return f'Action(name={self.name}, amount={self.amount})'
+        return f'Action(name={self.category}, amount={self.amount})'
     
 
     def __eq__(self, other):
@@ -86,4 +86,4 @@ class Action:
         if not isinstance(other, Action):
             return NotImplemented
 
-        return (self.name == other.name) and (self.amount == other.amount)
+        return (self.category == other.category) and (self.amount == other.amount)

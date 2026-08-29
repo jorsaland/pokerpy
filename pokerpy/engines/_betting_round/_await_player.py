@@ -37,7 +37,7 @@ def await_player(
     full_raise_increase: int,
     is_last_active_player: bool,
     open_fold_allowed: bool,
-    ignore_invalid_actions: bool
+    raise_invalid_actions: bool
 ):
 
     """
@@ -60,7 +60,7 @@ def await_player(
 
         amount_range_by_action = get_valid_actions(
             player_stack = player.stack,
-            player_current_amount = player.current_amount,
+            player_current_amount = player.amount,
             player_has_played = player.has_played,
             is_last_active_player = is_last_active_player,
             current_level = current_level,
@@ -69,12 +69,12 @@ def await_player(
             full_raise_increase = full_raise_increase,
             open_fold_allowed = open_fold_allowed,
         )
-        amount_range = amount_range_by_action.get(action.name)
+        amount_range = amount_range_by_action.get(action.category)
         if amount_range is not None and action.amount in amount_range:
             break
 
-        logger.debug(f'--- invalid action: {action.name}s {action.amount}')
-        if not ignore_invalid_actions:
+        logger.debug(f'--- invalid action: {action.category}s {action.amount}')
+        if raise_invalid_actions:
             raise RuntimeError(msg_forbidden_action)
 
     # Reset player and return requested action

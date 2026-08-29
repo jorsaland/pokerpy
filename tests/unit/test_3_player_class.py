@@ -160,7 +160,7 @@ class TestPlayerClass(TestCase):
             structures.Card('2', 'c'),
         ]))
 
-        Andy.reset_hand()
+        Andy.clear_hand()
         self.assertIsNone(Andy.hand)
 
 
@@ -184,26 +184,26 @@ class TestPlayerClass(TestCase):
 
         # Before and after effects
 
-        self.assertEqual(Andy.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
 
-        Andy.add_to_current_amount(0)
-        Andy.add_to_current_amount(50)
-        Andy.add_to_current_amount(100)
+        Andy.increase_amount(0)
+        Andy.increase_amount(50)
+        Andy.increase_amount(100)
 
-        self.assertEqual(Andy.current_amount, 150)
+        self.assertEqual(Andy.amount, 150)
 
-        Andy.reset_current_amount()
+        Andy.clear_amount()
 
-        self.assertEqual(Andy.current_amount, 0)
+        self.assertEqual(Andy.amount, 0)
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.add_to_current_amount('100')
+            Andy.increase_amount('100')
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            Andy.add_to_current_amount(-100)
+            Andy.increase_amount(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
@@ -222,24 +222,24 @@ class TestPlayerClass(TestCase):
 
         self.assertEqual(Andy.pot_participation, 0)
 
-        Andy.add_to_pot_participation(0)
-        Andy.add_to_pot_participation(50)
-        Andy.add_to_pot_participation(100)
+        Andy.increase_pot_participation(0)
+        Andy.increase_pot_participation(50)
+        Andy.increase_pot_participation(100)
 
         self.assertEqual(Andy.pot_participation, 150)
 
-        Andy.reset_pot_participation()
+        Andy.clear_pot_participation()
 
         self.assertEqual(Andy.pot_participation, 0)
 
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.add_to_pot_participation('100')
+            Andy.increase_pot_participation('100')
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            Andy.add_to_pot_participation(-100)
+            Andy.increase_pot_participation(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
@@ -258,9 +258,9 @@ class TestPlayerClass(TestCase):
 
         self.assertEqual(Andy.stack, 1000)
 
-        Andy.add_to_stack(0)
-        Andy.add_to_stack(50)
-        Andy.add_to_stack(100)
+        Andy.increase_stack(0)
+        Andy.increase_stack(50)
+        Andy.increase_stack(100)
 
         self.assertEqual(Andy.stack, 1150)
 
@@ -268,11 +268,11 @@ class TestPlayerClass(TestCase):
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.add_to_stack('100')
+            Andy.increase_stack('100')
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            Andy.add_to_stack(-100)
+            Andy.increase_stack(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
@@ -291,9 +291,9 @@ class TestPlayerClass(TestCase):
 
         self.assertEqual(Andy.stack, 1000)
 
-        Andy.remove_from_stack(0)
-        Andy.remove_from_stack(50)
-        Andy.remove_from_stack(100)
+        Andy.decrease_stack(0)
+        Andy.decrease_stack(50)
+        Andy.decrease_stack(100)
 
         self.assertEqual(Andy.stack, 850)
 
@@ -301,11 +301,11 @@ class TestPlayerClass(TestCase):
         # Invalid inputs
 
         with self.assertRaises(TypeError) as cm:
-            Andy.remove_from_stack('100')
+            Andy.decrease_stack('100')
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as cm:
-            Andy.remove_from_stack(-100)
+            Andy.decrease_stack(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 

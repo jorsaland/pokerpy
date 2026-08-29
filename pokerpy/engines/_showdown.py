@@ -54,7 +54,7 @@ def break_tie(winners: Sequence[Player], pot: int, pot_index: int):
             logger.info(f'{winner.name} wins {profit}.')
         else:
             logger.info(f'{winner.name} wins {profit}.')
-        winner.add_to_stack(profit)
+        winner.increase_stack(profit)
 
 
 def showdown(table: Table):
@@ -66,11 +66,11 @@ def showdown(table: Table):
     if not isinstance(table, Table):
         raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-    logger.info(f'Remaining players: {", ".join(player.name for player in table.players_in_hand)}')
+    logger.info(f'Remaining players: {", ".join(player.name for player in table.participating_players)}')
 
-    players_by_participation: dict[int, list[Player]] = {player.pot_participation: [] for player in table.players_in_hand}
+    players_by_participation: dict[int, list[Player]] = {player.pot_participation: [] for player in table.participating_players}
     for participation, participating_players in players_by_participation.items():
-        for player in table.players_in_hand:
+        for player in table.participating_players:
             if player.pot_participation >= participation:
                 participating_players.append(player)
 
@@ -98,6 +98,6 @@ def showdown(table: Table):
                 logger.info(f'{winner.name} wins main pot: {side_pot}!')
             else:
                 logger.info(f'{winner.name} wins side pot {i}: {side_pot}!')
-            winner.add_to_stack(side_pot)
+            winner.increase_stack(side_pot)
         else:
             break_tie(winners, side_pot, i)

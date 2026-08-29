@@ -43,7 +43,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 1)
@@ -62,7 +62,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertTrue(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 1)
@@ -92,7 +92,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 0)
@@ -111,7 +111,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 0)
@@ -142,7 +142,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 2)
@@ -161,7 +161,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.current_amount, 1)
+        self.assertEqual(Boa.amount, 1)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 2)
@@ -192,7 +192,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 2)
@@ -211,7 +211,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 8)
-        self.assertEqual(Boa.current_amount, 2)
+        self.assertEqual(Boa.amount, 2)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 2)
@@ -241,7 +241,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 0)
@@ -260,7 +260,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.current_amount, 1)
+        self.assertEqual(Boa.amount, 1)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 1)
@@ -290,7 +290,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 0)
@@ -309,7 +309,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 8)
-        self.assertEqual(Boa.current_amount, 2)
+        self.assertEqual(Boa.amount, 2)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 2)
@@ -339,7 +339,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 0)
@@ -358,7 +358,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 7)
-        self.assertEqual(Boa.current_amount, 3)
+        self.assertEqual(Boa.amount, 3)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 3)
@@ -390,7 +390,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 7)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 5)
@@ -409,7 +409,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.current_amount, 7)
+        self.assertEqual(Boa.amount, 7)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 7)
@@ -441,7 +441,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 5)
@@ -460,7 +460,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 2)
-        self.assertEqual(Boa.current_amount, 8)
+        self.assertEqual(Boa.amount, 8)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 8)
@@ -492,7 +492,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States before
 
         self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.current_amount, 0)
+        self.assertEqual(Boa.amount, 0)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 5)
@@ -511,7 +511,7 @@ class TestBettingRoundSetActionEffectsFunction(TestCase):
         # States after
 
         self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.current_amount, 9)
+        self.assertEqual(Boa.amount, 9)
         self.assertFalse(Boa.is_folded)
 
         self.assertEqual(table.current_amount, 9)

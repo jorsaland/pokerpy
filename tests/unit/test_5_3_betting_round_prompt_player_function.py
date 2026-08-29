@@ -110,8 +110,8 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Coral := structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
-        Andy.remove_from_stack(10)
-        Andy.add_to_current_amount(10)
+        Andy.decrease_stack(10)
+        Andy.increase_amount(10)
         table.add_to_current_amount(10)
 
         betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
@@ -136,8 +136,8 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
-        Andy.remove_from_stack(10)
-        Andy.add_to_current_amount(10)
+        Andy.decrease_stack(10)
+        Andy.increase_amount(10)
         table.add_to_current_amount(10)
 
         betting_round = engines.BettingRound('test round', table, stopping_player=Andy)

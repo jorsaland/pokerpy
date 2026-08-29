@@ -61,59 +61,62 @@ class Player:
         self._name = name
 
         # State variables
-        self._requested_action: (Action|None) = None
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
-        self._current_amount = 0
-        self._pot_participation = 0
+        self._requested_action: (Action|None) = None
         self._stack = stack
-        self._has_played = False
+        self._amount = 0
+        self._pot_participation = 0
         self._is_folded = False
+        self._has_played = False
 
 
     @property
     def name(self):
-        "Unique identifier of the player in the table."
+        "Player's identifier, unique within the table."
         return self._name
 
     @property
-    def requested_action(self):
-        "Action requested by the player."
-        return self._requested_action
-
-    @property
     def cards(self):
-        "Cards being hold by the player."
+        "Cards dealt to the player."
         return tuple(self._cards)
 
     @property
     def hand(self):
-        "Hand assigned to the player."
+        "Hand the player holds, according to the game rules."
         return self._hand
 
     @property
-    def current_amount(self):
-        "Amount of chips that the player has placed in front during the betting round."
-        return self._current_amount
-
-    @property
-    def pot_participation(self):
-        "Amount of chips that the player has placed in the pot so far."
-        return self._pot_participation
+    def requested_action(self):
+        "Action the player has requested in a betting round."
+        return self._requested_action
 
     @property
     def stack(self):
-        "Amount of chips the player has available to bet."
+        "Amount of chips the player has placed in front during the current betting round."
         return self._stack
-    
+
+    @property
+    def amount(self):
+        "Amount of chips that the player has placed in front during the betting round."
+        return self._amount
+
+    @property
+    def pot_participation(self):
+        "Total amount of chips the player has placed in the pot during the current hand cycle."
+        return self._pot_participation
+
     @property
     def is_folded(self):
-        "Whether the player folded or not."
+        "Whether the player has already folded in the current hand cycle."
         return self._is_folded
 
     @property
     def has_played(self):
-        "Whether the player has taken or not an action during the betting round."
+        """
+        Whether the player has already taken a voluntary action during the current betting round
+        (not including forced bets)
+        """
         return self._has_played
 
 
@@ -160,7 +163,7 @@ class Player:
         self._hand = hand
 
 
-    def reset_hand(self):
+    def clear_hand(self):
         "Resets the hand property back to None."
         self._hand = None
 
@@ -168,31 +171,31 @@ class Player:
     # Methods to affect stack and current amount
 
 
-    def add_to_current_amount(self, amount: int):
-        "Adds an amount to the current_amount property."
+    def increase_amount(self, amount: int):
+        "Adds an amount to the amount property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        self._current_amount += amount    
+        self._amount += amount    
 
-    def reset_current_amount(self):
-        "Resets the current_amount property back to zero."
-        self._current_amount = 0
+    def clear_amount(self):
+        "Resets the amount property back to zero."
+        self._amount = 0
 
-    def add_to_pot_participation(self, amount: int):
-        "Adds an amount to the pot_participation property."
+    def increase_pot_participation(self, amount: int):
+        "Adds an amoount to the pot_participation property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
         self._pot_participation += amount
 
-    def reset_pot_participation(self):
+    def clear_pot_participation(self):
         "Resets the pot_participation property back to zero."
         self._pot_participation = 0
 
-    def add_to_stack(self, amount: int):
+    def increase_stack(self, amount: int):
         "Adds an amount to the stack property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
@@ -201,7 +204,7 @@ class Player:
         self._stack += amount
 
 
-    def remove_from_stack(self, amount: int):
+    def decrease_stack(self, amount: int):
         "Removes an amount from the stack property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
@@ -228,7 +231,7 @@ class Player:
     def mark_is_folded(self):
         "Marks the is_folded property."
         self._is_folded = True
-        self.reset_pot_participation()
+        self.clear_pot_participation()
 
 
     def unmark_is_folded(self):
