@@ -31,7 +31,16 @@ class TestPlayerClass(TestCase):
 
         # Valid inputs
 
-        structures.Player('Andy', 1000)
+        Andy = structures.Player('Andy', 1000)
+        self.assertEqual(Andy.name, 'Andy')
+        self.assertEqual(Andy.cards, ())
+        self.assertIsNone(Andy.hand)
+        self.assertIsNone(Andy.requested_action)
+        self.assertEqual(Andy.stack, 1000)
+        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Andy.pot_participation, 0)
+        self.assertFalse(Andy.is_folded)
+        self.assertFalse(Andy.has_played)
 
 
         # Invalid inputs
