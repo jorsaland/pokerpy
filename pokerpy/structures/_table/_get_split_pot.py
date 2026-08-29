@@ -36,7 +36,10 @@ def get_split_pot(total_pot: int, players_amounts: list[int]):
     remaining_amounts: list[int] = []
 
     for amount in players_amounts:
-        main_pot += min_amount
+        if amount < min_amount:
+            main_pot += amount
+        else:
+            main_pot += min_amount
         if amount > min_amount:
             remaining_amounts.append(amount - min_amount)
 

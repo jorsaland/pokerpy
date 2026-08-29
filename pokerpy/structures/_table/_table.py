@@ -191,7 +191,7 @@ class Table:
         Pot chips that have already been placed in the center of the table in previous betting
         rounds.
         """
-        return get_split_pot(self.central_pot, [player.pot_participation for player in self.players_in_hand])
+        return get_split_pot(self.central_pot, [player.pot_participation for player in self.players])
 
 
 
