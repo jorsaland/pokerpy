@@ -1,7 +1,7 @@
 """
-Demo 0.6-A
+Demo 0.6-B
 
-This demo is made from Demo 0.6-E. Now, players start with different amounts of chips, making side
+This demo is made from Demo 0.6-A. Now, players start with different amounts of chips, making side
 pots possible. Also, the rules to choose an action are now available in the BettingRound instance,
 so the player can just check them and choose one.
 """
