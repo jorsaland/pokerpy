@@ -45,11 +45,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
 
 
-    def test_request_action_and_reset_action_methods(self):
+    def test_action_methods(self):
 
 
         """
-        Runs test cases on request_action and reset_action methods.
+        Runs test cases on methods related to actions.
         """
 
 
@@ -87,7 +87,7 @@ class TestPlayerClass(TestCase):
 
 
         """
-        Runs test cases on assign_card and reset_cards methods.
+        Runs test cases on methods related to cards.
         """
 
 
@@ -121,7 +121,7 @@ class TestPlayerClass(TestCase):
 
 
         """
-        Runs test cases on assign_hand and reset_hand methods.
+        Runs test cases on methods related to hands.
         """
 
 
@@ -171,11 +171,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_hand_instance.format(structures.Card.__name__))
 
 
-    def test_current_amount_methods(self):
+    def test_amount_methods(self):
 
 
         """
-        Runs test cases on add_to_current_amount and reset_current_amount methods.
+        Runs test cases on methods related to the amount.
         """
 
 
@@ -211,7 +211,7 @@ class TestPlayerClass(TestCase):
 
 
         """
-        Runs test cases on add_to_pot_participation and reset_pot_participation methods.
+        Runs test cases on methods related to pot participation.
         """
 
 
@@ -243,11 +243,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
-    def test_add_to_stack_method(self):
+    def test_stack_methods(self):
 
 
         """
-        Runs test cases on add_to_stack_method method.
+        Runs test cases on methods related to the stack.
         """
 
 
@@ -264,6 +264,11 @@ class TestPlayerClass(TestCase):
 
         self.assertEqual(Andy.stack, 1150)
 
+        Andy.decrease_stack(0)
+        Andy.decrease_stack(50)
+        Andy.decrease_stack(100)
+
+        self.assertEqual(Andy.stack, 1000)
 
         # Invalid inputs
 
@@ -275,31 +280,6 @@ class TestPlayerClass(TestCase):
             Andy.increase_stack(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
-
-    def test_remove_from_stack_method(self):
-
-
-        """
-        Runs test cases on add_stack_method method.
-        """
-
-
-        Andy = structures.Player('Andy', 1000)
-
-
-        # Before and after effects
-
-        self.assertEqual(Andy.stack, 1000)
-
-        Andy.decrease_stack(0)
-        Andy.decrease_stack(50)
-        Andy.decrease_stack(100)
-
-        self.assertEqual(Andy.stack, 850)
-
-
-        # Invalid inputs
-
         with self.assertRaises(TypeError) as cm:
             Andy.decrease_stack('100')
         self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(str.__name__))
@@ -309,11 +289,11 @@ class TestPlayerClass(TestCase):
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
 
-    def test_fold_methods(self):
+    def test_boolean_status_methods(self):
 
 
         """
-        Runs test cases on mark_is_folded and unmark_is_folded methods.
+        Runs test cases on methods related to boolean status.
         """
 
 
@@ -324,17 +304,6 @@ class TestPlayerClass(TestCase):
         self.assertTrue(Andy.is_folded)
         Andy.unmark_is_folded()
         self.assertFalse(Andy.is_folded)
-
-
-    def test_playing_status_methods(self):
-
-
-        """
-        Runs test cases on mark_is_folded and unmark_is_folded methods.
-        """
-
-
-        Andy = structures.Player('Andy', 1000)
 
         self.assertFalse(Andy.has_played)
         Andy.mark_has_played()
