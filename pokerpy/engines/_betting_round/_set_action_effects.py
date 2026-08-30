@@ -51,9 +51,9 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
         new_current_amount = player_current_amount + action.amount
         raise_increase = new_current_amount - current_level
         new_level = complete_current_level + raise_increase
-        table.set_current_level(new_level)
+        table.set_amount_level(new_level)
         if new_level >= complete_current_level + full_raise_increase:
-            table.set_complete_current_level(new_level)
+            table.set_full_amount_level(new_level)
             if (new_full_raise_increase := new_level - complete_current_level) > 0:
                 table.set_full_raise_increase(new_full_raise_increase)
         assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None

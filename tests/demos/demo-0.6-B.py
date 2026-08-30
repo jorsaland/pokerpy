@@ -110,8 +110,8 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
         big_blind_player.decrease_stack(BIG_BLIND)
         big_blind_player.increase_amount(BIG_BLIND)
         big_blind_player.increase_pot_participation(BIG_BLIND)
-        table.set_current_level(BIG_BLIND)
-        table.set_complete_current_level(BIG_BLIND)
+        table.set_amount_level(BIG_BLIND)
+        table.set_full_amount_level(BIG_BLIND)
 
         print(
             f"{big_blind_player.name} PLACES BIG BLIND {BIG_BLIND} "

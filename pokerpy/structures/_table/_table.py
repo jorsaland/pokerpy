@@ -41,19 +41,21 @@ from ._methods_related_to_cards import (
 from ._methods_related_to_money import (
     method_increase_central_pot,
     method_clear_central_pot,
-    method_set_current_level,
-    method_set_complete_current_level,
+    method_set_amount_level,
+    method_set_full_amount_level,
     method_set_full_bet,
     method_set_full_raise_increase,
 )
-from ._methods_related_to_players import (
+from ._methods_related_to_players_setting import (
+    method_set_current_player,
+    method_set_starting_player,
+    method_set_stopping_player,
+)
+from ._methods_related_to_players_iteration import (
     method_get_next_player,
     method_get_previous_active_player,
     method_get_previous_player,
     method_iter_players,
-    method_set_current_player,
-    method_set_starting_player,
-    method_set_stopping_player,
 )
 from .._card import Card
 from .._player import Player
@@ -262,14 +264,14 @@ class Table:
         return method_set_full_raise_increase(self, amount)
 
 
-    def set_current_level(self, amount: int):
-        "Sets the current_level property."
-        return method_set_current_level(self, amount)
+    def set_amount_level(self, amount: int):
+        "Sets the amount_level property."
+        return method_set_amount_level(self, amount)
 
 
-    def set_complete_current_level(self, amount: int):
-        "Sets the complete_current_level property."
-        return method_set_complete_current_level(self, amount)
+    def set_full_amount_level(self, amount: int):
+        "Sets the full_amount property."
+        return method_set_full_amount_level(self, amount)
 
 
     def increase_central_pot(self, amount: int):
@@ -282,7 +284,7 @@ class Table:
         return method_clear_central_pot(self)
 
 
-    # Methods related to players
+    # Methods related to players setting
 
 
     def set_starting_player(self, player: Player):
@@ -298,6 +300,9 @@ class Table:
     def set_current_player(self, player: Player):
         "Sets a player as the current player."
         return method_set_current_player(self, player)
+
+
+    # Methods related to players iteration
 
 
     def get_next_player(self, reference_player: Player):

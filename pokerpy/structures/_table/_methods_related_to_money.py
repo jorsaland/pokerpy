@@ -34,7 +34,6 @@ def method_set_full_bet(self: "Table", amount: int):
     if amount <= 0:
         raise ValueError(msg_not_positive_value.format(amount))
     self._full_bet = amount
-    self.set_full_raise_increase(amount)
 
 
 def method_set_full_raise_increase(self: "Table", amount: int):
@@ -45,7 +44,7 @@ def method_set_full_raise_increase(self: "Table", amount: int):
     self._full_raise_increase = amount
 
 
-def method_set_current_level(self: "Table", amount: int):
+def method_set_amount_level(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
     if amount < 0:
@@ -53,7 +52,7 @@ def method_set_current_level(self: "Table", amount: int):
     self._amount_level = amount
 
 
-def method_set_complete_current_level(self: "Table", amount: int):
+def method_set_full_amount_level(self: "Table", amount: int):
     if not isinstance(amount, int):
         raise TypeError(msg_not_int.format(type(amount).__name__))
     if amount < 0:

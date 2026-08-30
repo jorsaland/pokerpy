@@ -13,11 +13,11 @@ from unittest import main, TestCase
 from pokerpy import constants, messages, structures
 
 
-class TestTableClassInstantiation(TestCase):
+class TestTableClassBasicMethods(TestCase):
 
 
     """
-    Runs unit tests on Table class instantiation.
+    Runs unit tests on Table class basic methods.
     """
 
 
@@ -31,50 +31,57 @@ class TestTableClassInstantiation(TestCase):
 
         # Valid inputs
 
+        full_deck = tuple(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits)
+
         table = structures.Table([
             Andy := structures.Player('Andy', 10),
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
         ])
-        self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
+        self.assertTupleEqual(table.deck, full_deck)
+        self.assertTupleEqual(table.common_cards, ())
+        self.assertTupleEqual(table.players, (Andy, Boa, Coral))
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral))
+        self.assertTupleEqual(table.active_players, (Andy, Boa, Coral))
         self.assertEqual(table.starting_player, Andy)
         self.assertEqual(table.stopping_player, Coral)
-        self.assertSetEqual(set(table.participating_players), {Andy, Boa, Coral})
-        self.assertEqual(table.full_bet, 1)
-        self.assertEqual(table.full_raise_increase, 1)
+        self.assertEqual(table.current_player, Andy)
         self.assertEqual(table.amount_level, 0)
+        self.assertEqual(table.full_bet, 1)
         self.assertEqual(table.full_amount_level, 0)
+        self.assertEqual(table.full_raise_increase, 1)
+        self.assertEqual(table.pot, 0)
         self.assertEqual(table.central_pot, 0)
-        self.assertSetEqual(
-            set(table.deck),
-            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits}
-        )
-        self.assertSetEqual(set(table.common_cards), set())
+        self.assertEqual(table.central_pot, 0)
+        self.assertTupleEqual(table.split_pot, (0,))
 
         table = structures.Table(
             players = [
                 Andy := structures.Player('Andy', 10),
                 Boa := structures.Player('Boa', 10),
                 Coral := structures.Player('Coral', 10),
+                Dino := structures.Player('Dino', 10),
             ],
             full_bet = 5,
             starting_player = Boa,
-            stopping_player = Andy,
+            stopping_player = Dino,
         )
-        self.assertSetEqual(set(table.players), {Andy, Boa, Coral})
+        self.assertTupleEqual(table.deck, full_deck)
+        self.assertTupleEqual(table.common_cards, ())
+        self.assertTupleEqual(table.players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Andy, Boa, Coral, Dino))
         self.assertEqual(table.starting_player, Boa)
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertSetEqual(set(table.participating_players), {Andy, Boa, Coral})
-        self.assertEqual(table.full_bet, 5)
-        self.assertEqual(table.full_raise_increase, 5)
+        self.assertEqual(table.stopping_player, Dino)
+        self.assertEqual(table.current_player, Boa)
         self.assertEqual(table.amount_level, 0)
+        self.assertEqual(table.full_bet, 5)
         self.assertEqual(table.full_amount_level, 0)
+        self.assertEqual(table.full_raise_increase, 5)
+        self.assertEqual(table.pot, 0)
         self.assertEqual(table.central_pot, 0)
-        self.assertSetEqual(
-            set(table.deck),
-            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits}
-        )
-        self.assertSetEqual(set(table.common_cards), set())
+        self.assertEqual(table.central_pot, 0)
+        self.assertTupleEqual(table.split_pot, (0,))
 
         # Type errors
 
@@ -122,30 +129,24 @@ class TestTableClassInstantiation(TestCase):
 
         # Starting player not in table
         with self.assertRaises(ValueError) as context:
-            structures.Table([structures.Player('Andy', 10)], starting_player=structures.Player('Dino', 10))
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
+            structures.Table([structures.Player('Andy', 10)], starting_player=structures.Player('Boa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
 
         # Stopping player not in table
         with self.assertRaises(ValueError) as context:
-            structures.Table([structures.Player('Andy', 10)], stopping_player=structures.Player('Dino', 10))
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
-
-
-class TestTableClassMethodsForCards(TestCase):
-
-
-    """
-    Runs unit tests on Table class related to cards.
-    """
+            structures.Table([structures.Player('Andy', 10)], stopping_player=structures.Player('Boa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Boa'))
 
 
     def test_methods_for_deck(self):
 
 
         """
-        Runs test cases on remove_card_from_deck and reset_deck methods.
+        Runs test cases on methods related to the deck.
         """
 
+
+        full_deck = tuple(structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits)
 
         table = structures.Table([
             structures.Player('Andy', 10),
@@ -156,29 +157,17 @@ class TestTableClassMethodsForCards(TestCase):
 
         # Before and after effects
 
-        self.assertSetEqual(
-            set(table.deck),
-            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits}
-        )
+        self.assertTupleEqual(table.deck, full_deck)
 
         table.remove_card_from_deck(structures.Card('7', 'c'))
         table.remove_card_from_deck(structures.Card('T', 'd'))
         table.remove_card_from_deck(structures.Card('2', 's'))
 
-        self.assertEqual(
-            set(table.deck),
-            {
-                structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits
-                if (value, suit) not in (('7', 'c'), ('T', 'd'), ('2', 's'))
-            }
-        )
+        self.assertTupleEqual(table.deck, tuple(card for card in full_deck if (card.value, card.suit) not in (('7', 'c'), ('T', 'd'), ('2', 's'))))
 
         table.reset_deck()
 
-        self.assertEqual(
-            set(table.deck),
-            {structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits},
-        )
+        self.assertTupleEqual(table.deck, full_deck)
 
 
         # Invalid inputs
@@ -197,7 +186,7 @@ class TestTableClassMethodsForCards(TestCase):
 
 
         """
-        Runs test cases on assign_common_card and reset_common_cards methods.
+        Runs test cases on methods related to common cards.
         """
 
 
@@ -210,18 +199,17 @@ class TestTableClassMethodsForCards(TestCase):
 
         # Before and after effects
 
-        self.assertSetEqual(set(table.common_cards), set())
+        self.assertTupleEqual(table.common_cards, ())
 
         table.assign_common_card(structures.Card('7', 'c'))
         table.assign_common_card(structures.Card('T', 'd'))
         table.assign_common_card(structures.Card('2', 's'))
 
-        self.assertEqual(
-            set(table.common_cards), {structures.Card('7', 'c'), structures.Card('T', 'd'), structures.Card('2', 's')}
-        )
+        self.assertTupleEqual(table.common_cards, (structures.Card('7', 'c'), structures.Card('T', 'd'), structures.Card('2', 's')))
 
         table.reset_common_cards()
-        self.assertEqual(set(table.common_cards), set())
+
+        self.assertTupleEqual(table.common_cards, ())
 
 
         # Invalid inputs
@@ -236,20 +224,11 @@ class TestTableClassMethodsForCards(TestCase):
         self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
 
 
-class TestTableClassMethodsForCards(TestCase):
-
-
-    """
-    Runs unit tests on Table class related to money.
-    """
-
-
-    def test_methods_to_set_amounts(self):
+    def test_methods_for_money(self):
 
 
         """
-        Runs test cases on method_set_full_bet, method_set_full_raise_increase,
-        method_set_current_level and method_set_complete_current_level methods.
+        Runs test cases on methods related to money.
         """
 
 
@@ -259,27 +238,44 @@ class TestTableClassMethodsForCards(TestCase):
             structures.Player('Coral', 10),
         ])
 
+
         # Valid inputs
 
+        self.assertEqual(table.full_bet, 1)
         table.set_full_bet(5)
         self.assertEqual(table.full_bet, 5)
         table.set_full_bet(10)
         self.assertEqual(table.full_bet, 10)
 
+        self.assertEqual(table.full_raise_increase, 1)
         table.set_full_raise_increase(5)
         self.assertEqual(table.full_raise_increase, 5)
         table.set_full_raise_increase(10)
         self.assertEqual(table.full_raise_increase, 10)
 
-        table.set_current_level(5)
+        self.assertEqual(table.amount_level, 0)
+        table.set_amount_level(5)
         self.assertEqual(table.amount_level, 5)
-        table.set_current_level(10)
+        table.set_amount_level(10)
         self.assertEqual(table.amount_level, 10)
 
-        table.set_complete_current_level(5)
+        self.assertEqual(table.full_amount_level, 0)
+        table.set_full_amount_level(5)
         self.assertEqual(table.full_amount_level, 5)
-        table.set_complete_current_level(10)
+        table.set_full_amount_level(10)
         self.assertEqual(table.full_amount_level, 10)
+
+        self.assertEqual(table.central_pot, 0)
+        table.increase_central_pot(0)
+        self.assertEqual(table.central_pot, 0)
+        table.increase_central_pot(5)
+        self.assertEqual(table.central_pot, 5)
+        table.increase_central_pot(10)
+        self.assertEqual(table.central_pot, 15)
+
+        table.clear_central_pot()
+        self.assertEqual(table.central_pot, 0)
+
 
         # Type errors
 
@@ -292,12 +288,17 @@ class TestTableClassMethodsForCards(TestCase):
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(TypeError) as context:
-            table.set_current_level('10')
+            table.set_amount_level('10')
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(TypeError) as context:
-            table.set_complete_current_level('10')
+            table.set_full_amount_level('10')
         self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
+
+        with self.assertRaises(TypeError) as context:
+            table.increase_central_pot('10')
+        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
+
 
         # Value errors
 
@@ -318,125 +319,481 @@ class TestTableClassMethodsForCards(TestCase):
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
 
         with self.assertRaises(ValueError) as context:
-            table.set_complete_current_level(-10)
+            table.set_full_amount_level(-10)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
 
         with self.assertRaises(ValueError) as context:
-            table.set_complete_current_level(-10)
+            table.set_full_amount_level(-10)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
-
-
-    def test_central_pot_methods(self):
-
-
-        """
-        Runs test cases on add_to_central_pot and reset_central_pot methods.
-        """
-
-
-        table = structures.Table([
-            structures.Player('Andy', 10),
-            structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-        ])
-
-
-        # Before and after effects
-
-        self.assertEqual(table.central_pot, 0)
-
-        table.increase_central_pot(0)
-        table.increase_central_pot(5)
-        table.increase_central_pot(10)
-
-        self.assertEqual(table.central_pot, 15)
-
-        table.clear_central_pot()
-
-        self.assertEqual(table.central_pot, 0)
-
-        # Invalid inputs
-
-        with self.assertRaises(TypeError) as context:
-            table.increase_central_pot('10')
-        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
 
         with self.assertRaises(ValueError) as context:
             table.increase_central_pot(-10)
         self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(-10))
 
 
-
-class TestTableClassMethodsForIteration(TestCase):
-
-
-    """
-    Runs unit tests on Table class related to iteration.
-    """
+    def test_methods_for_players_setting(self):
 
 
-    def test_get_next_player_method(self):
+        """
+        Runs test cases on methods related to players setting.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+
+        # Valid inputs
+
+        self.assertEqual(table.starting_player, Andy)
+        table.set_starting_player(Andy)
+        self.assertEqual(table.starting_player, Andy)
+        table.set_starting_player(Boa)
+        self.assertEqual(table.starting_player, Boa)
+
+        self.assertEqual(table.stopping_player, Dino)
+        table.set_stopping_player(Dino)
+        self.assertEqual(table.stopping_player, Dino)
+        table.set_stopping_player(Coral)
+        self.assertEqual(table.stopping_player, Coral)
+
+        self.assertEqual(table.current_player, Andy)
+        table.set_current_player(Andy)
+        self.assertEqual(table.current_player, Andy)
+        table.set_current_player(Boa)
+        self.assertEqual(table.current_player, Boa)
+
+
+        # Type errors
+
+        with self.assertRaises(TypeError) as context:
+            table.set_starting_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+        with self.assertRaises(TypeError) as context:
+            table.set_stopping_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+        with self.assertRaises(TypeError) as context:
+            table.set_current_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+
+        # Value errors
+
+        with self.assertRaises(ValueError) as context:
+            table.set_starting_player(structures.Player('Epa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Epa'))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_stopping_player(structures.Player('Epa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Epa'))
+
+        with self.assertRaises(ValueError) as context:
+            table.set_current_player(structures.Player('Epa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Epa'))
+
+
+    def test_methods_for_players_position(self):
 
 
         """
         Runs test cases on get_next_player method.
         """
 
-        # Normal cases
 
         table = structures.Table([
             Andy := structures.Player('Andy', 10),
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
         ])
-        Dino = structures.Player('Dino', 10)
+
 
         # Valid inputs
+
         self.assertEqual(table.get_next_player(Andy), Boa)
         self.assertEqual(table.get_next_player(Boa), Coral)
         self.assertEqual(table.get_next_player(Coral), Andy)
 
-        # Invalid inputs
+        self.assertEqual(table.get_previous_player(Andy), Coral)
+        self.assertEqual(table.get_previous_player(Boa), Andy)
+        self.assertEqual(table.get_previous_player(Coral), Boa)
+
+
+        # Type errors
+
+        with self.assertRaises(TypeError) as context:
+            table.get_next_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+        with self.assertRaises(TypeError) as context:
+            table.get_previous_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
+
+        # Value errors
+
         with self.assertRaises(ValueError) as context:
-            table.get_next_player(Dino)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+            table.get_next_player(structures.Player('Dino', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
+
+        with self.assertRaises(ValueError) as context:
+            table.get_previous_player(structures.Player('Dino', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
+
 
         # Edge cases
 
-        table = structures.Table([Andy := structures.Player('Andy', 10)])
-        self.assertEqual(table.get_next_player(Andy), Andy)
+        small_table = structures.Table([Andy := structures.Player('Andy', 10)])
+        self.assertEqual(small_table.get_next_player(Andy), Andy)
+        self.assertEqual(small_table.get_previous_player(Andy), Andy)
 
 
-    def test_get_previous_player_method(self):
+    def test_get_previous_active_player_method(self):
 
 
         """
-        Runs test cases on get_previous_player method.
+        Runs test cases on get_previous_active_player method
         """
 
-        # Normal cases
 
         table = structures.Table([
             Andy := structures.Player('Andy', 10),
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
         ])
-        Dino = structures.Player('Dino', 10)
+
 
         # Valid inputs
-        self.assertEqual(table.get_previous_player(Andy), Coral)
-        self.assertEqual(table.get_previous_player(Boa), Andy)
-        self.assertEqual(table.get_previous_player(Coral), Boa)
+
+        # Everybody active
+        self.assertEqual(table.get_previous_active_player(Andy), Dino)
+        self.assertEqual(table.get_previous_active_player(Boa), Andy)
+        self.assertEqual(table.get_previous_active_player(Coral), Boa)
+        self.assertEqual(table.get_previous_active_player(Dino), Coral)
+
+        # One is folded
+        Andy.mark_is_folded()
+        self.assertEqual(table.get_previous_active_player(Andy), Dino)
+        self.assertEqual(table.get_previous_active_player(Boa), Dino)
+        self.assertEqual(table.get_previous_active_player(Coral), Boa)
+        self.assertEqual(table.get_previous_active_player(Dino), Coral)
+
+        # One folded and one all-in
+        Boa.decrease_stack(10)
+        self.assertEqual(table.get_previous_active_player(Andy), Dino)
+        self.assertEqual(table.get_previous_active_player(Boa), Dino)
+        self.assertEqual(table.get_previous_active_player(Coral), Dino)
+        self.assertEqual(table.get_previous_active_player(Dino), Coral)
+
+        # Everyone folded or all-in
+        Coral.mark_is_folded()
+        Dino.decrease_stack(10)
+        self.assertIsNone(table.get_previous_active_player(Andy))
+        self.assertIsNone(table.get_previous_active_player(Boa))
+        self.assertIsNone(table.get_previous_active_player(Coral))
+        self.assertIsNone(table.get_previous_active_player(Dino))
+
 
         # Invalid inputs
+
+        with self.assertRaises(TypeError) as context:
+            table.get_previous_active_player('Andy')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
         with self.assertRaises(ValueError) as context:
-            table.get_previous_player(Dino)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+            table.get_next_player(structures.Player('Epa', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Epa'))
+
 
         # Edge cases
 
-        table = structures.Table([Andy := structures.Player('Andy', 10)])
-        self.assertEqual(table.get_next_player(Andy), Andy)
+        small_table = structures.Table([Andy := structures.Player('Andy', 10)])
+        self.assertEqual(small_table.get_previous_active_player(Andy), Andy)
+
+
+class TestTableClassSpecialPlayerAttributes(TestCase):
+
+
+    """
+    Runs unit tests on Table class special attributes related to players.
+    """
+
+
+    def test_when_players_go_all_in(self):
+
+
+        """
+        Runs test cases when players go all-in.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Andy, Boa, Coral, Dino))
+
+        Andy.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Boa, Coral, Dino))
+
+        Boa.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Coral, Dino))
+
+        Coral.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Dino,))
+
+        Dino.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, ())
+
+
+    def test_when_players_fold(self):
+
+
+        """
+        Runs test cases when players fold.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Andy, Boa, Coral, Dino))
+
+        Andy.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, (Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Boa, Coral, Dino))
+
+        Boa.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, (Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Coral, Dino))
+
+        Coral.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, (Dino,))
+        self.assertTupleEqual(table.active_players, (Dino,))
+
+        Dino.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, ())
+        self.assertTupleEqual(table.active_players, ())
+
+
+    def test_when_players_go_all_in_and_fold(self):
+
+
+        """
+        Runs test cases when players go all-in and fold.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 10),
+            Boa := structures.Player('Boa', 10),
+            Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Andy, Boa, Coral, Dino))
+
+        Andy.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Boa, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Boa, Coral, Dino))
+
+        Boa.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, (Andy, Coral, Dino))
+        self.assertTupleEqual(table.active_players, (Coral, Dino))
+
+        Coral.decrease_stack(10)
+        self.assertTupleEqual(table.participating_players, (Andy, Coral, Dino,))
+        self.assertTupleEqual(table.active_players, (Dino,))
+
+        Dino.mark_is_folded()
+        self.assertTupleEqual(table.participating_players, (Andy, Coral))
+        self.assertTupleEqual(table.active_players, ())
+
+
+class TestTableClassSpecialPotAttributes(TestCase):
+
+
+    """
+    Runs unit tests on Table class special attributes related to the pot.
+    """
+
+
+    def test_when_players_end_being_active(self):
+
+
+        """
+        Runs test cases when players end being active.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 2),
+            Boa := structures.Player('Boa', 3),
+            Coral := structures.Player('Coral', 5),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+
+        Andy.decrease_stack(1)
+        Andy.increase_amount(1)
+        Andy.increase_pot_participation(1)
+        self.assertEqual(table.pot, 1)
+
+        Boa.decrease_stack(1)
+        Boa.increase_amount(1)
+        Boa.increase_pot_participation(1)
+        self.assertEqual(table.pot, 2)
+
+        Coral.decrease_stack(1)
+        Coral.increase_amount(1)
+        Coral.increase_pot_participation(1)
+        self.assertEqual(table.pot, 3)
+
+        Dino.decrease_stack(1)
+        Dino.increase_amount(1)
+        Dino.increase_pot_participation(1)
+        self.assertEqual(table.pot, 4)
+
+        self.assertTupleEqual(table.split_pot, (4,))
+
+
+    def test_when_some_players_fold(self):
+
+
+        """
+        Runs test cases when some players fold.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 2),
+            Boa := structures.Player('Boa', 3),
+            Coral := structures.Player('Coral', 5),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+
+        Andy.decrease_stack(1)
+        Andy.increase_amount(1)
+        Andy.increase_pot_participation(1)
+        self.assertEqual(table.pot, 1)
+
+        Boa.mark_is_folded()
+        self.assertEqual(table.pot, 1)
+
+        Coral.decrease_stack(1)
+        Coral.increase_amount(1)
+        Coral.increase_pot_participation(1)
+        self.assertEqual(table.pot, 2)
+
+        Dino.mark_is_folded()
+        self.assertEqual(table.pot, 2)
+
+        self.assertTupleEqual(table.split_pot, (2,))
+
+
+    def test_when_some_players_go_all_in(self):
+
+
+        """
+        Runs test cases when some players go all-in.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 2),
+            Boa := structures.Player('Boa', 3),
+            Coral := structures.Player('Coral', 5),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+
+        Andy.decrease_stack(2)
+        Andy.increase_amount(2)
+        Andy.increase_pot_participation(2)
+        self.assertEqual(table.pot, 2)
+
+        Boa.decrease_stack(3)
+        Boa.increase_amount(3)
+        Boa.increase_pot_participation(3)
+        self.assertEqual(table.pot, 5)
+
+        Coral.decrease_stack(4)
+        Coral.increase_amount(4)
+        Coral.increase_pot_participation(4)
+        self.assertEqual(table.pot, 9)
+
+        Dino.decrease_stack(4)
+        Dino.increase_amount(4)
+        Dino.increase_pot_participation(4)
+        self.assertEqual(table.pot, 13)
+
+        self.assertTupleEqual(table.split_pot, (8, 3, 2))
+
+
+    def test_when_all_players_fold_or_go_all_in(self):
+
+
+        """
+        Runs test cases when all players fold or go all-in.
+        """
+
+
+        table = structures.Table([
+            Andy := structures.Player('Andy', 2),
+            Boa := structures.Player('Boa', 3),
+            Coral := structures.Player('Coral', 5),
+            Dino := structures.Player('Dino', 10),
+        ])
+
+
+        Andy.decrease_stack(2)
+        Andy.increase_amount(2)
+        Andy.increase_pot_participation(2)
+        self.assertEqual(table.pot, 2)
+
+        Boa.decrease_stack(3)
+        Boa.increase_amount(3)
+        Boa.increase_pot_participation(3)
+        self.assertEqual(table.pot, 5)
+
+        Coral.decrease_stack(5)
+        Coral.increase_amount(5)
+        Coral.increase_pot_participation(5)
+        self.assertEqual(table.pot, 10)
+
+        Dino.mark_is_folded()
+        self.assertEqual(table.pot, 10)
+
+        self.assertTupleEqual(table.split_pot, (6, 2, 2))
+
+
+class TestTableClassPlayerIteration(TestCase):
+
+
+    """
+    Runs unit tests on Table class player iteration.
+    """
 
 
     def test_iter_players_method_going_forward(self):
@@ -452,7 +809,7 @@ class TestTableClassMethodsForIteration(TestCase):
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
         ])
-        Dino = structures.Player('Dino', 10)
+
 
         # Iteration
 
@@ -488,6 +845,7 @@ class TestTableClassMethodsForIteration(TestCase):
             next(iterator)
         self.assertIsNone(context.exception.value)
 
+
         # For loop
 
         iterated_players = [player for player in table.iter_players()]
@@ -502,11 +860,16 @@ class TestTableClassMethodsForIteration(TestCase):
         iterated_players = [player for player in table.iter_players(Coral)]
         self.assertEqual(iterated_players, [Coral, Andy, Boa])
 
+
         # Invalid inputs
 
+        with self.assertRaises(TypeError) as context:
+            table.iter_players('Dino')
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
         with self.assertRaises(ValueError) as context:
-            table.iter_players(Dino)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+            table.iter_players(structures.Player('Dino', 10))
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
 
 
     def test_iter_players_method_going_backwards(self):
@@ -522,7 +885,7 @@ class TestTableClassMethodsForIteration(TestCase):
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
         ])
-        Dino = structures.Player('Dino', 10)
+
 
         # Iteration
 
@@ -558,6 +921,7 @@ class TestTableClassMethodsForIteration(TestCase):
             next(iterator)
         self.assertIsNone(context.exception.value)
 
+
         # For loop
 
         iterated_players = [player for player in table.iter_players(reverse=True)]
@@ -572,11 +936,16 @@ class TestTableClassMethodsForIteration(TestCase):
         iterated_players = [player for player in table.iter_players(Coral, reverse=True)]
         self.assertEqual(iterated_players, [Coral, Boa, Andy])
 
+
         # Invalid inputs
 
+        with self.assertRaises(TypeError) as context:
+            table.iter_players('Dino', reverse=True)
+        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
+
         with self.assertRaises(ValueError) as context:
-            table.iter_players(Dino, reverse=True)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
+            table.iter_players(structures.Player('Dino', 10), reverse=True)
+        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format('Dino'))
 
 
     def test_iter_players_method_edge_cases(self):
@@ -585,6 +954,7 @@ class TestTableClassMethodsForIteration(TestCase):
         """
         Runs test cases on iter_players method edge cases.
         """
+
 
         # Iteration with a single player
 
@@ -602,6 +972,7 @@ class TestTableClassMethodsForIteration(TestCase):
             next(iterator)
         self.assertIsNone(context.exception.value)
 
+
         # For loop with a single player
 
         table = structures.Table([Andy := structures.Player('Andy', 10)])
@@ -611,56 +982,6 @@ class TestTableClassMethodsForIteration(TestCase):
 
         iterated_players = [player for player in table.iter_players(reverse=True)]
         self.assertEqual(iterated_players, [Andy])
-
-
-    def test_get_previous_active_player_method(self):
-
-
-        """
-        Runs test cases on get_previous_active_player method
-        """
-
-        # Normal cases
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-        ])
-        Dino = structures.Player('Dino', 10)
-
-        # Everybody active
-        self.assertEqual(table.get_previous_active_player(Andy), Coral)
-        self.assertEqual(table.get_previous_active_player(Boa), Andy)
-        self.assertEqual(table.get_previous_active_player(Coral), Boa)
-
-        # One folded
-        Andy.mark_is_folded()
-        self.assertEqual(table.get_previous_active_player(Andy), Coral)
-        self.assertEqual(table.get_previous_active_player(Boa), Coral)
-        self.assertEqual(table.get_previous_active_player(Coral), Boa)
-
-        # One folded and one all-in
-        Boa.decrease_stack(10)
-        self.assertEqual(table.get_previous_active_player(Andy), Coral)
-        self.assertEqual(table.get_previous_active_player(Boa), Coral)
-        self.assertEqual(table.get_previous_active_player(Coral), Coral)
-
-        # Nobody active
-        Coral.mark_is_folded()
-        self.assertIsNone(table.get_previous_active_player(Andy))
-        self.assertIsNone(table.get_previous_active_player(Boa))
-        self.assertIsNone(table.get_previous_active_player(Coral))
-
-        # Invalid inputs
-        with self.assertRaises(ValueError) as context:
-            table.get_previous_player(Dino)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Dino.name))
-
-        # Edge cases
-
-        table = structures.Table([Andy := structures.Player('Andy', 10)])
-        self.assertEqual(table.get_previous_active_player(Andy), Andy)
 
 
 if __name__ == '__main__':

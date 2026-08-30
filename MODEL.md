@@ -128,8 +128,8 @@ flowchart LR
     T.assign_common_card(assign_common_card)@{ shape: text } --> T
     T.set_full_bet(set_full_bet)@{ shape: text } --> T
     T.set_full_raise_increase(set_full_raise_increase)@{ shape: text } --> T
-    T.set_current_level(set_current_level)@{ shape: text } --> T
-    T.set_complete_current_level(set_complete_current_level)@{ shape: text } --> T
+    T.set_amount_level(set_amount_level)@{ shape: text } --> T
+    T.set_full_amount_level(set_full_amount_level)@{ shape: text } --> T
     T.increase_central_pot(increase_central_pot)@{ shape: text } --> T
     T.set_starting_player(set_starting_player)@{ shape: text } --> T
     T.set_stopping_player(set_stopping_player)@{ shape: text } --> T
@@ -169,8 +169,8 @@ flowchart LR
     BR --> T.assign_common_card
     BR --> T.set_full_bet
     BR --> T.set_full_raise_increase
-    BR --> T.set_current_level
-    BR --> T.set_complete_current_level
+    BR --> T.set_amount_level
+    BR --> T.set_full_amount_level
     BR --> T.increase_central_pot
     BR --> T.set_starting_player
     BR --> T.set_stopping_player

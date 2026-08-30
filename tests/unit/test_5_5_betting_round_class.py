@@ -14,11 +14,11 @@ from unittest import main, TestCase
 from pokerpy import constants, engines, messages, structures
 
 
-class TestBettingRoundBasicMethods(TestCase):
+class TestBettingRoundClassBasicMethods(TestCase):
 
 
     """
-    Run unit tests on BettingRound basic methods.
+    Run unit tests on BettingRound class basic methods.
     """
 
 
@@ -235,6 +235,7 @@ class TestBettingRoundBasicMethods(TestCase):
         self.assertEqual(len(table.deck), 32)
         for player in betting_round.table.players:
             self.assertEqual(len(player.cards), 5)
+
 
 class TestResetBettingRoundStatesFunction(TestCase):
 

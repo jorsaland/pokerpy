@@ -163,8 +163,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
@@ -203,8 +203,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
@@ -245,8 +245,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
@@ -290,8 +290,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
@@ -337,8 +337,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),
@@ -388,8 +388,8 @@ class TestBettingRoundAwaitPlayerFunctionParsingInvalidActions(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_current_level(2)
-        table.set_complete_current_level(2)
+        table.set_amount_level(2)
+        table.set_full_amount_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),

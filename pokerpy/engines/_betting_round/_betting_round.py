@@ -86,6 +86,7 @@ class BettingRound:
 
         if smallest_bet_amount is not None:
             table.set_full_bet(smallest_bet_amount)
+            table.set_full_raise_increase(smallest_bet_amount)
 
         if starting_player is not None:
             table.set_starting_player(starting_player)
@@ -228,8 +229,8 @@ class BettingRound:
             raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
         table.set_full_raise_increase(table.full_bet)
-        table.set_current_level(0)
-        table.set_complete_current_level(0)
+        table.set_amount_level(0)
+        table.set_full_amount_level(0)
         table.set_stopping_player(table.get_previous_player(table.starting_player))
 
         for player in table.players:

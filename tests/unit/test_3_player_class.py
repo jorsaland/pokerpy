@@ -196,13 +196,13 @@ class TestPlayerClass(TestCase):
         self.assertEqual(Andy.amount, 0)
 
         Andy.increase_amount(0)
+        self.assertEqual(Andy.amount, 0)
         Andy.increase_amount(50)
+        self.assertEqual(Andy.amount, 50)
         Andy.increase_amount(100)
-
         self.assertEqual(Andy.amount, 150)
 
         Andy.clear_amount()
-
         self.assertEqual(Andy.amount, 0)
 
         # Invalid inputs
@@ -232,13 +232,13 @@ class TestPlayerClass(TestCase):
         self.assertEqual(Andy.pot_participation, 0)
 
         Andy.increase_pot_participation(0)
+        self.assertEqual(Andy.pot_participation, 0)
         Andy.increase_pot_participation(50)
+        self.assertEqual(Andy.pot_participation, 50)
         Andy.increase_pot_participation(100)
-
         self.assertEqual(Andy.pot_participation, 150)
 
         Andy.clear_pot_participation()
-
         self.assertEqual(Andy.pot_participation, 0)
 
         # Invalid inputs
@@ -268,15 +268,17 @@ class TestPlayerClass(TestCase):
         self.assertEqual(Andy.stack, 1000)
 
         Andy.increase_stack(0)
+        self.assertEqual(Andy.stack, 1000)
         Andy.increase_stack(50)
+        self.assertEqual(Andy.stack, 1050)
         Andy.increase_stack(100)
-
         self.assertEqual(Andy.stack, 1150)
 
         Andy.decrease_stack(0)
+        self.assertEqual(Andy.stack, 1150)
         Andy.decrease_stack(50)
+        self.assertEqual(Andy.stack, 1100)
         Andy.decrease_stack(100)
-
         self.assertEqual(Andy.stack, 1000)
 
         # Invalid inputs

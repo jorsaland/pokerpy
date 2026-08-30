@@ -29,7 +29,7 @@ def get_split_pot(total_pot: int, players_amounts: list[int]):
 
     if len(set(players_amounts)) == 1:
         splitted_pot.append(total_pot)
-        return splitted_pot
+        return tuple(splitted_pot)
 
     min_amount = min(amount for amount in players_amounts)
     main_pot = 0
@@ -45,4 +45,4 @@ def get_split_pot(total_pot: int, players_amounts: list[int]):
 
     remaining_pot = total_pot - main_pot
     splitted_pot.extend([main_pot, *get_split_pot(remaining_pot, remaining_amounts)])
-    return splitted_pot
+    return tuple(splitted_pot)
