@@ -299,6 +299,10 @@ class TestPlayerClass(TestCase):
             Andy.decrease_stack(-100)
         self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(-100))
 
+        with self.assertRaises(ValueError) as cm:
+            Andy.decrease_stack(2000)
+        self.assertEqual(cm.exception.args[0], messages.msg_amount_larger_than_stack.format(2000, 1000))
+
 
     def test_boolean_status_methods(self):
 

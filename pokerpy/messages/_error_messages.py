@@ -31,7 +31,6 @@ msg_invalid_card_value = "invalid card value, must be one of the following: {}"
 msg_not_five_cards_hand = "a hand expects exactly five cards"
 msg_player_not_in_table = "player '{}' is not in the table"
 msg_repeated_cards = "cards cannot be repeated"
-msg_some_players_not_in_table = "some parsed players are not in the table"
 msg_wildcard = "we live in a society"
 
 # Runtime errors
