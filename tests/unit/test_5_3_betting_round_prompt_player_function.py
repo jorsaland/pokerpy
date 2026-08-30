@@ -23,26 +23,33 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_last_remaining_player(self):
 
+
         """
         Runs test cases where the prompted player cannot parse an action because is the last one remaining in the hand cycle.
         """
-        
+
+
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Dino', 10),     
         ])
-        table.add_to_current_amount(1)
+        table.set_current_player(Andy)
+        table.set_stopping_player(Coral)
         Boa.mark_is_folded()
         Coral.mark_is_folded()
         Dino.mark_is_folded()
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_last_player_in_hand)
@@ -50,9 +57,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_non_closing_folded_player(self):
 
+
         """
         Runs test cases where the prompted player cannot parse an action because has already folded, given there are more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -60,14 +69,19 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Coral := structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
-        table.add_to_current_amount(1)
+        table.set_current_player(Andy)
+        table.set_stopping_player(Coral)
         Andy.mark_is_folded()
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_folded_player)
@@ -75,9 +89,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_closing_folded_player(self):
 
+
         """
         Runs test cases where the prompted player cannot parse an action because has already folded, given there are no more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -85,14 +101,19 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
-        table.add_to_current_amount(1)
+        table.set_current_player(Andy)
+        table.set_stopping_player(Andy)
         Andy.mark_is_folded()
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_folded_stopping_player)
@@ -100,9 +121,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_non_closing_all_in_player(self):
 
+
         """
         Runs test cases where the prompted player cannot parse an action because is already all-in, given there are more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -110,15 +133,19 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Coral := structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Coral)
         Andy.decrease_stack(10)
-        Andy.increase_amount(10)
-        table.add_to_current_amount(10)
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_all_in_player)
@@ -126,9 +153,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_closing_all_in_player(self):
 
+
         """
         Runs test cases where the prompted player cannot parse an action because is already all-in, given there are no more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -136,15 +165,18 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Andy)
         Andy.decrease_stack(10)
-        Andy.increase_amount(10)
-        table.add_to_current_amount(10)
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
-
-        generator = engines.prompt_player(betting_round, Andy)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
         # Before parsing an action
+
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_all_in_stopping_player)
@@ -152,9 +184,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_non_closing_passive_player(self):
 
+
         """
         Runs test cases where the prompted player parses a passive action, given there are more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -162,18 +196,24 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Coral := structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Coral)
 
-        action = structures.Action(constants.ACTION_CHECK)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
-
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         self.assertEqual(next(generator), Andy)
 
+
         # After parsing an action
-        Andy.request_action(action)
+
+        Andy.request_action(structures.Action(constants.ACTION_CHECK))
         with self.assertRaises(StopIteration) as context:
             next(generator)
         self.assertIsNone(context.exception.value)
@@ -181,9 +221,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_closing_passive_player(self):
 
+
         """
         Runs test cases where the prompted player parses a passive action, given there are more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -191,18 +233,24 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Andy)
 
-        action = structures.Action(constants.ACTION_CHECK)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
-
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         self.assertEqual(next(generator), Andy)
 
+
         # After parsing an action
-        Andy.request_action(action)
+
+        Andy.request_action(structures.Action(constants.ACTION_CHECK))
         with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
             next(generator)
         self.assertEqual(context.exception.cause, messages.signal_passive_stopping_player)
@@ -210,9 +258,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_non_closing_agressive_player(self):
 
+
         """
         Runs test cases where the prompted player parses an aggressive action, given there are more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -220,18 +270,24 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             Coral := structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Coral)
 
-        action = structures.Action(constants.ACTION_BET, 1)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Coral)
-
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         self.assertEqual(next(generator), Andy)
 
+
         # After parsing an action
-        Andy.request_action(action)
+
+        Andy.request_action(structures.Action(constants.ACTION_BET, 1))
         with self.assertRaises(StopIteration) as context:
             next(generator)
         self.assertIsNone(context.exception.value)
@@ -239,9 +295,11 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
     def test_closing_agressive_player(self):
 
+
         """
         Runs test cases where the prompted player parses an aggressive action, given there are no more players to listen.
         """
+
 
         table = structures.Table(players = [
             Andy := structures.Player('Andy', 10),
@@ -249,18 +307,24 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),       
         ])
+        table.set_current_player(Andy)
+        table.set_stopping_player(Andy)
 
-        action = structures.Action(constants.ACTION_BET, 1)
+        generator = engines.prompt_player(
+            table = table,
+            open_fold_allowed = False,
+            raise_invalid_actions = False,
+        )
 
-        betting_round = engines.BettingRound('test round', table, stopping_player=Andy)
-
-        generator = engines.prompt_player(betting_round, Andy)
 
         # Before parsing an action
+
         self.assertEqual(next(generator), Andy)
 
+
         # After parsing an action
-        Andy.request_action(action)
+
+        Andy.request_action(structures.Action(constants.ACTION_BET, 1))
         with self.assertRaises(StopIteration) as context:
             next(generator)
         self.assertIsNone(context.exception.value)
