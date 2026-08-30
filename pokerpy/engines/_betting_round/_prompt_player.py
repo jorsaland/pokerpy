@@ -65,8 +65,8 @@ def prompt_player(
     # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = current_player,
-        current_level = table.amount_level,
-        complete_current_level = table.full_amount_level,
+        amount_level = table.amount_level,
+        full_amount_level = table.full_amount_level,
         full_bet = table.full_bet,
         full_raise_increase = table.full_raise_increase,
         is_last_active_player = (current_player in table.active_players and len(table.active_players) == 1),
