@@ -10,144 +10,199 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, engines, structures
+from pokerpy import constants, engines
 
 
 class TestImpossibleSituations(TestCase):
 
 
     """
-    Runs unit tests on get_valid_action_names function when parsed values represent impossible situations.
+    Runs unit tests on get_valid_action_names function when parsed input represent impossible situations.
     """
 
 
     def test_negative_inputs(self):
 
+
         """
         Runs test cases where negative values are parsed.
         """
 
+
         # Negative player stack
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = -1,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
-        # Negative player current amount
+
+        # Negative player amount
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = -1,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = -1,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
-        # Negative current level
+
+        # Negative amount level
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = -1,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = -1,
+                full_amount_level = 0,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
-        # Negative complete current level
+
+        # Negative full amount level
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = -1,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = -1,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
+
 
         # Non-positive full bet
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
-                full_bet = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
+                full_bet = -1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
-        # Non-positive full raise increase
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
+                full_bet = 0,
+                full_raise_increase = 1,
                 player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            )
+
+
+        # Non-positive full raise increase
+
+        with self.assertRaises(AssertionError):
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
+                full_bet = 1,
+                full_raise_increase = -1,
+                player_has_played = False,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            )
+
+        with self.assertRaises(AssertionError):
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 1,
                 full_raise_increase = 0,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
 
     def test_composed_invalid_inputs(self):
 
+
         """
         Runs test cases where invalid value combinations are parsed.
         """
 
+
         # Full raise increase smaller than full bet
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 2,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
+
 
         # Full raise amount not larger than current level
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
+
         # Current level smaller than complete current level
+
         with self.assertRaises(AssertionError):
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 1,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 1,
                 full_bet = 1,
                 full_raise_increase = 1,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             )
 
@@ -163,20 +218,24 @@ class TestNotFacingAnAggression(TestCase):
 
     def test_cannot_afford_a_full_bet(self):
 
+
         """
         Runs test cases when the player does not have enough chips to cover a full bet.
         """
 
-        # player has not put money, open fold is not allowed
+
+        # Player has not put money, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -185,16 +244,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has not put money, open fold is allowed
+
+        # Player has not put money, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -204,16 +266,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is not allowed
+
+        # Player has placed a big blind, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -222,16 +287,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is allowed
+
+        # Player has placed a big blind, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -241,16 +309,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -262,20 +333,24 @@ class TestNotFacingAnAggression(TestCase):
 
     def test_can_afford_a_full_bet_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to cover a full bet.
         """
 
-        # player has not put money, open fold is not allowed
+
+        # Player has not put money, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -284,16 +359,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has not put money, open fold is allowed
+
+        # Player has not put money, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -303,16 +381,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is not allowed
+
+        # Player has placed a big blind, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -321,16 +402,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is allowed
+
+        # Player has placed a big blind, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -340,16 +424,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a small blind and has just enough to call
+
+        # Player has placed a small blind and has just enough to call
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -361,20 +448,24 @@ class TestNotFacingAnAggression(TestCase):
 
     def test_can_afford_more_than_a_full_bet(self):
 
+
         """
         Runs test cases when the player has more than enough chips to cover a full bet.
         """
 
-        # player has not put money, open fold is not allowed
+
+        # Player has not put money, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -383,16 +474,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has not put money, open fold is allowed
+
+        # Player has not put money, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 0,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 0,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -402,16 +496,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is not allowed
+
+        # Player has placed a big blind, open fold is not allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -420,16 +517,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a big blind, open fold is allowed
+
+        # Player has placed a big blind, open fold is allowed
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = True,
             ),
             {
@@ -439,16 +539,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a small blind and has more than enough to call but not enough to make a full raise
+
+        # Player has placed a small blind and has more than enough to call but not enough to make a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -458,16 +561,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a small blind and has just enough money to make a full raise
+
+        # Player has placed a small blind and has just enough money to make a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -477,16 +583,19 @@ class TestNotFacingAnAggression(TestCase):
             },
         )
 
-        # player has placed a small blind and has more than enough money to make a full raise
+
+        # Player has placed a small blind and has more than enough money to make a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -508,20 +617,24 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_cannot_afford_a_full_call(self):
 
+
         """
         Runs test cases when the player does not have enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -530,16 +643,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 2,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -548,16 +664,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -566,16 +685,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -584,16 +706,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -602,16 +727,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -620,16 +748,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overraise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -641,20 +772,24 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_a_full_call_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -663,16 +798,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -681,16 +819,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -699,16 +840,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -717,16 +861,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -735,16 +882,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -753,16 +903,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overraise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 2,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -774,21 +927,25 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_a_full_call_but_not_to_complete_the_aggression(self):
 
+
         """
         Runs test cases when the player has enough chips to make an increment but not to complete
         the full bet or raise.
         """
         
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 3,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -798,16 +955,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 3,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -817,16 +998,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 3,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -836,16 +1041,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 3,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
@@ -854,34 +1062,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
-        self.assertDictEqual(
-            engines.get_valid_actions(
-                player_stack = 3,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
-                full_bet = 4,
-                full_raise_increase = 5,
-                open_fold_allowed = False,
-            ),
-            {
-                constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(2, 3),
-            },
-        )
 
-        # player has previously opened or called a full raise
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 3,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -890,16 +1083,61 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 3,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 3,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 3,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -911,21 +1149,25 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_to_complete_the_aggression_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to complete the bet or raise, but not
         to re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -935,16 +1177,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 4,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -954,16 +1220,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -973,16 +1263,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
@@ -991,34 +1284,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
-        self.assertDictEqual(
-            engines.get_valid_actions(
-                player_stack = 4,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
-                full_bet = 4,
-                full_raise_increase = 5,
-                open_fold_allowed = False,
-            ),
-            {
-                constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(2, 3),
-            },
-        )
 
-        # player has previously opened or called a full raise
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1027,16 +1305,61 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 4,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 4,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1048,21 +1371,25 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_to_complete_the_aggression_but_not_to_make_a_full_reraise(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete the bet or raise but
         not to make a full re-raise
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1072,16 +1399,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 7,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1091,16 +1442,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 7,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1110,16 +1485,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
@@ -1128,34 +1506,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
-        self.assertDictEqual(
-            engines.get_valid_actions(
-                player_stack = 5,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
-                full_bet = 4,
-                full_raise_increase = 5,
-                open_fold_allowed = False,
-            ),
-            {
-                constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(2, 3),
-            },
-        )
 
-        # player has previously opened or called a full raise
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1164,16 +1527,61 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1185,20 +1593,24 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_make_a_full_reraise_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1208,16 +1620,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1227,16 +1663,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1246,16 +1706,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
@@ -1264,34 +1727,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
-        self.assertDictEqual(
-            engines.get_valid_actions(
-                player_stack = 8,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
-                full_bet = 4,
-                full_raise_increase = 5,
-                open_fold_allowed = False,
-            ),
-            {
-                constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(2, 3),
-            },
-        )
 
-        # player has previously opened or called a full raise
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1300,16 +1748,61 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1321,20 +1814,24 @@ class TestFacingAnIncompleteAggression(TestCase):
 
     def test_can_afford_make_a_full_reraise_and_more(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 2,
-                complete_current_level = 0,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1344,16 +1841,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 2,
+                full_amount_level = 0,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1363,16 +1884,40 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 2,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1382,16 +1927,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 6,
-                complete_current_level = 4,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
@@ -1400,34 +1948,19 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
-        self.assertDictEqual(
-            engines.get_valid_actions(
-                player_stack = 100,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 7,
-                complete_current_level = 5,
-                full_bet = 4,
-                full_raise_increase = 5,
-                open_fold_allowed = False,
-            ),
-            {
-                constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(2, 3),
-            },
-        )
 
-        # player has previously opened or called a full raise
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 6,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1436,16 +1969,61 @@ class TestFacingAnIncompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 9,
+                player_amount = 5,
+                amount_level = 7,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 8,
+                amount_level = 10,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(2, 3),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 9,
+                amount_level = 11,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1466,20 +2044,24 @@ class TestFacingACompleteAggression(TestCase):
 
     def test_cannot_afford_a_full_call(self):
 
+
         """
         Runs test cases when the player does not have enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1488,16 +2070,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1506,16 +2091,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1524,16 +2112,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = True,
-                current_level = 8,
-                complete_current_level = 8,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1542,16 +2133,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 10,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1560,16 +2154,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 12,
-                complete_current_level = 12,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1578,16 +2175,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 14,
-                complete_current_level = 14,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1599,20 +2199,24 @@ class TestFacingACompleteAggression(TestCase):
 
     def test_can_afford_a_full_call_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1621,16 +2225,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1639,16 +2246,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1657,16 +2267,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1675,16 +2288,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 10,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1693,16 +2309,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 4,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 12,
-                complete_current_level = 12,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1711,16 +2330,19 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overraise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 14,
-                complete_current_level = 14,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1732,21 +2354,25 @@ class TestFacingACompleteAggression(TestCase):
 
     def test_can_afford_to_call_but_not_to_make_a_full_reraise(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete the bet or raise but
         not to make a full re-raise
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1756,16 +2382,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 7,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1775,35 +2425,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
-                player_stack = 5,
-                player_current_amount = 4,
+                player_stack = 7,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
+                constants.ACTION_CALL: range(6, 7),
                 constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(4, 5),
-                constants.ACTION_RAISE: range(5, 6),
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1813,16 +2468,83 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has placed a big blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_RAISE: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 10,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1832,16 +2554,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 12,
-                complete_current_level = 12,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1851,42 +2597,91 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 5,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 14,
-                complete_current_level = 14,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(5, 6),
                 constants.ACTION_RAISE: range(6, 7),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
             },
         )
 
 
     def test_can_afford_make_a_full_reraise_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1896,16 +2691,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1915,35 +2734,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
-                player_stack = 8,
-                player_current_amount = 4,
+                player_stack = 10,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
-                full_bet = 4,
-                full_raise_increase = 4,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
+                constants.ACTION_CALL: range(6, 7),
                 constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(4, 5),
-                constants.ACTION_RAISE: range(8, 9),
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1953,16 +2777,83 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has placed a big blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+                constants.ACTION_RAISE: range(8, 9),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 10,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1972,16 +2863,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 12,
-                complete_current_level = 12,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -1991,42 +2906,91 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 8,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 14,
-                complete_current_level = 14,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(5, 6),
                 constants.ACTION_RAISE: range(10, 11),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
             },
         )
 
 
     def test_can_afford_make_a_full_reraise_and_more(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 4,
-                complete_current_level = 4,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2036,16 +3000,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 0,
+                amount_level = 4,
+                full_amount_level = 4,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2055,16 +3043,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
+                player_amount = 2,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
                 player_has_played = False,
-                current_level = 8,
-                complete_current_level = 8,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(6, 7),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2074,16 +3086,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 8,
-                complete_current_level = 8,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2093,16 +3129,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called a full bet and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 10,
-                complete_current_level = 10,
+                player_amount = 4,
+                amount_level = 8,
+                full_amount_level = 8,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2112,16 +3172,40 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 12,
-                complete_current_level = 12,
+                player_amount = 5,
+                amount_level = 10,
+                full_amount_level = 10,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
                 full_bet = 4,
                 full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2131,22 +3215,67 @@ class TestFacingACompleteAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 14,
-                complete_current_level = 14,
+                player_amount = 8,
+                amount_level = 12,
+                full_amount_level = 12,
+                full_bet = 4,
+                full_raise_increase = 4,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(4, 5),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(5, 6),
                 constants.ACTION_RAISE: range(10, 101),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 9,
+                amount_level = 14,
+                full_amount_level = 14,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
             },
         )
 
@@ -2162,20 +3291,24 @@ class TestFacingAnOverAggression(TestCase):
 
     def test_cannot_afford_a_full_call(self):
 
+
         """
         Runs test cases when the player does not have enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 5,
-                complete_current_level = 5,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2184,16 +3317,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2202,16 +3338,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2220,16 +3359,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
                 player_has_played = True,
-                current_level = 9,
-                complete_current_level = 9,
-                full_bet = 4,
-                full_raise_increase = 5,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2238,16 +3380,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 11,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2256,16 +3401,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 13,
-                complete_current_level = 13,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2274,16 +3422,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 1,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 15,
-                complete_current_level = 15,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2295,20 +3446,24 @@ class TestFacingAnOverAggression(TestCase):
 
     def test_can_afford_a_full_call_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to cover the call amount.
         """
 
-        # player has not put money
+
+        # Player has not put money
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 5,
-                complete_current_level = 5,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2317,16 +3472,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has placed a small blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 7,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2335,16 +3493,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a big blind
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 4,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
                 player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
-                full_bet = 4,
-                full_raise_increase = 5,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2353,16 +3514,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has previously opened or called a full bet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2371,16 +3535,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called an overbet
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 11,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2389,16 +3556,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called a full raise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 5,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 13,
-                complete_current_level = 13,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2407,16 +3577,19 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called an overraise
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 15,
-                complete_current_level = 15,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2428,21 +3601,25 @@ class TestFacingAnOverAggression(TestCase):
 
     def test_can_afford_to_call_but_not_to_make_a_full_reraise(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete the bet or raise but
         not to make a full re-raise
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 5,
-                complete_current_level = 5,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2452,16 +3629,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 8,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2471,35 +3672,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
-                player_stack = 6,
-                player_current_amount = 4,
+                player_stack = 8,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
                 player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
-                full_bet = 4,
-                full_raise_increase = 5,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
+                constants.ACTION_CALL: range(7, 8),
                 constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(5, 6),
-                constants.ACTION_RAISE: range(6, 7),
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2509,16 +3715,83 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has placed a big blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+                constants.ACTION_RAISE: range(6, 7),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 7,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 11,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2528,16 +3801,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 7,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 6,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 13,
-                complete_current_level = 13,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2547,42 +3844,91 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 6,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 7,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 15,
-                complete_current_level = 15,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(6, 7),
                 constants.ACTION_RAISE: range(7, 8),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 7,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
             },
         )
 
 
     def test_can_afford_make_a_full_reraise_but_no_more(self):
 
+
         """
         Runs test cases when the player has just enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 5,
-                complete_current_level = 5,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2592,16 +3938,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 12,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2611,35 +3981,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
-                player_stack = 10,
-                player_current_amount = 4,
+                player_stack = 12,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
                 player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
-                full_bet = 4,
-                full_raise_increase = 5,
+                is_last_active_player = True,
                 open_fold_allowed = False,
             ),
             {
+                constants.ACTION_CALL: range(7, 8),
                 constants.ACTION_FOLD: range(0, 1),
-                constants.ACTION_CALL: range(5, 6),
-                constants.ACTION_RAISE: range(10, 11),
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2649,16 +4024,83 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has placed a big blind and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+                constants.ACTION_RAISE: range(10, 11),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 12,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 11,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2668,16 +4110,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 12,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 10,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 13,
-                complete_current_level = 13,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2687,42 +4153,91 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 10,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 12,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 15,
-                complete_current_level = 15,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(6, 7),
                 constants.ACTION_RAISE: range(12, 13),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 12,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = True,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
             },
         )
 
 
     def test_can_afford_make_a_full_reraise_and_more(self):
 
+
         """
         Runs test cases when the player has more than enough chips to complete a full re-raise.
         """
 
-        # player has not put money
+
+        # Player has not put money and there are more active players
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 0,
-                player_has_played = False,
-                current_level = 5,
-                complete_current_level = 5,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2732,16 +4247,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a small blind
+
+        # Player has not put money and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 2,
-                player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 0,
+                amount_level = 5,
+                full_amount_level = 5,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has placed a small blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2751,16 +4290,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has placed a big blind
+
+        # Player has placed a small blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
+                player_amount = 2,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
                 player_has_played = False,
-                current_level = 9,
-                complete_current_level = 9,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_CALL: range(7, 8),
+                constants.ACTION_FOLD: range(0, 1),
+            },
+        )
+
+
+        # Player has placed a big blind and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2770,16 +4333,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full bet
+
+        # Player has placed a big blind and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 4,
-                player_has_played = True,
-                current_level = 9,
-                complete_current_level = 9,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called a full bet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2789,16 +4376,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overbet
+
+        # Player has previously opened or called a full bet and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 5,
-                player_has_played = True,
-                current_level = 11,
-                complete_current_level = 11,
+                player_amount = 4,
+                amount_level = 9,
+                full_amount_level = 9,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overbet and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2808,16 +4419,40 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called a full raise
+
+        # Player has previously opened or called an overbet and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 8,
-                player_has_played = True,
-                current_level = 13,
-                complete_current_level = 13,
+                player_amount = 5,
+                amount_level = 11,
+                full_amount_level = 11,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
+            },
+        )
+
+
+        # Player has previously opened or called a full raise and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
                 full_bet = 4,
                 full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
@@ -2827,22 +4462,67 @@ class TestFacingAnOverAggression(TestCase):
             },
         )
 
-        # player has previously opened or called an overraise
+
+        # Player has previously opened or called a full raise and is the last active player
+
         self.assertDictEqual(
             engines.get_valid_actions(
                 player_stack = 100,
-                player_current_amount = 9,
-                player_has_played = True,
-                current_level = 15,
-                complete_current_level = 15,
+                player_amount = 8,
+                amount_level = 13,
+                full_amount_level = 13,
+                full_bet = 4,
+                full_raise_increase = 5,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(5, 6),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and there are more active players
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
                 full_bet = 4,
                 full_raise_increase = 6,
+                player_has_played = False,
+                is_last_active_player = False,
                 open_fold_allowed = False,
             ),
             {
                 constants.ACTION_FOLD: range(0, 1),
                 constants.ACTION_CALL: range(6, 7),
                 constants.ACTION_RAISE: range(12, 101),
+            },
+        )
+
+
+        # Player has previously opened or called an overraise and is the last active player
+
+        self.assertDictEqual(
+            engines.get_valid_actions(
+                player_stack = 100,
+                player_amount = 9,
+                amount_level = 15,
+                full_amount_level = 15,
+                full_bet = 4,
+                full_raise_increase = 6,
+                player_has_played = False,
+                is_last_active_player = True,
+                open_fold_allowed = False,
+            ),
+            {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(6, 7),
             },
         )
 

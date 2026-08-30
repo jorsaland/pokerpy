@@ -30,9 +30,9 @@ from pokerpy.constants import (
 def get_valid_actions(
     *,
     player_stack: int,
-    player_current_amount: int,
-    current_level: int,
-    complete_current_level: int,
+    player_amount: int,
+    amount_level: int,
+    full_amount_level: int,
     full_bet: int,
     full_raise_increase: int,
     player_has_played: bool,
@@ -45,17 +45,17 @@ def get_valid_actions(
     """
 
     assert player_stack >= 0
-    assert player_current_amount >= 0
-    assert current_level >= 0
-    assert complete_current_level >= 0
+    assert player_amount >= 0
+    assert amount_level >= 0
+    assert full_amount_level >= 0
     assert full_bet > 0
     assert full_raise_increase > 0
 
     assert full_raise_increase >= full_bet
-    assert (complete_current_level + full_raise_increase) > current_level >= complete_current_level
+    assert (full_amount_level + full_raise_increase) > amount_level >= full_amount_level
 
-    amount_to_call = current_level - player_current_amount
-    amount_to_full_level = complete_current_level - player_current_amount
+    amount_to_call = amount_level - player_amount
+    amount_to_full_level = full_amount_level - player_amount
     amount_to_full_raise = amount_to_full_level + full_raise_increase
 
     def get_fold_range():

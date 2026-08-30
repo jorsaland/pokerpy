@@ -201,10 +201,10 @@ class BettingRound:
         "Retrieves the current player and its available actions"
         return get_valid_actions(
             player_stack = self.table.current_player.stack,
-            player_current_amount = self.table.current_player.amount,
+            player_amount = self.table.current_player.amount,
             player_has_played = self.table.current_player.has_played,
-            current_level = self.table.amount_level,
-            complete_current_level = self.table.full_amount_level,
+            amount_level = self.table.amount_level,
+            full_amount_level = self.table.full_amount_level,
             full_bet = self.table.full_bet,
             full_raise_increase = self.table.full_raise_increase,
             is_last_active_player = (
