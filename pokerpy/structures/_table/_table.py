@@ -51,7 +51,6 @@ from ._methods_related_to_players_setting import (
 )
 from ._methods_related_to_players_iteration import (
     method_get_next_player,
-    method_get_previous_active_player,
     method_get_previous_player,
     method_iter_players,
 )
@@ -319,8 +318,3 @@ class Table:
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
         "Iterates over all the players."
         return method_iter_players(self, starting_player, reverse)
-
-
-    def get_previous_active_player(self, reference_player: Player):
-        "Retrieves the player before a reference player that is not either folded or all-in."
-        return method_get_previous_active_player(self, reference_player)

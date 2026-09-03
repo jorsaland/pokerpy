@@ -567,7 +567,6 @@ class TestTablePlayerMethods(BasePlayersTestCase):
             table.set_current_player,
             table.get_next_player,
             table.get_previous_player,
-            table.get_previous_active_player,
         )
 
         bad_players = (1, 'Andy', None)
@@ -596,7 +595,6 @@ class TestTablePlayerMethods(BasePlayersTestCase):
             table.set_current_player,
             table.get_next_player,
             table.get_previous_player,
-            table.get_previous_active_player,
         )
 
         for method in methods:
@@ -662,75 +660,6 @@ class TestTablePlayerMethods(BasePlayersTestCase):
 
         with self.subTest('previous player in single player table', current=player.name, expected=player.name):
             self.assertEqual(single_player_table.get_previous_player(player), player)
-
-
-    def test_valid_input_in_method_that_retrieves_previous_active_player(self):
-
-        "Tests valid input detection in the method that retrieves the previous active player."
-
-        table = structures.Table(self.setup_players)
-
-        with self.subTest('every player is active'):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Andy)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Boa)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Coral)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Dino)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Epa)
-
-        self.Andy.mark_is_folded()
-        with self.subTest('folded', player=self.Andy.name):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Boa)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Coral)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Dino)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Epa)
-
-        self.Boa.decrease_stack(self.Boa.stack)
-        with self.subTest('all-in', player=self.Boa.name):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Coral)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Dino)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Epa)
-
-        self.Coral.mark_is_folded()
-        with self.subTest('folded', player=self.Coral.name):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Dino)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Epa)
-
-        self.Dino.decrease_stack(self.Dino.stack)
-        with self.subTest('all-in', player=self.Dino.name):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Epa)
-
-        self.Epa.mark_is_folded()
-        with self.subTest('fold', player=self.Epa.name):
-            self.assertEqual(table.get_previous_active_player(self.Andy), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Boa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Coral), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Dino), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Epa), self.Fomi)
-            self.assertEqual(table.get_previous_active_player(self.Fomi), self.Fomi)
-
-        self.Fomi.decrease_stack(self.Fomi.stack)
-        with self.subTest('all-in', player=self.Fomi.name):
-            self.assertIsNone(table.get_previous_active_player(self.Andy))
-            self.assertIsNone(table.get_previous_active_player(self.Boa))
-            self.assertIsNone(table.get_previous_active_player(self.Coral))
-            self.assertIsNone(table.get_previous_active_player(self.Dino))
-            self.assertIsNone(table.get_previous_active_player(self.Epa))
-            self.assertIsNone(table.get_previous_active_player(self.Fomi))
 
 
 class TestTablePlayerArrayAttributesEvolution(BasePlayersTestCase):

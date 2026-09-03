@@ -32,31 +32,42 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
     Updates statuses according to the chosen action.
     """
 
-    player_current_amount = player.bet_level
-    current_level = table.bet_level
-    complete_current_level = table.full_bet_level
-    full_raise_increase = table.min_raise_increase
+    player_bet_level = player.bet_level
+    table_bet_level = table.bet_level
+    table_full_bet_level = table.full_bet_level
+    min_raise_increase = table.min_raise_increase
 
     player.mark_has_played()
 
     if action.category == ACTION_FOLD:
+
         player.mark_is_folded()
 
     if action.amount > 0:
+
         player.decrease_stack(action.amount)
         player.increase_bet_level(action.amount)
 
     if action.category in (ACTION_BET, ACTION_RAISE):
-        new_current_amount = player_current_amount + action.amount
-        raise_increase = new_current_amount - current_level
-        new_level = complete_current_level + raise_increase
+
+        new_current_amount = player_bet_level + action.amount
+        raise_increase = new_current_amount - table_bet_level
+        new_level = table_full_bet_level + raise_increase
         table.set_bet_level(new_level)
-        if new_level >= complete_current_level + full_raise_increase:
+
+        if new_level >= table_full_bet_level + min_raise_increase:
             table.set_full_bet_level(new_level)
-            if (new_full_raise_increase := new_level - complete_current_level) > 0:
+            if (new_full_raise_increase := new_level - table_full_bet_level) > 0:
                 table.set_min_raise_increase(new_full_raise_increase)
-        assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None
-        table.set_stopping_player(previous_player_in_hand) 
+
+        for previous_player in table.iter_players(table.get_previous_player(player), reverse=True):
+            if previous_player in table.actionable_players:
+                previous_actionable_player = previous_player
+                break
+        else:
+            raise AssertionError
+
+        table.set_stopping_player(previous_actionable_player)
 
     logger.info(
         f"{''.join(str(card) for card in player.cards)} {player.name} {action.category.upper()}S {action.amount} "
