@@ -594,7 +594,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 0)
-        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Andy.bet_level, 0)
         self.assertEqual(Andy.stack, 10)
         Andy.request_action(structures.Action(constants.ACTION_FOLD))
         self.assertEqual(betting_round.lap_counts, 1)
@@ -602,7 +602,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 0)
-        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Boa.bet_level, 0)
         self.assertEqual(Boa.stack, 10)
         Boa.request_action(structures.Action(constants.ACTION_CHECK))
         self.assertEqual(betting_round.lap_counts, 1)
@@ -610,7 +610,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 0)
-        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Coral.bet_level, 0)
         self.assertEqual(Coral.stack, 10)
         Coral.request_action(structures.Action(constants.ACTION_CHECK))
         self.assertEqual(betting_round.lap_counts, 1)
@@ -618,7 +618,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 0)
-        self.assertEqual(Dino.amount, 0)
+        self.assertEqual(Dino.bet_level, 0)
         self.assertEqual(Dino.stack, 10)
         Dino.request_action(structures.Action(constants.ACTION_BET, 1))
         self.assertEqual(betting_round.lap_counts, 1)
@@ -628,7 +628,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Coral)
         self.assertEqual(table.current_amount, 1)
-        self.assertEqual(Boa.amount, 0)
+        self.assertEqual(Boa.bet_level, 0)
         self.assertEqual(Boa.stack, 10)
         Boa.request_action(structures.Action(constants.ACTION_CALL, 1))
         self.assertEqual(betting_round.lap_counts, 2)
@@ -636,7 +636,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Coral)
         self.assertEqual(table.current_amount, 1)
-        self.assertEqual(Coral.amount, 0)
+        self.assertEqual(Coral.bet_level, 0)
         self.assertEqual(Coral.stack, 10)
         Coral.request_action(structures.Action(constants.ACTION_RAISE, 2))
         self.assertEqual(betting_round.lap_counts, 2)
@@ -644,7 +644,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Boa)
         self.assertEqual(table.current_amount, 2)
-        self.assertEqual(Dino.amount, 1)
+        self.assertEqual(Dino.bet_level, 1)
         self.assertEqual(Dino.stack, 9)
         Dino.request_action(structures.Action(constants.ACTION_CALL, 1))
         self.assertEqual(betting_round.lap_counts, 2)
@@ -654,7 +654,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Boa)
         self.assertEqual(table.current_amount, 2)
-        self.assertEqual(Boa.amount, 1)
+        self.assertEqual(Boa.bet_level, 1)
         self.assertEqual(Boa.stack, 9)
         Boa.request_action(structures.Action(constants.ACTION_RAISE, 3))
         self.assertEqual(betting_round.lap_counts, 3)
@@ -662,7 +662,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 4)
-        self.assertEqual(Coral.amount, 2)
+        self.assertEqual(Coral.bet_level, 2)
         self.assertEqual(Coral.stack, 8)
         Coral.request_action(structures.Action(constants.ACTION_FOLD))
         self.assertEqual(betting_round.lap_counts, 3)
@@ -670,7 +670,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 4)
-        self.assertEqual(Dino.amount, 2)
+        self.assertEqual(Dino.bet_level, 2)
         self.assertEqual(Dino.stack, 8)
         Dino.request_action(structures.Action(constants.ACTION_RAISE, 6))
         self.assertEqual(betting_round.lap_counts, 3)
@@ -680,7 +680,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Boa)
         self.assertEqual(table.current_amount, 8)
-        self.assertEqual(Boa.amount, 4)
+        self.assertEqual(Boa.bet_level, 4)
         self.assertEqual(Boa.stack, 6)
         Boa.request_action(structures.Action(constants.ACTION_RAISE, 6))
         self.assertEqual(betting_round.lap_counts, 4)
@@ -688,7 +688,7 @@ class TestBettingRoundRunListenerFunctionWithMultipleLaps(TestCase):
 
         self.assertEqual(betting_round.table.stopping_player, Dino)
         self.assertEqual(table.current_amount, 10)
-        self.assertEqual(Dino.amount, 8)
+        self.assertEqual(Dino.bet_level, 8)
         self.assertEqual(Dino.stack, 2)
         Dino.request_action(structures.Action(constants.ACTION_CALL, 2))
         self.assertEqual(betting_round.lap_counts, 4)

@@ -60,7 +60,7 @@ def await_player(
 
         amount_range_by_action = get_valid_actions(
             player_stack = player.stack,
-            player_amount = player.amount,
+            player_amount = player.bet_level,
             amount_level = amount_level,
             full_amount_level = full_amount_level,
             full_bet = full_bet,
@@ -79,5 +79,5 @@ def await_player(
 
     # Reset player and return requested action
 
-    player.reset_action()
+    player.clear_action()
     return action

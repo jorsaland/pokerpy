@@ -10,1380 +10,852 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import structures
+from pokerpy import constants, structures
 
 
-class TestHandRelations(TestCase):
+class TestRelationsBetweenDifferentCategories(TestCase):
 
 
-    """
-    Runs unit tests on Hand class relations.
-    """
+    "Runs test cases to compare hands of different categories."
 
 
-    def test_royal_flush_relations(self):
+    hands = [
+        royal_flush := structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.SPADES),
+        )),
+        straight_flush := structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.ACES, constants.SPADES),
+        )),
+        four_of_a_kind := structures.Hand((
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+        )),
+        full_house := structures.Hand((
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+        )),
+        flush := structures.Hand((
+            structures.Card(constants.NINES, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.HEARTS),
+        )),
+        straight := structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.NINES, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+        )),
+        three_of_a_kind := structures.Hand((
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        )),
+        two_pair := structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+        )),
+        one_pair := structures.Hand((
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.SPADES),
+        )),
+        high_card := structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.NINES, constants.HEARTS),
+        )),
+    ]
 
 
-        """
-        Runs test cases to check relations between royal flush hands work as expected.
-        """
+    def test_compare_hands_from_different_categories(self):
+
+        "Tests comparison of hands from different categories."
+
+        for i, hand in enumerate(self.hands):
+            for lower_hand in self.hands[i+1 :]:
+                with self.subTest(higher_hand=str(hand), lower_hand=str(lower_hand)):
+                    self.assertGreater(hand, lower_hand)
+                    self.assertGreaterEqual(hand, lower_hand)
 
 
-        # Exactly same hand
+class TestRoyalFlushRelations(TestCase):
 
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('T', 's'),
-        ])
 
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('T', 's'),
-        ])
+    "Runs test cases to compare royal flush hands."
+
+
+    def test_royal_flush_comparison(self):
+
+        "Tests comparison between royal flush hands."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.TENS, constants.CLUBS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestStraightFlushRelations(TestCase):
+
+
+    "Runs test cases to compare straight flush hands."
+
+
+    def test_straight_flush_comparison_to_same_high_card(self):
+
+        "Tests comparison of a straight flush hand to another that shares the same high card value."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.NINES, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_straight_flush_comparison_to_lower_high_card(self):
+
+        "Tests comparison of a straight flush hand to another that has lower high card."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_straight_flush_comparison_to_five_high(self):
+
+        "Tests comparison of a straight flush hand to a five-high flush straight."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.ACES, constants.SPADES),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestFourOfAKindRelations(TestCase):
+
+
+    "Runs test cases to compare four of a kind hands."
+
+
+    def test_four_of_a_kind_comparison_to_same_repeated_cards_and_kicker(self):
+
+        "Tests comparison of a four of a kind hand to another with the same repeated cards and kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.CLUBS),
+        ))
         
         self.assertEqual(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Same hand, different suits
+    def test_four_of_a_kind_comparison_to_same_repeated_cards_lower_kicker(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('A', 'c'),
-            structures.Card('K', 'c'),
-            structures.Card('Q', 'c'),
-            structures.Card('J', 'c'),
-            structures.Card('T', 'c'),
-        ])
+        "Tests comparison of a four of a kind hand to another with the same repeated cards, but lower kicker."
 
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('T', 's'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_straight_flush_relations(self):
-
-
-        """
-        Runs test cases to check relations between royal flush hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('9', 's'),
-            structures.Card('8', 's'),
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('9', 's'),
-            structures.Card('8', 's'),
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 'h'),
-            structures.Card('9', 'h'),
-            structures.Card('8', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('6', 'h'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 'c'),
-            structures.Card('9', 'c'),
-            structures.Card('8', 'c'),
-            structures.Card('7', 'c'),
-            structures.Card('6', 'c'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher straight
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 'h'),
-            structures.Card('9', 'h'),
-            structures.Card('8', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('6', 'h'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('6', 'c'),
-            structures.Card('5', 'c'),
-            structures.Card('4', 'c'),
-            structures.Card('3', 'c'),
-            structures.Card('2', 'c'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+        ))
         
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Straight higher than five to ace straight
+    def test_four_of_a_kind_comparison_to_lower_repeated_cards_higher_kicker(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('6', 'h'),
-            structures.Card('5', 'h'),
-            structures.Card('4', 'h'),
-            structures.Card('3', 'h'),
-            structures.Card('2', 'h'),
-        ])
+        "Tests comparison of a four of a kind hand to another with lower repeated cards, but higher kicker."
 
-        hand_2 = structures.Hand([
-            structures.Card('5', 'c'),
-            structures.Card('4', 'c'),
-            structures.Card('3', 'c'),
-            structures.Card('2', 'c'),
-            structures.Card('A', 'c'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+        ))
         
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-    def test_four_of_a_kind_relations(self):
+class TestFullHouseRelations(TestCase):
 
 
-        """
-        Runs test cases to check relations between four of a kind hands work as expected.
-        """
+    "Runs test cases to compare full house hands."
 
 
-        # Exactly same hand
+    def test_full_house_comparison_to_same_three_of_a_kind_and_pair(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('7', 's'),
-        ])
+        "Tests comparison of a full house hand to another with the same three of a kind and pair."
 
-        hand_2 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('7', 's'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+        ))
         
         self.assertEqual(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Same hand, different kicker suits
+    def test_full_house_comparison_to_same_three_of_a_kind_lower_pair(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('7', 's'),
-        ])
+        "Tests comparison of a full house hand to another with the same three of a kind, but lower pair."
 
-        hand_2 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('7', 'h'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Same four of a kind, higher kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('8', 's'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('7', 'h'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.CLUBS),
+        ))
         
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Higher four of a kind, higher kicker
+    def test_full_house_comparison_to_lower_three_of_a_kind_higher_pair(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('5', 's'),
-        ])
+        "Tests comparison of a full house hand to another with lower three of a kind, but higher pair."
 
-        hand_2 = structures.Hand([
-            structures.Card('9', 's'),
-            structures.Card('9', 'h'),
-            structures.Card('9', 'd'),
-            structures.Card('9', 'c'),
-            structures.Card('3', 'h'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.CLUBS),
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+        ))
         
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Higher four of a kind, lower kicker
+    def test_full_house_comparison_to_lower_three_of_a_kind_and_pair(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('2', 's'),
-        ])
+        "Tests comparison of a full house hand to another with lower three of a kind and pair."
 
-        hand_2 = structures.Hand([
-            structures.Card('9', 's'),
-            structures.Card('9', 'h'),
-            structures.Card('9', 'd'),
-            structures.Card('9', 'c'),
-            structures.Card('K', 'h'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.CLUBS),
+        ))
         
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-    def test_full_house_relations(self):
+class TestFlushRelations(TestCase):
 
 
-        """
-        Runs test cases to check relations between full house hands work as expected.
-        """
+    "Runs test cases to compare flush hands."
 
 
-        # Exactly same hand
+    def test_flush_comparison_to_same_values(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('8', 's'),
-            structures.Card('8', 'd'),
-        ])
+        "Tests comparison of a flush hand to another with the same values."
 
-        hand_2 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('8', 's'),
-            structures.Card('8', 'd'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+        ))
+
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
         
         self.assertEqual(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Same hand, different suits
+    def test_flush_comparison_to_lower_high_card_higher_kickers(self):
 
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('8', 's'),
-            structures.Card('8', 'd'),
-        ])
+        "Tests comparison of a flush hand to another with lower high card but higher kickers."
 
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('8', 'h'),
-            structures.Card('8', 'c'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Same three of a kind, higher pair
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('A', 's'),
-            structures.Card('A', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('8', 'h'),
-            structures.Card('8', 'c'),
-        ])
-        
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher three of a kind, higher pair
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('9', 's'),
-            structures.Card('9', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 'c'),
-        ])
-        
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher three of a kind, lower pair
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('3', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('9', 'h'),
-            structures.Card('9', 'c'),
-        ])
-        
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_flush_relations(self):
-
-
-        """
-        Runs test cases to check relations between flush hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('4', 'h'),
-            structures.Card('2', 'h'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('4', 'h'),
-            structures.Card('2', 'h'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('4', 'h'),
-            structures.Card('2', 'h'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'c'),
-            structures.Card('J', 'c'),
-            structures.Card('7', 'c'),
-            structures.Card('4', 'c'),
-            structures.Card('2', 'c'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Flush with all cards higher
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('9', 's'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('8', 'd'),
-            structures.Card('6', 'd'),
-            structures.Card('5', 'd'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'd'),
-        ])
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.NINES, constants.CLUBS),
+            structures.Card(constants.EIGHTS, constants.CLUBS),
+        ))
   
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
 
 
-        # Flush with higher main card, lower secondary cards
+class TestStraightRelations(TestCase):
 
-        hand_1 = structures.Hand([
-            structures.Card('A', 'c'),
-            structures.Card('6', 's'),
-            structures.Card('5', 's'),
-            structures.Card('3', 's'),
-            structures.Card('2', 's'),
-        ])
 
-        hand_2 = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('J', 'c'),
-            structures.Card('9', 'c'),
-            structures.Card('8', 'c'),
-        ])
+    "Runs test cases to compare straight hands."
+
+
+    def test_straight_comparison_to_same_high_card(self):
+
+        "Tests comparison of a straight hand to another with the same values."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_straight_comparison_to_lower_high_card(self):
+
+        "Tests comparison of a straight hand to another with lower high card."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_straight_comparison_to_five_high(self):
+
+        "Tests comparison of a straight hands to a five-high straight."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.SPADES),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.ACES, constants.CLUBS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestThreeOfAKindRelations(TestCase):
+
+
+    "Runs test cases to compare three of a kind hands."
+
+
+    def test_three_of_a_kind_comparison_to_same_repeated_cards_and_kickers(self):
+
+        "Tests comparison of a three of a kind hand to another with the same repeated cards and kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.CLUBS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_three_of_a_kind_comparison_to_same_repeated_cards_lower_1_kicker_higher_2_kicker(self):
+
+        "Tests comparison of a three of a kind hand to another with the same repeated cards, but lower first kicker and higher second kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.NINES, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_three_of_a_kind_comparison_to_lower_repeated_cards_higher_kickers(self):
+
+        "Tests comparison of a three of a kind hand to another with lower repeated cards, but higher kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.NINES, constants.CLUBS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestTwoPairRelations(TestCase):
+
+
+    "Runs test cases to compare two pair hands."
+
+
+    def test_two_pair_comparison_to_same_pairs_and_kicker(self):
+
+        "Tests comparison of a two pair hand to another with the same pairs and kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_two_pair_comparison_to_same_pairs_lower_kicker(self):
+
+        "Tests comparison of a two pair hand to another with the same pairs, but lower kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.NINES, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_two_pair_comparison_to_same_1_pair_lower_2_pair_higher_kicker(self):
+
+        "Tests comparison of a two pair hand to another with the same first pair, but lower second pair and higher kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.KINGS, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_two_pair_comparison_to_lower_1_pair_higher_2_pair_and_kicker(self):
+
+        "Tests comparison of a two pair hand to another with lower first pair, but higher second pair and kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestPairRelations(TestCase):
+
+
+    "Runs test cases to compare pair hands."
+
+
+    def test_pair_comparison_to_same_pair_and_kickers(self):
+
+        "Tests comparison of a pair hand to another with the same pair and kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.FOURS, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_pair_comparison_to_same_pair_and_1_2_kickers_lower_3_kicker(self):
+
+        "Tests comparison of a pair hand to another with the same pair, first kicker and second kicker, but lower third kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
+
+        hand_2 = structures.Hand((
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_pair_comparison_to_same_pair_and_1_kicker_lower_2_kicker_higher_3_kicker(self):
+
+        "Tests comparison of a pair hand to another with the same pair and first kicker, but lower second kicker and higher third kicker."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+
+        hand_2 = structures.Hand((
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_pair_comparison_to_same_pair_lower_1_kicker_higher_2_3_kickers(self):
+
+        "Tests comparison of a pair hand to another with the same pair, but lower first kicker and higher second and third kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_pair_comparison_to_lower_pair_higher_kickers(self):
+
+        "Tests comparison of a pair hand to another with lower pair, but higher kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.HEARTS),
+        ))
+
+        self.assertGreater(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+class TestHighCardRelations(TestCase):
+
+
+    "Runs test cases to compare high card hands."
+
+
+    def test_high_card_comparison_to_same_values(self):
+
+        "Tests comparison of a high card hand to another with the same values."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+
+        hand_2 = structures.Hand((
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.THREES, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+
+        self.assertEqual(hand_1, hand_2)
+        self.assertGreaterEqual(hand_1, hand_2)
+
+
+    def test_high_card_comparison_to_lower_high_card_higher_kickers(self):
+
+        "Tests comparison of a high card hand to another with lower high card but higher kickers."
+
+        hand_1 = structures.Hand((
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.THREES, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        ))
+        hand_2 = structures.Hand((
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        ))
   
         self.assertGreater(hand_1, hand_2)
         self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_straight_relations(self):
-
-
-        """
-        Runs test cases to check relations between straight hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('3', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('3', 'd'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('3', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 'c'),
-            structures.Card('3', 'd'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Higher straight
-
-        hand_1 = structures.Hand([
-            structures.Card('8', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('3', 'd'),
-        ])
-        
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Straight higher than five to ace straight
-
-        hand_1 = structures.Hand([
-            structures.Card('6', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('4', 'h'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 's'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('5', 's'),
-            structures.Card('4', 'h'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 's'),
-            structures.Card('A', 'd'),
-        ])
-        
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_three_of_a_kind_relations(self):
-
-
-        """
-        Runs test cases to check relations between three of a kind hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('4', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('4', 'd'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('4', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('7', 'h'),
-            structures.Card('4', 'c'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Same three of a kind, both kickers higher
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('8', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('5', 'h'),
-            structures.Card('2', 'c'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same three of a kind, main kicker higher, secondary kicker lower
-
-        hand_1 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('9', 'h'),
-            structures.Card('5', 'c'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher three of a kind, both kickers higher
-
-        hand_1 = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('8', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('5', 'h'),
-            structures.Card('2', 'c'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same three of a kind, both kickers lower
-
-        hand_1 = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('Q', 'c'),
-            structures.Card('9', 'h'),
-            structures.Card('5', 'c'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_two_pair_relations(self):
-
-
-        """
-        Runs test cases to check relations between two pair hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('6', 's'),
-            structures.Card('T', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('6', 's'),
-            structures.Card('T', 'd'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('6', 's'),
-            structures.Card('T', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'c'),
-            structures.Card('T', 'd'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Same pairs, higher kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('6', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('T', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('9', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same main pair, higher secondary pair and kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('K', 'c'),
-            structures.Card('K', 'h'),
-            structures.Card('T', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('9', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same main pair, higher secondary pair, lower kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('K', 'c'),
-            structures.Card('K', 'h'),
-            structures.Card('T', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('K', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher main pair, secondary pair and kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('8', 'c'),
-            structures.Card('8', 'h'),
-            structures.Card('K', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('J', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher main pair, lower secondary pair and kicker
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('2', 'h'),
-            structures.Card('3', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('J', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_pair_relations(self):
-
-
-        """
-        Runs test cases to check relations between pair hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('3', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('3', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('2', 'd'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('3', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('3', 'h'),
-            structures.Card('3', 'd'),
-            structures.Card('6', 's'),
-            structures.Card('4', 'c'),
-            structures.Card('2', 'd'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # Same pairs, higher kickers
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('K', 'c'),
-            structures.Card('T', 'h'),
-            structures.Card('9', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'c'),
-            structures.Card('6', 'h'),
-            structures.Card('4', 'd'),
-            structures.Card('2', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same pairs, higher main kicker, lower secondary kickers
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('K', 'c'),
-            structures.Card('3', 'h'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'c'),
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'd'),
-            structures.Card('T', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher pair, higher kickers
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('K', 'c'),
-            structures.Card('J', 'h'),
-            structures.Card('8', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('K', 'c'),
-            structures.Card('5', 'h'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Higher pair, lower kickers
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('A', 'h'),
-            structures.Card('4', 'c'),
-            structures.Card('3', 'h'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('K', 'c'),
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'd'),
-            structures.Card('T', 'h'),
-        ])
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_high_card_relations(self):
-
-
-        """
-        Runs test cases to check relations between high card hands work as expected.
-        """
-
-
-        # Exactly same hand
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('8', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('8', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('2', 'd'),
-        ])
-        
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-        # Same hand, different suits
-
-        hand_1 = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('8', 'h'),
-            structures.Card('5', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('T', 'h'),
-            structures.Card('8', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'c'),
-            structures.Card('2', 'd'),
-        ])
-
-        self.assertEqual(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-        
-
-        # All cards higher
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('J', 's'),
-            structures.Card('T', 'c'),
-            structures.Card('8', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('7', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'c'),
-            structures.Card('2', 'd'),
-        ])
-
-
-        # Main card higher, all kickers lower
-
-        hand_1 = structures.Hand([
-            structures.Card('A', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'c'),
-            structures.Card('2', 'd'),
-        ])
-
-        hand_2 = structures.Hand([
-            structures.Card('7', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('J', 's'),
-            structures.Card('T', 'c'),
-            structures.Card('8', 'd'),
-        ])
-
-
-        self.assertGreater(hand_1, hand_2)
-        self.assertGreaterEqual(hand_1, hand_2)
-
-
-    def test_different_category_relations(self):
-        
-
-        """
-        Runs test cases to check relations between different categories.
-        """
-
-        
-        # Resources
-
-        royal_flush_hand = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('T', 's'),
-        ])
-
-        straight_flush_hand = structures.Hand([
-            structures.Card('5', 's'),
-            structures.Card('4', 's'),
-            structures.Card('3', 's'),
-            structures.Card('2', 's'),
-            structures.Card('A', 's'),
-        ])
-
-        four_of_a_kind_hand = structures.Hand([
-            structures.Card('6', 's'),
-            structures.Card('6', 'h'),
-            structures.Card('6', 'd'),
-            structures.Card('6', 'c'),
-            structures.Card('7', 's'),
-        ])
-
-        full_house_hand = structures.Hand([
-            structures.Card('8', 's'),
-            structures.Card('8', 'h'),
-            structures.Card('8', 'd'),
-            structures.Card('9', 's'),
-            structures.Card('9', 'd'),
-        ])
-
-        flush_hand = structures.Hand([
-            structures.Card('9', 'h'),
-            structures.Card('8', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('6', 'h'),
-            structures.Card('4', 'h'),
-        ])
-
-        straight_hand = structures.Hand([
-            structures.Card('T', 's'),
-            structures.Card('9', 'h'),
-            structures.Card('8', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('6', 'd'),
-        ])
-
-        three_of_a_kind_hand = structures.Hand([
-            structures.Card('J', 's'),
-            structures.Card('J', 'h'),
-            structures.Card('J', 'd'),
-            structures.Card('9', 's'),
-            structures.Card('8', 'd'),
-        ])
-
-        two_pair_hand = structures.Hand([
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'd'),
-            structures.Card('J', 's'),
-            structures.Card('T', 'd'),
-        ])
-
-        pair_hand = structures.Hand([
-            structures.Card('K', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('T', 's'),
-        ])
-
-        high_card_hand = structures.Hand([
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('J', 's'),
-            structures.Card('9', 'h'),
-        ])
-
-
-        # Compare to royal flush
-
-        self.assertGreater(royal_flush_hand, straight_flush_hand)
-        self.assertGreaterEqual(royal_flush_hand, straight_flush_hand)
-
-        self.assertGreater(royal_flush_hand, four_of_a_kind_hand)
-        self.assertGreaterEqual(royal_flush_hand, four_of_a_kind_hand)
-
-        self.assertGreater(royal_flush_hand, full_house_hand)
-        self.assertGreaterEqual(royal_flush_hand, full_house_hand)
-
-        self.assertGreater(royal_flush_hand, flush_hand)
-        self.assertGreaterEqual(royal_flush_hand, flush_hand)
-
-        self.assertGreater(royal_flush_hand, straight_hand)
-        self.assertGreaterEqual(royal_flush_hand, straight_hand)
-
-        self.assertGreater(royal_flush_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(royal_flush_hand, three_of_a_kind_hand)
-
-        self.assertGreater(royal_flush_hand, two_pair_hand)
-        self.assertGreaterEqual(royal_flush_hand, two_pair_hand)
-
-        self.assertGreater(royal_flush_hand, pair_hand)
-        self.assertGreaterEqual(royal_flush_hand, pair_hand)
-
-        self.assertGreater(royal_flush_hand, high_card_hand)
-        self.assertGreaterEqual(royal_flush_hand, high_card_hand)
-
-
-        # Compare to straight flush
-
-        self.assertGreater(straight_flush_hand, four_of_a_kind_hand)
-        self.assertGreaterEqual(straight_flush_hand, four_of_a_kind_hand)
-
-        self.assertGreater(straight_flush_hand, full_house_hand)
-        self.assertGreaterEqual(straight_flush_hand, full_house_hand)
-
-        self.assertGreater(straight_flush_hand, flush_hand)
-        self.assertGreaterEqual(straight_flush_hand, flush_hand)
-
-        self.assertGreater(straight_flush_hand, straight_hand)
-        self.assertGreaterEqual(straight_flush_hand, straight_hand)
-
-        self.assertGreater(straight_flush_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(straight_flush_hand, three_of_a_kind_hand)
-
-        self.assertGreater(straight_flush_hand, two_pair_hand)
-        self.assertGreaterEqual(straight_flush_hand, two_pair_hand)
-
-        self.assertGreater(straight_flush_hand, pair_hand)
-        self.assertGreaterEqual(straight_flush_hand, pair_hand)
-
-        self.assertGreater(straight_flush_hand, high_card_hand)
-        self.assertGreaterEqual(straight_flush_hand, high_card_hand)
-
-
-        # Compare to four of a kind
-
-        self.assertGreater(four_of_a_kind_hand, full_house_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, full_house_hand)
-
-        self.assertGreater(four_of_a_kind_hand, flush_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, flush_hand)
-
-        self.assertGreater(four_of_a_kind_hand, straight_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, straight_hand)
-
-        self.assertGreater(four_of_a_kind_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, three_of_a_kind_hand)
-
-        self.assertGreater(four_of_a_kind_hand, two_pair_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, two_pair_hand)
-
-        self.assertGreater(four_of_a_kind_hand, pair_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, pair_hand)
-
-        self.assertGreater(four_of_a_kind_hand, high_card_hand)
-        self.assertGreaterEqual(four_of_a_kind_hand, high_card_hand)
-
-
-        # Compare to full house
-
-        self.assertGreater(full_house_hand, flush_hand)
-        self.assertGreaterEqual(full_house_hand, flush_hand)
-
-        self.assertGreater(full_house_hand, straight_hand)
-        self.assertGreaterEqual(full_house_hand, straight_hand)
-
-        self.assertGreater(full_house_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(full_house_hand, three_of_a_kind_hand)
-
-        self.assertGreater(full_house_hand, two_pair_hand)
-        self.assertGreaterEqual(full_house_hand, two_pair_hand)
-
-        self.assertGreater(full_house_hand, pair_hand)
-        self.assertGreaterEqual(full_house_hand, pair_hand)
-
-        self.assertGreater(full_house_hand, high_card_hand)
-        self.assertGreaterEqual(full_house_hand, high_card_hand)
-
-
-        # Compare to flush
-
-        self.assertGreater(flush_hand, straight_hand)
-        self.assertGreaterEqual(flush_hand, straight_hand)
-
-        self.assertGreater(flush_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(flush_hand, three_of_a_kind_hand)
-
-        self.assertGreater(flush_hand, two_pair_hand)
-        self.assertGreaterEqual(flush_hand, two_pair_hand)
-
-        self.assertGreater(flush_hand, pair_hand)
-        self.assertGreaterEqual(flush_hand, pair_hand)
-
-        self.assertGreater(flush_hand, high_card_hand)
-        self.assertGreaterEqual(flush_hand, high_card_hand)
-
-
-        # Compare to straight
-
-        self.assertGreater(straight_hand, three_of_a_kind_hand)
-        self.assertGreaterEqual(straight_hand, three_of_a_kind_hand)
-
-        self.assertGreater(straight_hand, two_pair_hand)
-        self.assertGreaterEqual(straight_hand, two_pair_hand)
-
-        self.assertGreater(straight_hand, pair_hand)
-        self.assertGreaterEqual(straight_hand, pair_hand)
-
-        self.assertGreater(straight_hand, high_card_hand)
-        self.assertGreaterEqual(straight_hand, high_card_hand)
-
-
-        # Compare to three of a kind
-
-        self.assertGreater(three_of_a_kind_hand, two_pair_hand)
-        self.assertGreaterEqual(three_of_a_kind_hand, two_pair_hand)
-
-        self.assertGreater(three_of_a_kind_hand, pair_hand)
-        self.assertGreaterEqual(three_of_a_kind_hand, pair_hand)
-
-        self.assertGreater(three_of_a_kind_hand, high_card_hand)
-        self.assertGreaterEqual(three_of_a_kind_hand, high_card_hand)
-
-
-        # Compare to two pair
-
-        self.assertGreater(two_pair_hand, pair_hand)
-        self.assertGreaterEqual(two_pair_hand, pair_hand)
-
-        self.assertGreater(two_pair_hand, high_card_hand)
-        self.assertGreaterEqual(two_pair_hand, high_card_hand)
-
-
-        # Compare to pair
-
-        self.assertGreater(pair_hand, high_card_hand)
-        self.assertGreaterEqual(pair_hand, high_card_hand)
 
 
 if __name__ == '__main__':

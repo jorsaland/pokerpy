@@ -26,6 +26,7 @@ from pokerpy.exceptions import CloseBettingRoundSignal, JumpToNextPlayerSignal
 from pokerpy.logger import get_logger
 
 
+from ._gather_pot import gather_pot
 from ._prompt_player import prompt_player
 if TYPE_CHECKING:
     from ._betting_round import BettingRound
@@ -41,7 +42,7 @@ def run_listener(betting_round: "BettingRound"):
     """
 
     # Do not even iterate if there is only one non-folded player who still has a stack to bet
-    if len([player for player in betting_round.table.participating_players if player.stack > 0]) > 1:
+    if len(betting_round.table.actionable_players) > 1:
 
         # All players are itered, prompt_player decides if plays or not
         for player in cycle(betting_round.table.iter_players()):
@@ -60,7 +61,4 @@ def run_listener(betting_round: "BettingRound"):
                 break
     
     logger.info(f'Number of laps: {betting_round.lap_counts}')
-    
-    # Move chips to the center of the table
-    for player in betting_round.table.players:
-        betting_round.table.increase_central_pot(player.amount)
+    gather_pot(betting_round.table)

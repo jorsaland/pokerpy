@@ -5,7 +5,7 @@ Defines the constants regarding to actions used when playing.
 
 # Values and suits
 
-sorted_card_values: tuple[str] = (
+sorted_card_values: tuple[str, ...] = (
     (DEUCES := '2'),
     (THREES := '3'),
     (FOURS := '4'),
@@ -21,7 +21,7 @@ sorted_card_values: tuple[str] = (
     (ACES := 'A'),
 )
 
-sorted_card_suits: tuple[str] = (
+sorted_card_suits: tuple[str, ...] = (
     (CLUBS := 'c'),
     (DIAMONDS := 'd'),
     (HEARTS := 'h'),
@@ -35,20 +35,20 @@ unicode_code_point_by_card_suit = {
     SPADES: (SPADES_UNICODE_CODE_POINT := 9824),
 }
 
-full_sorted_values_and_suits: tuple[tuple[str, str], ...] = tuple((value, suit) for value in sorted_card_values for suit in sorted_card_suits)
+sorted_card_values_and_suits: tuple[tuple[str, str], ...] = tuple((value, suit) for value in sorted_card_values for suit in sorted_card_suits)
 
 
 # Hands
 
-sorted_hand_categories: tuple[str] = (
-    (HIGH_CARD := 'high card'),
+sorted_hand_categories: tuple[str, ...] = (
+    (HIGH_CARD := 'high_card'),
     (ONE_PAIR := 'pair'),
-    (TWO_PAIR := 'two pair'),
-    (THREE_OF_A_KIND := 'three of a kind'),
+    (TWO_PAIR := 'two_pair'),
+    (THREE_OF_A_KIND := 'three_of_a_kind'),
     (STRAIGHT := 'straight'),
     (FLUSH := 'flush'),
-    (FULL_HOUSE := 'full house'),
-    (FOUR_OF_A_KIND := 'four of a kind'),
-    (STRAIGHT_FLUSH := 'straight flush'),
-    (ROYAL_FLUSH := 'royal flush'),
+    (FULL_HOUSE := 'full_house'),
+    (FOUR_OF_A_KIND := 'four_of_a_kind'),
+    (STRAIGHT_FLUSH := 'straight_flush'),
+    (ROYAL_FLUSH := 'royal_flush'),
 )

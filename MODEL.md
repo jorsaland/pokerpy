@@ -34,9 +34,9 @@
 
 - **Stack (`stack`):** Chips the player has available to play.
 
-- **Amount (`amount`):** Amount of chips the player has placed in front during the current betting round.
+- **Bet level (`bet_level`):** Amount of chips the player has placed in front during the current betting round.
 
-- **Pot participation (`pot_participation`):** Total amount of chips the player has placed in the pot during the current hand cycle.
+- **Pot index (`pot_index`):** Index of the pot the player is playing for, being 0 the main pot.
 
 - **Is folded (`is_folded`):** Whether the player has already folded in the current hand cycle.
 
@@ -51,9 +51,11 @@
 
 - **Players (`players`):** Players sitting at the table, in their respective order.
 
-- **Participating players (`participating_players`):** Players still playing for the pot during a hand cycle.
+- **Live players (`live_players`):** Players still playing for the pot during a hand cycle.
 
-- **Active players (`active_players`):** Players still playing for the pot and not all-in during a hand cycle.
+- **Actionable players (`actionable_players`):** Players still playing for the pot and not all-in during a hand cycle.
+
+- **Bettor players (`bettor_players`):** Players who have placed chips in front to gather into the pot.
 
 - **Starting player (`starting_player`):** Player who acts first in the betting round. Defaults to the first player in the players list.
 
@@ -61,17 +63,17 @@
 
 - **Current player (`current_player`):** Player who is being awaited to play. Defaults to the starting player.
 
-- **Amount level (`amount_level`):** Largest amount of chips a player has placed in front during the current betting round, which other players must match in order to call.
+- **Bet level (`bet_level`):** Largest amount of chips a player has placed in front during the current betting round, which other players must match in order to call.
 
-- **Full bet (`full_bet`):** Minimum amount to bet.
+- **Full bet level (`full_bet_level`):** Part of the chip level matching the last full bet or raise. It may be smaller than a full bet when a player goes all-in for less. In that case, other players can complete the full bet (in addition to folding, calling or raising).
 
-- **Full amount level (`full_amount_level`):** Part of the amount level considered a full bet or raise. It may be smaller than a full bet when a player goes all-in for less. In that case, other players can complete the full bet (in addition to folding, calling or raising).
+- **Minimum bet (`min_bet`):** Minimum amount to bet.
 
-- **Full raise increase (`full_raise_increase`):** Minimum amount by which to increase the full amount level.
+- **Minimum raise increase (`min_raise_increase`):** Minimum amount by which to increase the full chip level.
 
 - **Pot (`pot`):** Total amount of chips being played for in the betting round.
 
-- **Split pot (`split_pot`):** Pot split into main pot and side pots.
+- **Central pot (`central_pot`):** "Part of the pot that is already placed at the center of the table, split into main and side pots."
 
 
 # Properties of engines
@@ -126,17 +128,18 @@ flowchart LR
     T(Table)@{ shape: circle }
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text } --> T
     T.assign_common_card(assign_common_card)@{ shape: text } --> T
-    T.set_full_bet(set_full_bet)@{ shape: text } --> T
-    T.set_full_raise_increase(set_full_raise_increase)@{ shape: text } --> T
-    T.set_amount_level(set_amount_level)@{ shape: text } --> T
-    T.set_full_amount_level(set_full_amount_level)@{ shape: text } --> T
+    T.set_min_bet(set_min_bet)@{ shape: text } --> T
+    T.set_min_raise_increase(set_min_raise_increase)@{ shape: text } --> T
+    T.set_bet_level(set_bet_l evel)@{ shape: text } --> T
+    T.set_full_bet_level(set_full_bet_level)@{ shape: text } --> T
     T.increase_central_pot(increase_central_pot)@{ shape: text } --> T
+    T.clear_central_pot(clear_central_pot)@{ shape: text } --> T
     T.set_starting_player(set_starting_player)@{ shape: text } --> T
     T.set_stopping_player(set_stopping_player)@{ shape: text } --> T
+    T.set_current_player(set_current_player)@{ shape: text } --> T
     T.get_previous_player(get_previous_player)@{ shape: text } --> T
     T.get_next_player(get_next_player)@{ shape: text } --> T
     T.iter_players(iter_players)@{ shape: text } --> T
-    T.get_previous_active_player(get_previous_active_player)@{ shape: text } --> T
 
     C(Controller)@{ shape: cloud }
 
@@ -144,8 +147,10 @@ flowchart LR
     P.request_action(request_action)@{ shape: text } --> P
     P.reset_action(reset_action)@{ shape: text } --> P
     P.assign_card(assign_card)@{ shape: text } --> P
-    P.increase_amount(increase_amount)@{ shape: text } --> P
-    P.increase_pot_participation(increase_pot_participation)@{ shape: text } --> P
+    P.increase_bet_level(increase_bet_level)@{ shape: text } --> P
+    P.decrease_bet_level(decrease_bet_level)@{ shape: text } --> P
+    P.increase_pot_index(increase_pot_index)@{ shape: text } --> P
+    P.reset_pot_index(reset_pot_index)@{ shape: text } --> P
     P.decrease_stack(decrease_stack)@{ shape: text } --> P
     P.mark_has_played(mark_has_played)@{ shape: text } --> P
     P.unmark_has_played(unmark_has_played)@{ shape: text } --> P
@@ -167,21 +172,24 @@ flowchart LR
 
     BR --> T.remove_card_from_deck
     BR --> T.assign_common_card
-    BR --> T.set_full_bet
-    BR --> T.set_full_raise_increase
-    BR --> T.set_amount_level
-    BR --> T.set_full_amount_level
+    BR --> T.set_min_bet
+    BR --> T.set_min_raise_increase
+    BR --> T.set_bet_level
+    BR --> T.set_full_bet_level
     BR --> T.increase_central_pot
+    BR --> T.clear_central_pot
     BR --> T.set_starting_player
     BR --> T.set_stopping_player
-    BR --> T.get_previous_active_player
+    BR --> T.set_current_player
     BR --> T.iter_players
     BR --> T.get_previous_player
 
     BR --> P.reset_action
     BR --> P.assign_card
-    BR --> P.increase_amount
-    BR --> P.increase_pot_participation
+    BR --> P.increase_bet_level
+    BR --> P.decrease_bet_level
+    BR --> P.increase_pot_index
+    BR --> P.reset_pot_index
     BR --> P.decrease_stack
     BR --> P.mark_has_played
     BR --> P.unmark_has_played
@@ -198,9 +206,6 @@ flowchart LR
     BR.listen -.-> BR.reset_betting_round_states
     BR.listen -.-> BR.increase_counter
     BR.listen -.-> BR.set_current_player
-
-    T.get_previous_active_player -.-> T.iter_players
-    T.get_previous_active_player -.-> T.get_previous_player
 
     T.iter_players -.-> T.get_next_player
     T.iter_players -.-> T.get_previous_player

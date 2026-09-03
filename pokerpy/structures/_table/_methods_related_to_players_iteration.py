@@ -95,5 +95,5 @@ def method_get_previous_active_player(self: "Table", reference_player: Player):
         raise ValueError(msg_player_not_in_table.format(reference_player.name))
 
     for player in self.iter_players(self.get_previous_player(reference_player), reverse=True):
-        if player in self.active_players:
+        if player in self.actionable_players:
             return player

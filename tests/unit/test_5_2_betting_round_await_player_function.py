@@ -40,8 +40,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -87,8 +87,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -135,8 +135,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -186,15 +186,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -235,15 +235,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -286,15 +286,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -342,15 +342,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         action = structures.Action(constants.ACTION_CHECK)
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -400,8 +400,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),
@@ -411,8 +411,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,
@@ -462,8 +462,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             structures.Player('Coral', 10),
             structures.Player('Dino', 10),
         ])
-        table.set_amount_level(2)
-        table.set_full_amount_level(2)
+        table.set_bet_level(2)
+        table.set_full_bet_level(2)
 
         actions = [
             structures.Action(constants.ACTION_CHECK),
@@ -473,8 +473,8 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(
             player = Andy,
-            amount_level = table.amount_level,
-            full_amount_level = table.full_amount_level,
+            amount_level = table.bet_level,
+            full_amount_level = table.full_bet_level,
             full_bet = 2,
             full_raise_increase = 2,
             is_last_active_player = False,

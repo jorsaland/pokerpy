@@ -18,6 +18,9 @@ Defines the function that determines the name of the hand.
 """
 
 
+from collections.abc import Iterable
+
+
 from pokerpy import constants
 
 
@@ -25,7 +28,7 @@ from .._card import Card
 from ._arrange_cards import arrange_cards
 
 
-def get_category(cards: list[Card]):
+def get_category(cards: Iterable[Card]):
 
     """
     Determines the hand category.

@@ -46,7 +46,7 @@ def prompt_player(
     """
 
     # Close the betting round if every player is folded
-    if len(table.participating_players) == 1:
+    if len(table.live_players) == 1:
         raise CloseBettingRoundSignal(signal_last_player_in_hand)
 
     # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
@@ -64,11 +64,11 @@ def prompt_player(
     # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = table.current_player,
-        amount_level = table.amount_level,
-        full_amount_level = table.full_amount_level,
-        full_bet = table.full_bet,
-        full_raise_increase = table.full_raise_increase,
-        is_last_active_player = (table.current_player in table.active_players and len(table.active_players) == 1),
+        amount_level = table.bet_level,
+        full_amount_level = table.full_bet_level,
+        full_bet = table.min_bet,
+        full_raise_increase = table.min_raise_increase,
+        is_last_active_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
         open_fold_allowed = open_fold_allowed,
         raise_invalid_actions = raise_invalid_actions,
     )

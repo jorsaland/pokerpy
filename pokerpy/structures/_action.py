@@ -56,10 +56,10 @@ class Action:
         # Validate amount
         if category in (ACTION_FOLD, ACTION_CHECK):
             if amount != 0:
-                raise ValueError(msg_not_zero_value.format(category, amount))
+                raise ValueError(msg_not_zero_value.format(amount))
         else:
             if amount <= 0:
-                raise ValueError(msg_not_positive_value.format(category, amount))
+                raise ValueError(msg_not_positive_value.format(amount))
 
         # Fixed variables
         self._category = category

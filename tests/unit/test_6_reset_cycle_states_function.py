@@ -60,7 +60,7 @@ class TestResetCycleStatesFunction(TestCase):
             structures.Card('2', 's'),
             structures.Card('2', 'c'),
         ])
-        deck = [structures.Card(value, suit) for value, suit in constants.full_sorted_values_and_suits]
+        deck = [structures.Card(value, suit) for value, suit in constants.sorted_card_values_and_suits]
         common_cards = [
             structures.Card('7', 'c'),
             structures.Card('2', 's'),
@@ -70,7 +70,7 @@ class TestResetCycleStatesFunction(TestCase):
         # Set previous states
 
         Andy.request_action(action)
-        Andy.increase_amount(200)
+        Andy.increase_bet_level(200)
         for card in player_cards:
             table.remove_card_from_deck(card)
             Andy.assign_card(card)
@@ -86,12 +86,12 @@ class TestResetCycleStatesFunction(TestCase):
         # Evaluate before states
 
         self.assertEqual(Andy.requested_action, action)
-        self.assertEqual(Andy.amount, 200)
+        self.assertEqual(Andy.bet_level, 200)
         self.assertTupleEqual(Andy.cards, tuple(player_cards))
         self.assertEqual(Andy.hand, hand)
         self.assertTrue(Andy.is_folded)
 
-        self.assertTupleEqual(table.participating_players, tuple(player for player in table.players if player != Andy))
+        self.assertTupleEqual(table.live_players, tuple(player for player in table.players if player != Andy))
         self.assertEqual(table.current_amount, 200)
         self.assertEqual(table.central_pot, 500)
         self.assertTupleEqual(table.common_cards, tuple(common_cards))
@@ -104,12 +104,12 @@ class TestResetCycleStatesFunction(TestCase):
         # Evaluate after states
 
         self.assertIsNone(Andy.requested_action)
-        self.assertEqual(Andy.amount, 0)
+        self.assertEqual(Andy.bet_level, 0)
         self.assertTupleEqual(Andy.cards, ())
         self.assertIsNone(Andy.hand)
         self.assertFalse(Andy.is_folded)
 
-        self.assertTupleEqual(table.participating_players, table.players)
+        self.assertTupleEqual(table.live_players, table.players)
         self.assertEqual(table.current_amount, 0)
         self.assertEqual(table.central_pot, 0)
         self.assertTupleEqual(table.common_cards, ())

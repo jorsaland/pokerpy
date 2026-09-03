@@ -23,6 +23,7 @@ msg_not_positive_value = "the value must be positive (received {})"
 msg_not_zero_value = "the value must be zero (received {})"
 
 # Specific value errors
+msg_amount_larger_than_bet_level = "the amount ({}) cannot be larger than bet level ({})"
 msg_amount_larger_than_stack = "the amount ({}) cannot be larger than stack ({})"
 msg_card_not_in_deck = "the requested card is not in the deck"
 msg_invalid_action_name = "invalid action name, must be one of the following: {}"
@@ -36,4 +37,4 @@ msg_wildcard = "we live in a society"
 # Runtime errors
 msg_betting_round_was_not_completed = "the betting round was closed before being completed"
 msg_overloaded_betting_round_message = "some players could not be listened because the betting round already ended"
-msg_forbidden_action = "the requested action is not allowed in this situation"
+msg_forbidden_action = "the requested action is not allowed in this context"

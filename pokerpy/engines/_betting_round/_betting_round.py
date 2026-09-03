@@ -85,8 +85,8 @@ class BettingRound:
         self._is_completed = False
 
         if smallest_bet_amount is not None:
-            table.set_full_bet(smallest_bet_amount)
-            table.set_full_raise_increase(smallest_bet_amount)
+            table.set_min_bet(smallest_bet_amount)
+            table.set_min_raise_increase(smallest_bet_amount)
 
         if starting_player is not None:
             table.set_starting_player(starting_player)
@@ -201,15 +201,15 @@ class BettingRound:
         "Retrieves the current player and its available actions"
         return get_valid_actions(
             player_stack = self.table.current_player.stack,
-            player_amount = self.table.current_player.amount,
+            player_amount = self.table.current_player.bet_level,
             player_has_played = self.table.current_player.has_played,
-            amount_level = self.table.amount_level,
-            full_amount_level = self.table.full_amount_level,
-            full_bet = self.table.full_bet,
-            full_raise_increase = self.table.full_raise_increase,
+            amount_level = self.table.bet_level,
+            full_amount_level = self.table.full_bet_level,
+            full_bet = self.table.min_bet,
+            full_raise_increase = self.table.min_raise_increase,
             is_last_active_player = (
-                self.table.current_player in self.table.active_players
-                and len(self.table.active_players) == 1
+                self.table.current_player in self.table.actionable_players
+                and len(self.table.actionable_players) == 1
             ),
             open_fold_allowed = self.open_fold_allowed,
         )
@@ -228,12 +228,11 @@ class BettingRound:
         if not isinstance(table, Table):
             raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-        table.set_full_raise_increase(table.full_bet)
-        table.set_amount_level(0)
-        table.set_full_amount_level(0)
+        table.set_min_raise_increase(table.min_bet)
+        table.set_bet_level(0)
+        table.set_full_bet_level(0)
         table.set_stopping_player(table.get_previous_player(table.starting_player))
 
         for player in table.players:
             player.unmark_has_played()
-            player.reset_action()
-            player.clear_amount()
+            player.clear_action()

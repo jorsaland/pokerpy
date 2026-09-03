@@ -18,6 +18,7 @@ Defines the function that arranges a list of cards from most to least repeated a
 """
 
 
+from collections.abc import Iterable
 from typing import NewType
 
 
@@ -31,13 +32,13 @@ from .._card import Card
 HandTuple = NewType('HandTuple', tuple[Card])
 
 
-def arrange_cards(cards: list[Card]):
+def arrange_cards(cards: Iterable[Card]):
 
     """
     Arranges a list of cards from most to least repeated and from highest to lowest value.
     """
 
-    cards = cards.copy()
+    cards = list(cards)
 
     # Validate input
 

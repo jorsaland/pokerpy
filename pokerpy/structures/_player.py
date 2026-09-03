@@ -19,6 +19,7 @@ Defines the class that represents a poker player.
 
 
 from pokerpy.messages import (
+    msg_amount_larger_than_bet_level,
     msg_amount_larger_than_stack,
     msg_not_action_instance,
     msg_not_card_instance,
@@ -65,8 +66,8 @@ class Player:
         self._hand: (Hand|None) = None
         self._requested_action: (Action|None) = None
         self._stack = stack
-        self._amount = 0
-        self._pot_participation = 0
+        self._bet_level = 0
+        self._pot_index = 0
         self._is_folded = False
         self._has_played = False
 
@@ -97,14 +98,14 @@ class Player:
         return self._stack
 
     @property
-    def amount(self):
+    def bet_level(self):
         "Amount of chips that the player has placed in front during the betting round."
-        return self._amount
+        return self._bet_level
 
     @property
-    def pot_participation(self):
-        "Total amount of chips the player has placed in the pot during the current hand cycle."
-        return self._pot_participation
+    def pot_index(self):
+        "Index of the pot the player is playing for, being 0 the main pot."
+        return self._pot_index
 
     @property
     def is_folded(self):
@@ -134,7 +135,7 @@ class Player:
         self._requested_action = action
 
 
-    def reset_action(self):
+    def clear_action(self):
         "Resets the requested_action property back to None."
         self._requested_action = None
 
@@ -171,29 +172,23 @@ class Player:
     # Methods to affect stack and current amount
 
 
-    def increase_amount(self, amount: int):
-        "Adds an amount to the amount property."
+    def increase_bet_level(self, amount: int):
+        "Adds an amount to the bet_level property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        self._amount += amount    
+        self._bet_level += amount
 
-    def clear_amount(self):
-        "Resets the amount property back to zero."
-        self._amount = 0
-
-    def increase_pot_participation(self, amount: int):
-        "Adds an amoount to the pot_participation property."
+    def decrease_bet_level(self, amount: int):
+        "Removes an amount to the bet_level property."
         if not isinstance(amount, int):
             raise TypeError(msg_not_int.format(type(amount).__name__))
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        self._pot_participation += amount
-
-    def clear_pot_participation(self):
-        "Resets the pot_participation property back to zero."
-        self._pot_participation = 0
+        if amount > self.bet_level:
+            raise ValueError(msg_amount_larger_than_bet_level.format(amount, self.bet_level))
+        self._bet_level -= amount
 
     def increase_stack(self, amount: int):
         "Adds an amount to the stack property."
@@ -202,7 +197,6 @@ class Player:
         if amount < 0:
             raise ValueError(msg_not_positive_or_zero_value.format(amount))
         self._stack += amount
-
 
     def decrease_stack(self, amount: int):
         "Removes an amount from the stack property."
@@ -213,6 +207,14 @@ class Player:
         if amount > self.stack:
             raise ValueError(msg_amount_larger_than_stack.format(amount, self.stack))
         self._stack -= amount
+
+    def increase_pot_index(self):
+        "Increases in 1 the pot_index property."
+        self._pot_index += 1
+
+    def reset_pot_index(self):
+        "Resets the pot_index back to zero."
+        self._pot_index = 0
 
 
     # Methods to affect playing status
@@ -231,7 +233,6 @@ class Player:
     def mark_is_folded(self):
         "Marks the is_folded property."
         self._is_folded = True
-        self.clear_pot_participation()
 
 
     def unmark_is_folded(self):

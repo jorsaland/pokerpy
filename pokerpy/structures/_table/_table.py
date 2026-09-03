@@ -18,7 +18,7 @@ Defines the class that represents a poker table.
 """
 
 
-from pokerpy.constants import full_sorted_values_and_suits
+from pokerpy.constants import sorted_card_values_and_suits
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
     msg_no_players_in_table,
@@ -31,7 +31,6 @@ from pokerpy.messages import (
 )
 
 
-from ._get_split_pot import get_split_pot
 from ._methods_related_to_cards import (
     method_assign_common_card,
     method_reset_common_cards,
@@ -40,11 +39,10 @@ from ._methods_related_to_cards import (
 )
 from ._methods_related_to_money import (
     method_increase_central_pot,
-    method_clear_central_pot,
-    method_set_amount_level,
-    method_set_full_amount_level,
-    method_set_full_bet,
-    method_set_full_raise_increase,
+    method_set_bet_level,
+    method_set_full_bet_level,
+    method_set_min_bet,
+    method_set_min_raise_increase,
 )
 from ._methods_related_to_players_setting import (
     method_set_current_player,
@@ -76,7 +74,7 @@ class Table:
         self,
         players: list[Player],
         *,
-        full_bet: int = 1,
+        min_bet: int = 1,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
     ):
@@ -88,8 +86,8 @@ class Table:
         if not all(isinstance(player, Player) for player in players):
             raise TypeError(msg_not_all_player_instances)
         
-        if not isinstance(full_bet, int):
-            raise TypeError(msg_not_int.format(type(full_bet).__name__))
+        if not isinstance(min_bet, int):
+            raise TypeError(msg_not_int.format(type(min_bet).__name__))
         
         if starting_player is not None and not isinstance(starting_player, Player):
             raise TypeError(msg_not_player_instance.format(type(starting_player).__name__))
@@ -102,8 +100,8 @@ class Table:
         if not players:
             raise ValueError(msg_no_players_in_table)
 
-        if full_bet <= 0:
-            raise ValueError(msg_not_positive_value.format(full_bet))
+        if min_bet <= 0:
+            raise ValueError(msg_not_positive_value.format(min_bet))
 
         if starting_player is None:
             starting_player = players[0]
@@ -119,17 +117,17 @@ class Table:
         # Assign attributes
 
         self._players = players
-        self._full_bet = full_bet
-        self._full_raise_increase = full_bet
+        self._min_bet = min_bet
+        self._min_raise_increase = min_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
         self._current_player = starting_player
 
-        self._amount_level = 0
-        self._full_amount_level = 0
-        self._central_pot = 0
+        self._bet_level = 0
+        self._full_bet_level = 0
+        self._central_pot: list[int] = [0]
 
-        self._deck: list[Card] = [Card(value, suit) for value, suit in full_sorted_values_and_suits]
+        self._deck: list[Card] = [Card(value, suit) for value, suit in sorted_card_values_and_suits]
         self._common_cards: list[Card] = []
 
 
@@ -149,16 +147,21 @@ class Table:
         return tuple(self._players)
 
     @property
-    def participating_players(self):
+    def live_players(self):
         "Players still playing for the pot during a hand cycle."
         return tuple(player for player in self._players if not player.is_folded)
 
     @property
-    def active_players(self):
+    def actionable_players(self):
         "Players still playing for the pot and not all-in during a hand cycle."
         return tuple(
             player for player in self._players if not player.is_folded and player.stack > 0
         )
+
+    @property
+    def bettor_players(self):
+        "Players who have placed chips in front to gather into the pot."
+        return tuple(player for player in self.players if player.bet_level > 0)
 
     @property
     def starting_player(self):
@@ -183,49 +186,41 @@ class Table:
         return self._current_player
 
     @property
-    def amount_level(self):
+    def bet_level(self):
         """
         Largest amount of chips a player has placed in front during the current betting round,
         which other players must match in order to call.
         """
-        return self._amount_level
+        return self._bet_level
 
     @property
-    def full_bet(self):
-        "Minimum amount to bet."
-        return self._full_bet
-
-    @property
-    def full_amount_level(self):
+    def full_bet_level(self):
         """
-        Part of the amount level considered a full bet or raise. It may be smaller than a full bet
+        Part of the chip level matching the last full bet or raise. It may be smaller than a full bet
         when a player goes all-in for less. In that case, other players can complete the full bet
         (in addition to folding, calling or raising).
         """
-        return self._full_amount_level
+        return self._full_bet_level
 
     @property
-    def full_raise_increase(self):
-        "Minimum amount by which to increase the full amount level."
-        return self._full_raise_increase
+    def min_bet(self):
+        "Minimum amount to bet."
+        return self._min_bet
+
+    @property
+    def min_raise_increase(self):
+        "Minimum amount by which to increase the full chip level."
+        return self._min_raise_increase
 
     @property
     def pot(self):
         "Total amount of chips being played for in the betting round."
-        return self._central_pot + sum(player.amount for player in self._players)
+        return sum(self._central_pot) + sum(player.bet_level for player in self._players)
 
     @property
     def central_pot(self):
-        "Part of the pot that is already placed at the center of the table."
-        return self._central_pot
-
-    @property
-    def split_pot(self):
-        "Pot split into main pot and side pots."
-        return get_split_pot(
-            self.pot,
-            [player.pot_participation for player in self.participating_players]
-        )
+        "Part of the pot that is already placed at the center of the table, split into main and side pots."
+        return tuple(self._central_pot)
 
 
     # Methods related to cards
@@ -254,24 +249,24 @@ class Table:
     # Methods related to money
 
 
-    def set_full_bet(self, amount: int):
-        "Sets the full_bet property."
-        return method_set_full_bet(self, amount)
+    def set_min_bet(self, amount: int):
+        "Sets the min_bet property."
+        return method_set_min_bet(self, amount)
 
 
-    def set_full_raise_increase(self, amount: int):
-        "Sets the full_raise_increase property."
-        return method_set_full_raise_increase(self, amount)
+    def set_min_raise_increase(self, amount: int):
+        "Sets the min_raise_increase property."
+        return method_set_min_raise_increase(self, amount)
 
 
-    def set_amount_level(self, amount: int):
-        "Sets the amount_level property."
-        return method_set_amount_level(self, amount)
+    def set_bet_level(self, amount: int):
+        "Sets the chip_level property."
+        return method_set_bet_level(self, amount)
 
 
-    def set_full_amount_level(self, amount: int):
-        "Sets the full_amount property."
-        return method_set_full_amount_level(self, amount)
+    def set_full_bet_level(self, amount: int):
+        "Sets the full_chip_level property."
+        return method_set_full_bet_level(self, amount)
 
 
     def increase_central_pot(self, amount: int):
@@ -279,9 +274,15 @@ class Table:
         return method_increase_central_pot(self, amount)
 
 
+    def add_side_pot(self):
+        "Adds a new side pot to the central_pot property."
+        self._central_pot.append(0)
+
+
     def clear_central_pot(self):
-        "Resets the central_pot property back to zero."
-        return method_clear_central_pot(self)
+        "Resets the central_pot property."
+        self._central_pot.clear()
+        self._central_pot.append(0)
 
 
     # Methods related to players setting

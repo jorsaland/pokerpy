@@ -18,7 +18,6 @@ Defines the functions to distribute the pot at the end of a cycle.
 """
 
 
-from collections import defaultdict
 from collections.abc import Sequence
 
 
@@ -66,24 +65,16 @@ def showdown(table: Table):
     if not isinstance(table, Table):
         raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-    logger.info(f'Remaining players: {", ".join(player.name for player in table.participating_players)}')
+    logger.info(f'Remaining players: {", ".join(player.name for player in table.live_players)}')
 
-    players_by_participation: dict[int, list[Player]] = {player.pot_participation: [] for player in table.participating_players}
-    for participation, participating_players in players_by_participation.items():
-        for player in table.participating_players:
-            if player.pot_participation >= participation:
-                participating_players.append(player)
-
-    for i, side_pot in enumerate(table.split_pot):
+    for i, side_pot in enumerate(table.central_pot):
 
         winners: list[Player] = []
 
-        min_pot_participation = min(players_by_participation.keys())
-        participating_players = players_by_participation.pop(min_pot_participation)
-
-        for player in participating_players:
+        side_pot_participating_players = [player for player in table.live_players if player.pot_index >= i]
+        for player in side_pot_participating_players:
             player_is_unbeaten = True
-            for oponent in participating_players:
+            for oponent in side_pot_participating_players:
                 if oponent.name == player.name:
                     continue
                 if oponent.hand > player.hand:

@@ -32,10 +32,10 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
     Updates statuses according to the chosen action.
     """
 
-    player_current_amount = player.amount
-    current_level = table.amount_level
-    complete_current_level = table.full_amount_level
-    full_raise_increase = table.full_raise_increase
+    player_current_amount = player.bet_level
+    current_level = table.bet_level
+    complete_current_level = table.full_bet_level
+    full_raise_increase = table.min_raise_increase
 
     player.mark_has_played()
 
@@ -44,23 +44,22 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
 
     if action.amount > 0:
         player.decrease_stack(action.amount)
-        player.increase_amount(action.amount)
-        player.increase_pot_participation(action.amount)
+        player.increase_bet_level(action.amount)
 
     if action.category in (ACTION_BET, ACTION_RAISE):
         new_current_amount = player_current_amount + action.amount
         raise_increase = new_current_amount - current_level
         new_level = complete_current_level + raise_increase
-        table.set_amount_level(new_level)
+        table.set_bet_level(new_level)
         if new_level >= complete_current_level + full_raise_increase:
-            table.set_full_amount_level(new_level)
+            table.set_full_bet_level(new_level)
             if (new_full_raise_increase := new_level - complete_current_level) > 0:
-                table.set_full_raise_increase(new_full_raise_increase)
+                table.set_min_raise_increase(new_full_raise_increase)
         assert (previous_player_in_hand := table.get_previous_active_player(player)) is not None
         table.set_stopping_player(previous_player_in_hand) 
 
     logger.info(
         f"{''.join(str(card) for card in player.cards)} {player.name} {action.category.upper()}S {action.amount} "
-        f"({player.name}'s current amount: {player.amount} | stack: {player.stack})"
+        f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
     )
-    logger.info(f'TABLE CURRENT LEVEL: {table.amount_level}\n')
+    logger.info(f'TABLE BET LEVEL: {table.bet_level}\n')

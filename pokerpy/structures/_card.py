@@ -19,7 +19,7 @@ Defines the class that represents a poker card.
 
 
 from pokerpy.constants import (
-    full_sorted_values_and_suits,
+    sorted_card_values_and_suits,
     sorted_card_suits,
     sorted_card_values,
     unicode_code_point_by_card_suit,
@@ -106,4 +106,4 @@ class Card:
         value, and from lowest suit to highest suit.
         """
         value_and_suit = (self.value, self.suit)
-        return full_sorted_values_and_suits.index(value_and_suit)
+        return sorted_card_values_and_suits.index(value_and_suit)

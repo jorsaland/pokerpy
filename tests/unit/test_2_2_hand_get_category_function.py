@@ -10,526 +10,470 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, messages, structures
+from pokerpy import constants, structures
 
 
-class TestHandGetCategory(TestCase):
+class TestHandGetCategoryWithRoyalFlush(TestCase):
 
 
-    """
-    Runs unit tests on get_category function.
-    """
-
-
-    def test_input(self):
-
-
-        """
-        Runs test cases to check input is valid.
-        """
-
-
-        # More cards than expected
-
-        cards = [
-            structures.Card('K', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('K', 'c'),
-            structures.Card('A', 'c'),
-            structures.Card('T', 'c'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.get_category(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
-
-        
-        # Less cards than expected
-
-        cards = [
-            structures.Card('J', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('6', 's'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.get_category(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
-
-
-        # No cards
-
-        cards = []
-
-        with self.assertRaises(ValueError) as cm:
-            structures.get_category(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
-
-
-        # Exactly five cards but some repeated
-
-        cards = [
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('T', 'c'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.get_category(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
+    "Runs unit tests on get_category function with royal flush."
 
 
     def test_royal_flush(self):
 
+        "Tests royal flush."
 
-        """
-        Runs test cases to check all possible royal flushes are detected.
-        """
-
-
-        # Spades royal flush
-
-        cards = [
-            structures.Card('A', 's'),
-            structures.Card('J', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('T', 's'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.ROYAL_FLUSH)
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.ACES, suit),
+                structures.Card(constants.KINGS, suit),
+                structures.Card(constants.QUEENS, suit),
+                structures.Card(constants.JACKS, suit),
+                structures.Card(constants.TENS, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.ROYAL_FLUSH)
 
 
-        # Hearts royal flush
-
-        cards = [
-            structures.Card('A', 'h'),
-            structures.Card('K', 'h'),
-            structures.Card('Q', 'h'),
-            structures.Card('J', 'h'),
-            structures.Card('T', 'h'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.ROYAL_FLUSH)
+class TestHandGetCategoryWithStraightFlush(TestCase):
 
 
-        # Diamonds royal flush
-
-        cards = [
-            structures.Card('A', 'd'),
-            structures.Card('K', 'd'),
-            structures.Card('J', 'd'),
-            structures.Card('T', 'd'),
-            structures.Card('Q', 'd'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.ROYAL_FLUSH)
+    "Runs unit tests on get_category function with straight flush."
 
 
-        # Clubs royal flush
+    def test_king_high_straight_flush(self):
 
-        cards = [
-            structures.Card('T', 'c'),
-            structures.Card('J', 'c'),
-            structures.Card('Q', 'c'),
-            structures.Card('K', 'c'),
-            structures.Card('A', 'c'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.ROYAL_FLUSH)
+        "Tests king-high straight flush."
 
-
-    def test_straight_flush(self):
-
-
-        """
-        Runs test cases to check straight flushes are detected as expected.
-        """
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.KINGS, suit),
+                structures.Card(constants.QUEENS, suit),
+                structures.Card(constants.JACKS, suit),
+                structures.Card(constants.TENS, suit),
+                structures.Card(constants.NINES, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
 
 
-        # King high straight flush
+    def test_five_high_straight_flush(self):
 
-        cards = [
-            structures.Card('T', 'c'),
-            structures.Card('J', 'c'),
-            structures.Card('K', 'c'),
-            structures.Card('Q', 'c'),
-            structures.Card('9', 'c'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
+        "Tests five-high straight flush."
 
-
-        # Intermediate high value straight flush
-
-        cards = [
-            structures.Card('T', 's'),
-            structures.Card('7', 's'),
-            structures.Card('9', 's'),
-            structures.Card('8', 's'),
-            structures.Card('6', 's'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.FIVES, suit),
+                structures.Card(constants.FOURS, suit),
+                structures.Card(constants.THREES, suit),
+                structures.Card(constants.DEUCES, suit),
+                structures.Card(constants.ACES, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
 
 
-        # Five high straight flush
+    def test_intermediate_straight_flush(self):
 
-        cards = [
-            structures.Card('A', 'd'),
-            structures.Card('5', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'd'),
-        ]
-        
-        self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
+        "Tests an intermediate straight flush."
 
-
-    def test_four_of_a_kind(self):
-
-
-        """
-        Runs test cases to check four of a kind is detected as expected.
-        """
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.NINES, suit),
+                structures.Card(constants.EIGHTS, suit),
+                structures.Card(constants.SEVENS, suit),
+                structures.Card(constants.SIXES, suit),
+                structures.Card(constants.FIVES, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.STRAIGHT_FLUSH)
 
 
-        # Four of a kind with higher value than unpaired card
+class TestHandGetCategoryFunctionWithFourOfAKind(TestCase):
 
-        cards = [
-            structures.Card('K', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('K', 's'),
-            structures.Card('K', 'c'),
-        ]
-        
+
+    "Runs unit tests on get_category function with four of a kind."
+
+
+    def test_four_of_a_kind_higher_than_unpaired_card(self):
+
+        "Tests four of a kind when it is of higher value than the unpaired card."
+
+        cards = (
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+        )
         self.assertEqual(structures.get_category(cards), constants.FOUR_OF_A_KIND)
 
 
-        # Four of a kind with lower value than unpaired card
+    def test_four_of_a_kind_lower_than_unpaired_card(self):
 
-        cards = [
-            structures.Card('3', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 'c'),
-            structures.Card('3', 'd'),
-        ]
+        "Tests four of a kind when it is of lower value than the unpaired card."
+
+        cards = (
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.CLUBS),
+            structures.Card(constants.TENS, constants.CLUBS),
+        )
         self.assertEqual(structures.get_category(cards), constants.FOUR_OF_A_KIND)
 
 
-    def test_full_house(self):
+class TestHandGetCategoryFunctionWithFullHouse(TestCase):
 
 
-        """
-        Runs test cases to check full house is detected as expected.
-        """
+    "Runs unit tests on get_category function with full house."
 
 
-        # Three of a kind with higher value than pair
+    def test_full_house_higher_than_pair(self):
 
-        cards = [
-            structures.Card('4', 's'),
-            structures.Card('T', 'c'),
-            structures.Card('T', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('T', 's'),
-        ]
+        "Tests full house when the three of a kind is of higher value than the pair."
 
+        cards = (
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.FULL_HOUSE)
 
 
-        # Three kind with lower value than pair
+    def test_full_house_lower_than_pair(self):
 
-        cards = [
-            structures.Card('5', 'h'),
-            structures.Card('A', 'c'),
-            structures.Card('5', 's'),
-            structures.Card('A', 'd'),
-            structures.Card('5', 'c'),
-        ]
+        "Tests full house when the three of a kind is of lower value than the pair."
 
+        cards = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.ACES, constants.CLUBS),
+        )
         self.assertEqual(structures.get_category(cards), constants.FULL_HOUSE)
 
 
-        # Four of a kind with higher value than unpaired card
+class TestHandGetCategoryFunctionWithFlush(TestCase):
 
 
-    def test_flush(self):
+    "Runs unit tests on get_category function with flush."
 
 
-        """
-        Runs test cases to check flush is detected as expected.
-        """
+    def test_flush_close_to_straight_flush(self):
+
+        "Tests flush when it is close to looking like a straight flush."
+
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.QUEENS, suit),
+                structures.Card(constants.JACKS, suit),
+                structures.Card(constants.TENS, suit),
+                structures.Card(constants.NINES, suit),
+                structures.Card(constants.SEVENS, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.FLUSH)
 
 
-        # Random flush
+    def test_flush_far_from_straight_flush(self):
 
-        cards = [
-            structures.Card('K', 's'),
-            structures.Card('9', 's'),
-            structures.Card('2', 's'),
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-        ]
+        "Tests flush when it is far from looking like a straight flush."
 
-        self.assertEqual(structures.get_category(cards), constants.FLUSH)
-
-
-        # Almost straight flush
-
-        cards = [
-            structures.Card('K', 'd'),
-            structures.Card('Q', 'd'),
-            structures.Card('J', 'd'),
-            structures.Card('T', 'd'),
-            structures.Card('8', 'd'),
-        ]
-
-        self.assertEqual(structures.get_category(cards), constants.FLUSH)
+        for suit in constants.sorted_card_suits:
+            cards = (
+                structures.Card(constants.KINGS, suit),
+                structures.Card(constants.NINES, suit),
+                structures.Card(constants.SEVENS, suit),
+                structures.Card(constants.FOURS, suit),
+                structures.Card(constants.DEUCES, suit),
+            )
+            with self.subTest(suit=suit):
+                self.assertEqual(structures.get_category(cards), constants.FLUSH)
 
 
-    def test_straight(self):
+class TestHandGetCategoryFunctionWithStraight(TestCase):
 
 
-        """
-        Runs test cases to check straight is detected as expected.
-        """
+    "Runs unit tests on get_category function with straight."
 
 
-        # Random straight
+    def test_ace_high_straight(self):
 
-        cards = [
-            structures.Card('K', 's'),
-            structures.Card('A', 's'),
-            structures.Card('J', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('T', 's'),
-        ]
+        "Tests ace-high straight."
 
+        cards = (
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.SPADES),
+        )
         self.assertEqual(structures.get_category(cards), constants.STRAIGHT)
 
 
-        # Almost straight flush
+    def test_five_high_straight(self):
 
-        cards = [
-            structures.Card('5', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('2', 'd'),
-            structures.Card('A', 'd'),
-        ]
+        "Tests five-high straight."
 
+        cards = (
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.STRAIGHT)
 
 
-    def test_three_of_a_kind(self):
+    def test_straight_close_to_straight_flush(self):
+
+        "Tests straight when it is close to looking like a straight flush."
+
+        cards = (
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.HEARTS),
+        )
+        self.assertEqual(structures.get_category(cards), constants.STRAIGHT)
 
 
-        """
-        Runs test cases to check three of a kind is detected as expected.
-        """
+    def test_intermediate_straight(self):
+
+        "Tests straight when it is a normal straight."
+
+        cards = (
+            structures.Card(constants.NINES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+        )
+        self.assertEqual(structures.get_category(cards), constants.STRAIGHT)
 
 
-        # Three of a kind with higher value than unpaired cards
+class TestHandGetCategoryFunctionWithThreeOfAKind(TestCase):
 
-        cards = [
-            structures.Card('5', 'c'),
-            structures.Card('2', 'h'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'd'),
-            structures.Card('5', 'd'),
-        ]
 
+    "Runs unit tests on get_category function with three of a kind."
+
+
+    def test_three_of_a_kind_higher_than_unpaired_cards(self):
+
+        "Tests three of a kind when it is of higher value than both unpaired cards."
+
+        cards = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+        )
         self.assertEqual(structures.get_category(cards), constants.THREE_OF_A_KIND)
 
 
-        # Three of a kind with value between single unpaired card values
+    def test_three_of_a_kind_between_unpaired_cards(self):
 
-        cards = [
-            structures.Card('6', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('J', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('J', 'h'),
-        ]
-        
+        "Tests three of a kind value when its value is in between of the values of both unpaired cards."
+
+        cards = (
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+        )
         self.assertEqual(structures.get_category(cards), constants.THREE_OF_A_KIND)
 
 
-        # Three of a kind with lower value than unpaired cards
+    def test_three_of_a_kind_lower_than_unpaired_cards(self):
 
-        cards = [
-            structures.Card('6', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('2', 's'),
-            structures.Card('2', 'h'),
-            structures.Card('7', 's'),
-        ]
-        
+        "Tests three of a kind when it is of lower value than both unpaired cards."
+
+        cards = (
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.HEARTS),
+        )
         self.assertEqual(structures.get_category(cards), constants.THREE_OF_A_KIND)
 
 
-    def test_two_pair(self):
+class TestHandGetCategoryFunctionWithTwoPair(TestCase):
 
 
-        """
-        Runs test cases to check two pair is detected as expected.
-        """
+    "Runs unit tests on get_category function with two pair."
 
 
-        # Two pairs with higher values than unpaired card
+    def test_two_pairs_higher_than_unpaired_card(self):
 
-        cards = [
-            structures.Card('7', 'c'),
-            structures.Card('A', 'h'),
-            structures.Card('8', 'c'),
-            structures.Card('8', 's'),
-            structures.Card('A', 'd'),
-        ]
-        
+        "Tests two pair when they are of higher value than the unpaired card."
+
+        cards = (
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.CLUBS),
+        )
         self.assertEqual(structures.get_category(cards), constants.TWO_PAIR)
 
 
-        # Single card with value between two pairs values
+    def test_unpaired_card_between_two_pairs(self):
 
-        cards = [
-            structures.Card('J', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('T', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('T', 'c'),
-        ]
-        
+        "Tests two pair when the unpaired card value is in between of the two pair values."
+
+        cards = (
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.JACKS, constants.SPADES),
+        )
         self.assertEqual(structures.get_category(cards), constants.TWO_PAIR)
 
 
-        # Two pairs with lower values than single card
+    def test_two_pairs_lower_than_unpaired_card(self):
 
-        cards = [
-            structures.Card('K', 'd'),
-            structures.Card('5', 'h'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 's'),
-        ]
-        
+        "Tests two pair when they are of lower value than the unpaired card."
+
+        cards = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.TWO_PAIR)
 
 
-    def test_pair(self):
+class TestHandGetCategoryFunctionWithPair(TestCase):
 
 
-        """
-        Runs test cases to check pair is detected as expected.
-        """
+    "Runs unit tests on get_category function with pair."
 
 
-        # Pair with higher values than unpaired cards
+    def test_pair_higher_than_unpaired_cards(self):
 
-        cards = [
-            structures.Card('7', 'd'),
-            structures.Card('2', 'd'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('3', 'd'),
-        ]
-        
+        "Tests pair when it is of higher value than all the unpaired cards."
+
+        cards = (
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.ONE_PAIR)
 
 
-        # Pair with higher value than two unpaired cards and lower than a single unpaired card
+    def test_pair_higher_than_two_unpaired_cards(self):
 
-        cards = [
-            structures.Card('J', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('9', 's'),
-            structures.Card('8', 'd'),
-            structures.Card('A', 's'),
-        ]
-        
+        "Tests pair when it is of higher value than two unpaired cards and lower than the other."
+
+        cards = (
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.ONE_PAIR)
 
 
-        # Pair with higher value than a single unpaired card and lower than two unpaired cards
+    def test_pair_lower_than_two_unpaired_cards(self):
 
-        cards = [
-            structures.Card('Q', 'd'),
-            structures.Card('J', 'c'),
-            structures.Card('6', 'c'),
-            structures.Card('3', 'd'),
-            structures.Card('6', 's'),
-        ]
-        
+        "Tests pair when it is of lower value than two unpaired cards and higher than the other."
+
+        cards = (
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.ONE_PAIR)
 
 
-        # Pair with lower values than unpaired cards
+    def test_pair_lower_than_unpaired_cards(self):
 
-        cards = [
-            structures.Card('J', 's'),
-            structures.Card('A', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('Q', 'h'),
-        ]
+        "Tests pair when it is of lower value than all the unpaired cards."
 
+        cards = (
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.SPADES),
+        )
         self.assertEqual(structures.get_category(cards), constants.ONE_PAIR)
 
 
-    def test_high_card(self):
+class TestHandGetCategoryFunctionWithHighCard(TestCase):
 
 
-        """
-        Runs test cases to check high card is detected as expected.
-        """
+    "Runs unit tests on get_category function with high card."
 
 
-        # Random high card
+    def test_high_card_close_to_flush(self):
 
-        cards = [
-            structures.Card('8', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('J', 'c'),
-            structures.Card('7', 'c'),
-            structures.Card('4', 's'),
-        ]
+        "Tests high card when it is close to looking like a flush."
 
+        cards = (
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        )
         self.assertEqual(structures.get_category(cards), constants.HIGH_CARD)
 
 
-        # Almost flush
+    def test_high_card_close_to_straight(self):
 
-        cards = [
-            structures.Card('8', 'd'),
-            structures.Card('3', 'd'),
-            structures.Card('J', 'd'),
-            structures.Card('7', 'h'),
-            structures.Card('4', 'd'),
-        ]
+        "Tests high card when it is close to looking like a straight."
 
+        cards = (
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.THREES, constants.SPADES),
+        )
         self.assertEqual(structures.get_category(cards), constants.HIGH_CARD)
 
 
-        # Almost straight
+    def test_high_card_making_wrap_around_straight(self):
 
-        cards = [
-            structures.Card('8', 'd'),
-            structures.Card('7', 's'),
-            structures.Card('6', 'c'),
-            structures.Card('5', 'c'),
-            structures.Card('3', 's'),
-        ]
+        "Tests high card when it makes a wrap-around straight (not valid in poker)."
 
+        cards = (
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.THREES, constants.SPADES),
+        )
+        self.assertEqual(structures.get_category(cards), constants.HIGH_CARD)
+
+
+    def test_plain_high_card(self):
+
+        "Tests high card when it is a normal high card."
+
+        cards = (
+            structures.Card(constants.JACKS, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.SEVENS, constants.CLUBS),
+            structures.Card(constants.FOURS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.SPADES),
+        )
         self.assertEqual(structures.get_category(cards), constants.HIGH_CARD)
 
 

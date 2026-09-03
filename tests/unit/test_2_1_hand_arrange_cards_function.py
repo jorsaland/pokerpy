@@ -7,533 +7,373 @@ import sys
 sys.path.insert(0, '.')
 
 
+from itertools import permutations
 from unittest import main, TestCase
 
 
-from pokerpy import messages, structures
+from pokerpy import constants, messages, structures
 
 
-class TestHandArrangeCardsFunction(TestCase):
+class PermutationTestCase(TestCase):
 
 
-    """
-    Runs unit tests on arrange_cards method.
-    """
+    "Base class to for test cases that require permutation on cards."
 
 
-    def test_input(self):
+    def run_permutations_subtests(self, expected_arrangement: tuple[structures.Card, ...]):
+
+        "Runs the subtests that require permutations on cards."
+
+        for permutation in permutations(expected_arrangement):
+
+            arranged_cards = structures.arrange_cards(permutation)
+
+            with self.subTest(
+                permutation = ''.join(str(c) for c in permutation),
+                result = ''.join(str(c) for c in arranged_cards),
+                expected = ''.join(str(c) for c in expected_arrangement),
+            ):
+                self.assertEqual(arranged_cards, expected_arrangement)
 
 
-        """
-        Runs test cases to check input is valid.
-        """
+class TestHandArrangeCardsFunctionInput(TestCase):
 
 
-        # More cards than expected
-
-        cards = [
-            structures.Card('K', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('K', 'c'),
-            structures.Card('A', 'c'),
-            structures.Card('T', 'c'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.arrange_cards(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
-
-        
-        # Less cards than expected
-
-        cards = [
-            structures.Card('J', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('6', 's'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.arrange_cards(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
+    "Runs unit tests on arrange_cards function input."
 
 
-        # No cards
+    def test_value_error(self):
 
-        cards = []
+        "Tests value error detection."
 
-        with self.assertRaises(ValueError) as cm:
-            structures.arrange_cards(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
+        no_cards = ()
 
-
-        # Exactly five cards but some repeated
-
-        cards = [
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('2', 'd'),
-            structures.Card('5', 's'),
-            structures.Card('T', 'c'),
-        ]
-
-        with self.assertRaises(ValueError) as cm:
-            structures.arrange_cards(cards)
-        
-        self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
-
-
-    def test_four_of_a_kind_arrangements(self):
-
-
-        """
-        Runs test cases to check sets with four of a kind are arranged as expected.
-        """
-
-
-        # Four of a kind with higher value than unpaired card
-
-        cards = [
-            structures.Card('K', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('K', 's'),
-            structures.Card('K', 'c'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('K', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('K', 'd'),
-            structures.Card('K', 'c'),
-            structures.Card('7', 'h'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Four of a kind with lower value than unpaired card
-
-        cards = [
-            structures.Card('3', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 'c'),
-            structures.Card('3', 'd'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('3', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 'd'),
-            structures.Card('3', 'c'),
-            structures.Card('T', 'h'),
-        )
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-    def test_three_of_a_kind_arrangements(self):
-
-
-        """
-        Runs test cases to check sets with three of a kind are arranged as expected.
-        """
-
-
-        # Three of a kind with higher value than pair
-
-        cards = [
-            structures.Card('4', 's'),
-            structures.Card('T', 'c'),
-            structures.Card('T', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('T', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('T', 's'),
-            structures.Card('T', 'd'),
-            structures.Card('T', 'c'),
-            structures.Card('4', 's'),
-            structures.Card('4', 'd'),
+        less_than_5_cards = (
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.SIXES, constants.SPADES),
         )
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Three kind with lower value than pair
-
-        cards = [
-            structures.Card('5', 'h'),
-            structures.Card('A', 'c'),
-            structures.Card('5', 's'),
-            structures.Card('A', 'd'),
-            structures.Card('5', 'c'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('5', 's'),
-            structures.Card('5', 'h'),
-            structures.Card('5', 'c'),
-            structures.Card('A', 'd'),
-            structures.Card('A', 'c'),
+        more_than_5_cards = (
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.ACES, constants.CLUBS),
+            structures.Card(constants.TENS, constants.CLUBS),
         )
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Three of a kind with higher value than unpaired cards
-
-        cards = [
-            structures.Card('5', 'c'),
-            structures.Card('2', 'h'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'd'),
-            structures.Card('5', 'd'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('5', 's'),
-            structures.Card('5', 'd'),
-            structures.Card('5', 'c'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'h'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Three of a kind with value between single unpaired card values
-
-        cards = [
-            structures.Card('6', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('J', 's'),
-            structures.Card('K', 'h'),
-            structures.Card('J', 'h'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('J', 's'),
-            structures.Card('J', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('K', 'h'),
-            structures.Card('6', 'h'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Three of a kind with lower value than unpaired cards
-
-        cards = [
-            structures.Card('6', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('2', 's'),
-            structures.Card('2', 'h'),
-            structures.Card('7', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('2', 's'),
-            structures.Card('2', 'h'),
-            structures.Card('2', 'c'),
-            structures.Card('7', 's'),
-            structures.Card('6', 'h'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-    def test_pair_arrangements(self):
-
-
-        """
-        Runs test cases to check sets with pairs are arranged as expected.
-        """
-
-
-        # Two pairs with higher values than unpaired card
-
-        cards = [
-            structures.Card('7', 'c'),
-            structures.Card('A', 'h'),
-            structures.Card('8', 'c'),
-            structures.Card('8', 's'),
-            structures.Card('A', 'd'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('A', 'h'),
-            structures.Card('A', 'd'),
-            structures.Card('8', 's'),
-            structures.Card('8', 'c'),
-            structures.Card('7', 'c'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Single card with value between two pairs values
-
-        cards = [
-            structures.Card('J', 's'),
-            structures.Card('Q', 's'),
-            structures.Card('T', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('T', 'c'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('Q', 's'),
-            structures.Card('Q', 'c'),
-            structures.Card('T', 's'),
-            structures.Card('T', 'c'),
-            structures.Card('J', 's'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Two pairs with lower values than single card
-
-        cards = [
-            structures.Card('K', 'd'),
-            structures.Card('5', 'h'),
-            structures.Card('5', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('3', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('5', 's'),
-            structures.Card('5', 'h'),
-            structures.Card('3', 's'),
-            structures.Card('3', 'h'),
-            structures.Card('K', 'd'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Pair with higher values than unpaired cards
-
-        cards = [
-            structures.Card('7', 'd'),
-            structures.Card('2', 'd'),
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('3', 'd'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('T', 'h'),
-            structures.Card('T', 'd'),
-            structures.Card('7', 'd'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'd'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Pair with higher value than two unpaired cards and lower than a single unpaired card
-
-        cards = [
-            structures.Card('J', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('9', 's'),
-            structures.Card('8', 'd'),
-            structures.Card('A', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('J', 'h'),
-            structures.Card('J', 'c'),
-            structures.Card('A', 's'),
-            structures.Card('9', 's'),
-            structures.Card('8', 'd'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Pair with higher value than a single unpaired card and lower than two unpaired cards
-
-        cards = [
-            structures.Card('Q', 'd'),
-            structures.Card('J', 'c'),
-            structures.Card('6', 'c'),
-            structures.Card('3', 'd'),
-            structures.Card('6', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('6', 's'),
-            structures.Card('6', 'c'),
-            structures.Card('Q', 'd'),
-            structures.Card('J', 'c'),
-            structures.Card('3', 'd'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-        # Pair with lower values than unpaired cards
-
-        cards = [
-            structures.Card('J', 's'),
-            structures.Card('A', 'd'),
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('Q', 'h'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('T', 's'),
-            structures.Card('T', 'h'),
-            structures.Card('A', 'd'),
-            structures.Card('Q', 'h'),
-            structures.Card('J', 's'),
-        )
-        
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
-
-
-    def test_unpaired_arrangements(self):
-
-
-        """
-        Runs test cases to check sets with unpaired cards are arranged as expected.
-        """
-
-
-        # Straight flush
-
-        cards = [
-            structures.Card('6', 'h'),
-            structures.Card('T', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('8', 'h'),
-            structures.Card('9', 'h'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('T', 'h'),
-            structures.Card('9', 'h'),
-            structures.Card('8', 'h'),
-            structures.Card('7', 'h'),
-            structures.Card('6', 'h'),
+        repeated_cards = (
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.TENS, constants.CLUBS),
         )
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
+        for card_set in (no_cards, less_than_5_cards, more_than_5_cards):
+
+            with self.subTest('not five cards', cards_count=len(card_set)):
+                with self.assertRaises(ValueError) as cm:
+                    structures.arrange_cards(card_set)
+                self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
+
+        with self.subTest('repeated cards', cards_count=len(repeated_cards)):
+            with self.assertRaises(ValueError) as cm:
+                structures.arrange_cards(repeated_cards)
+            self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
 
 
-        # Special case: five to ace straight flush
+    def test_valid_input(self):
 
-        cards = [
-            structures.Card('3', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('A', 'd'),
-            structures.Card('5', 'd'),
-            structures.Card('2', 'c'),
-        ]
+        "Tests valid input."
 
-        expected_arrangement = (
-            structures.Card('5', 'd'),
-            structures.Card('4', 'd'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'd'),
-            structures.Card('A', 'd'),
+        cards = (
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.FOURS, constants.CLUBS),
         )
 
-
-        # Straight without flush
-
-        cards = [
-            structures.Card('K', 's'),
-            structures.Card('A', 's'),
-            structures.Card('J', 'h'),
-            structures.Card('Q', 'd'),
-            structures.Card('T', 's'),
-        ]
-
-        expected_arrangement = (
-            structures.Card('A', 's'),
-            structures.Card('K', 's'),
-            structures.Card('Q', 'd'),
-            structures.Card('J', 'h'),
-            structures.Card('T', 's'),
-        )
-
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
+        structures.arrange_cards(cards)
 
 
-        # Special case: five to ace straight without flush
+class TestHandArrangeCardsFunctionWithFourOfAKind(PermutationTestCase):
 
-        cards = [
-            structures.Card('3', 'd'),
-            structures.Card('5', 'd'),
-            structures.Card('A', 'c'),
-            structures.Card('4', 's'),
-            structures.Card('2', 'c'),
-        ]
+
+    "Runs unit tests on arrange_cards function with four of a kind."
+
+
+    def test_four_of_a_kind_higher_than_unpaired_card(self):
+
+        "Tests arrangement when the four of a kind is of higher value than the unpaired card."
 
         expected_arrangement = (
-            structures.Card('5', 'd'),
-            structures.Card('4', 's'),
-            structures.Card('3', 'd'),
-            structures.Card('2', 'c'),
-            structures.Card('A', 'c'),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+            structures.Card(constants.KINGS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.HEARTS),
         )
+        self.run_permutations_subtests(expected_arrangement)
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
 
+    def test_four_of_a_kind_lower_than_unpaired_card(self):
 
-        # Flush without straight
-
-        cards = [
-            structures.Card('K', 's'),
-            structures.Card('9', 's'),
-            structures.Card('2', 's'),
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-        ]
+        "Tests arrangement when the four of a kind is of lower value than the unpaired card."
 
         expected_arrangement = (
-            structures.Card('K', 's'),
-            structures.Card('9', 's'),
-            structures.Card('7', 's'),
-            structures.Card('6', 's'),
-            structures.Card('2', 's'),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.CLUBS),
+            structures.Card(constants.TENS, constants.CLUBS),
         )
+        self.run_permutations_subtests(expected_arrangement)
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
+
+class TestHandArrangeCardsFunctionWithThreeOfAKind(PermutationTestCase):
 
 
-        # No straight and no flush
+    "Runs unit tests on arrange_cards function with three of a kind."
 
-        cards = [
-            structures.Card('8', 'd'),
-            structures.Card('3', 's'),
-            structures.Card('J', 'c'),
-            structures.Card('7', 'c'),
-            structures.Card('4', 's'),
-        ]
+
+    def test_three_of_a_kind_higher_than_pair(self):
+
+        "Tests arrangement when the three of a kind is of higher value than a pair."
 
         expected_arrangement = (
-            structures.Card('J', 'c'),
-            structures.Card('8', 'd'),
-            structures.Card('7', 'c'),
-            structures.Card('4', 's'),
-            structures.Card('3', 's'),
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
         )
+        self.run_permutations_subtests(expected_arrangement)
 
-        self.assertEqual(structures.arrange_cards(cards), expected_arrangement)
+
+    def test_three_of_a_kind_lower_than_pair(self):
+
+        "Tests arrangement when the three of a kind is of lower value than a pair."
+
+        expected_arrangement = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.ACES, constants.CLUBS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_three_of_a_kind_higher_than_unpaired_cards(self):
+
+        "Tests arrangement when the three of a kind is of higher value than both unpaired cards."
+
+        expected_arrangement = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_three_of_a_kind_between_unpaired_cards(self):
+
+        "Tests arrangement when the three of a kind value is in between of the values of both unpaired cards."
+
+        expected_arrangement = (
+            structures.Card(constants.JACKS, constants.SPADES),
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.KINGS, constants.HEARTS),
+            structures.Card(constants.SIXES, constants.HEARTS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_three_of_a_kind_lower_than_unpaired_cards(self):
+
+        "Tests arrangement when the three of a kind is of lower value than both unpaired cards."
+
+        expected_arrangement = (
+            structures.Card(constants.DEUCES, constants.SPADES),
+            structures.Card(constants.DEUCES, constants.HEARTS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.SPADES),
+            structures.Card(constants.SIXES, constants.HEARTS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+class TestHandArrangeCardsFunctionWithPairs(PermutationTestCase):
+
+
+    "Runs unit tests on arrange_cards function with pairs."
+
+
+    def test_two_pairs_higher_than_unpaired_card(self):
+
+        "Tests arrangement when two pairs are of higher value than the unpaired card."
+
+        expected_arrangement = (
+            structures.Card(constants.ACES, constants.HEARTS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.EIGHTS, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.CLUBS),
+            structures.Card(constants.SEVENS, constants.CLUBS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_unpaired_card_between_two_pairs(self):
+
+        "Tests arrangement when an unpaired card value is in between the values of two pairs."
+
+        expected_arrangement = (
+            structures.Card(constants.QUEENS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.CLUBS),
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.CLUBS),
+            structures.Card(constants.JACKS, constants.SPADES),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_two_pairs_lower_than_unpaired_card(self):
+
+        "Tests arrangement when two pairs are of lower value than the unpaired card."
+
+        expected_arrangement = (
+            structures.Card(constants.FIVES, constants.SPADES),
+            structures.Card(constants.FIVES, constants.HEARTS),
+            structures.Card(constants.THREES, constants.SPADES),
+            structures.Card(constants.THREES, constants.HEARTS),
+            structures.Card(constants.KINGS, constants.DIAMONDS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_pair_higher_than_unpaired_cards(self):
+
+        "Tests arrangement when a pair is of higher value than all the unpaired cards."
+
+        expected_arrangement = (
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.DIAMONDS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_pair_higher_than_two_unpaired_cards(self):
+
+        "Tests arrangement when a pair is of higher value than two unpaired cards and lower than the other."
+
+        expected_arrangement = (
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.NINES, constants.SPADES),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_pair_lower_than_two_unpaired_cards(self):
+
+        "Tests arrangement when a pair is of lower value than two unpaired cards and higher than the other."
+
+        expected_arrangement = (
+            structures.Card(constants.SIXES, constants.SPADES),
+            structures.Card(constants.SIXES, constants.CLUBS),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_pair_lower_than_unpaired_cards(self):
+
+        "Tests arrangement when a pair is of lower value than all the unpaired cards."
+
+        expected_arrangement = (
+            structures.Card(constants.TENS, constants.SPADES),
+            structures.Card(constants.TENS, constants.HEARTS),
+            structures.Card(constants.ACES, constants.DIAMONDS),
+            structures.Card(constants.QUEENS, constants.HEARTS),
+            structures.Card(constants.JACKS, constants.SPADES),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+class TestHandArrangeCardsFunctionWithUnpairedCards(PermutationTestCase):
+
+
+    "Runs unit tests on arrange_cards function with unpaired cards."
+
+
+    def test_ace_high_straight(self):
+
+        "Tests arrangement when there is an ace-high straight."
+
+        expected_arrangement = (
+            structures.Card(constants.ACES, constants.SPADES),
+            structures.Card(constants.KINGS, constants.SPADES),
+            structures.Card(constants.QUEENS, constants.DIAMONDS),
+            structures.Card(constants.JACKS, constants.HEARTS),
+            structures.Card(constants.TENS, constants.SPADES),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_five_high_straight(self):
+
+        "Tests arrangement when there is a five-high straight."
+
+        expected_arrangement = (
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.DIAMONDS),
+            structures.Card(constants.DEUCES, constants.CLUBS),
+            structures.Card(constants.ACES, constants.CLUBS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_intermediate_straight(self):
+
+        "Tests arrangement when there is a straight at an intermediate point."
+
+        expected_arrangement = (
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.DIAMONDS),
+            structures.Card(constants.SIXES, constants.DIAMONDS),
+            structures.Card(constants.FIVES, constants.DIAMONDS),
+            structures.Card(constants.FOURS, constants.DIAMONDS),
+        )
+        self.run_permutations_subtests(expected_arrangement)
+
+
+    def test_no_straight(self):
+
+        "Tests arrangement when cards do not match a straight."
+
+        expected_arrangement = (
+            structures.Card(constants.JACKS, constants.CLUBS),
+            structures.Card(constants.EIGHTS, constants.DIAMONDS),
+            structures.Card(constants.SEVENS, constants.CLUBS),
+            structures.Card(constants.FOURS, constants.SPADES),
+            structures.Card(constants.THREES, constants.SPADES),
+        )
+        self.run_permutations_subtests(expected_arrangement)
 
 
 if __name__ == '__main__':
