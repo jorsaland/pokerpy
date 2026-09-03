@@ -19,22 +19,19 @@ Defines the class that represents a betting round context manager.
 
 
 from collections.abc import Generator
+import secrets
 
 
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
-    msg_not_str,
-    msg_not_table_instance,
     msg_betting_round_was_not_completed,
-    msg_not_player_instance,
     msg_overloaded_betting_round_message,
-    msg_player_not_in_table,
 )
 from pokerpy.structures import Player, Table
+from pokerpy.validations import validate_type_int, validate_type_str, validate_type_table
 
 
 from ._get_valid_actions import get_valid_actions
-from ._methods_to_deal_cards import method_deal_cards_to_players, method_deal_common_cards
 from ._run_listener import run_listener
 
 
@@ -61,26 +58,17 @@ class BettingRound:
         raise_invalid_actions = False
     ):
 
-        # Type validations
-
-        if not isinstance(name, str):
-            raise TypeError(msg_not_str.format(type(name).__name__))
-
-        if not isinstance(table, Table):
-            raise TypeError(msg_not_table_instance.format(type(table).__name__))
+        validate_type_str(name)
+        validate_type_table(table)
 
         # Fixed variables
-
         self._listener: (Generator[Player]|None) = None
-
         self._name = name
         self._table = table
-
         self._open_fold_allowed = bool(open_fold_allowed)
         self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State variables
-
         self._lap_counts = 0
         self._is_completed = False
 
@@ -133,17 +121,16 @@ class BettingRound:
         """
         return self._raise_invalid_actions
 
+
     def __enter__(self):
         self.listen()
         return self
 
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
-
         if exception_type is StopIteration:
             self._is_completed = True
             exception = RuntimeError(msg_overloaded_betting_round_message)
-
         self.close(exception)
 
 
@@ -151,7 +138,9 @@ class BettingRound:
 
 
     def listen(self):
+
         "Starts and retrieves the generator object that listens for player actions."
+
         if self._listener is None:
             self.reset_betting_round_states(self.table)
             self._listener = run_listener(self)
@@ -185,20 +174,40 @@ class BettingRound:
 
     
     def deal_cards_to_players(self, cards_count: int):
+
         "Deals cards to players in equal amounts."
-        return method_deal_cards_to_players(self, cards_count)
+
+        validate_type_int(cards_count)
+
+        for _ in range(cards_count):
+            for player in self.table.live_players:
+                card = secrets.choice(self.table.deck)
+                self.table.remove_card_from_deck(card)
+                player.assign_card(card)
+                logger.info(f'Dealer deals card {card} to {player.name}.')
 
 
     def deal_common_cards(self, cards_count: int):
+
         "Deals common cards to table."
-        return method_deal_common_cards(self, cards_count)
+
+        validate_type_int(cards_count)
+
+        for _ in range(cards_count):
+            card = secrets.choice(self.table.deck)
+            self.table.remove_card_from_deck(card)
+            self.table.assign_common_card(card)
+        
+        logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.table.common_cards[-cards_count:])}.')
     
 
     # Methods related to state
 
 
     def get_action_ranges(self):
+
         "Retrieves the current player and its available actions"
+
         return get_valid_actions(
             player_stack = self.table.current_player.stack,
             player_amount = self.table.current_player.bet_level,
@@ -216,7 +225,9 @@ class BettingRound:
 
 
     def increase_counter(self):
+
         "Registers a new lap."
+
         self._lap_counts += 1
 
 
@@ -225,8 +236,7 @@ class BettingRound:
 
         "Resets the states for a table and its players to prepare them for a new betting round."
 
-        if not isinstance(table, Table):
-            raise TypeError(msg_not_table_instance.format(type(table).__name__))
+        validate_type_table(table)
 
         table.set_min_raise_increase(table.min_bet)
         table.set_bet_level(0)

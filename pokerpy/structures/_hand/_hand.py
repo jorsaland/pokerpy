@@ -23,7 +23,7 @@ from typing import NewType
 
 
 from pokerpy import constants
-from pokerpy.messages import msg_not_all_card_instances, msg_not_iterable_object
+from pokerpy.validations import validate_type_iterable, validate_all_type_card
 
 
 from .._card import Card
@@ -46,12 +46,10 @@ class Hand:
     def __init__(self, cards: Iterable[Card]):
 
         # Check input type
-        if not isinstance(cards, Iterable):
-            raise TypeError(msg_not_iterable_object.format(type(cards).__name__))
+        validate_type_iterable(cards)
 
+        validate_all_type_card(cards)
         cards_list = list(cards)
-        if not all(isinstance(card, Card) for card in cards_list):
-            raise TypeError(msg_not_all_card_instances)
 
         # Transform input
         hand_tuple = arrange_cards(cards_list)

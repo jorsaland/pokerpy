@@ -18,17 +18,13 @@ Defines the class that represents an action taken by a player within a betting r
 """
 
 
-from pokerpy.constants import (
-    ACTION_CHECK,
-    ACTION_FOLD,
-    possible_action_names,
-)
-from pokerpy.messages import (
-    msg_invalid_action_name,
-    msg_not_int,
-    msg_not_positive_value,
-    msg_not_str,
-    msg_not_zero_value,
+from pokerpy.constants import ACTION_CHECK, ACTION_FOLD
+from pokerpy.validations import (
+    validate_str_action_category,
+    validate_int_positive,
+    validate_int_zero,
+    validate_type_int,
+    validate_type_str,
 )
 
 
@@ -42,26 +38,16 @@ class Action:
 
     def __init__(self, category: str, amount: int = 0):
 
-        # Check types
-        if not isinstance(category, str):
-            raise TypeError(msg_not_str.format(type(category).__name__))
-        if not isinstance(amount, int):
-            raise TypeError(msg_not_int.format(type(amount).__name__))
+        validate_type_str(category)
+        validate_type_int(amount)
 
-        # Validate input
-        if category not in possible_action_names:
-            error_message = msg_invalid_action_name.format(', '.join(possible_action_names))
-            raise ValueError(error_message)
+        validate_str_action_category(category)
         
-        # Validate amount
         if category in (ACTION_FOLD, ACTION_CHECK):
-            if amount != 0:
-                raise ValueError(msg_not_zero_value.format(amount))
+            validate_int_zero(amount)
         else:
-            if amount <= 0:
-                raise ValueError(msg_not_positive_value.format(amount))
+            validate_int_positive(amount)
 
-        # Fixed variables
         self._category = category
         self._amount = amount
 

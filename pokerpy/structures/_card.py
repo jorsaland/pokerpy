@@ -18,17 +18,12 @@ Defines the class that represents a poker card.
 """
 
 
-from pokerpy.constants import (
-    sorted_card_values_and_suits,
-    sorted_card_suits,
-    sorted_card_values,
-    unicode_code_point_by_card_suit,
-)
-from pokerpy.messages import (
-    msg_invalid_card_suit,
-    msg_invalid_card_value,
-    msg_not_str,
-    msg_wildcard,
+from pokerpy.constants import sorted_card_values_and_suits, unicode_code_point_by_card_suit
+from pokerpy.validations import (
+    validate_str_card_joker,
+    validate_str_card_suit,
+    validate_str_card_value,
+    validate_type_str,
 )
 
 
@@ -42,27 +37,16 @@ class Card:
 
     def __init__(self, value: str, suit: str):
 
-        # Check types
-        if not isinstance(value, str):
-            raise TypeError(msg_not_str.format(type(value).__name__))
-        if not isinstance(suit, str):
-            raise TypeError(msg_not_str.format(type(suit).__name__))
+        validate_type_str(value)
+        validate_type_str(suit)
 
-        # Convert cases
         value = value.upper()
         suit = suit.lower()
 
-        # Validate and convert input
-        if 'joker' in (value.lower(), suit.lower()):
-            raise ValueError(msg_wildcard)
-        if value not in sorted_card_values:
-            message = msg_invalid_card_value.format(', '.join(sorted_card_values))
-            raise ValueError(message)
-        if suit not in sorted_card_suits:
-            message = msg_invalid_card_suit.format(', '.join(sorted_card_suits))
-            raise ValueError(message)
+        validate_str_card_joker(value, suit)
+        validate_str_card_value(value)
+        validate_str_card_suit(suit)
 
-        # Fixed variables
         self._value = value
         self._suit = suit
 

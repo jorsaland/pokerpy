@@ -23,8 +23,8 @@ msg_not_positive_value = "the value must be positive (received {})"
 msg_not_zero_value = "the value must be zero (received {})"
 
 # Specific value errors
-msg_amount_larger_than_bet_level = "the amount ({}) cannot be larger than bet level ({})"
-msg_amount_larger_than_stack = "the amount ({}) cannot be larger than stack ({})"
+msg_amount_larger_than_bet_level = "the amount ({}) cannot be larger than the bet level ({})"
+msg_amount_larger_than_stack = "the amount ({}) cannot be larger than the stack ({})"
 msg_card_not_in_deck = "the requested card is not in the deck"
 msg_invalid_action_name = "invalid action name, must be one of the following: {}"
 msg_invalid_card_suit = "invalid card suit, must be be one of the following: {}"

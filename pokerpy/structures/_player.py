@@ -18,17 +18,17 @@ Defines the class that represents a poker player.
 """
 
 
-from pokerpy.messages import (
-    msg_amount_larger_than_bet_level,
-    msg_amount_larger_than_stack,
-    msg_not_action_instance,
-    msg_not_card_instance,
-    msg_not_hand_instance,
-    msg_not_int,
-    msg_not_positive_or_zero_value,
-    msg_not_positive_value,
-    msg_not_str,
-    msg_repeated_cards,
+from pokerpy.validations import (
+    validate_int_amount_smaller_than_bet_level,
+    validate_int_amount_smaller_than_stack,
+    validate_int_positive,
+    validate_int_positive_or_zero,
+    validate_iterable_not_contains_card,
+    validate_type_action,
+    validate_type_card,
+    validate_type_hand,
+    validate_type_int,
+    validate_type_str,
 )
 
 
@@ -49,14 +49,10 @@ class Player:
 
         # Validations
 
-        if not isinstance(name, str):
-            raise TypeError(msg_not_str.format(type(name).__name__))
+        validate_type_str(name)
+        validate_type_int(stack)
 
-        if not isinstance(stack, int):
-            raise TypeError(msg_not_int.format(type(stack).__name__))
-
-        if stack <= 0:
-            raise ValueError(msg_not_positive_value.format(stack))
+        validate_int_positive(stack)
 
         # Fixed variables
         self._name = name
@@ -130,8 +126,7 @@ class Player:
 
     def request_action(self, action: Action):
         "Sets the requested_action property."
-        if not isinstance(action, Action):
-            raise TypeError(msg_not_action_instance.format(type(action).__name__))
+        validate_type_action(action)
         self._requested_action = action
 
 
@@ -145,10 +140,8 @@ class Player:
 
     def assign_card(self, card: Card):
         "Adds a card to the cards property."
-        if not isinstance(card, Card):
-            raise TypeError(msg_not_card_instance.format(type(card).__name__))
-        if card in self.cards:
-            raise ValueError(msg_repeated_cards)
+        validate_type_card(card)
+        validate_iterable_not_contains_card(card, self.cards)
         self._cards.append(card)
 
 
@@ -159,8 +152,7 @@ class Player:
 
     def assign_hand(self, hand: Hand):
         "Sets the hand property."
-        if not isinstance(hand, Hand):
-            raise TypeError(msg_not_hand_instance.format(type(hand).__name__))
+        validate_type_hand(hand)
         self._hand = hand
 
 
@@ -174,38 +166,28 @@ class Player:
 
     def increase_bet_level(self, amount: int):
         "Adds an amount to the bet_level property."
-        if not isinstance(amount, int):
-            raise TypeError(msg_not_int.format(type(amount).__name__))
-        if amount < 0:
-            raise ValueError(msg_not_positive_or_zero_value.format(amount))
+        validate_type_int(amount)
+        validate_int_positive_or_zero(amount)
         self._bet_level += amount
 
     def decrease_bet_level(self, amount: int):
         "Removes an amount to the bet_level property."
-        if not isinstance(amount, int):
-            raise TypeError(msg_not_int.format(type(amount).__name__))
-        if amount < 0:
-            raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        if amount > self.bet_level:
-            raise ValueError(msg_amount_larger_than_bet_level.format(amount, self.bet_level))
+        validate_type_int(amount)
+        validate_int_positive_or_zero(amount)
+        validate_int_amount_smaller_than_bet_level(amount, self.bet_level)
         self._bet_level -= amount
 
     def increase_stack(self, amount: int):
         "Adds an amount to the stack property."
-        if not isinstance(amount, int):
-            raise TypeError(msg_not_int.format(type(amount).__name__))
-        if amount < 0:
-            raise ValueError(msg_not_positive_or_zero_value.format(amount))
+        validate_type_int(amount)
+        validate_int_positive_or_zero(amount)
         self._stack += amount
 
     def decrease_stack(self, amount: int):
         "Removes an amount from the stack property."
-        if not isinstance(amount, int):
-            raise TypeError(msg_not_int.format(type(amount).__name__))
-        if amount < 0:
-            raise ValueError(msg_not_positive_or_zero_value.format(amount))
-        if amount > self.stack:
-            raise ValueError(msg_amount_larger_than_stack.format(amount, self.stack))
+        validate_type_int(amount)
+        validate_int_positive_or_zero(amount)
+        validate_int_amount_smaller_than_stack(amount, self.stack)
         self._stack -= amount
 
     def increase_pot_index(self):
