@@ -134,6 +134,7 @@ flowchart LR
     T.set_full_bet_level(set_full_bet_level)@{ shape: text } --> T
     T.increase_central_pot(increase_central_pot)@{ shape: text } --> T
     T.clear_central_pot(clear_central_pot)@{ shape: text } --> T
+    T.add_side_pot(add_side_pot)@{ shape: text } --> T
     T.set_starting_player(set_starting_player)@{ shape: text } --> T
     T.set_stopping_player(set_stopping_player)@{ shape: text } --> T
     T.set_current_player(set_current_player)@{ shape: text } --> T
@@ -177,7 +178,7 @@ flowchart LR
     BR --> T.set_bet_level
     BR --> T.set_full_bet_level
     BR --> T.increase_central_pot
-    BR --> T.clear_central_pot
+    BR --> T.add_side_pot
     BR --> T.set_starting_player
     BR --> T.set_stopping_player
     BR --> T.set_current_player
