@@ -30,11 +30,11 @@ from pokerpy.constants import (
 def get_valid_actions(
     *,
     player_stack: int,
-    player_amount: int,
-    amount_level: int,
-    full_amount_level: int,
-    full_bet: int,
-    full_raise_increase: int,
+    player_bet_level: int,
+    bet_level: int,
+    full_bet_level: int,
+    min_bet: int,
+    min_raise_increase: int,
     player_has_played: bool,
     is_last_active_player: bool,
     open_fold_allowed: bool
@@ -45,18 +45,18 @@ def get_valid_actions(
     """
 
     assert player_stack >= 0
-    assert player_amount >= 0
-    assert amount_level >= 0
-    assert full_amount_level >= 0
-    assert full_bet > 0
-    assert full_raise_increase > 0
+    assert player_bet_level >= 0
+    assert bet_level >= 0
+    assert full_bet_level >= 0
+    assert min_bet > 0
+    assert min_raise_increase > 0
 
-    assert full_raise_increase >= full_bet
-    assert (full_amount_level + full_raise_increase) > amount_level >= full_amount_level
+    assert min_raise_increase >= min_bet
+    assert (full_bet_level + min_raise_increase) > bet_level >= full_bet_level
 
-    amount_to_call = amount_level - player_amount
-    amount_to_full_level = full_amount_level - player_amount
-    amount_to_full_raise = amount_to_full_level + full_raise_increase
+    amount_to_call = bet_level - player_bet_level
+    amount_to_full_bet = full_bet_level - player_bet_level
+    amount_to_full_raise = amount_to_full_bet + min_raise_increase
 
     def get_fold_range():
         return range(0, 1)
@@ -70,8 +70,8 @@ def get_valid_actions(
         return range(player_stack, player_stack + 1)
 
     def get_bet_range():
-        if player_stack > full_bet:
-            return range(full_bet, player_stack + 1)
+        if player_stack > min_bet:
+            return range(min_bet, player_stack + 1)
         elif player_stack > amount_to_call:
             return range(player_stack, player_stack + 1)
 
@@ -102,14 +102,14 @@ def get_valid_actions(
 
     # a player who has not played yet and has enough chips, always can take an aggressive action
     if not player_has_played:
-        if amount_to_full_level == 0:
+        if amount_to_full_bet == 0:
             amount_range_by_action[ACTION_BET] = get_bet_range()
         else:
             amount_range_by_action[ACTION_RAISE] = get_raise_range()
         return amount_range_by_action
 
     # a player who has already played and is not facing a full bet/raise, cannot take an aggressive action
-    if amount_to_full_level == 0:
+    if amount_to_full_bet == 0:
         return amount_range_by_action
 
     # in any other case, it counts as a raise

@@ -60,11 +60,11 @@ def await_player(
 
         amount_range_by_action = get_valid_actions(
             player_stack = player.stack,
-            player_amount = player.bet_level,
-            amount_level = amount_level,
-            full_amount_level = full_amount_level,
-            full_bet = full_bet,
-            full_raise_increase = full_raise_increase,
+            player_bet_level = player.bet_level,
+            bet_level = amount_level,
+            full_bet_level = full_amount_level,
+            min_bet = full_bet,
+            min_raise_increase = full_raise_increase,
             player_has_played = player.has_played,
             is_last_active_player = is_last_active_player,
             open_fold_allowed = open_fold_allowed,

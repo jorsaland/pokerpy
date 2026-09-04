@@ -210,12 +210,12 @@ class BettingRound:
 
         return get_valid_actions(
             player_stack = self.table.current_player.stack,
-            player_amount = self.table.current_player.bet_level,
+            player_bet_level = self.table.current_player.bet_level,
             player_has_played = self.table.current_player.has_played,
-            amount_level = self.table.bet_level,
-            full_amount_level = self.table.full_bet_level,
-            full_bet = self.table.min_bet,
-            full_raise_increase = self.table.min_raise_increase,
+            bet_level = self.table.bet_level,
+            full_bet_level = self.table.full_bet_level,
+            min_bet = self.table.min_bet,
+            min_raise_increase = self.table.min_raise_increase,
             is_last_active_player = (
                 self.table.current_player in self.table.actionable_players
                 and len(self.table.actionable_players) == 1
