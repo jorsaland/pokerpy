@@ -64,10 +64,10 @@ def prompt_player(
     # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = table.current_player,
-        amount_level = table.bet_level,
-        full_amount_level = table.full_bet_level,
-        full_bet = table.min_bet,
-        full_raise_increase = table.min_raise_increase,
+        bet_level = table.bet_level,
+        full_bet_level = table.full_bet_level,
+        min_bet = table.min_bet,
+        min_raise_increase = table.min_raise_increase,
         is_last_active_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
         open_fold_allowed = open_fold_allowed,
         raise_invalid_actions = raise_invalid_actions,

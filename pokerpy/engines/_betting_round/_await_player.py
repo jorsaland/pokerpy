@@ -31,10 +31,10 @@ logger = get_logger()
 
 def await_player(
     *, player: Player,
-    amount_level: int,
-    full_amount_level: int,
-    full_bet: int,
-    full_raise_increase: int,
+    bet_level: int,
+    full_bet_level: int,
+    min_bet: int,
+    min_raise_increase: int,
     is_last_active_player: bool,
     open_fold_allowed: bool,
     raise_invalid_actions: bool
@@ -61,10 +61,10 @@ def await_player(
         amount_range_by_action = get_valid_actions(
             player_stack = player.stack,
             player_bet_level = player.bet_level,
-            bet_level = amount_level,
-            full_bet_level = full_amount_level,
-            min_bet = full_bet,
-            min_raise_increase = full_raise_increase,
+            bet_level = bet_level,
+            full_bet_level = full_bet_level,
+            min_bet = min_bet,
+            min_raise_increase = min_raise_increase,
             player_has_played = player.has_played,
             is_last_active_player = is_last_active_player,
             open_fold_allowed = open_fold_allowed,
