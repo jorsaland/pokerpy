@@ -99,11 +99,6 @@ class Player:
         return self._bet_level
 
     @property
-    def pot_index(self):
-        "Index of the pot the player is playing for, being 0 the main pot."
-        return self._pot_index
-
-    @property
     def is_folded(self):
         "Whether the player has already folded in the current hand cycle."
         return self._is_folded
@@ -115,6 +110,11 @@ class Player:
         (not including forced bets)
         """
         return self._has_played
+
+    @property
+    def pot_index(self):
+        "Index of the pot the player is playing for, being 0 the main pot."
+        return self._pot_index
 
 
     def __repr__(self):

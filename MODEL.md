@@ -36,11 +36,11 @@
 
 - **Bet level (`bet_level`):** Amount of chips the player has placed in front during the current betting round.
 
-- **Pot index (`pot_index`):** Index of the pot the player is playing for, being 0 the main pot.
-
 - **Is folded (`is_folded`):** Whether the player has already folded in the current hand cycle.
 
 - **Has played (`has_played`):** Whether the player has already taken a voluntary action during the current betting round (not including forced bets).
+
+- **Pot index (`pot_index`):** Index of the pot the player is playing for, being 0 the main pot.
 
 
 ### Table (`Table`)
