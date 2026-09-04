@@ -157,9 +157,9 @@ class Table:
     @property
     def full_bet_level(self):
         """
-        Part of the chip level matching the last full bet or raise. It may be smaller than a full bet
-        when a player goes all-in for less. In that case, other players can complete the full bet
-        (in addition to folding, calling or raising).
+        Part of the bet level matching the last full bet or raise. It may be smaller than a the bet
+        level when a player goes all-in for less than a minimum bet or raise. In that case, other
+        players can complete the full bet, in addition to folding or calling.
         """
         return self._full_bet_level
 

@@ -13,754 +13,1101 @@ from unittest import main, TestCase
 from pokerpy import constants, engines, structures
 
 
-class TestBettingRoundSetActionEffectsFunction(TestCase):
+class BasePlayersTestCase(TestCase):
 
 
-    """
-    Runs unit tests on set_action_effects function.
-    """
+    "Base class for test cases that require a shared setup."
 
 
-    def test_parse_a_fold(self):
+    def setUp(self):
+
+        self.setup_players = [
+            structures.Player('Andy', 1000),
+            structures.Player('Boa', 1000),
+            structures.Player('Coral', 1000),
+            structures.Player('Dino', 1000),
+            structures.Player('Epa', 1000),
+            structures.Player('Fomi', 1000),
+        ]
+
+        self.table = structures.Table(self.setup_players, min_bet=100)
+
+        self.Andy = self.setup_players[0]
+        self.Boa = self.setup_players[1]
+        self.Coral = self.setup_players[2]
+        self.Dino = self.setup_players[3]
+        self.Epa = self.setup_players[4]
+        self.Fomi = self.setup_players[5]
 
 
-        """
-        Runs test cases where a fold is parsed.
-        """
-
-        
-        table = structures.Table(players = [
-            structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),            
-        ])
-        table.set_stopping_player(Dino)
+class TestBettingRoundSetActionEffectsFunctionOnPassiveActions(BasePlayersTestCase):
 
 
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 1)
-        self.assertEqual(table.min_raise_increase, 1)
+    "Runs unit tests on set_action_effects function on passive actions."
 
 
-        # States after
+    def test_fold_effects(self):
+
+        "Tests effects after folding."
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
+            table = self.table,
+            player = self.Boa,
             action = structures.Action(constants.ACTION_FOLD),
         )
 
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertTrue(Boa.has_played)
-        self.assertTrue(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 1)
-        self.assertEqual(table.min_raise_increase, 1)
-
-
-    def test_parse_a_check(self):
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertTrue(self.Boa.has_played)
+            self.assertTrue(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
 
-        """
-        Runs test cases where a check is parsed.
-        """
+    def test_check_effects(self):
 
+        "Tests effects after checking."
 
-        table = structures.Table(players = [
-            structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),            
-        ])
-        table.set_stopping_player(Dino)
-
-
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 1)
-        self.assertEqual(table.min_raise_increase, 1)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
+            table = self.table,
+            player = self.Boa,
             action = structures.Action(constants.ACTION_CHECK),
         )
 
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 1)
-        self.assertEqual(table.min_raise_increase, 1)
 
-
-    def test_parse_a_call_smaller_than_a_full_call(self):
-
+    def test_call_effects_if_under_call_given_not_player_bet_level(self):
 
         """
-        Runs test cases where a call smaller than a full call is parsed (all-in).
+        Tests effects after calling an amount smaller than a full call, given the player bet level is zero.
         """
 
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(100)
 
-        table = structures.Table(players = [
-            structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 1),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),
-        ])
-        table.set_stopping_player(Dino)
-        table.set_bet_level(2)
-        table.set_full_bet_level(2)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(2)
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_min_raise_increase(200)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 2)
-        self.assertEqual(table.full_bet_level, 2)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 100)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_CALL, 1),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_CALL, 100),
         )
 
-        self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.bet_level, 1)
-        self.assertEqual(Boa.pot_participation, 1)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 2)
-        self.assertEqual(table.full_bet_level, 2)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
 
-
-    def test_parse_a_call_equal_to_a_full_call(self):
-
+    def test_call_effects_if_under_call_given_player_bet_level(self):
 
         """
-        Runs test cases where a call equal to a full call is parsed.
+        Tests effects after calling an amount smaller than a full call, given the player has previously bet or called.
         """
 
+        self.Boa.mark_has_played()
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(100)
+        self.Boa.increase_bet_level(100)
 
-        table = structures.Table(players = [
-            structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),
-        ])
-        table.set_stopping_player(Dino)
-        table.set_bet_level(2)
-        table.set_full_bet_level(2)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(2)
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 2)
-        self.assertEqual(table.full_bet_level, 2)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 100)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_CALL, 2),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_CALL, 100),
         )
 
-        self.assertEqual(Boa.stack, 8)
-        self.assertEqual(Boa.bet_level, 2)
-        self.assertEqual(Boa.pot_participation, 2)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 200)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 2)
-        self.assertEqual(table.full_bet_level, 2)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
 
-
-    def test_parse_a_bet_smaller_than_a_full_bet(self):
-
+    def test_call_effects_if_full_call_given_not_player_bet_level(self):
 
         """
-        Runs test cases where a bet smaller than a full bet is parsed (all-in).
+        Tests effects after calling an amount equal to a full call, given the player bet level is zero.
         """
 
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_min_raise_increase(200)
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 1),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(2)
-
-
-        # States before
-
-        self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_BET, 1),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_CALL, 200),
         )
 
-        self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.bet_level, 1)
-        self.assertEqual(Boa.pot_participation, 1)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 800)
+            self.assertEqual(self.Boa.bet_level, 200)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 1)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
 
-
-    def test_parse_a_bet_equal_to_a_full_bet(self):
-
+    def test_call_effects_if_full_call_given_player_bet_level(self):
 
         """
-        Runs test cases where a bet equal to a full bet is parsed.
+        Tests effects after calling an amount equal to a full call, given the player has previously bet or called.
         """
 
+        self.Boa.mark_has_played()
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(2)
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_BET, 2),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_CALL, 200),
         )
 
-        self.assertEqual(Boa.stack, 8)
-        self.assertEqual(Boa.bet_level, 2)
-        self.assertEqual(Boa.pot_participation, 2)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 2)
-        self.assertEqual(table.full_bet_level, 2)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
-
-
-    def test_parse_a_bet_larger_than_a_full_bet(self):
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 700)
+            self.assertEqual(self.Boa.bet_level, 300)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
 
 
-        """
-        Runs test cases where a bet larger than a full bet is parsed.
-        """
+class TestBettingRoundSetActionEffectsFunctionOnBetting(BasePlayersTestCase):
 
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(2)
+    "Runs unit tests on set_action_effects function on betting."
 
 
-        # States before
+    def test_bet_effects_if_under_bet_given_no_bet_level(self):
 
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        "Tests effects after betting an amount smaller than a minimum beet, given bet level is zero."
 
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 0)
-        self.assertEqual(table.full_bet_level, 0)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 2)
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(50)
 
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 50)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_BET, 3),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 50),
         )
 
-        self.assertEqual(Boa.stack, 7)
-        self.assertEqual(Boa.bet_level, 3)
-        self.assertEqual(Boa.pot_participation, 3)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 50)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 50)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 3)
-        self.assertEqual(table.full_bet_level, 3)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
 
-
-    def test_parse_a_raise_smaller_than_a_full_raise_not_having_played(self):
-
+    def test_bet_effects_if_under_bet_given_previous_under_bet(self):
 
         """
-        Runs test cases where a raise with an amount smaller than a full raise is parsed (all-in), not having played yet.
+        Tests effects after betting an amount smaller than a minimum bet, given previous under bet.
         """
 
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(50)
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 7),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
+        self.table.set_bet_level(20)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 7)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 50)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 20)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 7),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 50)
         )
 
-        self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.bet_level, 7)
-        self.assertEqual(Boa.pot_participation, 7)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 50)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 50)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 7)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
 
-
-    def test_parse_a_raise_smaller_than_a_full_raise_having_bet_previously(self):
-
+    def test_bet_effects_if_under_bet_given_big_blind_bet_level(self):
 
         """
-        Runs test cases where a raise with an amount smaller than a full raise is parsed (all-in), having bet previously.
+        Tests effects after betting an amount smaller than a minimum bet, given player placed big
+        blind and nobody raised.
         """
 
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(50)
+        self.Boa.increase_bet_level(100)
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 5),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
-        Boa.increase_bet_level(2)
-        Boa.increase_pot_participation(2)
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 5)
-        self.assertEqual(Boa.bet_level, 2)
-        self.assertEqual(Boa.pot_participation, 2)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 50)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 5),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 50),
         )
 
-        self.assertEqual(Boa.stack, 0)
-        self.assertEqual(Boa.bet_level, 7)
-        self.assertEqual(Boa.pot_participation, 7)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 150)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 150)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 7)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
 
-
-    def test_parse_a_raise_equal_to_a_full_raise_not_having_played(self):
+    def test_bet_effects_if_under_bet_given_big_blind_and_previous_under_bet(self):
 
         """
-        Runs test cases where a raise with an amount equal to a full raise is parsed, not having played yet.
+        Tests effects after betting an amount smaller than a minimum bet, given player placed big
+        blind and somebody previously bet an amount smaller than a minimum bet.
         """
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(50)
+        self.Boa.increase_bet_level(100)
 
+        self.table.set_bet_level(120)
+        self.table.set_full_bet_level(100)
 
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 50)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 120)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 8),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 50),
         )
 
-        self.assertEqual(Boa.stack, 2)
-        self.assertEqual(Boa.bet_level, 8)
-        self.assertEqual(Boa.pot_participation, 8)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 8)
-        self.assertEqual(table.full_bet_level, 8)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-    def test_parse_a_raise_equal_to_a_full_raise_having_bet_previously(self):
-
-        """
-        Runs test cases where a raise with an amount equal to a full raise is parsed, having bet previously.
-        """
-
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
-        Boa.increase_bet_level(2)
-        Boa.increase_pot_participation(2)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 150)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 150)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
 
-        # States before
+    def test_bet_effects_if_min_bet_given_no_bet_level(self):
 
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 2)
-        self.assertEqual(Boa.pot_participation, 2)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        "Tests effects after betting an amount equal to a minimum bet, given bet level is zero."
 
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 6),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 100),
         )
 
-        self.assertEqual(Boa.stack, 4)
-        self.assertEqual(Boa.bet_level, 8)
-        self.assertEqual(Boa.pot_participation, 8)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 8)
-        self.assertEqual(table.full_bet_level, 8)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-    def test_parse_a_raise_larger_than_a_full_raise_not_having_played(self):
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
 
-        """
-        Runs test cases where a raise with an amount larger than a full raise is parsed, not having played yet.
-        """
+    def test_bet_effects_if_min_bet_given_previous_under_bet(self):
 
+        "Tests effects after betting an amount equal to a minimum bet, given previous under bet."
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
+        self.table.set_bet_level(50)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Boa.pot_participation, 0)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 50)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 9),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 100)
         )
 
-        self.assertEqual(Boa.stack, 1)
-        self.assertEqual(Boa.bet_level, 9)
-        self.assertEqual(Boa.pot_participation, 9)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 9)
-        self.assertEqual(table.full_bet_level, 9)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 4)
 
-
-    def test_parse_a_raise_larger_than_a_full_raise_having_bet_previously(self):
-
+    def test_bet_effects_if_min_bet_given_big_blind_bet_level(self):
 
         """
-        Runs test cases where a raise with an amount larger than a full raise is parsed, having bet previously.
+        Tests effects after betting an amount equal to a minimum bet, given player placed big
+        blind and nobody raised.
         """
 
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
 
-        table = structures.Table(players = [
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-            structures.Player('Epa', 10),    
-        ])
-        table.set_stopping_player(Dino)
-        table.set_min_bet(2)
-        table.set_min_raise_increase(3)
-        table.set_bet_level(5)
-        table.set_full_bet_level(5)
-        Boa.increase_bet_level(2)
-        Boa.increase_pot_participation(2)
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
 
-
-        # States before
-
-        self.assertEqual(Boa.stack, 10)
-        self.assertEqual(Boa.bet_level, 2)
-        self.assertEqual(Boa.pot_participation, 2)
-        self.assertFalse(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
-
-        self.assertEqual(table.stopping_player, Dino)
-        self.assertEqual(table.bet_level, 5)
-        self.assertEqual(table.full_bet_level, 5)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 3)
-
-
-        # States after
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
         engines.set_action_effects(
-            table = table,
-            player = Boa,
-            action = structures.Action(constants.ACTION_RAISE, 7),
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 100)
         )
 
-        self.assertEqual(Boa.stack, 3)
-        self.assertEqual(Boa.bet_level, 9)
-        self.assertEqual(Boa.pot_participation, 9)
-        self.assertTrue(Boa.has_played)
-        self.assertFalse(Boa.is_folded)
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 800)
+            self.assertEqual(self.Boa.bet_level, 200)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
 
-        self.assertEqual(table.stopping_player, Andy)
-        self.assertEqual(table.bet_level, 9)
-        self.assertEqual(table.full_bet_level, 9)
-        self.assertEqual(table.min_bet, 2)
-        self.assertEqual(table.min_raise_increase, 4)
+
+    def test_bet_effects_if_min_bet_given_big_blind_and_previous_under_bet(self):
+
+        """
+        Tests effects after betting an amount equal to a minimum bet, given player placed big
+        blind and somebody previously bet an amount smaller than a minimum bet.
+        """
+
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(150)
+        self.table.set_full_bet_level(100)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 150)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 100)
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 800)
+            self.assertEqual(self.Boa.bet_level, 200)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+
+    def test_bet_effects_if_over_bet_given_no_bet_level(self):
+
+        "Tests effects after betting an amount larger than a minimum bet, given bet level is zero."
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 300),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 700)
+            self.assertEqual(self.Boa.bet_level, 300)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+    def test_bet_effects_if_over_bet_given_previous_under_bet(self):
+
+        "Tests effects after betting an amount larger than a minimum bet, given previous under bet."
+
+        self.table.set_bet_level(50)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 50)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 300)
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 700)
+            self.assertEqual(self.Boa.bet_level, 300)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+    def test_bet_effects_if_over_bet_given_big_blind_bet_level(self):
+
+        """
+        Tests effects after betting an amount larger than a minimum bet, given player placed big
+        blind and nobody raised.
+        """
+
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 300)
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 600)
+            self.assertEqual(self.Boa.bet_level, 400)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 400)
+            self.assertEqual(self.table.full_bet_level, 400)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+    def test_bet_effects_if_over_bet_given_big_blind_and_previous_under_bet(self):
+
+        """
+        Tests effects after betting an amount larger than a minimum bet, given player placed big
+        blind and somebody previously bet an amount smaller than a minimum bet.
+        """
+
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(150)
+        self.table.set_full_bet_level(100)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 150)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_BET, 300)
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 600)
+            self.assertEqual(self.Boa.bet_level, 400)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 400)
+            self.assertEqual(self.table.full_bet_level, 400)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+class TestBettingRoundSetActionEffectsFunctionOnRaising(BasePlayersTestCase):
+
+
+    "Runs unit tests on set_action_effects function on raising."
+
+
+    def test_raise_effects_if_under_raise_given_previous_bet(self):
+
+        "Tests effects after raising on a bet an amount smaller than a minimum raise, given has not played yet."
+
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(300)
+
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 300)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 300),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 300)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_under_raise_given_previous_raise(self):
+
+        "Tests effects after re-raising an amount smaller than a minimum raise, given has not played yet."
+
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(400)
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 400)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 400),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 400)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 400)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_under_raise_given_previous_raise_on_player(self):
+
+        "Tests effects after re-raising an amount smaller than a minimum raise, given has already bet or called."
+
+        self.Boa.mark_has_played()
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_stack(300)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 300)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 300),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Boa.bet_level, 400)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 400)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_min_raise_given_previous_bet(self):
+
+        "Tests effects after raising on a bet an amount equal to a minimum raise, given has not played yet."
+
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 400),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 600)
+            self.assertEqual(self.Boa.bet_level, 400)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 400)
+            self.assertEqual(self.table.full_bet_level, 400)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_full_raise_given_previous_raise(self):
+
+        "Tests effects after re-raising an amount equal to a minimum raise, given has not played yet."
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 500),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 500)
+            self.assertEqual(self.Boa.bet_level, 500)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 500)
+            self.assertEqual(self.table.full_bet_level, 500)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_full_raise_given_previous_raise_on_player(self):
+
+        "Tests effects after re-raising an amount equal to a minimum raise, given has already bet or called."
+
+        self.Boa.mark_has_played()
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 400),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 500)
+            self.assertEqual(self.Boa.bet_level, 500)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 500)
+            self.assertEqual(self.table.full_bet_level, 500)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+
+    def test_raise_effects_if_over_raise_given_previous_bet(self):
+
+        "Tests effects after raising on a bet an amount larger than a minimum raise, given has not played yet."
+
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 200)
+            self.assertEqual(self.table.full_bet_level, 200)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 500),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 500)
+            self.assertEqual(self.Boa.bet_level, 500)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 500)
+            self.assertEqual(self.table.full_bet_level, 500)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+    def test_raise_effects_if_over_raise_given_previous_raise(self):
+
+        "Tests effects after re-raising an amount larger than a minimum raise, given has not played yet."
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 1000)
+            self.assertEqual(self.Boa.bet_level, 0)
+            self.assertFalse(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 600),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 400)
+            self.assertEqual(self.Boa.bet_level, 600)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 600)
+            self.assertEqual(self.table.full_bet_level, 600)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
+
+
+    def test_raise_effects_if_over_raise_given_previous_raise_on_player(self):
+
+        "Tests effects after re-raising an amount larger than a minimum raise, given has already bet or called."
+
+        self.Boa.mark_has_played()
+        self.Boa.decrease_stack(100)
+        self.Boa.increase_bet_level(100)
+
+        self.table.set_bet_level(300)
+        self.table.set_full_bet_level(300)
+        self.table.set_min_raise_increase(200)
+
+        with self.subTest('before request'):
+            self.assertEqual(self.Boa.stack, 900)
+            self.assertEqual(self.Boa.bet_level, 100)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            self.assertEqual(self.table.bet_level, 300)
+            self.assertEqual(self.table.full_bet_level, 300)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 200)
+
+        engines.set_action_effects(
+            table = self.table,
+            player = self.Boa,
+            action = structures.Action(constants.ACTION_RAISE, 500),
+        )
+
+        with self.subTest('after request'):
+            self.assertEqual(self.Boa.stack, 400)
+            self.assertEqual(self.Boa.bet_level, 600)
+            self.assertTrue(self.Boa.has_played)
+            self.assertFalse(self.Boa.is_folded)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+            self.assertEqual(self.table.bet_level, 600)
+            self.assertEqual(self.table.full_bet_level, 600)
+            self.assertEqual(self.table.min_bet, 100)
+            self.assertEqual(self.table.min_raise_increase, 300)
 
 
 if __name__ == '__main__':

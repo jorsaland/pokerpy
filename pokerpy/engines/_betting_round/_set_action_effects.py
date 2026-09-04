@@ -33,7 +33,6 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
     """
 
     player_bet_level = player.bet_level
-    table_bet_level = table.bet_level
     table_full_bet_level = table.full_bet_level
     min_raise_increase = table.min_raise_increase
 
@@ -50,15 +49,15 @@ def set_action_effects(*, table: Table, player: Player, action: Action):
 
     if action.category in (ACTION_BET, ACTION_RAISE):
 
-        new_current_amount = player_bet_level + action.amount
-        raise_increase = new_current_amount - table_bet_level
-        new_level = table_full_bet_level + raise_increase
-        table.set_bet_level(new_level)
+        new_table_bet_level = player_bet_level + action.amount
+        table.set_bet_level(new_table_bet_level)
 
-        if new_level >= table_full_bet_level + min_raise_increase:
-            table.set_full_bet_level(new_level)
-            if (new_full_raise_increase := new_level - table_full_bet_level) > 0:
-                table.set_min_raise_increase(new_full_raise_increase)
+        raise_increase = new_table_bet_level - table_full_bet_level
+        if raise_increase >= min_raise_increase:
+            new_table_full_bet_level = table_full_bet_level + raise_increase
+            table.set_full_bet_level(new_table_full_bet_level)
+            if raise_increase > min_raise_increase:
+                table.set_min_raise_increase(raise_increase)
 
         for previous_player in table.iter_players(table.get_previous_player(player), reverse=True):
             if previous_player in table.actionable_players:
