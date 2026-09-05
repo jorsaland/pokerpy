@@ -104,10 +104,6 @@ class BettingRound:
         "Whether folding is allowed when there is no bet or raise to respond to."
         return self._open_fold_allowed
 
-    @open_fold_allowed.setter
-    def open_fold_allowed(self, open_fold_allowed):
-        self._open_fold_allowed = bool(open_fold_allowed)
-
     @property
     def is_completed(self):
         "Whether the betting round already ended."

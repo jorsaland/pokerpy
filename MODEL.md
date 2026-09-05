@@ -87,7 +87,7 @@
 
 - **Lap counts (`lap_counts`):** Number of times the action passes through the starting player (even if folded or all-in).
 
-- **Open fold allowed (`open_fold_allowed`):** *[modifiable]* Whether folding is allowed when there is no bet or raise to respond to.
+- **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 
 - **Is completed (`is_completed`):** Whether the betting round already ended.
 
