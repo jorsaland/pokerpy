@@ -24,7 +24,6 @@ from pokerpy.messages import (
     signal_all_in_stopping_player,
     signal_folded_player,
     signal_folded_stopping_player,
-    signal_last_player_in_hand,
     signal_passive_stopping_player,
 )
 from pokerpy.structures import Table
@@ -45,23 +44,16 @@ def prompt_player(
     Evaluates if the current player is able to request an action and listens to it.
     """
 
-    # Close the betting round if every player is folded
-    if len(table.live_players) == 1:
-        raise CloseBettingRoundSignal(signal_last_player_in_hand)
-
-    # If the player is folded, jump to the next one (or close the betting round if is also the stopping player)
     if table.current_player.is_folded:
         if table.current_player == table.stopping_player:
             raise CloseBettingRoundSignal(signal_folded_stopping_player)
         raise JumpToNextPlayerSignal(signal_folded_player)
 
-    # If the player is folded or all-in, jump to the next one (or close the betting round if is also the stopping player)
     if table.current_player.stack == 0:
         if table.current_player == table.stopping_player:
             raise CloseBettingRoundSignal(signal_all_in_stopping_player)
         raise JumpToNextPlayerSignal(signal_all_in_player)
 
-    # Listen to player until it chooses a valid action
     action = yield from await_player(
         player = table.current_player,
         bet_level = table.bet_level,
@@ -74,6 +66,5 @@ def prompt_player(
     )
     set_action_effects(table=table, player=table.current_player, action=action)
 
-    # Stop if the current player still is the stopping player
     if table.current_player == table.stopping_player:
         raise CloseBettingRoundSignal(signal_passive_stopping_player)
