@@ -75,14 +75,14 @@ class TestHandArrangeCardsFunctionInput(TestCase):
         for card_set in (no_cards, less_than_5_cards, more_than_5_cards):
 
             with self.subTest('not five cards', cards_count=len(card_set)):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.arrange_cards(card_set)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_five_cards_hand)
+                self.assertEqual(context.exception.args[0], messages.msg_not_five_cards_hand)
 
         with self.subTest('repeated cards', cards_count=len(repeated_cards)):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 structures.arrange_cards(repeated_cards)
-            self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
+            self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
 
 
     def test_valid_input(self):

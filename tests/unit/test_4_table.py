@@ -60,9 +60,9 @@ class TestTableInstantiation(BasePlayersTestCase):
         for bad_players_set in bad_players_sets:
 
             with self.subTest(players=bad_players_set):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Table(bad_players_set)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_list.format(type(bad_players_set).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_list.format(type(bad_players_set).__name__))
 
 
     def test_players_items_type_error(self):
@@ -86,9 +86,9 @@ class TestTableInstantiation(BasePlayersTestCase):
         for bad_player_list in (bad_players_1, bad_players_2, bad_players_3):
 
             with self.subTest(players=bad_player_list):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Table(bad_player_list)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_all_player_instances)
+                self.assertEqual(context.exception.args[0], messages.msg_not_all_player_instances)
 
 
     def test_full_bet_type_error(self):
@@ -100,9 +100,9 @@ class TestTableInstantiation(BasePlayersTestCase):
         for bad_full_bet_amount in bad_full_bet_amounts:
 
             with self.subTest(full_bet=bad_full_bet_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Table(self.setup_players, min_bet=bad_full_bet_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_full_bet_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_full_bet_amount).__name__))
 
 
     def test_starting_player_type_error(self):
@@ -114,9 +114,9 @@ class TestTableInstantiation(BasePlayersTestCase):
         for bad_starting_player in bad_starting_players:
 
             with self.subTest(starting_player=bad_starting_player):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Table(self.setup_players, starting_player=bad_starting_player)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(type(bad_starting_player).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_starting_player).__name__))
 
 
     def test_stopping_player_type_error(self):
@@ -128,9 +128,9 @@ class TestTableInstantiation(BasePlayersTestCase):
         for bad_stopping_player in bad_stopping_players:
 
             with self.subTest(stopping_player=bad_stopping_player):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Table(self.setup_players, stopping_player=bad_stopping_player)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(type(bad_stopping_player).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_stopping_player).__name__))
 
 
     def test_players_value_error(self):
@@ -272,9 +272,9 @@ class TestTableCardMethodsAndAttributes(BasePlayersTestCase):
             for bad_card in bad_cards:
 
                 with self.subTest(method=method.__name__, card=bad_card):
-                    with self.assertRaises(TypeError) as cm:
+                    with self.assertRaises(TypeError) as context:
                         method(bad_card)
-                    self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(type(bad_card).__name__))
+                    self.assertEqual(context.exception.args[0], messages.msg_not_card_instance.format(type(bad_card).__name__))
 
 
     def test_value_error_in_deck_related_methods(self):
@@ -383,9 +383,9 @@ class TestTableMoneyMethodsAndAttributes(BasePlayersTestCase):
             for bad_amount in bad_amounts:
 
                 with self.subTest(method=method.__name__, amount=bad_amount):
-                    with self.assertRaises(TypeError) as cm:
+                    with self.assertRaises(TypeError) as context:
                         method(bad_amount)
-                    self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                    self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
     def test_value_error_in_money_related_methods_allowing_only_positive_values(self):
@@ -403,15 +403,15 @@ class TestTableMoneyMethodsAndAttributes(BasePlayersTestCase):
 
             bad_amount = 0
             with self.subTest('zero amount', method=method.__name__, amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     method(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
 
             bad_amount = -10
             with self.subTest('negative amount', method=method.__name__, amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     method(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
 
 
     def test_value_error_in_money_related_methods_allowing_only_non_negative_values(self):
@@ -429,9 +429,9 @@ class TestTableMoneyMethodsAndAttributes(BasePlayersTestCase):
 
             bad_amount = -10
             with self.subTest('negative amount', method=method.__name__, amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     method(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
 
     def test_valid_input_in_money_related_methods_that_set_properties(self):
@@ -479,9 +479,9 @@ class TestTablePotMethodsAndAttributes(BasePlayersTestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     table.increase_central_pot(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
     def test_value_error_in_pot_related_methods(self):
@@ -492,9 +492,9 @@ class TestTablePotMethodsAndAttributes(BasePlayersTestCase):
 
         bad_amount = -10
         with self.subTest('negative amount', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 table.increase_central_pot(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
 
     def test_valid_input_in_pot_methods(self):
@@ -576,9 +576,9 @@ class TestTablePlayerMethods(BasePlayersTestCase):
             for bad_player in bad_players:
 
                 with self.subTest(method=method.__name__, player=bad_player):
-                    with self.assertRaises(TypeError) as cm:
+                    with self.assertRaises(TypeError) as context:
                         method(bad_player)
-                    self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(type(bad_player).__name__))
+                    self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_player).__name__))
 
 
     def test_value_error_in_player_related_methods(self):
@@ -821,9 +821,9 @@ class TestTablePlayerIteration(BasePlayersTestCase):
         for bad_player in bad_players:
 
             with self.subTest(player=bad_player):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     table.iter_players(bad_player)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_player_instance.format(type(bad_player).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_player).__name__))
 
 
     def test_value_error_in_player_related_methods(self):
@@ -851,9 +851,9 @@ class TestTablePlayerIteration(BasePlayersTestCase):
             with self.subTest('next on default starting player', expected_next=player.name):
                 self.assertEqual(next(generator), player)
         with self.subTest('next on default starting player (stop iteration)'):
-            with self.assertRaises(StopIteration) as cm:
+            with self.assertRaises(StopIteration) as context:
                 next(generator)
-            self.assertIsNone(cm.exception.value)
+            self.assertIsNone(context.exception.value)
 
         for i, starting_player in enumerate(self.setup_players):
 
@@ -862,9 +862,9 @@ class TestTablePlayerIteration(BasePlayersTestCase):
                 with self.subTest('next', starting=starting_player.name, expected_next=player.name):
                     self.assertEqual(next(generator), player)
             with self.subTest('next (stop iteration)', starting=starting_player):
-                with self.assertRaises(StopIteration) as cm:
+                with self.assertRaises(StopIteration) as context:
                     next(generator)
-                self.assertIsNone(cm.exception.value)
+                self.assertIsNone(context.exception.value)
 
 
     def test_backward_iteration_with_next_function(self):
@@ -878,9 +878,9 @@ class TestTablePlayerIteration(BasePlayersTestCase):
             with self.subTest('next on default starting player', expected_next=player.name):
                 self.assertEqual(next(generator), player)
         with self.subTest('next on default starting player (stop iteration)'):
-            with self.assertRaises(StopIteration) as cm:
+            with self.assertRaises(StopIteration) as context:
                 next(generator)
-            self.assertIsNone(cm.exception.value)
+            self.assertIsNone(context.exception.value)
 
         for i, starting_player in enumerate(self.setup_players):
 
@@ -889,9 +889,9 @@ class TestTablePlayerIteration(BasePlayersTestCase):
                 with self.subTest('next', starting=starting_player.name, expected_next=player.name):
                     self.assertEqual(next(generator), player)
             with self.subTest('next (stop iteration)', starting=starting_player):
-                with self.assertRaises(StopIteration) as cm:
+                with self.assertRaises(StopIteration) as context:
                     next(generator)
-                self.assertIsNone(cm.exception.value)
+                self.assertIsNone(context.exception.value)
 
 
     def test_forward_iteration_with_for_loop(self):
@@ -945,17 +945,17 @@ class TestTablePlayerIteration(BasePlayersTestCase):
         with self.subTest('forward next on single player table', expected_next=player.name):
             self.assertEqual(next(generator), player)
         with self.subTest('forward next on single player table (stop iteration)'):
-            with self.assertRaises(StopIteration) as cm:
+            with self.assertRaises(StopIteration) as context:
                 next(generator)
-            self.assertIsNone(cm.exception.value)
+            self.assertIsNone(context.exception.value)
 
         generator = table.iter_players(reverse=True)
         with self.subTest('backard next on single player table', expected_next=player.name):
             self.assertEqual(next(generator), player)
         with self.subTest('backard next on single player table (stop iteration)'):
-            with self.assertRaises(StopIteration) as cm:
+            with self.assertRaises(StopIteration) as context:
                 next(generator)
-            self.assertIsNone(cm.exception.value)
+            self.assertIsNone(context.exception.value)
 
         for iterated_player in table.iter_players():
             with self.subTest('forward for loop on single player table', expected_iter=player.name):

@@ -29,9 +29,9 @@ class TestActionInstantiation(TestCase):
         for bad_category in bad_categories:
 
             with self.subTest(category=bad_category):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Action(category=bad_category, amount=300)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(type(bad_category).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_str.format(type(bad_category).__name__))
 
 
     def test_amount_type_errors(self):
@@ -43,9 +43,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Action(constants.ACTION_BET, amount=bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
     def test_category_name_value_error(self):
@@ -57,9 +57,9 @@ class TestActionInstantiation(TestCase):
         for bad_category in bad_categories:
 
             with self.subTest(category=bad_category):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(bad_category, 200)
-                self.assertEqual(cm.exception.args[0], messages.msg_invalid_action_name.format(', '.join(constants.possible_action_names)))
+                self.assertEqual(context.exception.args[0], messages.msg_invalid_action_name.format(', '.join(constants.possible_action_names)))
 
 
     def test_fold_amount_value_error(self):
@@ -71,9 +71,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(constants.ACTION_FOLD, bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_zero_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_zero_value.format(bad_amount))
 
 
     def test_check_amount_value_error(self):
@@ -85,9 +85,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(constants.ACTION_CHECK, bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_zero_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_zero_value.format(bad_amount))
 
 
     def test_call_amount_value_error(self):
@@ -99,9 +99,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(constants.ACTION_CALL, bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
 
 
     def test_bet_amount_value_error(self):
@@ -113,9 +113,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(constants.ACTION_BET, bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
 
 
     def test_raise_amount_value_error(self):
@@ -127,9 +127,9 @@ class TestActionInstantiation(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest(amount=bad_amount):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Action(constants.ACTION_RAISE, bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_amount))
 
 
     def test_valid_instantiation(self):

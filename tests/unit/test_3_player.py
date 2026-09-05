@@ -29,9 +29,9 @@ class TestPlayerInstantiation(TestCase):
         for bad_name in bad_names:
 
             with self.subTest(name=bad_name):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Player(name=bad_name, stack=1000)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(type(bad_name).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_str.format(type(bad_name).__name__))
 
 
     def test_stack_type_errors(self):
@@ -43,9 +43,9 @@ class TestPlayerInstantiation(TestCase):
         for bad_stack in bad_stacks:
 
             with self.subTest(stack=bad_stack):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Player(name='Andy', stack=bad_stack)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_stack).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_stack).__name__))
 
 
     def test_valid_player_instantiation(self):
@@ -81,9 +81,9 @@ class TestPlayerActionMethods(TestCase):
         for bad_action in bad_actions:
 
             with self.subTest(action=bad_action):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.request_action(bad_action)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_action_instance.format(type(bad_action).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_action_instance.format(type(bad_action).__name__))
 
 
     def test_action_methods_valid_input(self):
@@ -127,9 +127,9 @@ class TestPlayerCardMethods(TestCase):
         for bad_card in bad_cards:
 
             with self.subTest(card=bad_card):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.assign_card(bad_card)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_card_instance.format(type(bad_card).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_card_instance.format(type(bad_card).__name__))
 
 
     def test_card_methods_value_errors(self):
@@ -140,9 +140,9 @@ class TestPlayerCardMethods(TestCase):
         player.assign_card(structures.Card(constants.ACES, constants.SPADES))
 
         with self.subTest('repeated card'):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.assign_card(structures.Card(constants.ACES, constants.SPADES))
-            self.assertEqual(cm.exception.args[0], messages.msg_repeated_cards)
+            self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
 
 
     def test_card_methods_valid_input(self):
@@ -194,9 +194,9 @@ class TestPlayerHandMethods(TestCase):
         for bad_hand in bad_hands:
 
             with self.subTest(hand=bad_hand):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.assign_hand(bad_hand)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_hand_instance.format(type(bad_hand).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_hand_instance.format(type(bad_hand).__name__))
 
 
     def test_hand_methods_valid_input(self):
@@ -248,14 +248,14 @@ class TestPlayerBetLevelMethods(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest('increase', amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.increase_bet_level(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
             with self.subTest('decrease', amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.decrease_bet_level(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
     def test_bet_level_methods_value_errors(self):
@@ -266,21 +266,21 @@ class TestPlayerBetLevelMethods(TestCase):
 
         bad_amount = -100
         with self.subTest('negative increase amount', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.increase_bet_level(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
         bad_amount = -100
         with self.subTest('negative decrease amount', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.decrease_bet_level(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
         bad_amount = 1
         with self.subTest('decrease amount larger than bet level', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.decrease_bet_level(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_amount_larger_than_bet_level.format(bad_amount, 0))
+            self.assertEqual(context.exception.args[0], messages.msg_amount_larger_than_bet_level.format(bad_amount, 0))
 
 
     def test_bet_level_methods_valid_input(self):
@@ -322,14 +322,14 @@ class TestPlayerStackMethods(TestCase):
         for bad_amount in bad_amounts:
 
             with self.subTest('increase', amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.increase_stack(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
             with self.subTest('decrease', amount=bad_amount):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     player.decrease_stack(bad_amount)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
     def test_stack_methods_value_errors(self):
@@ -341,21 +341,21 @@ class TestPlayerStackMethods(TestCase):
 
         bad_amount = -100
         with self.subTest('negative increase amount', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.increase_stack(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
         bad_amount = -100
         with self.subTest('negative decrease amount', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.decrease_stack(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_amount))
 
         bad_amount = 1001
         with self.subTest('decrease amount larger than stack', amount=bad_amount):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 player.decrease_stack(bad_amount)
-            self.assertEqual(cm.exception.args[0], messages.msg_amount_larger_than_stack.format(bad_amount, stack))
+            self.assertEqual(context.exception.args[0], messages.msg_amount_larger_than_stack.format(bad_amount, stack))
 
 
     def test_stack_methods_valid_input(self):

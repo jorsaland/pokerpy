@@ -28,9 +28,9 @@ class TestHandInstantiation(TestCase):
         for bad_value in bad_values:
 
             with self.subTest(value=bad_value):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Hand(bad_value)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_iterable_object.format(type(bad_value).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_iterable_object.format(type(bad_value).__name__))
 
 
     def test_cards_items_type_error(self):
@@ -56,9 +56,9 @@ class TestHandInstantiation(TestCase):
         for bad_card_set in (bad_cards_1, bad_cards_2, bad_cards_3, bad_cards_4):
 
             with self.subTest(cards=bad_card_set):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Hand(bad_card_set)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_all_card_instances)
+                self.assertEqual(context.exception.args[0], messages.msg_not_all_card_instances)
 
 
     def test_valid_instantiation(self):

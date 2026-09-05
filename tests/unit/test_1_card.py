@@ -28,9 +28,9 @@ class TestCardInstantiation(TestCase):
         for bad_value in bad_values:
 
             with self.subTest(value=bad_value):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Card(bad_value, constants.SPADES)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(type(bad_value).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_str.format(type(bad_value).__name__))
 
 
     def test_suit_type_errors(self):
@@ -42,9 +42,9 @@ class TestCardInstantiation(TestCase):
         for bad_suit in bad_suits:
 
             with self.subTest(suit=bad_suit):
-                with self.assertRaises(TypeError) as cm:
+                with self.assertRaises(TypeError) as context:
                     structures.Card(constants.EIGHTS, bad_suit)
-                self.assertEqual(cm.exception.args[0], messages.msg_not_str.format(type(bad_suit).__name__))
+                self.assertEqual(context.exception.args[0], messages.msg_not_str.format(type(bad_suit).__name__))
 
 
     def test_card_value_value_error(self):
@@ -62,9 +62,9 @@ class TestCardInstantiation(TestCase):
         for bad_value in bad_values:
 
             with self.subTest(value=bad_value):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Card(bad_value, constants.SPADES)
-                self.assertEqual(cm.exception.args[0], messages.msg_invalid_card_value.format(', '.join(constants.sorted_card_values)))
+                self.assertEqual(context.exception.args[0], messages.msg_invalid_card_value.format(', '.join(constants.sorted_card_values)))
 
 
     def test_card_suit_value_error(self):
@@ -80,9 +80,9 @@ class TestCardInstantiation(TestCase):
         for bad_suit in bad_suits:
 
             with self.subTest(suit=bad_suit):
-                with self.assertRaises(ValueError) as cm:
+                with self.assertRaises(ValueError) as context:
                     structures.Card(constants.EIGHTS, bad_suit)
-                self.assertEqual(cm.exception.args[0], messages.msg_invalid_card_suit.format(', '.join(constants.sorted_card_suits)))
+                self.assertEqual(context.exception.args[0], messages.msg_invalid_card_suit.format(', '.join(constants.sorted_card_suits)))
 
 
     def test_joker_value_error(self):
@@ -92,14 +92,14 @@ class TestCardInstantiation(TestCase):
         joker = 'joker'
 
         with self.subTest('joker as value'):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 structures.Card(joker, constants.SPADES)
-            self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
+            self.assertEqual(context.exception.args[0], messages.msg_wildcard)
 
         with self.subTest('joker as suit'):
-            with self.assertRaises(ValueError) as cm:
+            with self.assertRaises(ValueError) as context:
                 structures.Card(constants.ACES, 'joker')
-            self.assertEqual(cm.exception.args[0], messages.msg_wildcard)
+            self.assertEqual(context.exception.args[0], messages.msg_wildcard)
 
 
     def test_valid_instantiation(self):
