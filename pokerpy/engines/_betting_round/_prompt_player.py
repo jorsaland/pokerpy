@@ -68,7 +68,7 @@ def prompt_player(
         full_bet_level = table.full_bet_level,
         min_bet = table.min_bet,
         min_raise_increase = table.min_raise_increase,
-        is_last_active_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
+        is_last_actionable_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
         open_fold_allowed = open_fold_allowed,
         raise_invalid_actions = raise_invalid_actions,
     )

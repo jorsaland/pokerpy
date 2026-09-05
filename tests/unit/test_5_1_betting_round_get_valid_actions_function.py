@@ -28,112 +28,112 @@ class TestImpossibleSituations(TestCase):
         with self.subTest('negative player stack'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = -1,
+                    player_stack = -1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('negative player amount'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = -1,
+                    player_stack = 1000,
+                    player_bet_level = -100,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('negative bet level'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
-                    bet_level = -1,
+                    bet_level = -100,
                     full_bet_level = 0,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('negative full bet level'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
-                    full_bet_level = -1,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    full_bet_level = -100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('negative minimum bet'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = -1,
-                    min_raise_increase = 1,
+                    min_bet = -100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('zero minimum bet'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
                     min_bet = 0,
-                    min_raise_increase = 1,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('negative minimum raise increase'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 1,
-                    min_raise_increase = -1,
+                    min_bet = 100,
+                    min_raise_increase = -100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('zero minimum raise increase'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 1,
+                    min_bet = 100,
                     min_raise_increase = 0,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
@@ -145,42 +145,42 @@ class TestImpossibleSituations(TestCase):
         with self.subTest('minimum raise increase smaller than minimum bet'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 2,
-                    min_raise_increase = 1,
+                    min_bet = 100,
+                    min_raise_increase = 50,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('minimum raise expected level not larger than current bet level'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
-                    bet_level = 2,
+                    bet_level = 200,
                     full_bet_level = 0,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
         with self.subTest('bet level smaller than full current level'):
             with self.assertRaises(AssertionError):
                 engines.get_valid_actions(
-                    player_stack = 10,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
-                    full_bet_level = 1,
-                    min_bet = 1,
-                    min_raise_increase = 1,
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 )
 
@@ -198,345 +198,350 @@ class TestNotFacingAnAggression(TestCase):
 
         "Tests player not having enough chips to cover a full bet."
 
-        with self.subTest('player has not placed money, open fold is allowed'):
+        with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
+                    player_stack = 50,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_CHECK: range(0, 1),
+                    constants.ACTION_BET: range(50, 51),
+                },
+            )
+
+        with self.subTest('has not placed money, open fold is allowed'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 50,
+                    player_bet_level = 0,
+                    bet_level = 0,
+                    full_bet_level = 0,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(1, 2),
+                    constants.ACTION_BET: range(50, 51),
                 },
             )
 
-        with self.subTest('player has not placed money, open fold is not allowed'):
+        with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 0,
-                    bet_level = 0,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(1, 2),
+                    constants.ACTION_BET: range(50, 51),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 2,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(1, 2),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind, open fold is allowed'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(1, 2),
-                },
-            )
-
-        with self.subTest('player has placed a big blind, open fold is not allowed'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(1, 2),
+                    constants.ACTION_BET: range(50, 51),
                 },
             )
 
 
     def test_not_facing_aggression_can_afford_a_full_bet_but_no_more(self):
 
-        "Tests players having just enough chips to cover a full bet."
+        "Tests player having just enough chips to cover a full bet."
 
-        with self.subTest('player has not placed money, open fold is not allowed'):
+        with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
+                    player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 5),
+                    constants.ACTION_BET: range(100, 101),
                 },
             )
 
-        with self.subTest('player has not placed money, open fold is allowed'):
+        with self.subTest('has not placed money, open fold is allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
+                    player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 5),
+                    constants.ACTION_BET: range(100, 101),
                 },
             )
 
-        with self.subTest('player has placed a small blind and has just enough to call'):
+        with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 2,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind, open fold is allowed'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 5),
+                    constants.ACTION_BET: range(100, 101),
                 },
             )
 
-        with self.subTest('player has placed a big blind, open fold is not allowed'):
+        with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 5),
+                    constants.ACTION_BET: range(100, 101),
                 },
             )
 
 
     def test_not_facing_aggression_can_afford_more_than_a_full_bet(self):
 
-        "Tests cases when the player has more than enough chips to cover a full bet."
+        "Tests player having more than enough chips to cover a full bet."
 
-        with self.subTest('player has not placed money, open fold is allowed'):
+        with self.subTest('has not placed money, open fold is allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 101),
+                    constants.ACTION_BET: range(100, 1001),
                 },
             )
 
-        with self.subTest('player has not placed money, open fold is not allowed'):
+        with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
+                    player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 101),
+                    constants.ACTION_BET: range(100, 1001),
                 },
             )
 
-        with self.subTest('player has placed a small blind and has more than enough to call but not enough to make a full raise'):
+        with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 2,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 900,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_RAISE: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and has just enough money to make a full raise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 2,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and has more than enough money to make a full raise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_RAISE: range(6, 101),
-                },
-            )
-
-        with self.subTest('player has placed a big blind, open fold is allowed'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = True,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 101),
+                    constants.ACTION_BET: range(100, 901),
                 },
             )
 
-        with self.subTest('player has placed a big blind, open fold is not allowed'):
+        with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 900,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100, ## *BB*
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_CHECK: range(0, 1),
-                    constants.ACTION_BET: range(4, 101),
+                    constants.ACTION_BET: range(100, 901),
+                },
+            )
+
+
+    def test_not_facing_aggression_being_small_blind(self):
+
+        "Tests player being the small blind."
+
+        with self.subTest('small blind, not enough to call'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 20,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100, ## BB
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_CALL: range(20, 21),
+                    constants.ACTION_FOLD: range(0, 1),
+                },
+            )
+
+        with self.subTest('small blind, just enough to call'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 50,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100, ## BB
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_CALL: range(50, 51),
+                    constants.ACTION_FOLD: range(0, 1),
+                },
+            )
+
+        with self.subTest('small blind, not enough to make a full raise'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 100,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100, ## BB
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(50, 51),
+                    constants.ACTION_RAISE: range(100, 101),
+                },
+            )
+
+        with self.subTest('small blind, just enough to make a full raise'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 150,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100, ## BB
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(50, 51),
+                    constants.ACTION_RAISE: range(150, 151),
+                },
+            )
+
+        with self.subTest('small blind, more than enough to make a full raise'):
+            self.assertDictEqual(
+                engines.get_valid_actions(
+                    player_stack = 1000,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100, ## BB
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = False,
+                    is_last_actionable_player = False,
+                    open_fold_allowed = False,
+                ),
+                {
+                    constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(50, 51),
+                    constants.ACTION_RAISE: range(150, 1001),
                 },
             )
 
@@ -554,136 +559,117 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         "Tests player not having enough chips to cover the call amount."
 
-        with self.subTest('player has not placed money'):
+        with self.subTest('has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
+                    player_stack = 20,
                     player_bet_level = 0,
-                    bet_level = 2,
+                    bet_level = 50, ## underbet
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(20, 21),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 20,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 50, ## *BB* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_CALL: range(1, 2),
                     constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(20, 21),
                 },
             )
 
-        with self.subTest('player has placed a big blind'):
+        with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 20,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 50, ## *bet* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(20, 21),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full bet'):
+        with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 50,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 100, ## *overbet* + underraise
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 20,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
+                    full_bet_level = 200,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(20, 21),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 50,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
@@ -692,136 +678,117 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         "Tests player having just enough chips to cover the call amount."
 
-        with self.subTest('player has not placed money'):
+        with self.subTest('has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
+                    player_stack = 50,
                     player_bet_level = 0,
-                    bet_level = 2,
+                    bet_level = 50, ## underbet
                     full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 50, ## *BB* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_CALL: range(4, 5),
                     constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has placed a big blind'):
+        with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 50, ## *bet* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full bet'):
+        with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 100,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 100, ## *overbet* + underraise
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 50,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 50, ## bet + *raise* + *underraise*
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    player_stack = 100,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
+                    player_has_played = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 2,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
@@ -830,196 +797,125 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         "Test player having enough chips to make an increment but not to complete the full bet or raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(3, 4),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(70, 71)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 70,
+                        player_bet_level = 0,
+                        bet_level = 50, ## underbet
+                        full_bet_level = 0,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(70, 71)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 70,
+                        player_bet_level = 0,
+                        bet_level = 50, ## underbet
+                        full_bet_level = 0,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
+        with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(3, 4),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 70,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 50, ## *bet* + underbet
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 120,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 100, ## *overbet* + underraise
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 70,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overraise'):
+        with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 3,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 120,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
@@ -1028,792 +924,366 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         "Tests player having just enough chips to complete the bet or raise, but not to re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 5),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(100, 101)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 100,
+                        player_bet_level = 0,
+                        bet_level = 50, ## underbet
+                        full_bet_level = 0,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(100, 101)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 100,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 50, ## *BB* + underraise
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
+        with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 50, ## *bet* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 100, ## *overbet* + underraise
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overraise'):
+        with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
 
-    def test_facing_incomplete_aggression_can_afford_to_complete_the_aggression_but_not_to_make_a_full_reraise(self):
+    def test_facing_incomplete_aggression_can_afford_to_complete_the_aggression_and_more(self):
 
         "Tests player having more than enough chips to complete the bet or raise but not to make a full re-raise"
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(100, 1001)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 1000,
+                        player_bet_level = 0,
+                        bet_level = 50, ## underbet
+                        full_bet_level = 0,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(50, 51),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_BET] = range(100, 901)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 900,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 50, ## *BB* + underraise
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
+        with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(6, 8),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 6),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 900,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 50, ## *bet* + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 850,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 100, ## *overbet* + underraise
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 800,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overraise'):
+        with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 750,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
 
-    def test_facing_incomplete_aggression_can_afford_make_a_full_reraise_but_no_more(self):
+    def test_facing_incomplete_aggression_being_small_blind(self):
 
-        "Tests player having just enough chips to complete a full re-raise."
+        "Tests player being the small blind."
 
-        with self.subTest('player has not placed money and there are more active players'):
+        with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 50, ## BB + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 9),
-                },
-            )
-
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(6, 11),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(50, 51),
                     constants.ACTION_FOLD: range(0, 1),
                 },
             )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 9),
-                },
-            )
-
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-
-    def test_facing_incomplete_aggression_can_afford_make_a_full_reraise_and_more(self):
-
-        "Tests player having more than enough chips to complete a full re-raise."
-
-        with self.subTest('player has not placed money and there are more active players'):
+        with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
                     player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 50, ## BB + underraise
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 101),
-                },
-            )
-
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 2,
-                    full_bet_level = 0,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(6, 101),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(100, 101),
                     constants.ACTION_FOLD: range(0, 1),
                 },
             )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                    constants.ACTION_BET: range(4, 101),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(120, 121)
+            with self.subTest('small blind, not enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 120,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 50, ## BB + underraise
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 151)
+            with self.subTest('small blind, just enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 150,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 150, ## BB + underraise
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has previously opened or called a full bet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 6,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 5,
-                    bet_level = 7,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 8,
-                    bet_level = 10,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 9,
-                    bet_level = 11,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(2, 3),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 951)
+            with self.subTest('small blind, more than enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 950,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 50, ## BB + underraise
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
 class TestFacingACompleteAggression(TestCase):
@@ -1829,136 +1299,117 @@ class TestFacingACompleteAggression(TestCase):
 
         "Tests player not having enough chips to cover the call amount."
 
-        with self.subTest('player has not placed money'):
+        with self.subTest('has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
+                    player_stack = 50,
                     player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    bet_level = 100, ## bet
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 100, ## *BB* + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(1, 2),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full bet'):
+        with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 100, ## *bet* + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 100,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 150, ## *overbet* + raise
+                    full_bet_level = 150 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 50,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 100, ## bet + *raise* + raise
+                    full_bet_level = 100 + 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(50, 51),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 100,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
+                    full_bet_level = 100 + 150 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
@@ -1967,136 +1418,117 @@ class TestFacingACompleteAggression(TestCase):
 
         "Tests player having just enough chips to cover the call amount."
 
-        with self.subTest('player has not placed money'):
+        with self.subTest('has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
+                    player_stack = 100,
                     player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    bet_level = 100, ## bet
+                    full_bet_level = 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 100, ## *BB* + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full bet'):
+        with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 100, ## *bet* + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 150, ## *overbet* + raise
+                    full_bet_level = 150 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 4,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 100,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 100, ## bet + *raise* + raise
+                    full_bet_level = 100 + 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overraise'):
+        with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
+                    full_bet_level = 100 + 150 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
@@ -2105,834 +1537,541 @@ class TestFacingACompleteAggression(TestCase):
 
         "Tests player having more than enough chips to complete the bet or raise but not to make a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 151)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 150,
+                        player_bet_level = 0,
+                        bet_level = 100, ## bet
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 151)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 150,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 100, ## *BB* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(7, 8),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 151)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 150,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 100, ## *bet* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 150, ## *overbet* + raise
+                        full_bet_level = 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(150, 151)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 150,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 100, ## bet + *raise* + raise
+                        full_bet_level = 100 + 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
+                        full_bet_level = 100 + 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
     def test_facing_complete_aggression_can_afford_make_a_full_reraise_but_no_more(self):
 
         "Tests player having just enough chips to complete a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 9),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 201)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 200,
+                        player_bet_level = 0,
+                        bet_level = 100, ## bet
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 201)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 200,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 100, ## *BB* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 201)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 200,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 100, ## *bet* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 150, ## *overbet* + raise
+                        full_bet_level = 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 9),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 201)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 200,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 100, ## bet + *raise* + raise
+                        full_bet_level = 100 + 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 9),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 9),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
+                        full_bet_level = 100 + 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
     def test_facing_complete_aggression_can_afford_make_a_full_reraise_and_more(self):
 
         "Tests player having more than enough chips to complete a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 1001)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 1000,
+                        player_bet_level = 0,
+                        bet_level = 100, ## bet
+                        full_bet_level = 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 901)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 900,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 100, ## *BB* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 901)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 900,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 100, ## *bet* + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 851)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 850,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 150, ## *overbet* + raise
+                        full_bet_level = 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(100, 101),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 801)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 800,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 100, ## bet + *raise* + raise
+                        full_bet_level = 100 + 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 751)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 750,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
+                        full_bet_level = 100 + 150 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+
+    def test_facing_complete_aggression_being_small_blind(self):
+
+        "Tests player being the small blind."
+
+        with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
                     player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 100, ## BB + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
+                    constants.ACTION_CALL: range(100, 101),
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 101),
                 },
             )
 
-        with self.subTest('player has not placed money and is the last active player'):
+        with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 4,
-                    full_bet_level = 4,
-                    min_bet = 4,
-                    min_raise_increase = 4,
+                    player_stack = 150,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 100, ## BB + raise
+                    full_bet_level = 100 + 100,
+                    min_bet = 100,
+                    min_raise_increase = 100,
                     player_has_played = False,
-                    is_last_active_player = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(6, 7),
+                    constants.ACTION_CALL: range(150, 151),
                     constants.ACTION_FOLD: range(0, 1),
                 },
             )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 101),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(200, 201)
+            with self.subTest('small blind, not enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 200,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 100, ## BB + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('small blind, just enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 100, ## BB + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 8,
-                    full_bet_level = 8,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 5,
-                    bet_level = 10,
-                    full_bet_level = 10,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                    constants.ACTION_RAISE: range(8, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 8,
-                    bet_level = 12,
-                    full_bet_level = 12,
-                    min_bet = 4,
-                    min_raise_increase = 4,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(4, 5),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 9,
-                    bet_level = 14,
-                    full_bet_level = 14,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 951)
+            with self.subTest('small blind, more than enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 950,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 100, ## BB + raise
+                        full_bet_level = 100 + 100,
+                        min_bet = 100,
+                        min_raise_increase = 100,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
 class TestFacingAnOverAggression(TestCase):
@@ -2948,136 +2087,117 @@ class TestFacingAnOverAggression(TestCase):
 
         "Tests player not having enough chips to cover the call amount."
 
-        with self.subTest('player has not placed money'):
+        with self.subTest('has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
+                    player_stack = 100,
                     player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    bet_level = 150, ## overbet
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has placed a small blind'):
+        with self.subTest('has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 150, ## *BB* + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(1, 2),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
-
-        with self.subTest('player has placed a big blind'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full bet'):
+        with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 100,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 150, ## *bet* + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
+                    player_stack = 150,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 250, ## *overbet* + overraise
+                    full_bet_level = 150 + 250,
+                    min_bet = 100,
+                    min_raise_increase = 250,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
-        with self.subTest('player has previously opened or called a full raise'):
+        with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 100,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
+                    full_bet_level = 100 + 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(100, 101),
                 },
             )
 
-        with self.subTest('player has previously opened or called an overbet'):
+        with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 1,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
+                    player_stack = 150,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
+                    full_bet_level = 100 + 150 + 250,
+                    min_bet = 100,
+                    min_raise_increase = 250,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(1, 2),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
@@ -3089,133 +2209,114 @@ class TestFacingAnOverAggression(TestCase):
         with self.subTest('player has not placed money'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
+                    player_stack = 150,
                     player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    bet_level = 150, ## overbet
+                    full_bet_level = 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has placed a small blind'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
         with self.subTest('player has placed a big blind'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 100, ## *BB*
+                    bet_level = 100 + 150, ## *BB* + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
         with self.subTest('player has previously opened or called a full bet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 100, ## *bet*
+                    bet_level = 100 + 150, ## *bet* + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
         with self.subTest('player has previously opened or called an overbet'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
+                    player_stack = 250,
+                    player_bet_level = 150, ## *overbet*
+                    bet_level = 150 + 250, ## *overbet* + overraise
+                    full_bet_level = 150 + 250,
+                    min_bet = 100,
+                    min_raise_increase = 250,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
+                    constants.ACTION_CALL: range(250, 251),
                 },
             )
 
         with self.subTest('player has previously opened or called a full raise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 5,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 100 + 100, ## bet + *raise*
+                    bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
+                    full_bet_level = 100 + 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
+                    constants.ACTION_CALL: range(150, 151),
                 },
             )
 
         with self.subTest('player has previously opened or called an overraise'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
+                    player_stack = 250,
+                    player_bet_level = 100 + 150, ## bet + *overraise*
+                    bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
+                    full_bet_level = 100 + 150 + 250,
+                    min_bet = 100,
+                    min_raise_increase = 250,
                     player_has_played = True,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
+                    constants.ACTION_CALL: range(250, 251),
                 },
             )
 
@@ -3224,834 +2325,541 @@ class TestFacingAnOverAggression(TestCase):
 
         "Tests player having more than enough chips to complete the bet or raise but not to make a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 0,
+                        bet_level = 150, ## overbet
+                        full_bet_level = 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 150, ## *BB* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(8, 9),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 150, ## *bet* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 8,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(400, 401)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 400,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 250, ## *overbet* + overraise
+                        full_bet_level = 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
+                        full_bet_level = 100 + 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(7, 8),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 6,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(7, 8),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 7,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(400, 401)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 400,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
+                        full_bet_level = 100 + 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
     def test_facing_over_aggression_can_afford_make_a_full_reraise_but_no_more(self):
 
         "Tests player having just enough chips to complete a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 0,
+                        bet_level = 150, ## overbet
+                        full_bet_level = 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has not placed money and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 150, ## *BB* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(12, 13),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 150, ## *bet* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(500, 501)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 500,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 250, ## *overbet* + overraise
+                        full_bet_level = 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 301)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 300,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
+                        full_bet_level = 100 + 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(12, 13),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 11),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 10,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(12, 13),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 12,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = True,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(500, 501)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 500,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
+                        full_bet_level = 100 + 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
     def test_facing_over_aggression_can_afford_make_a_full_reraise_and_more(self):
 
         "Tests player having more than enough chips to complete a full re-raise."
 
-        with self.subTest('player has not placed money and there are more active players'):
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 1001)
+            with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 1000,
+                        player_bet_level = 0,
+                        bet_level = 150, ## overbet
+                        full_bet_level = 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 901)
+            with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 900,
+                        player_bet_level = 100, ## *BB*
+                        bet_level = 100 + 150, ## *BB* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 901)
+            with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 900,
+                        player_bet_level = 100, ## *bet*
+                        bet_level = 100 + 150, ## *bet* + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(500, 851)
+            with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 850,
+                        player_bet_level = 150, ## *overbet*
+                        bet_level = 150 + 250, ## *overbet* + overraise
+                        full_bet_level = 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(150, 151),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(300, 801)
+            with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 800,
+                        player_bet_level = 100 + 100, ## bet + *raise*
+                        bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
+                        full_bet_level = 100 + 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(250, 251),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(500, 751)
+            with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 750,
+                        player_bet_level = 100 + 150, ## bet + *overraise*
+                        bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
+                        full_bet_level = 100 + 150 + 250,
+                        min_bet = 100,
+                        min_raise_increase = 250,
+                        player_has_played = True,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
+
+
+    def test_facing_over_aggression_being_small_blind(self):
+
+        "Tests player being the small blind."
+
+        with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 150,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 150, ## BB + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = False,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
+                    constants.ACTION_CALL: range(150, 151),
                     constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
                 },
             )
 
-        with self.subTest('player has not placed money and is the last active player'):
+        with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
                 engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 0,
-                    bet_level = 5,
-                    full_bet_level = 5,
-                    min_bet = 4,
-                    min_raise_increase = 5,
+                    player_stack = 200,
+                    player_bet_level = 50, ## *SB*
+                    bet_level = 100 + 150, ## BB + overraise
+                    full_bet_level = 100 + 150,
+                    min_bet = 100,
+                    min_raise_increase = 150,
                     player_has_played = False,
-                    is_last_active_player = True,
+                    is_last_actionable_player = False,
                     open_fold_allowed = False,
                 ),
                 {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_RAISE: range(12, 101),
-                },
-            )
-
-        with self.subTest('player has placed a small blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 2,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_CALL: range(7, 8),
+                    constants.ACTION_CALL: range(200, 201),
                     constants.ACTION_FOLD: range(0, 1),
                 },
             )
 
-        with self.subTest('player has placed a big blind and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(200, 201),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(250, 251)
+            with self.subTest('small blind, not enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 250,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 150, ## BB + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has placed a big blind and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(200, 201),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(350, 351)
+            with self.subTest('small blind, just enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 350,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 150, ## BB + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
-        with self.subTest('player has previously opened or called a full bet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full bet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 4,
-                    bet_level = 9,
-                    full_bet_level = 9,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(12, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overbet and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 5,
-                    bet_level = 11,
-                    full_bet_level = 11,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                    constants.ACTION_RAISE: range(10, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called a full raise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 8,
-                    bet_level = 13,
-                    full_bet_level = 13,
-                    min_bet = 4,
-                    min_raise_increase = 5,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(5, 6),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and there are more active players'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = False,
-                    is_last_active_player = False,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                    constants.ACTION_RAISE: range(12, 101),
-                },
-            )
-
-        with self.subTest('player has previously opened or called an overraise and is the last active player'):
-            self.assertDictEqual(
-                engines.get_valid_actions(
-                    player_stack = 100,
-                    player_bet_level = 9,
-                    bet_level = 15,
-                    full_bet_level = 15,
-                    min_bet = 4,
-                    min_raise_increase = 6,
-                    player_has_played = False,
-                    is_last_active_player = True,
-                    open_fold_allowed = False,
-                ),
-                {
-                    constants.ACTION_FOLD: range(0, 1),
-                    constants.ACTION_CALL: range(6, 7),
-                },
-            )
+        for is_last_actionable_player in (False, True):
+            valid_actions = {
+                constants.ACTION_FOLD: range(0, 1),
+                constants.ACTION_CALL: range(200, 201),
+            }
+            if not is_last_actionable_player:
+                valid_actions[constants.ACTION_RAISE] = range(350, 951)
+            with self.subTest('small blind, more than enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
+                self.assertDictEqual(
+                    engines.get_valid_actions(
+                        player_stack = 950,
+                        player_bet_level = 50, ## *SB*
+                        bet_level = 100 + 150, ## BB + overraise
+                        full_bet_level = 100 + 150,
+                        min_bet = 100,
+                        min_raise_increase = 150,
+                        player_has_played = False,
+                        is_last_actionable_player = is_last_actionable_player,
+                        open_fold_allowed = False,
+                    ),
+                    valid_actions,
+                )
 
 
 if __name__ == '__main__':

@@ -36,7 +36,7 @@ def get_valid_actions(
     min_bet: int,
     min_raise_increase: int,
     player_has_played: bool,
-    is_last_active_player: bool,
+    is_last_actionable_player: bool,
     open_fold_allowed: bool
 ):
 
@@ -93,7 +93,7 @@ def get_valid_actions(
             amount_range_by_action[ACTION_FOLD] = get_fold_range()
 
     # there may not be anyone to respond a bet/raise
-    if is_last_active_player:
+    if is_last_actionable_player:
         return amount_range_by_action
 
     # the player stack may be enough only to call

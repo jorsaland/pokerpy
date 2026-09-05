@@ -52,7 +52,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = True,
         )
@@ -82,7 +82,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = True,
         )
@@ -113,7 +113,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = True,
         )
@@ -153,7 +153,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = False,
         )
@@ -186,7 +186,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = True,
         )
@@ -221,7 +221,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = False,
         )
@@ -261,7 +261,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = True,
         )
@@ -305,7 +305,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = False,
         )
@@ -350,7 +350,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             full_bet_level = self.table.full_bet_level,
             min_bet = 2,
             min_raise_increase = 2,
-            is_last_active_player = False,
+            is_last_actionable_player = False,
             open_fold_allowed = False,
             raise_invalid_actions = False,
         )

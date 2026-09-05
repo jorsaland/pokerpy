@@ -216,7 +216,7 @@ class BettingRound:
             full_bet_level = self.table.full_bet_level,
             min_bet = self.table.min_bet,
             min_raise_increase = self.table.min_raise_increase,
-            is_last_active_player = (
+            is_last_actionable_player = (
                 self.table.current_player in self.table.actionable_players
                 and len(self.table.actionable_players) == 1
             ),

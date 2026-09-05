@@ -35,7 +35,7 @@ def await_player(
     full_bet_level: int,
     min_bet: int,
     min_raise_increase: int,
-    is_last_active_player: bool,
+    is_last_actionable_player: bool,
     open_fold_allowed: bool,
     raise_invalid_actions: bool
 ):
@@ -66,7 +66,7 @@ def await_player(
             min_bet = min_bet,
             min_raise_increase = min_raise_increase,
             player_has_played = player.has_played,
-            is_last_active_player = is_last_active_player,
+            is_last_actionable_player = is_last_actionable_player,
             open_fold_allowed = open_fold_allowed,
         )
         amount_range = amount_range_by_action.get(action.category)
