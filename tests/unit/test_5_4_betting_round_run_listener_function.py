@@ -100,7 +100,7 @@ class BaseForcedBetsTestCase(TestCase):
 class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when the first requested action is fold."
+    "Runs unit tests on run_listener function when the first requested action is fold."
 
 
     def test_folds(self):
@@ -481,7 +481,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
 class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when the first requested action is check."
+    "Runs unit tests on run_listener function when the first requested action is check."
 
 
     def test_check_to_folds(self):
@@ -871,7 +871,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
 class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when the first requested action is bet."
+    "Runs unit tests on run_listener function when the first requested action is bet."
 
 
     def test_bet_to_folds(self):
@@ -1258,10 +1258,420 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             self.assertEqual(self.betting_round.lap_counts, lap)
 
 
+class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
+
+
+    "Runs unit tests on run_listener function chaining actions to make all players go all-in."
+
+
+    def test_starting_with_full_stacks(self):
+
+        "Tests players starting with full stacks."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Boa, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Coral, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Dino, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Epa, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Fomi, structures.Action(constants.ACTION_BET, 100)),
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
+            (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+            (2, self.Coral, structures.Action(constants.ACTION_CALL, 100)),
+            (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
+            (2, self.Epa, structures.Action(constants.ACTION_RAISE, 300)),
+            (2, self.Fomi, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Andy, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Boa, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Dino, structures.Action(constants.ACTION_RAISE, 500)),
+            (3, self.Epa, structures.Action(constants.ACTION_CALL, 300)),
+            (3, self.Fomi, structures.Action(constants.ACTION_CALL, 300)),
+            (4, self.Andy, structures.Action(constants.ACTION_CALL, 300)),
+            (4, self.Boa, structures.Action(constants.ACTION_CALL, 300)),
+            (4, self.Coral, structures.Action(constants.ACTION_RAISE, 700)),
+            (4, self.Dino, structures.Action(constants.ACTION_CALL, 400)),
+            (4, self.Epa, structures.Action(constants.ACTION_CALL, 400)),
+            (4, self.Fomi, structures.Action(constants.ACTION_CALL, 400)),
+            (5, self.Andy, structures.Action(constants.ACTION_CALL, 400)),
+            (5, self.Boa, structures.Action(constants.ACTION_CALL, 400)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_fold_to_calls(self):
+
+        "Tests first player betting, next folding and others checking."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Coral, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_fold_to_raise_to_folds(self):
+
+        "Tests first player betting, next folding, next raising and others folding."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_fold_to_raise_to_calls(self):
+
+        "Tests first player betting, next folding, next raising and others calling."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_call_to_folds(self):
+
+        "Tests first player betting, next calling and others folding."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Coral, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_calls(self):
+
+        "Tests first player betting and others calling."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Coral, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_call_to_raise_to_folds(self):
+
+        "Tests first player betting, next calling, next raising and others folding."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_call_to_raise_to_calls(self):
+
+        "Tests first player betting, next calling, next raising and others calling."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
+            (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_raise_to_folds(self):
+
+        "Tests first player betting, next raising and others folding."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Coral, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_raise_to_calls(self):
+
+        "Tests first player betting, next raising and others calling."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 200)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_raise_to_raise_to_folds(self):
+
+        "Tests first player betting, next two raising and others folding."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 300)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
+            (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_bet_to_raise_to_raise_to_calls(self):
+
+        "Tests first player betting, next two raising and others calling."
+
+        laps_and_players_and_actions = (
+            (1, self.Andy, structures.Action(constants.ACTION_BET, 100)),
+            (1, self.Boa, structures.Action(constants.ACTION_RAISE, 200)),
+            (1, self.Coral, structures.Action(constants.ACTION_RAISE, 300)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 300)),
+            (1, self.Epa, structures.Action(constants.ACTION_CALL, 300)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 300)),
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when there are forced bets and the first requested action is fold."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is fold."
 
 
     def test_with_blinds_folds(self):
@@ -1642,7 +2052,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when there are forced bets and the first requested action is fold."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is fold."
 
 
     def test_with_blinds_check_or_call_to_folds(self):
@@ -2032,7 +2442,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on BettingRound class run method when there are forced bets and the first requested action is bet."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is bet."
 
 
     def test_with_blinds_bet_or_raise_to_folds(self):
@@ -2417,9 +2827,6 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
                 next(generator)
             self.assertIsNone(context.exception.value)
             self.assertEqual(self.betting_round.lap_counts, lap)
-
-
-...
 
 
 if __name__ == '__main__':

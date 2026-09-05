@@ -264,5 +264,28 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
                 self.assertIsNone(context.exception.value)
 
 
+    def test_last_remaining_player(self):
+
+        "Tests prompted player cannot parse an action because is the last one remaining in the hand cycle."
+
+        self.table.set_current_player(self.Andy)
+
+        self.Boa.mark_is_folded()
+        self.Coral.mark_is_folded()
+        self.Dino.mark_is_folded()
+        self.Epa.mark_is_folded()
+        self.Fomi.mark_is_folded()
+
+        generator = engines.prompt_player(
+            table = self.table,
+            open_fold_allowed = False,
+            raise_invalid_actions = True,
+        )
+
+        with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
+            next(generator)
+        self.assertEqual(context.exception.cause, messages.signal_last_player_in_hand)
+
+
 if __name__ == '__main__':
     main()

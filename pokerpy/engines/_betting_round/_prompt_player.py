@@ -24,6 +24,7 @@ from pokerpy.messages import (
     signal_all_in_stopping_player,
     signal_folded_player,
     signal_folded_stopping_player,
+    signal_last_player_in_hand,
     signal_passive_stopping_player,
 )
 from pokerpy.structures import Table
@@ -43,6 +44,9 @@ def prompt_player(
     """
     Evaluates if the current player is able to request an action and listens to it.
     """
+
+    if len(table.live_players) == 1:
+        raise CloseBettingRoundSignal(signal_last_player_in_hand)
 
     if table.current_player.is_folded:
         if table.current_player == table.stopping_player:

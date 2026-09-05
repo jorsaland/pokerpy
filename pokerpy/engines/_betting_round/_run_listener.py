@@ -41,25 +41,26 @@ def run_listener(betting_round: "BettingRound"):
     Starts the betting round generator that rotates the player turns.
     """
 
-    player_cycle = cycle(betting_round.table.iter_players())
+    # If a betting round starts with only one player who is not folded or all-in, does not make
+    # sense for that player to play. However, if the round is already going on, that player can
+    # actually choose an action between calling and folding. That is why here is an if statement
+    # and not a while loop.
+    if len(betting_round.table.actionable_players) > 1:
 
-    while len(betting_round.table.actionable_players) > 1:
-
-        player = next(player_cycle)
-
-        betting_round.table.set_current_player(player)
-        if player == betting_round.table.starting_player:
-            betting_round.increase_counter()
-        try:
-            yield from prompt_player(
-                table = betting_round.table,
-                open_fold_allowed = betting_round.open_fold_allowed,
-                raise_invalid_actions = betting_round.raise_invalid_actions
-            )
-        except JumpToNextPlayerSignal:
-            continue
-        except CloseBettingRoundSignal:
-            break
+        for player in cycle(betting_round.table.iter_players()):
+            betting_round.table.set_current_player(player)
+            if player == betting_round.table.starting_player:
+                betting_round.increase_counter()
+            try:
+                yield from prompt_player(
+                    table = betting_round.table,
+                    open_fold_allowed = betting_round.open_fold_allowed,
+                    raise_invalid_actions = betting_round.raise_invalid_actions
+                )
+            except JumpToNextPlayerSignal:
+                continue
+            except CloseBettingRoundSignal:
+                break
     
     logger.info(f'Number of laps: {betting_round.lap_counts}')
     gather_pot(betting_round.table)
