@@ -258,7 +258,7 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 def game():
 
     # Cycle not allowing open fold
-    table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE, STACK_MAX_SIZE)) for name in player_names])
+    table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE + 1, STACK_MAX_SIZE)) for name in player_names])
     pk.reset_cycle_states(table)
     cycle(table)
     input('\n\n--- ENTER ---\n')
