@@ -7,1001 +7,627 @@ import sys
 sys.path.insert(0, '.')
 
 
-from collections.abc import Generator
+from decimal import Decimal
 from unittest import main, TestCase
 
 
 from pokerpy import constants, engines, messages, structures
 
 
-class TestBettingRoundClassBasicMethods(TestCase):
+class BaseTestCase(TestCase):
 
 
-    """
-    Run unit tests on BettingRound class basic methods.
-    """
+    "Base class for test cases that require a shared setup."
 
 
-    def test_instantiation(self):
+    def setUp(self):
+
+        self.setup_players = [
+            structures.Player('Andy', 1000),
+            structures.Player('Boa', 1000),
+            structures.Player('Coral', 1000),
+            structures.Player('Dino', 1000),
+            structures.Player('Epa', 1000),
+            structures.Player('Fomi', 1000),
+        ]
+
+        self.Andy = self.setup_players[0]
+        self.Boa = self.setup_players[1]
+        self.Coral = self.setup_players[2]
+        self.Dino = self.setup_players[3]
+        self.Epa = self.setup_players[4]
+        self.Fomi = self.setup_players[5]
+
+        self.table = structures.Table(self.setup_players)
 
 
-        """
-        Runs test cases on class instantiation
-        """
+class TestBettingRoundInstantiation(BaseTestCase):
 
 
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-        Epa = structures.Player('Epa', 10)
+    "Runs unit tests on betting round instantiation."
 
-        # Valid instantiation
 
-        betting_round = engines.BettingRound('test round', table)
-        self.assertEqual(betting_round.name, 'test round')
-        self.assertEqual(betting_round.table, table)
-        self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(betting_round.table.starting_player, Andy)
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        self.assertEqual(betting_round.table.smallest_bet_amount, 1)
-        self.assertFalse(betting_round.is_completed)
-        self.assertFalse(betting_round.open_fold_allowed)
-        self.assertFalse(betting_round.raise_invalid_actions)
+    def test_name_type_error(self):
+
+        "Tests type error detection on the field name."
+
+        bad_names = (1, None)
+
+        for bad_name in bad_names:
+
+            with self.subTest(name=bad_name):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound(name=bad_name, table=self.table)
+                self.assertEqual(context.exception.args[0], messages.msg_not_str.format(type(bad_name).__name__))
+
+
+    def test_table_type_error(self):
+
+        "Tests type error detection on the field name."
+
+        bad_tables = (1, 'pivot_table', None)
+
+        for bad_table in bad_tables:
+
+            with self.subTest(table=bad_table):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound(name='test', table=bad_table)
+                self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(type(bad_table).__name__))
+
+
+    def test_min_bet_type_error(self):
+
+        "Tests type error detection on field min_bet."
+
+        bad_amounts = ('300', 300.0, Decimal('300'))
+
+        for bad_amount in bad_amounts:
+
+            with self.subTest(min_bet=bad_amount):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound('test', self.table, min_bet=bad_amount)
+                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
+
+
+    def test_starting_player_type_error(self):
+
+        "Tests type error detection on field starting_player."
+
+        bad_starting_players = ('Dino', 1)
+
+        for bad_starting_player in bad_starting_players:
+
+            with self.subTest(starting_player=bad_starting_player):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound('test', self.table, starting_player=bad_starting_player)
+                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_starting_player).__name__))
+
+
+    def test_stopping_player_type_error(self):
+
+        "Tests type error detection on field stopping_player."
+
+        bad_stopping_players = ('Dino', 1)
+
+        for bad_stopping_player in bad_stopping_players:
+
+            with self.subTest(stopping_player=bad_stopping_player):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound('test', self.table, stopping_player=bad_stopping_player)
+                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_stopping_player).__name__))
+
+
+    def test_min_bet_value_error(self):
+
+        "Tests value error detection on field min_bet."
+
+        bad_min_bet = 0
+        with self.subTest('zero minimum bet'):
+            with self.assertRaises(ValueError) as context:
+                engines.BettingRound('test', self.table, min_bet=bad_min_bet)
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
+
+        bad_min_bet = -10
+        with self.subTest('negative minimum bet'):
+            with self.assertRaises(ValueError) as context:
+                engines.BettingRound('test', self.table, min_bet=bad_min_bet)
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
+
+
+    def test_starting_player_value_error(self):
+
+        "Tests value error detection on field starting_player."
+
+        player_not_in_table = structures.Player('Zero', 1000)
+        with self.subTest('player not in table'):
+            with self.assertRaises(ValueError) as context:
+                engines.BettingRound('test', self.table, starting_player=player_not_in_table)
+            self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
+
+
+    def test_stopping_player_value_error(self):
+
+        "Tests value error detection on field stopping_player."
+
+        player_not_in_table = structures.Player('Zero', 1000)
+        with self.subTest('player not in table'):
+            with self.assertRaises(ValueError) as context:
+                engines.BettingRound('test', self.table, stopping_player=player_not_in_table)
+            self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
+
+
+    def test_valid_input(self):
+
+        "Tests valid input."
+
+        betting_round = engines.BettingRound('test', self.table)
+        with self.subTest('simple instantiation'):
+            self.assertEqual(betting_round.name, 'test')
+            self.assertEqual(betting_round.table, self.table)
+            self.assertEqual(betting_round.table.min_bet, 1)
+            self.assertEqual(betting_round.table.starting_player, self.Andy)
+            self.assertEqual(betting_round.table.stopping_player, self.Fomi)
+            self.assertEqual(betting_round.lap_counts, 0)
+            self.assertFalse(betting_round.is_completed)
+            self.assertFalse(betting_round.open_fold_allowed)
+            self.assertFalse(betting_round.raise_invalid_actions)
 
         betting_round = engines.BettingRound(
-            'test round',
-            table,
-            smallest_bet_amount = 10,
-            starting_player = Coral,
-            stopping_player = Boa,
+            'test',
+            self.table,
+            min_bet = 10,
+            starting_player = self.Boa,
+            stopping_player = self.Epa,
             open_fold_allowed = True,
             raise_invalid_actions = True,
         )
-        self.assertEqual(betting_round.name, 'test round')
-        self.assertEqual(betting_round.table, table)
-        self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(betting_round.table.starting_player, Coral)
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        self.assertEqual(betting_round.table.smallest_bet_amount, 10)
-        self.assertFalse(betting_round.is_completed)
-        self.assertTrue(betting_round.open_fold_allowed)
-        self.assertTrue(betting_round.raise_invalid_actions)
+        with self.subTest('complex instantiation'):
+            self.assertEqual(betting_round.name, 'test')
+            self.assertEqual(betting_round.table, self.table)
+            self.assertEqual(betting_round.table.min_bet, 10)
+            self.assertEqual(betting_round.table.starting_player, self.Boa)
+            self.assertEqual(betting_round.table.stopping_player, self.Epa)
+            self.assertEqual(betting_round.lap_counts, 0)
+            self.assertFalse(betting_round.is_completed)
+            self.assertTrue(betting_round.open_fold_allowed)
+            self.assertTrue(betting_round.raise_invalid_actions)
 
-        betting_round = engines.BettingRound(
-            'test round',
-            table,
-            open_fold_allowed = 1, ## expected boolean, but not enforced
-            raise_invalid_actions = 0, ## expected boolean, but not enforced
+
+class TestBettingRoundMethods(BaseTestCase):
+
+
+    "Runs unit tests on betting round methods."
+
+
+    def test_type_errors_in_dealing_related_methods(self):
+
+        "Tests type error detection in methods related to dealing."
+
+        betting_round = engines.BettingRound('test', self.table)
+
+        methods = (
+            betting_round.deal_cards_to_players,
+            betting_round.deal_common_cards,
         )
-        self.assertEqual(betting_round.open_fold_allowed, 1)
-        self.assertFalse(betting_round.raise_invalid_actions)
 
-        # Type errors
+        bad_amounts = ('300', 300.0, Decimal('300'))
 
-        # Invalid name
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound(123456, table)
-        self.assertEqual(context.exception.args[0], messages.msg_not_str.format(int.__name__))
+        for method in methods:
 
-        # Invalid table
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound('test round', 'wood')
-        self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
+            for bad_amount in bad_amounts:
 
-        # Invalid smallest bet
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound('test round', table, smallest_bet_amount='zero')
-        self.assertEqual(context.exception.args[0], messages.msg_not_int.format(str.__name__))
-
-        # Invalid starting player
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound('test round', table, starting_player='first')
-        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
-
-        # Invalid stopping player
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound('test round', table, stopping_player='last')
-        self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(str.__name__))
-
-        # Value errors
-
-        # Zero smallest bet
-        with self.assertRaises(ValueError) as context:
-            engines.BettingRound('test round', table, smallest_bet_amount=0)
-        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(0))
-
-        # Negative smallest bet
-        with self.assertRaises(ValueError) as context:
-            engines.BettingRound('test round', table, smallest_bet_amount=-1)
-        self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(-1))
-
-        # Starting player not in table
-        with self.assertRaises(ValueError) as context:
-            engines.BettingRound('test round', table, starting_player=Epa)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Epa.name))
-
-        # Stopping player not in table
-        with self.assertRaises(ValueError) as context:
-            engines.BettingRound('test round', table, stopping_player=Epa)
-        self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(Epa.name))
+                with self.subTest(method=method.__name__, amount=bad_amount):
+                    with self.assertRaises(TypeError) as context:
+                        method(bad_amount)
+                    self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
 
 
-    def test_simple_methods(self):
+    def test_type_errors_in_reset_method(self):
+
+        "Tests type error detection in the reset method."
+
+        bad_tables = (1, 'pivot_table', None)
+
+        for bad_table in bad_tables:
+
+            with self.subTest(table=bad_table):
+                with self.assertRaises(TypeError) as context:
+                    engines.BettingRound.reset_betting_round_states(bad_table)
+                self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(type(bad_table).__name__))
 
 
-        """
-        Runs test cases on methods that do not have much complexity.
-        """
+    def test_value_errors_in_dealing_related_methods(self):
+
+        "Tests type error detection in methods related to dealing."
+
+        betting_round = engines.BettingRound('test', self.table)
+
+        methods = (
+            betting_round.deal_cards_to_players,
+            betting_round.deal_common_cards,
+        )
+
+        for method in methods:
+
+            bad_min_bet = 0
+            with self.subTest('zero minimum bet', method=method.__name__):
+                with self.assertRaises(ValueError) as context:
+                    method(bad_min_bet)
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
+
+            bad_min_bet = -10
+            with self.subTest('negative minimum bet', method=method.__name__):
+                with self.assertRaises(ValueError) as context:
+                    method(bad_min_bet)
+                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
 
 
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
+    def test_valid_input_in_dealing_methods(self):
 
-        betting_round = engines.BettingRound('test round', table)
+        "Tests valid input in methods related to dealing."
 
-        # Listen
+        betting_round = engines.BettingRound('test', self.table)
 
-        self.assertIsInstance(betting_round.listen(), Generator)
-
-        # Counter
-
-        self.assertEqual(betting_round.lap_counts, 0)
-
-        betting_round.increase_counter()
-        self.assertEqual(betting_round.lap_counts, 1)
-
-        betting_round.increase_counter()
-        self.assertEqual(betting_round.lap_counts, 2)
-
-        # Stopping player
-
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-
-        betting_round.table.set_stopping_player(Boa)
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-
-        betting_round.table.set_stopping_player(Andy)
-        self.assertEqual(betting_round.table.stopping_player, Andy)
-
-        # Smallest raise amount
-
-        self.assertEqual(betting_round.table.smallest_raise_amount, 1)
-
-        betting_round.table.set_smallest_raise_amount(3)
-        self.assertEqual(betting_round.table.smallest_raise_amount, 3)
-
-        betting_round.table.set_smallest_raise_amount(5)
-        self.assertEqual(betting_round.table.smallest_raise_amount, 5)
-
-
-    def test_dealing_methods(self):
-
-
-        """
-        Runs test cases on methods related to dealing cards.
-        """
-
-
-        # Deal common cards
-
-        table = structures.Table([
-            structures.Player('Andy', 10),
-            structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-
-        self.assertEqual(len(table.deck), 52)
-        self.assertEqual(len(betting_round.table.common_cards), 0)
-
-        betting_round.deal_common_cards(3)
-        self.assertEqual(len(table.deck), 49)
-        self.assertEqual(len(betting_round.table.common_cards), 3)
-
-        betting_round.deal_common_cards(2)
-        self.assertEqual(len(table.deck), 47)
-        self.assertEqual(len(betting_round.table.common_cards), 5)
-
-        # Deal cards to players
-
-        table = structures.Table([
-            structures.Player('Andy', 10),
-            structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-            structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-
-        self.assertEqual(len(table.deck), 52)
-        for player in betting_round.table.players:
-            self.assertEqual(len(player.cards), 0)
-
-        betting_round.deal_cards_to_players(3)
-        self.assertEqual(len(table.deck), 40)
-        for player in betting_round.table.players:
-            self.assertEqual(len(player.cards), 3)
+        with self.subTest('before card deal'):
+            self.assertEqual(len(self.table.deck), 52)
+            self.assertEqual(len(self.table.common_cards), 0)
+            for player in self.setup_players:
+                self.assertEqual(len(player.cards), 0)
 
         betting_round.deal_cards_to_players(2)
-        self.assertEqual(len(table.deck), 32)
-        for player in betting_round.table.players:
-            self.assertEqual(len(player.cards), 5)
 
+        with self.subTest('after card deal to players'):
+            self.assertEqual(len(self.table.deck), 40)
+            self.assertEqual(len(self.table.common_cards), 0)
+            for player in self.setup_players:
+                self.assertEqual(len(player.cards), 2)
 
-class TestResetBettingRoundStatesFunction(TestCase):
+        betting_round.deal_common_cards(5)
 
+        with self.subTest('after card deal to table'):
+            self.assertEqual(len(self.table.deck), 35)
+            self.assertEqual(len(self.table.common_cards), 5)
+            for player in self.setup_players:
+                self.assertEqual(len(player.cards), 2)
 
-    """
-    Runs unit tests on reset_betting_round static method.
-    """
 
+    def test_valid_input_in_reset_method(self):
 
-    def test_invalid_input(self):
+        "Tests valid input detection in the reset method."
 
+        with self.subTest('initial states'):
+            self.assertEqual(self.table.min_raise_increase, 1)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            for player in self.table.players:
+                self.assertFalse(player.has_played)
+                self.assertIsNone(player.requested_action)
 
-        """
-        Runs test cases on reset_betting_round static method with an invalid input.
-        """
+        self.table.set_min_raise_increase(100)
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+        self.table.set_stopping_player(self.Coral)
+        for player in self.table.players:
+            player.mark_has_played()
+            player.request_action(structures.Action(constants.ACTION_CHECK))
+
+        with self.subTest('updated states'):
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.stopping_player, self.Coral)
+            for player in self.table.players:
+                self.assertTrue(player.has_played)
+                self.assertEqual(player.requested_action, structures.Action(constants.ACTION_CHECK))
+
+        engines.BettingRound.reset_betting_round_states(self.table)
+
+        with self.subTest('final states'):
+            self.assertEqual(self.table.min_raise_increase, 1)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+            for player in self.table.players:
+                self.assertFalse(player.has_played)
+                self.assertIsNone(player.requested_action)
+
+
+    def test_counter_increase_method(self):
+
+        "Tests valid input in the method that increases the counter."
+
+        betting_round = engines.BettingRound('test', self.table)
+
+        with self.subTest('before counter increase'):
+            self.assertEqual(betting_round.lap_counts, 0)
+
+        for i in range(1, 6):
+            with self.subTest('counter increase', i=i):
+                betting_round.increase_counter()
+                self.assertEqual(betting_round.lap_counts, i)
+
+
+    def test_action_ranges_method(self):
+
+        "Tests valid input in the method that retrieves the action ranges."
+
+        betting_round = engines.BettingRound('test', self.table)
+
+        with self.subTest('before counter increase'):
+            self.assertDictEqual(
+                betting_round.get_action_ranges(),
+                {
+                    constants.ACTION_CHECK: range(0, 1),
+                    constants.ACTION_BET: range(1, 1001)
+                }
+            )
+
+
+class TestBettingRoundFlow(BaseTestCase):
+
+
+    "Runs unit tests on betting round flow."
+
+
+    def test_flow_behaviour_from_boolean_setup(self):
+
+        "Tests flow behaviour depending on boolean parameters."
+
+        open_fold_allowed = True
+        raise_invalid_actions = True
+        betting_round = engines.BettingRound(
+            'test',
+            self.table,
+            open_fold_allowed = open_fold_allowed,
+            raise_invalid_actions = raise_invalid_actions
+        )
+
+        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            # no action parsed
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
+            with self.assertRaises(RuntimeError) as context:
+                self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
+            with self.assertRaises(StopIteration) as context:
+                next(betting_round.listen())
+            self.assertIsNone(context.exception.value)
+
+        self.setUp()
+        open_fold_allowed = True
+        raise_invalid_actions = False
+        betting_round = engines.BettingRound(
+            'test',
+            self.table,
+            open_fold_allowed = open_fold_allowed,
+            raise_invalid_actions = raise_invalid_actions
+        )
+
+        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            # no action parsed
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
+            self.assertEqual(next(betting_round.listen()), self.Boa)
+
+        self.setUp()
+        open_fold_allowed = False
+        raise_invalid_actions = True
+        betting_round = engines.BettingRound(
+            'test',
+            self.table,
+            open_fold_allowed = open_fold_allowed,
+            raise_invalid_actions = raise_invalid_actions
+        )
+
+        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            # no action parsed
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
+            with self.assertRaises(RuntimeError) as context:
+                self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
+            with self.assertRaises(StopIteration) as context:
+                next(betting_round.listen())
+            self.assertIsNone(context.exception.value)
+
+
+        self.setUp()
+        open_fold_allowed = False
+        raise_invalid_actions = False
+        betting_round = engines.BettingRound(
+            'test',
+            self.table,
+            open_fold_allowed = open_fold_allowed,
+            raise_invalid_actions = raise_invalid_actions
+        )
+
+        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            # no action parsed
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
+            self.assertEqual(next(betting_round.listen()), self.Andy)
+            self.Andy.request_action(structures.Action(constants.ACTION_CHECK))
+            self.assertEqual(next(betting_round.listen()), self.Boa)
+
+
+    def test_flow_without_context_manager_with_function_next_missing_close(self):
 
+        "Tests flow with function next, missing close method."
 
-        with self.assertRaises(TypeError) as context:
-            engines.BettingRound.reset_betting_round_states('Wood')
-        self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(str.__name__))
+        betting_round = engines.BettingRound('test', self.table)
 
-    
-    def test_reset_betting_round_states_function(self):
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
+        for player in self.setup_players:
+            with self.subTest(player=player):
+                self.assertEqual(next(betting_round.listen()), player)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
+                self.assertFalse(betting_round.is_completed)
 
-        """
-        Runs test cases on reset_betting_round_states function effects.
-        """
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(betting_round.listen())
+            self.assertIsNone(context.exception.value)
+            self.assertFalse(betting_round.is_completed)
 
 
+    def test_flow_without_context_manager_with_function_next_calling_close_at_end(self):
 
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            structures.Player('Boa', 10),
-            structures.Player('Coral', 10),
-        ])
+        "Tests flow with function next, using close method at the end."
 
-        action = structures.Action(constants.ACTION_BET, 200)
-        player_cards = [
-            structures.Card('7', 's'),
-            structures.Card('7', 'd'),
-        ]
-        hand = structures.Hand([
-            structures.Card('7', 's'),
-            structures.Card('7', 'd'),
-            structures.Card('7', 'c'),
-            structures.Card('2', 's'),
-            structures.Card('2', 'c'),
-        ])
-        deck = [structures.Card(value, suit) for value, suit in constants.sorted_card_values_and_suits]
-        common_cards = [
-            structures.Card('7', 'c'),
-            structures.Card('2', 's'),
-            structures.Card('2', 'c'),            
-        ]
+        betting_round = engines.BettingRound('test', self.table)
 
-        # Set previous states
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
-        Andy.request_action(action)
-        Andy.increase_bet_level(200)
-        for card in player_cards:
-            table.remove_card_from_deck(card)
-            Andy.assign_card(card)
-        Andy.assign_hand(hand)
-        Andy.mark_is_folded()
+        for player in self.setup_players:
+            with self.subTest(player=player):
+                self.assertEqual(next(betting_round.listen()), player)
+                player.request_action(structures.Action(constants.ACTION_CHECK))
+                self.assertFalse(betting_round.is_completed)
 
-        for card in common_cards:
-            table.remove_card_from_deck(card)
-            table.assign_common_card(card)
-        table.add_to_current_amount(200)
-        table.increase_central_pot(500)
+        betting_round.close()
+        with self.subTest('after actions'):
+            self.assertTrue(betting_round.is_completed)
 
-        # Evaluate before states
 
-        self.assertEqual(Andy.requested_action, action)
-        self.assertEqual(Andy.bet_level, 200)
-        self.assertTupleEqual(Andy.cards, tuple(player_cards))
-        self.assertEqual(Andy.hand, hand)
-        self.assertTrue(Andy.is_folded)
+    def test_flow_without_context_manager_with_function_next_calling_close_before_end(self):
 
-        self.assertTupleEqual(table.live_players, tuple(player for player in table.players if player != Andy))
-        self.assertEqual(table.current_amount, 200)
-        self.assertEqual(table.central_pot, 500)
-        self.assertTupleEqual(table.common_cards, tuple(common_cards))
-        self.assertSetEqual(set(table.deck), set(card for card in deck if card not in (*player_cards, *common_cards)))
+        "Tests flow with function next, using close method before the end."
 
-        # Reset states
+        betting_round = engines.BettingRound('test', self.table)
 
-        engines.BettingRound.reset_betting_round_states(table)
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
-        # Evaluate after states
+        with self.subTest('close before time'):
+            with self.assertRaises(RuntimeError) as context:
+                betting_round.close()
+            self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
 
-        self.assertEqual(Andy.requested_action, None)
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertTupleEqual(Andy.cards, tuple(player_cards))
-        self.assertEqual(Andy.hand, hand)
-        self.assertTrue(Andy.is_folded)
 
-        self.assertTupleEqual(table.live_players, tuple(player for player in table.players if player != Andy))
-        self.assertEqual(table.current_amount, 0)
-        self.assertEqual(table.central_pot, 500)
-        self.assertTupleEqual(table.common_cards, tuple(common_cards))
-        self.assertSetEqual(set(table.deck), set(card for card in deck if card not in (*player_cards, *common_cards)))
+    def test_flow_without_context_manager_with_loop_missing_close(self):
 
+        "Tests flow with for loop, missing close method."
 
-class TestBettingRoundListener(TestCase):
+        betting_round = engines.BettingRound('test', self.table)
 
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
-    """
-    Run unit tests on BettingRound listener.
-    """
+        for i, player in enumerate(betting_round.listen()):
+            with self.subTest(player=self.setup_players[i]):
+                self.assertEqual(player, self.setup_players[i])
+                player.request_action(structures.Action(constants.ACTION_CHECK))
+                self.assertFalse(betting_round.is_completed)
 
+        with self.subTest('after actions'):
+            self.assertFalse(betting_round.is_completed)
 
-    def test_successful_parses_and_closure_with_function_next(self):
 
+    def test_flow_without_context_manager_with_loop_calling_close_at_end(self):
 
-        """
-        Runs test cases where the amount of parsed actions is just the amount needed, and the betting round is closed successfully, using the function next to iterate.
-        """
+        "Tests flow with for loop, calling close method at the end."
 
+        betting_round = engines.BettingRound('test', self.table)
 
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
-        betting_round = engines.BettingRound('test round', table)
-        listener = betting_round.listen()
+        for i, player in enumerate(betting_round.listen()):
+            with self.subTest(player=self.setup_players[i]):
+                self.assertEqual(player, self.setup_players[i])
+                player.request_action(structures.Action(constants.ACTION_CHECK))
+                self.assertFalse(betting_round.is_completed)
 
-        # Before states
+        betting_round.close()
+        with self.subTest('after actions'):
+            self.assertTrue(betting_round.is_completed)
 
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(next(listener), Andy)
 
-        # Actions
+    def test_flow_without_context_manager_with_loop_calling_close_before_end(self):
 
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-        self.assertEqual(next(listener), Boa)
+        "Tests flow with for loop, calling close method at the end."
 
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-        self.assertEqual(next(listener), Coral)
+        betting_round = engines.BettingRound('test', self.table)
 
-        self.assertEqual(betting_round.table.stopping_player, Andy)
-        Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-        self.assertEqual(next(listener), Dino)
+        with self.subTest('before actions'):
+            self.assertFalse(betting_round.is_completed)
 
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Dino.request_action(structures.Action(constants.ACTION_FOLD))
-        self.assertEqual(next(listener), Andy)
+        with self.subTest('close before time'):
+            with self.assertRaises(RuntimeError) as context:
+                for _ in betting_round.listen():
+                    betting_round.close()
+            self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
 
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-        self.assertEqual(next(listener), Boa)
 
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
-        
-        # After states
+    def test_flow_with_context_manager_with_function_next_missing_close(self):
 
-        self.assertIsNone(betting_round.close())
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
+        "Tests flow with function next, missing close method."
 
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
+        with engines.BettingRound('test', self.table) as betting_round:
 
+            for player in betting_round.listen():
+                player.request_action(structures.Action(constants.ACTION_CHECK))
 
-    def test_successful_parses_and_closure_with_for_loop(self):
+            with self.subTest('after actions inside manager'):
+                self.assertFalse(betting_round.is_completed)
 
+        with self.subTest('after actions outside manager'):
+            self.assertTrue(betting_round.is_completed)
 
-        """
-        Runs test cases where the amount of parsed actions is just the amount needed, and the betting round is closed successfully, using a for loop to iterate.
-        """
 
+    def test_flow_with_context_manager_with_function_next_calling_close_at_end(self):
 
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
+        "Tests flow with function next, using close method at the end."
 
-        betting_round = engines.BettingRound('test round', table)
+        with engines.BettingRound('test', self.table) as betting_round:
 
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            structures.Action(constants.ACTION_CALL, 2),
-        ]
+            for player in betting_round.listen():
+                player.request_action(structures.Action(constants.ACTION_CHECK))
+            betting_round.close() ## redundant, the context manager closes the round
 
-        # Before states
+            with self.subTest('after actions inside manager'):
+                self.assertTrue(betting_round.is_completed)
 
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
+        with self.subTest('after actions outside manager'):
+            self.assertTrue(betting_round.is_completed)
 
-        # Actions
 
-        for action, player in zip(actions_to_parse, betting_round.listen()):
-            player.request_action(action)
+    def test_flow_with_context_manager_with_function_next_calling_close_before_end(self):
 
-        # After states
-
-        self.assertIsNone(betting_round.close())
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_closing_before_completion_with_function_next(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is less than the amount needed, but is closed anyway, using the function next to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-        listener = betting_round.listen()
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(next(listener), Andy)
-
-        # Actions
-
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-        self.assertEqual(next(listener), Boa)
-
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-        self.assertEqual(next(listener), Coral)
-
-        self.assertEqual(betting_round.table.stopping_player, Andy)
-        Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-        self.assertEqual(next(listener), Dino)
-
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Dino.request_action(structures.Action(constants.ACTION_FOLD))
-        self.assertEqual(next(listener), Andy)
-
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-        self.assertEqual(next(listener), Boa)
-
-        # Missing Boa's action
-        
-        with self.assertRaises(RuntimeError) as context:
-            betting_round.close()
-        self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_closing_before_completion_with_for_loop(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is less than the amount needed, but is closed anyway, using a for loop to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            # Missing Boa's action
-        ]
-
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
-
-        # Actions
-
-        for action, player in zip(actions_to_parse, betting_round.listen()):
-            player.request_action(action)
-
-        # After states
-
-        with self.assertRaises(RuntimeError) as context:
-            betting_round.close()
-        self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_unclosed_round_with_function_next(self):
-
-
-        """
-        Runs test cases where the betting round is not closed successfully, using the function next to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-        listener = betting_round.listen()
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
-        self.assertEqual(next(listener), Andy)
-
-        # Actions
-
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-        self.assertEqual(next(listener), Boa)
-
-        self.assertEqual(betting_round.table.stopping_player, Dino)
-        Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-        self.assertEqual(next(listener), Coral)
-
-        self.assertEqual(betting_round.table.stopping_player, Andy)
-        Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-        self.assertEqual(next(listener), Dino)
-
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Dino.request_action(structures.Action(constants.ACTION_FOLD))
-        self.assertEqual(next(listener), Andy)
-
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-        self.assertEqual(next(listener), Boa)
-
-        self.assertEqual(betting_round.table.stopping_player, Boa)
-        Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
-        with self.assertRaises(StopIteration) as context:
-            next(listener)
-        self.assertIsNone(context.exception.value)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 4)
-
-        self.assertEqual(Andy.bet_level, 4)
-        self.assertEqual(Boa.bet_level, 4)
-        self.assertEqual(Coral.bet_level, 4)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_unclosed_round_with_for_loop(self):
-
-
-        """
-        Runs test cases where the betting round is not closed successfully, using the a for loop to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        betting_round = engines.BettingRound('test round', table)
-
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            structures.Action(constants.ACTION_CALL, 2),
-        ]
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(betting_round.lap_counts, 0)
-
-        # Actions
-
-        for action, player in zip(actions_to_parse, betting_round.listen()):
-            player.request_action(action)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 4)
-
-        self.assertEqual(Andy.bet_level, 4)
-        self.assertEqual(Boa.bet_level, 2) # the last action was not actually parsed
-        self.assertEqual(Coral.bet_level, 4)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-class TestBettingRoundContextManager(TestCase):
-
-
-    """
-    Run unit tests on BettingRound context manager.
-    """
-
-
-    def test_successful_parses_and_closure_with_function_next(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is just the amount needed, and the betting round is closed successfully, using the function next to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
-
-        with engines.BettingRound('test round', table) as betting_round:
-
-            next(betting_round.listen())
-            Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-
-            next(betting_round.listen())
-            Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-
-            next(betting_round.listen())
-            Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-
-            next(betting_round.listen())
-            Dino.request_action(structures.Action(constants.ACTION_FOLD))
-
-            next(betting_round.listen())
-            Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-
-            next(betting_round.listen())
-            Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
-
-        # After states
-
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_successful_parses_and_closure_with_for_loop(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is just the amount needed, and the betting round is closed successfully, using a for loop to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            structures.Action(constants.ACTION_CALL, 2),
-        ]
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
-
-        with engines.BettingRound('test round', table) as betting_round:
-            for action, player in zip(actions_to_parse, betting_round.listen()):
-                player.request_action(action)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_parse_less_actions_than_required_with_function_next(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is less than the amount needed, but is closed anyway, using the function next to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
+        "Tests flow with function next, using close method before the end."
 
         with self.assertRaises(RuntimeError) as context:
-
-            with engines.BettingRound('test round', table) as betting_round:
-
-                next(betting_round.listen())
-                Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-
-                next(betting_round.listen())
-                Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-
-                next(betting_round.listen())
-                Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-
-                next(betting_round.listen())
-                Dino.request_action(structures.Action(constants.ACTION_FOLD))
-
-                next(betting_round.listen())
-                Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-
-                # Missing Boa's action
-
-        # After states
+            with engines.BettingRound('test', self.table) as betting_round:
+                betting_round.close()
 
         self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
+        self.assertFalse(betting_round.is_completed)
 
 
-    def test_parse_less_actions_than_required_with_for_loop(self):
+    def test_flow_with_context_manager_with_function_next_overloading_the_listener(self):
 
-
-        """
-        Runs test cases where the amount of parsed actions is less than the amount needed, but is closed anyway, using a for loop to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            # Missing Boa's action
-        ]
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
+        "Tests flow with function next, using close method at the end."
 
         with self.assertRaises(RuntimeError) as context:
-
-            with engines.BettingRound('test round', table) as betting_round:
-                for action, player in zip(actions_to_parse, betting_round.listen()):
-                    player.request_action(action)
-
-        self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_parse_more_actions_than_required_with_function_next(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is more than the amount needed, using the function next to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
-
-        with self.assertRaises(RuntimeError) as context:
-
-            with engines.BettingRound('test round', table) as betting_round:
-
-                next(betting_round.listen())
-                Andy.request_action(structures.Action(constants.ACTION_BET, 1))
-
-                next(betting_round.listen())
-                Boa.request_action(structures.Action(constants.ACTION_RAISE, 2))
-
-                next(betting_round.listen())
-                Coral.request_action(structures.Action(constants.ACTION_RAISE, 4))
-
-                next(betting_round.listen())
-                Dino.request_action(structures.Action(constants.ACTION_FOLD))
-
-                next(betting_round.listen())
-                Andy.request_action(structures.Action(constants.ACTION_CALL, 3))
-
-                next(betting_round.listen())
-                Boa.request_action(structures.Action(constants.ACTION_CALL, 2))
-
-                next(betting_round.listen())
-                Coral.request_action(structures.Action(constants.ACTION_BET, 4))
+            with engines.BettingRound('test', self.table) as betting_round:
+                for player in self.setup_players:
+                    player = next(betting_round.listen())
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                next(betting_round.listen()) ## overloaded listener
 
         self.assertEqual(context.exception.args[0], messages.msg_overloaded_betting_round_message)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
-
-
-    def test_parse_more_actions_than_required_with_for_loop(self):
-
-
-        """
-        Runs test cases where the amount of parsed actions is more than the amount needed, using a for loop to iterate.
-        """
-
-
-        table = structures.Table([
-            Andy := structures.Player('Andy', 10),
-            Boa := structures.Player('Boa', 10),
-            Coral := structures.Player('Coral', 10),
-            Dino := structures.Player('Dino', 10),
-        ])
-
-        actions_to_parse = [
-            structures.Action(constants.ACTION_BET, 1),
-            structures.Action(constants.ACTION_RAISE, 2),
-            structures.Action(constants.ACTION_RAISE, 4),
-            structures.Action(constants.ACTION_FOLD),
-            structures.Action(constants.ACTION_CALL, 3),
-            structures.Action(constants.ACTION_CALL, 2),
-            structures.Action(constants.ACTION_BET, 4), ## not parsed because the betting round has already ended
-        ]
-
-        # Before states
-
-        self.assertEqual(table.central_pot, 0)
-        self.assertEqual(table.current_amount, 0)
-
-        # Actions
-
-        with self.assertRaises(RuntimeError) as context:
-
-            with engines.BettingRound('test round', table) as betting_round:
-                for action, player in zip(actions_to_parse, betting_round.listen()):
-                    player.request_action(action)
-                next(betting_round.listen()) ## try to parse the last action
-
-        self.assertEqual(context.exception.args[0], messages.msg_overloaded_betting_round_message)
-
-        # After states
-
-        self.assertEqual(table.central_pot, 12)
-        self.assertEqual(table.current_amount, 0)
-
-        self.assertEqual(Andy.bet_level, 0)
-        self.assertEqual(Boa.bet_level, 0)
-        self.assertEqual(Coral.bet_level, 0)
-        self.assertEqual(Dino.bet_level, 0)
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ from unittest import main, TestCase
 from pokerpy import constants, messages, structures
 
 
-class BasePlayersTestCase(TestCase):
+class BaseTestCase(TestCase):
 
 
     "Base class for test cases that require a shared setup."
@@ -41,7 +41,7 @@ class BasePlayersTestCase(TestCase):
         self.setup_full_deck = tuple(structures.Card(value, suit) for value, suit in constants.sorted_card_values_and_suits)
 
 
-class TestTableInstantiation(BasePlayersTestCase):
+class TestTableInstantiation(BaseTestCase):
 
 
     "Runs unit tests on table instantiation."
@@ -143,21 +143,21 @@ class TestTableInstantiation(BasePlayersTestCase):
             self.assertEqual(context.exception.args[0], messages.msg_no_players_in_table)
 
 
-    def test_full_bet_value_error(self):
+    def test_min_bet_value_error(self):
 
-        "Tests value error detection on field full_bet."
+        "Tests value error detection on field min_bet."
 
-        bad_full_bet = 0
-        with self.subTest('zero full bet'):
+        bad_min_bet = 0
+        with self.subTest('zero minimum bet'):
             with self.assertRaises(ValueError) as context:
-                structures.Table(self.setup_players, min_bet=bad_full_bet)
-            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_full_bet))
+                structures.Table(self.setup_players, min_bet=bad_min_bet)
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
 
-        bad_full_bet = -10
-        with self.subTest('negative full bet'):
+        bad_min_bet = -10
+        with self.subTest('negative minimum bet'):
             with self.assertRaises(ValueError) as context:
-                structures.Table(self.setup_players, min_bet=bad_full_bet)
-            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_full_bet))
+                structures.Table(self.setup_players, min_bet=bad_min_bet)
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
 
 
     def test_starting_player_value_error(self):
@@ -193,9 +193,9 @@ class TestTableInstantiation(BasePlayersTestCase):
             self.assertTupleEqual(table.players, tuple(self.setup_players))
             self.assertTupleEqual(table.live_players, tuple(self.setup_players))
             self.assertTupleEqual(table.actionable_players, tuple(self.setup_players))
-            self.assertEqual(table.starting_player, self.setup_players[0])
-            self.assertEqual(table.stopping_player, self.setup_players[-1])
-            self.assertEqual(table.current_player, self.setup_players[0])
+            self.assertEqual(table.starting_player, self.Andy)
+            self.assertEqual(table.stopping_player, self.Fomi)
+            self.assertEqual(table.current_player, self.Andy)
             self.assertEqual(table.bet_level, 0)
             self.assertEqual(table.full_bet_level, 0)
             self.assertEqual(table.min_bet, 1)
@@ -206,40 +206,18 @@ class TestTableInstantiation(BasePlayersTestCase):
         table = structures.Table(
             self.setup_players,
             min_bet = 10,
-            starting_player = None,
-            stopping_player = None,
-        )
-        with self.subTest('complex instantiation with null values'):
-            self.assertTupleEqual(table.deck, self.setup_full_deck)
-            self.assertTupleEqual(table.common_cards, ())
-            self.assertTupleEqual(table.players, tuple(self.setup_players))
-            self.assertTupleEqual(table.live_players, tuple(self.setup_players))
-            self.assertTupleEqual(table.actionable_players, tuple(self.setup_players))
-            self.assertEqual(table.starting_player, self.setup_players[0])
-            self.assertEqual(table.stopping_player, self.setup_players[-1])
-            self.assertEqual(table.current_player, self.setup_players[0])
-            self.assertEqual(table.bet_level, 0)
-            self.assertEqual(table.full_bet_level, 0)
-            self.assertEqual(table.min_bet, 10)
-            self.assertEqual(table.min_raise_increase, 10)
-            self.assertEqual(table.pot, 0)
-            self.assertTupleEqual(table.central_pot, (0,))
-
-        table = structures.Table(
-            self.setup_players,
-            min_bet = 10,
             starting_player = self.setup_players[1],
             stopping_player = self.setup_players[-2],
         )
-        with self.subTest('complex instantiation with non-null values'):
+        with self.subTest('complex instantiation'):
             self.assertTupleEqual(table.deck, self.setup_full_deck)
             self.assertTupleEqual(table.common_cards, ())
             self.assertTupleEqual(table.players, tuple(self.setup_players))
             self.assertTupleEqual(table.live_players, tuple(self.setup_players))
             self.assertTupleEqual(table.actionable_players, tuple(self.setup_players))
-            self.assertEqual(table.starting_player, self.setup_players[1])
-            self.assertEqual(table.stopping_player, self.setup_players[-2])
-            self.assertEqual(table.current_player, self.setup_players[1])
+            self.assertEqual(table.starting_player, self.Boa)
+            self.assertEqual(table.stopping_player, self.Epa)
+            self.assertEqual(table.current_player, self.Boa)
             self.assertEqual(table.bet_level, 0)
             self.assertEqual(table.full_bet_level, 0)
             self.assertEqual(table.min_bet, 10)
@@ -248,7 +226,7 @@ class TestTableInstantiation(BasePlayersTestCase):
             self.assertEqual(table.pot, 0)
 
 
-class TestTableCardMethodsAndAttributes(BasePlayersTestCase):
+class TestTableCardMethodsAndAttributes(BaseTestCase):
 
 
     "Runs unit tests on player methods and attributes related to cards."
@@ -357,7 +335,7 @@ class TestTableCardMethodsAndAttributes(BasePlayersTestCase):
             self.assertTupleEqual(table.common_cards, ())
 
 
-class TestTableMoneyMethodsAndAttributes(BasePlayersTestCase):
+class TestTableMoneyMethodsAndAttributes(BaseTestCase):
 
 
     "Runs unit tests on player methods and attributes related to money."
@@ -462,7 +440,7 @@ class TestTableMoneyMethodsAndAttributes(BasePlayersTestCase):
                     self.assertEqual(getattr(table, property_name), amount)
 
 
-class TestTablePotMethodsAndAttributes(BasePlayersTestCase):
+class TestTablePotMethodsAndAttributes(BaseTestCase):
 
 
     "Runs unit tests on player methods and attributes related to the pot."
@@ -549,7 +527,7 @@ class TestTablePotMethodsAndAttributes(BasePlayersTestCase):
             self.assertTupleEqual(table.central_pot, expected_central_pot)
 
 
-class TestTablePlayerMethods(BasePlayersTestCase):
+class TestTablePlayerMethods(BaseTestCase):
 
 
     "Runs unit tests on methods related to players."
@@ -662,7 +640,7 @@ class TestTablePlayerMethods(BasePlayersTestCase):
             self.assertEqual(single_player_table.get_previous_player(player), player)
 
 
-class TestTablePlayerArrayAttributesEvolution(BasePlayersTestCase):
+class TestTablePlayerArrayAttributesEvolution(BaseTestCase):
 
 
     "Runs unit tests on the evolution of attributes that hold player arrays."
@@ -804,7 +782,7 @@ class TestTablePlayerArrayAttributesEvolution(BasePlayersTestCase):
             self.assertTupleEqual(table.bettor_players, (self.Andy, self.Boa, self.Coral, self.Dino))
 
 
-class TestTablePlayerIteration(BasePlayersTestCase):
+class TestTablePlayerIteration(BaseTestCase):
 
 
     "Runs unit tests on player iteration."

@@ -13,7 +13,7 @@ from unittest import main, TestCase
 from pokerpy import constants, engines, structures
 
 
-class BasePlayersTestCase(TestCase):
+class BaseTestCase(TestCase):
 
 
     "Base class for test cases that require a shared setup."
@@ -40,7 +40,7 @@ class BasePlayersTestCase(TestCase):
         self.Fomi = self.setup_players[5]
 
 
-class TestBettingRoundSetActionEffectsFunctionOnPassiveActions(BasePlayersTestCase):
+class TestBettingRoundSetActionEffectsFunctionOnPassiveActions(BaseTestCase):
 
 
     "Runs unit tests on set_action_effects function on passive actions."
@@ -280,7 +280,7 @@ class TestBettingRoundSetActionEffectsFunctionOnPassiveActions(BasePlayersTestCa
             self.assertEqual(self.table.min_raise_increase, 200)
 
 
-class TestBettingRoundSetActionEffectsFunctionOnBetting(BasePlayersTestCase):
+class TestBettingRoundSetActionEffectsFunctionOnBetting(BaseTestCase):
 
 
     "Runs unit tests on set_action_effects function on betting."
@@ -752,7 +752,7 @@ class TestBettingRoundSetActionEffectsFunctionOnBetting(BasePlayersTestCase):
             self.assertEqual(self.table.min_raise_increase, 300)
 
 
-class TestBettingRoundSetActionEffectsFunctionOnRaising(BasePlayersTestCase):
+class TestBettingRoundSetActionEffectsFunctionOnRaising(BaseTestCase):
 
 
     "Runs unit tests on set_action_effects function on raising."

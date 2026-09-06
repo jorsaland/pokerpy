@@ -109,7 +109,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
     betting_round = pk.BettingRound(
         name = PREFLOP,
         table = table,
-        smallest_bet_amount = BIG_BLIND,
+        min_bet = BIG_BLIND,
         starting_player = table.players[2],
         open_fold_allowed = open_fold_allowed
     )
@@ -213,7 +213,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
     betting_round = pk.BettingRound(
         name = betting_round_name,
         table = table,
-        smallest_bet_amount = BIG_BLIND,
+        min_bet = BIG_BLIND,
         starting_player = table.players[0],
         open_fold_allowed = open_fold_allowed,
     )

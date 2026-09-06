@@ -28,7 +28,14 @@ from pokerpy.messages import (
     msg_overloaded_betting_round_message,
 )
 from pokerpy.structures import Player, Table
-from pokerpy.validations import validate_type_int, validate_type_str, validate_type_table
+from pokerpy.validations import (
+    validate_int_positive,
+    validate_player_in_table,
+    validate_type_int,
+    validate_type_str,
+    validate_type_player,
+    validate_type_table,
+)
 
 
 from ._get_valid_actions import get_valid_actions
@@ -51,7 +58,7 @@ class BettingRound:
         name: str,
         table: Table,
         *,
-        smallest_bet_amount: (int|None) = None,
+        min_bet: (int|None) = None,
         starting_player: (Player|None) = None,
         stopping_player: (Player|None) = None,
         open_fold_allowed = False,
@@ -72,14 +79,21 @@ class BettingRound:
         self._lap_counts = 0
         self._is_completed = False
 
-        if smallest_bet_amount is not None:
-            table.set_min_bet(smallest_bet_amount)
-            table.set_min_raise_increase(smallest_bet_amount)
+        if min_bet is not None:
+            validate_type_int(min_bet)
+            validate_int_positive(min_bet)
+            table.set_min_bet(min_bet)
+            table.set_min_raise_increase(min_bet)
 
         if starting_player is not None:
+            validate_type_player(starting_player)
+            validate_player_in_table(starting_player, table.players)
             table.set_starting_player(starting_player)
 
-        if stopping_player is None:
+        if stopping_player is not None:
+            validate_type_player(stopping_player)
+            validate_player_in_table(stopping_player, table.players)
+        else:
             stopping_player = table.get_previous_player(table.starting_player)
         table.set_stopping_player(stopping_player)
 
@@ -100,14 +114,14 @@ class BettingRound:
         return self._lap_counts
 
     @property
-    def open_fold_allowed(self):
-        "Whether folding is allowed when there is no bet or raise to respond to."
-        return self._open_fold_allowed
-
-    @property
     def is_completed(self):
         "Whether the betting round already ended."
         return self._is_completed
+
+    @property
+    def open_fold_allowed(self):
+        "Whether folding is allowed when there is no bet or raise to respond to."
+        return self._open_fold_allowed
 
     @property
     def raise_invalid_actions(self):
@@ -174,6 +188,7 @@ class BettingRound:
         "Deals cards to players in equal amounts."
 
         validate_type_int(cards_count)
+        validate_int_positive(cards_count)
 
         for _ in range(cards_count):
             for player in self.table.live_players:
@@ -188,6 +203,7 @@ class BettingRound:
         "Deals common cards to table."
 
         validate_type_int(cards_count)
+        validate_int_positive(cards_count)
 
         for _ in range(cards_count):
             card = secrets.choice(self.table.deck)
