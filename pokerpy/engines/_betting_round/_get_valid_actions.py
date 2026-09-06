@@ -74,14 +74,18 @@ def get_valid_actions(
             return range(min_bet, player_stack + 1)
         elif player_stack > amount_to_call:
             return range(player_stack, player_stack + 1)
+        else:
+            raise AssertionError
 
     def get_raise_range():
         if player_stack > amount_to_full_raise:
             return range(amount_to_full_raise, player_stack + 1)
         elif player_stack > amount_to_call:
             return range(player_stack, player_stack + 1)
+        else:
+            raise AssertionError
 
-    amount_range_by_action: dict[str, range|None] = {}
+    amount_range_by_action: dict[str, range] = {}
 
     # passive actions
     if amount_to_call > 0:
