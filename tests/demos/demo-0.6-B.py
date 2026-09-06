@@ -16,6 +16,7 @@ import random
 
 
 import pokerpy as pk
+from pokerpy.beta.engines import showdown, reset_cycle_states
 
 
 # Constants
@@ -249,23 +250,23 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
     if len(table.live_players) > 1:
         print(f'\n============ SHOWDOWN! ============\n')
-        pk.showdown(table)
+        showdown(table)
     else:
         print('\n============ NO SHOWDOWN... ============\n')
-        pk.showdown(table)
+        showdown(table)
 
 
 def game():
 
     # Cycle not allowing open fold
     table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE + 1, STACK_MAX_SIZE)) for name in player_names])
-    pk.reset_cycle_states(table)
+    reset_cycle_states(table)
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
     # Cycle allowing open fold
     table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE, STACK_MAX_SIZE)) for name in player_names])
-    pk.reset_cycle_states(table)
+    reset_cycle_states(table)
     cycle(table, open_fold_allowed=True)
     input('\n\n--- ENTER ---\n')
 

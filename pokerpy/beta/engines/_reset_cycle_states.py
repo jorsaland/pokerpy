@@ -22,7 +22,7 @@ from pokerpy.structures import Table
 from pokerpy.validations import validate_type_table
 
 
-from ..engines import BettingRound
+from pokerpy.engines import BettingRound
 
 
 def reset_cycle_states(table: Table):
