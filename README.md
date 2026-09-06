@@ -1,4 +1,4 @@
-# PokerPy 0.6-stage-B - alpha (under development)
+# PokerPy 0.6 - alpha (under development)
 
 Development for this version is divided into two stages (A and B).
 
@@ -20,6 +20,45 @@ This package is a general-purpose game logic tool intended for lawful use only. 
 ## Model
 
 A brief documentation is provided on structures and engines. Also, a diagram representing the communication between instances is available. See [`MODEL.md`](MODEL.md) for details.
+
+## Usage example
+
+```python
+import pokerpy as pk
+import random
+
+# Implement server
+def await_client_device(player: pk.Player, available_actions: dict[str, range]):
+    # Send to client player and options
+    print(f'{player.name = }')
+    print(f'{available_actions = }\n')
+    # Receive from client the requested action
+    action_name = random.choice(list(available_actions.keys()))
+    amount = random.choice(available_actions[action_name])
+    return pk.Action(action_name, amount)
+
+# Instantiate players once
+players = [
+    pk.Player('Andy', stack=1000),
+    pk.Player('Boa', stack=1000),
+    pk.Player('Coral', stack=1000),
+    pk.Player('Dino', stack=1000),
+]
+
+# Instantiate table
+table = pk.Table(players)
+
+# Run betting round
+with pk.BettingRound('flop', table=table) as betting_round:
+    for player in betting_round.listen():
+        action = await_client_device(player, betting_round.get_action_ranges())
+        player.request_action(action)
+
+# Results
+print(f'POT: {table.pot}')
+for player in players:
+    print(f"{player.name}'s stack {player.stack}")
+```
 
 ## Current version
 
