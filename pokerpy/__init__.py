@@ -33,4 +33,3 @@ from .constants import (
 )
 from .engines import BettingRound
 from .structures import Action, Card, Hand, Player, Table
-from . import beta
