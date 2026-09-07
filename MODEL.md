@@ -65,7 +65,7 @@
 
 - **Bet level (`bet_level`):** Largest amount of chips a player has placed in front during the current betting round, which other players must match in order to call.
 
-- **Full bet level (`full_bet_level`):** Part of the chip level matching the last full bet or raise. It may be smaller than a full bet when a player goes all-in for less. In that case, other players can complete the full bet (in addition to folding, calling or raising).
+- **Full bet level (`full_bet_level`):** Part of the bet level matching the last full bet or raise. When a player goes all-in for less than a full bet or raise, it stays the same. Only when a player completes the bet or raise, it is increased.
 
 - **Minimum bet (`min_bet`):** Minimum amount to bet.
 

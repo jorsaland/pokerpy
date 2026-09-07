@@ -157,9 +157,9 @@ class Table:
     @property
     def full_bet_level(self):
         """
-        Part of the bet level matching the last full bet or raise. It may be smaller than a the bet
-        level when a player goes all-in for less than a minimum bet or raise. In that case, other
-        players can complete the full bet, in addition to folding or calling.
+        Part of the bet level matching the last full bet or raise. When a player goes all-in for
+        less than a full bet or raise, it stays the same. Only when a player completes the bet or
+        raise, it is increased.
         """
         return self._full_bet_level
 
