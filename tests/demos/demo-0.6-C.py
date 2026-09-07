@@ -14,8 +14,8 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
-from pokerpy.beta.engines import showdown, reset_cycle_states
+import deprecated.v06 as v06
+from deprecated.v06.beta.engines import showdown, reset_cycle_states
 
 
 # Constants
@@ -37,7 +37,7 @@ STACK_MAX_SIZE = 100_000
 player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 
-def display_cards_and_money(table: pk.Table):
+def display_cards_and_money(table: v06.Table):
     print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | pot: {table.pot} | divided pot: {list(table.central_pot)}')
     for player in table.live_players:
@@ -54,14 +54,14 @@ def display_cards_and_money(table: pk.Table):
 
 def build_players():
 
-    players: list[pk.Player] = []
+    players: list[v06.Player] = []
 
     if random.randint(0, 1):
-        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+        players.append(v06.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
+        players.append(v06.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
     else:
-        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
+        players.append(v06.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+        players.append(v06.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
 
     nerfed_ante_name, nerfed_blind_name = random.sample(player_names[2:], k=2)
     for name in player_names[2:]:
@@ -71,24 +71,24 @@ def build_players():
             stack = random.randrange(STACK_MIN_SIZE, BIG_BLIND)
         else:
             stack = random.randint(STACK_MIN_SIZE, STACK_MAX_SIZE)
-        players.append(pk.Player(name, stack))
+        players.append(v06.Player(name, stack))
 
     return players
 
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v06.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v06.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v06.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
 
-def ante_round(table: pk.Table):
+def ante_round(table: v06.Table):
 
     print(f'\n============ PLACING ANTES ============\n')
 
@@ -98,16 +98,16 @@ def ante_round(table: pk.Table):
         player.decrease_stack(amount)
         player.increase_bet_level(amount)
 
-    pk.engines.gather_pot(table)
+    v06.engines.gather_pot(table)
     display_cards_and_money(table)
     print(f'\n============ ANTES PLACED ============\n')
 
 
-def preflop(table: pk.Table, open_fold_allowed: bool):
+def preflop(table: v06.Table, open_fold_allowed: bool):
 
     print(f'\n============ STARTING {PREFLOP.upper()} ============\n')
 
-    betting_round = pk.BettingRound(
+    betting_round = v06.BettingRound(
         name = PREFLOP,
         table = table,
         min_bet = BIG_BLIND,
@@ -185,25 +185,25 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
             action_name, amount_range = random.choice([
                 (name, amount_range) for name, amount_range in range_by_action.items() if amount_range is not None
             ])
-            if action_name == pk.ACTION_BET:
+            if action_name == v06.ACTION_BET:
                 action_amount = random.randint(table.pot//2, table.pot*2)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
-            elif action_name == pk.ACTION_RAISE:
-                amount_to_call = range_by_action[pk.ACTION_CALL][0]
+            elif action_name == v06.ACTION_RAISE:
+                amount_to_call = range_by_action[v06.ACTION_CALL][0]
                 smallest_amount = amount_to_call + betting_round.table.min_raise_increase
                 action_amount = random.randint(smallest_amount, smallest_amount*3)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
             else:
                 action_amount = amount_range[0]
-            player.request_action(pk.Action(category=action_name, amount=action_amount))
+            player.request_action(v06.Action(category=action_name, amount=action_amount))
 
     display_cards_and_money(table)
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
 
 
-def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
+def postflop(table: v06.Table, betting_round_name: str, open_fold_allowed: bool):
 
     # Break before starting if only remains one player
     if len(table.live_players) == 1:
@@ -211,7 +211,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
 
     print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
 
-    betting_round = pk.BettingRound(
+    betting_round = v06.BettingRound(
         name = betting_round_name,
         table = table,
         min_bet = BIG_BLIND,
@@ -242,19 +242,19 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
             action_name, amount_range = random.choice([
                 (name, amount_range) for name, amount_range in range_by_action.items() if amount_range is not None
             ])
-            if action_name == pk.ACTION_BET:
+            if action_name == v06.ACTION_BET:
                 action_amount = random.randint(table.pot//2, table.pot*2)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
-            elif action_name == pk.ACTION_RAISE:
-                amount_to_call = range_by_action[pk.ACTION_CALL][0]
+            elif action_name == v06.ACTION_RAISE:
+                amount_to_call = range_by_action[v06.ACTION_CALL][0]
                 smallest_amount = amount_to_call + betting_round.table.min_raise_increase
                 action_amount = random.randint(smallest_amount, smallest_amount*3)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
             else:
                 action_amount = amount_range[0]
-            player.request_action(pk.Action(category=action_name, amount=action_amount))
+            player.request_action(v06.Action(category=action_name, amount=action_amount))
 
 
     display_cards_and_money(table)
@@ -263,7 +263,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
     return True
 
 
-def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
+def cycle(table: v06.Table, *, open_fold_allowed: bool = False):
 
     if not open_fold_allowed:
         print('\n======================================================'  )
@@ -295,13 +295,13 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 def game():
 
     # Cycle not allowing open fold
-    table = pk.Table(build_players())
+    table = v06.Table(build_players())
     reset_cycle_states(table)
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
     # Cycle allowing open fold
-    table = pk.Table(build_players())
+    table = v06.Table(build_players())
     reset_cycle_states(table)
     cycle(table, open_fold_allowed=True)
     input('\n\n--- ENTER ---\n')

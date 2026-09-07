@@ -15,8 +15,8 @@ from itertools import combinations
 import random
 
 
-import pokerpy as pk
-from pokerpy.beta.engines import showdown, reset_cycle_states
+import deprecated.v06 as v06
+from deprecated.v06.beta.engines import showdown, reset_cycle_states
 
 
 # Constants
@@ -36,7 +36,7 @@ STACK_SIZE = 10_000
 player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 
-def display_cards_and_money(table: pk.Table):
+def display_cards_and_money(table: v06.Table):
     print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | pot: {table.pot} | divided pot: {list(table.central_pot)}')
     for player in table.live_players:
@@ -51,19 +51,19 @@ def display_cards_and_money(table: pk.Table):
     print('--------------------------------------------------\n')
 
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v06.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v06.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v06.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
 
-def ante_round(table: pk.Table):
+def ante_round(table: v06.Table):
 
     print(f'\n============ PLACING ANTES ============\n')
 
@@ -75,11 +75,11 @@ def ante_round(table: pk.Table):
     print(f'\n============ ANTES PLACED ============\n')
 
 
-def preflop(table: pk.Table, open_fold_allowed: bool):
+def preflop(table: v06.Table, open_fold_allowed: bool):
 
     print(f'\n============ STARTING {PREFLOP.upper()} ============\n')
 
-    betting_round = pk.BettingRound(
+    betting_round = v06.BettingRound(
         name = PREFLOP,
         table = table,
         min_bet = BIG_BLIND,
@@ -141,29 +141,29 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
 
             if amount_to_call == 0:
                 if not betting_round.open_fold_allowed:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                    action_name = random.choice([v06.ACTION_CHECK, v06.ACTION_BET])
                 else:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                    action_name = random.choice([v06.ACTION_CHECK, v06.ACTION_BET, v06.ACTION_FOLD])
             elif amount_to_call >= player.stack:
-                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD])
+                action_name = random.choice([v06.ACTION_CALL, v06.ACTION_FOLD])
             else:
-                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
+                action_name = random.choice([v06.ACTION_CALL, v06.ACTION_FOLD, v06.ACTION_RAISE])
 
-            if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                action = pk.Action(action_name, 0)
-            elif action_name == pk.ACTION_CALL:
-                action = pk.Action(action_name, amount_to_call)
-            elif action_name == pk.ACTION_BET:
+            if action_name in [v06.ACTION_FOLD, v06.ACTION_CHECK]:
+                action = v06.Action(action_name, 0)
+            elif action_name == v06.ACTION_CALL:
+                action = v06.Action(action_name, amount_to_call)
+            elif action_name == v06.ACTION_BET:
                 amount = random.randint(BIG_BLIND, BIG_BLIND*5)
                 if amount > player.stack:
                     amount = player.stack
-                action = pk.Action(action_name, amount)
-            elif action_name == pk.ACTION_RAISE:
+                action = v06.Action(action_name, amount)
+            elif action_name == v06.ACTION_RAISE:
                 smallest_amount = amount_to_call + betting_round.table.min_raise_increase
                 amount = random.randint(smallest_amount, smallest_amount*3)
                 if amount > player.stack:
                     amount = player.stack
-                action = pk.Action(action_name, amount)
+                action = v06.Action(action_name, amount)
             else:
                 raise RuntimeError('we live in a society')
 
@@ -177,7 +177,7 @@ def preflop(table: pk.Table, open_fold_allowed: bool):
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
 
 
-def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
+def postflop(table: v06.Table, betting_round_name: str, open_fold_allowed: bool):
 
     # Break before starting if only remains one player
     if len(table.live_players) == 1:
@@ -185,7 +185,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
 
     print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
 
-    betting_round = pk.BettingRound(
+    betting_round = v06.BettingRound(
         name = betting_round_name,
         table = table,
         min_bet = BIG_BLIND,
@@ -210,29 +210,29 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
 
             if amount_to_call == 0:
                 if not betting_round.open_fold_allowed:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                    action_name = random.choice([v06.ACTION_CHECK, v06.ACTION_BET])
                 else:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                    action_name = random.choice([v06.ACTION_CHECK, v06.ACTION_BET, v06.ACTION_FOLD])
             elif amount_to_call >= player.stack:
-                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD])
+                action_name = random.choice([v06.ACTION_CALL, v06.ACTION_FOLD])
             else:
-                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
+                action_name = random.choice([v06.ACTION_CALL, v06.ACTION_FOLD, v06.ACTION_RAISE])
 
-            if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                action = pk.Action(action_name, 0)
-            elif action_name == pk.ACTION_CALL:
-                action = pk.Action(action_name, amount_to_call)
-            elif action_name == pk. ACTION_BET:
+            if action_name in [v06.ACTION_FOLD, v06.ACTION_CHECK]:
+                action = v06.Action(action_name, 0)
+            elif action_name == v06.ACTION_CALL:
+                action = v06.Action(action_name, amount_to_call)
+            elif action_name == v06. ACTION_BET:
                 amount = random.randint(table.pot//2, table.pot*2)
                 if amount > player.stack:
                     amount = player.stack
-                action = pk.Action(action_name, amount)
-            elif action_name == pk.ACTION_RAISE:
+                action = v06.Action(action_name, amount)
+            elif action_name == v06.ACTION_RAISE:
                 smallest_amount = amount_to_call + betting_round.table.min_raise_increase
                 amount = random.randint(smallest_amount, smallest_amount*3)
                 if amount > player.stack:
                     amount = player.stack
-                action = pk.Action(action_name, amount)
+                action = v06.Action(action_name, amount)
             else:
                 raise RuntimeError('we live in a society')
 
@@ -249,7 +249,7 @@ def postflop(table: pk.Table, betting_round_name: str, open_fold_allowed: bool):
     return True
 
 
-def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
+def cycle(table: v06.Table, *, open_fold_allowed: bool = False):
 
     if not open_fold_allowed:
         print('\n======================================================'  )
@@ -281,13 +281,13 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 def game():
 
     # Cycle not allowing open fold
-    table = pk.Table([pk.Player(name, stack=STACK_SIZE) for name in player_names])
+    table = v06.Table([v06.Player(name, stack=STACK_SIZE) for name in player_names])
     reset_cycle_states(table)
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
     # Cycle allowing open fold
-    table = pk.Table([pk.Player(name, stack=STACK_SIZE) for name in player_names])
+    table = v06.Table([v06.Player(name, stack=STACK_SIZE) for name in player_names])
     reset_cycle_states(table)
     cycle(table, open_fold_allowed=True)
     input('\n\n--- ENTER ---\n')
