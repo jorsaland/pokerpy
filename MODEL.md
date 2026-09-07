@@ -40,7 +40,7 @@
 
 - **Has played (`has_played`):** Whether the player has already taken a voluntary action during the current betting round (not including forced bets).
 
-- **Pot index (`pot_index`):** Index of the pot the player is playing for, being 0 the main pot.
+- **Pot index (`pot_index`):** Index of the deepest pot the player is playing for, being 0 the main pot.
 
 
 ### Table (`Table`)
