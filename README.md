@@ -70,6 +70,9 @@ for player in players:
 - Detached from tag *0.6.0-stage-A*.
 - Stage B features and refactors are implemented.
 
+### 0.6.1
+- A detected misbehaviour in the beta showdown function is fixed.
+
 ## Upcoming versions
 
 - **0.7 - alpha:** A context manager will be implemented to run a full hand cycle, composed of multiple betting rounds and the showdow. It will include experimental features that have already been developed in the latest demos.
