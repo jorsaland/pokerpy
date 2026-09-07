@@ -113,7 +113,7 @@ class Player:
 
     @property
     def pot_index(self):
-        "Index of the pot the player is playing for, being 0 the main pot."
+        "Index of the deepest pot the player is playing for, being 0 the main pot."
         return self._pot_index
 
 
