@@ -15,7 +15,7 @@ from itertools import combinations
 import random
 
 
-import deprecated.v05 as pk
+import deprecated.v05 as v05
 
 
 # Constants
@@ -33,7 +33,7 @@ BIG_BLIND = 10
 player_names = ['Andy', 'Boa', 'Coral', 'Dino']
 
 
-def display_cards_and_money(table: pk.Table):
+def display_cards_and_money(table: v05.Table):
     print('\n--------------------------------------------------')
     print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | central pot: {table.central_pot}')
     for player in table.active_players:
@@ -44,19 +44,19 @@ def display_cards_and_money(table: pk.Table):
     print('--------------------------------------------------\n')
 
 
-def figure_out_hand(cards: list[pk.Card]):
+def figure_out_hand(cards: list[v05.Card]):
     
     if len(cards) < 5:
         return None
     
     if len(cards) == 5:
-        return pk.Hand(cards)
+        return v05.Hand(cards)
     
-    possible_hands = [pk.Hand(combination) for combination in combinations(cards, 5)]
+    possible_hands = [v05.Hand(combination) for combination in combinations(cards, 5)]
     return max(possible_hands)
 
 
-def cycle(table: pk.Table):
+def cycle(table: v05.Table):
 
     if not table.open_fold_allowed:
         print('\n======================================================'  )
@@ -72,7 +72,7 @@ def cycle(table: pk.Table):
 
     print(f'\n============ STARTING {PREFLOP.upper()} ============\n')
 
-    betting_round_instance = pk.BettingRound(
+    betting_round_instance = v05.BettingRound(
         name = PREFLOP,
         table = table,
         starting_player = table.players[2],
@@ -107,21 +107,21 @@ def cycle(table: pk.Table):
             amount_to_call = table.current_amount - player.current_amount
             if amount_to_call == 0:
                 if not table.open_fold_allowed:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                    action_name = random.choice([v05.ACTION_CHECK, v05.ACTION_BET])
                 else:
-                    action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                    action_name = random.choice([v05.ACTION_CHECK, v05.ACTION_BET, v05.ACTION_FOLD])
             else:
-                action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
-            if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                action = pk.Action(action_name, 0)
-            elif action_name == pk.ACTION_CALL:
-                action = pk.Action(action_name, amount_to_call)
-            elif action_name == pk. ACTION_BET:
-                action = pk.Action(action_name, random.randint(BIG_BLIND, BIG_BLIND*5))
-            elif action_name == pk.ACTION_RAISE:
+                action_name = random.choice([v05.ACTION_CALL, v05.ACTION_FOLD, v05.ACTION_RAISE])
+            if action_name in [v05.ACTION_FOLD, v05.ACTION_CHECK]:
+                action = v05.Action(action_name, 0)
+            elif action_name == v05.ACTION_CALL:
+                action = v05.Action(action_name, amount_to_call)
+            elif action_name == v05. ACTION_BET:
+                action = v05.Action(action_name, random.randint(BIG_BLIND, BIG_BLIND*5))
+            elif action_name == v05.ACTION_RAISE:
                 smallest_amount = amount_to_call + table.smallest_rising_amount
                 action_value = random.randint(smallest_amount, smallest_amount*3)
-                action = pk.Action(action_name, action_value)
+                action = v05.Action(action_name, action_value)
             else:
                 raise RuntimeError('we live in a society')
             player.request_action(action)
@@ -138,7 +138,7 @@ def cycle(table: pk.Table):
 
         print(f'\n============ STARTING {betting_round_name.upper()} ============\n')
 
-        with pk.BettingRound(name=betting_round_name, table=table) as betting_round:
+        with v05.BettingRound(name=betting_round_name, table=table) as betting_round:
 
             # Reset betting round states regarding to table and players
             table.reset_betting_round_states()
@@ -155,21 +155,21 @@ def cycle(table: pk.Table):
                 amount_to_call = table.current_amount - player.current_amount
                 if amount_to_call == 0:
                     if not table.open_fold_allowed:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET])
+                        action_name = random.choice([v05.ACTION_CHECK, v05.ACTION_BET])
                     else:
-                        action_name = random.choice([pk.ACTION_CHECK, pk.ACTION_BET, pk.ACTION_FOLD])
+                        action_name = random.choice([v05.ACTION_CHECK, v05.ACTION_BET, v05.ACTION_FOLD])
                 else:
-                    action_name = random.choice([pk.ACTION_CALL, pk.ACTION_FOLD, pk.ACTION_RAISE])
-                if action_name in [pk.ACTION_FOLD, pk.ACTION_CHECK]:
-                    action = pk.Action(action_name, 0)
-                elif action_name == pk.ACTION_CALL:
-                    action = pk.Action(action_name, amount_to_call)
-                elif action_name == pk. ACTION_BET:
-                    action = pk.Action(action_name, random.randint(table.central_pot//2, table.central_pot*2))
-                elif action_name == pk.ACTION_RAISE:
+                    action_name = random.choice([v05.ACTION_CALL, v05.ACTION_FOLD, v05.ACTION_RAISE])
+                if action_name in [v05.ACTION_FOLD, v05.ACTION_CHECK]:
+                    action = v05.Action(action_name, 0)
+                elif action_name == v05.ACTION_CALL:
+                    action = v05.Action(action_name, amount_to_call)
+                elif action_name == v05. ACTION_BET:
+                    action = v05.Action(action_name, random.randint(table.central_pot//2, table.central_pot*2))
+                elif action_name == v05.ACTION_RAISE:
                     smallest_amount = amount_to_call + table.smallest_rising_amount
                     action_value = random.randint(smallest_amount, smallest_amount*3)
-                    action = pk.Action(action_name, action_value)
+                    action = v05.Action(action_name, action_value)
                 else:
                     raise RuntimeError('we live in a society')
                 player.request_action(action)
@@ -197,8 +197,8 @@ def game():
 
     # Prepare the table
     print('\nStarting table and players...\n')
-    players = [pk.Player(name) for name in player_names]
-    table = pk.Table(players, open_fold_allowed=False, smallest_bet=BIG_BLIND)
+    players = [v05.Player(name) for name in player_names]
+    table = v05.Table(players, open_fold_allowed=False, smallest_bet=BIG_BLIND)
 
     # Cycle not allowing open fold
     table.reset_cycle_states()
