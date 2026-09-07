@@ -104,10 +104,11 @@ flowchart LR
     %% Legend
 
     subgraph " "
-        i1(class)@{ shape: circle }
-        i2(class)@{ shape: circle }
+        i1(instance)@{ shape: circle }
+        i2(instance)@{ shape: circle }
         m1(method)@{ shape: text }
         m2(helper method)@{ shape: text }
+        i1 ===> |CONTAINS| i2
         i1 --> |calls| m1
         m1 --> |from| i2
         m1 -.-> |uses| m2
@@ -115,58 +116,81 @@ flowchart LR
     end
 
 
-    %% Classes and methods
-    
+    %% Classes
+
+    C(Controller)@{ shape: cloud }
+
     BR(BettingRound)@{ shape: circle }
+    T(Table)@{ shape: circle }
+    P(Player)@{ shape: circle }
+    H(Hand)@{ shape: circle }
+    Cd(Card)@{ shape: circle }
+    A(Action)@{ shape: circle }
+
+
+    %% Container relations
+
+    BR ===> |CONTAINS| T
+    T ===> |CONTAINS| P
+    T ===> |CONTAINS| Cd
+    P ===> |CONTAINS| H
+    P ===> |CONTAINS| Cd
+    P ===> |CONTAINS| A
+
+
+    %% Methods
+
     BR.close(close)@{ shape: text } -->  BR
     BR.listen(listen)@{ shape: text } -->  BR
-    BR.reset_betting_round_states(reset_betting_round_states)@{ shape: text } -->  BR
-    BR.increase_counter(increase_counter)@{ shape: text } -->  BR
-    BR.set_current_player(set_current_player)@{ shape: text } -->  BR
+    BR.deal_cards_to_players(deal_cards_to_players)@{ shape: text } -->  BR
+    BR.deal_common_cards(deal_common_cards)@{ shape: text } -->  BR
     BR.get_action_ranges(get_action_ranges)@{ shape: text } --> BR
+    BR.increase_counter(increase_counter)@{ shape: text } -->  BR
+    BR.reset_betting_round_states(reset_betting_round_states)@{ shape: text } -->  BR
 
-    T(Table)@{ shape: circle }
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text } --> T
+    T.reset_deck(reset_deck)@{ shape: text } --> T
     T.assign_common_card(assign_common_card)@{ shape: text } --> T
+    T.reset_common_cards(reset_common_cards)@{ shape: text } --> T
     T.set_min_bet(set_min_bet)@{ shape: text } --> T
     T.set_min_raise_increase(set_min_raise_increase)@{ shape: text } --> T
     T.set_bet_level(set_bet_l evel)@{ shape: text } --> T
     T.set_full_bet_level(set_full_bet_level)@{ shape: text } --> T
     T.increase_central_pot(increase_central_pot)@{ shape: text } --> T
-    T.clear_central_pot(clear_central_pot)@{ shape: text } --> T
     T.add_side_pot(add_side_pot)@{ shape: text } --> T
+    T.clear_central_pot(clear_central_pot)@{ shape: text } --> T
     T.set_starting_player(set_starting_player)@{ shape: text } --> T
     T.set_stopping_player(set_stopping_player)@{ shape: text } --> T
     T.set_current_player(set_current_player)@{ shape: text } --> T
-    T.get_previous_player(get_previous_player)@{ shape: text } --> T
     T.get_next_player(get_next_player)@{ shape: text } --> T
+    T.get_previous_player(get_previous_player)@{ shape: text } --> T
     T.iter_players(iter_players)@{ shape: text } --> T
 
-    C(Controller)@{ shape: cloud }
-
-    P(Player)@{ shape: circle }
     P.request_action(request_action)@{ shape: text } --> P
-    P.reset_action(reset_action)@{ shape: text } --> P
+    P.clear_action(clear_action)@{ shape: text } --> P
     P.assign_card(assign_card)@{ shape: text } --> P
+    P.reset_cards(reset_cards)@{ shape: text } --> P
+    P.assign_hand(assign_hand)@{ shape: text } --> P
+    P.clear_hand(clear_hand)@{ shape: text } --> P
     P.increase_bet_level(increase_bet_level)@{ shape: text } --> P
     P.decrease_bet_level(decrease_bet_level)@{ shape: text } --> P
+    P.increase_stack(increase_stack)@{ shape: text } --> P
+    P.decrease_stack(decrease_stack)@{ shape: text } --> P
     P.increase_pot_index(increase_pot_index)@{ shape: text } --> P
     P.reset_pot_index(reset_pot_index)@{ shape: text } --> P
-    P.decrease_stack(decrease_stack)@{ shape: text } --> P
     P.mark_has_played(mark_has_played)@{ shape: text } --> P
     P.unmark_has_played(unmark_has_played)@{ shape: text } --> P
     P.mark_is_folded(mark_is_folded)@{ shape: text } --> P
+    P.unmark_is_folded(unmark_is_folded)@{ shape: text } --> P
 
-    H(Hand)@{ shape: circle }
-
-    Cd(Card)@{ shape: circle }
     Cd.get_deck_position(get_deck_position)@{ shape: text } --> Cd
 
 
     %% Class to method relations
+    H --> Cd.get_deck_position
 
-    C --> BR.close
     C --> BR.listen
+    C --> BR.close
     C --> BR.get_action_ranges
 
     C --> P.request_action
@@ -182,31 +206,27 @@ flowchart LR
     BR --> T.set_starting_player
     BR --> T.set_stopping_player
     BR --> T.set_current_player
-    BR --> T.iter_players
     BR --> T.get_previous_player
+    BR --> T.iter_players
 
-    BR --> P.reset_action
+    BR --> P.clear_action
     BR --> P.assign_card
     BR --> P.increase_bet_level
     BR --> P.decrease_bet_level
-    BR --> P.increase_pot_index
-    BR --> P.reset_pot_index
     BR --> P.decrease_stack
+    BR --> P.increase_pot_index
     BR --> P.mark_has_played
     BR --> P.unmark_has_played
     BR --> P.mark_is_folded
 
-    H --> Cd.get_deck_position
-
 
     %% Helper method relations
 
-    BR.close -.-> BR.reset_betting_round_states
-    BR.close -.-> BR.listen
-
-    BR.listen -.-> BR.reset_betting_round_states
     BR.listen -.-> BR.increase_counter
-    BR.listen -.-> BR.set_current_player
+    BR.listen -.-> BR.reset_betting_round_states
+
+    BR.close -.-> BR.listen
+    BR.close -.-> BR.reset_betting_round_states
 
     T.iter_players -.-> T.get_next_player
     T.iter_players -.-> T.get_previous_player
