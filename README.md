@@ -1,10 +1,6 @@
-# PokerPy 0.6 - alpha (under development)
+# PokerPy 0.7 - alpha (under development)
 
-Development for this version is divided into two stages (A and B).
-
-- Stage A focuses on two main improvements. First, the money logic is enhanced through the introduction of stack sizes, which are tested exclusively in scenarios where all players start with equal stacks. Second, the communication model between instances is redesigned, leading to a cleaner and more solid architecture with clearer responsibilities: Table and Player instances are responsible for holding the game state and exposing simple methods to update it, while BettingRound instances hold no game state; instead, they implement the core game control logic by consuming Table and Player methods.
-
-- Stage B introduces support for side pots and variable stack sizes. Validation functions are developed, replacing verbose and repetitive code. At this point, the BettingRound class logic will be complete and fully usable, though full game logic will have to wait. A basic documentation on the fully powered BettingRound class will also be included.
+A new context manager is implemented to run a full hand cycle, composed of multiple betting rounds and the showdow with the structure of a Texas Hold'em game. This will feed the version demos which for the first time will attempt to simulate the button rotation logic. This is expected to be the last alpha version.
 
 
 ## License
@@ -62,16 +58,11 @@ for player in players:
 
 ## Current version
 
-### 0.6.0 (stage A)
-- Detached from tag *0.5.0*.
-- Stage A features and refactors are implemented.
-
-### 0.6.0 (stage B)
-- Detached from tag *0.6.0-stage-A*.
-- Stage B features and refactors are implemented.
+### 0.7.0
+- Detached from tag *0.6.0*.
+- All version features are implemented.
 
 ## Upcoming versions
 
-- **0.7 - alpha:** A context manager will be implemented to run a full hand cycle, composed of multiple betting rounds and the showdow. It will include experimental features that have already been developed in the latest demos.
 - **0.8 - beta:** A context manager will be implemented to run a full No Limit Texas Hold'em cash game. This manager will implement the features that occur between hand cycles, such as button movement, players entering and leaving the table, and proper handling of heads-up situations. Also, a basic documentation will be provided to illustrate how to use the high level features.
 - **1.0 - stable:** The first stable release. API classes will wrap the core classes, as a separate layer in charge of input validations. Besides this, no new features are planned for this release, though some adjustments or enhancements may arise from final testing and feedback. Also, a full documentation will be provided.
