@@ -31,13 +31,7 @@ class BaseTestCase(TestCase):
         ]
 
         self.table = structures.Table(self.setup_players, min_bet=100)
-
-        self.Andy = self.setup_players[0]
-        self.Boa = self.setup_players[1]
-        self.Coral = self.setup_players[2]
-        self.Dino = self.setup_players[3]
-        self.Epa = self.setup_players[4]
-        self.Fomi = self.setup_players[5]
+        self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
         self.betting_round = engines.BettingRound(
             'test',
@@ -63,23 +57,18 @@ class BaseForcedBetsTestCase(TestCase):
             structures.Player('Epa', 1000),
             structures.Player('Fomi', 1000),
         ]
+        self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
         self.table = structures.Table(self.setup_players, min_bet=100)
-
-        self.Andy = self.setup_players[0]
-        self.Boa = self.setup_players[1]
-        self.Coral = self.setup_players[2]
-        self.Dino = self.setup_players[3]
-        self.Epa = self.setup_players[4]
-        self.Fomi = self.setup_players[5]
+        self.table.set_starting_player(self.Coral)
 
         self.betting_round = engines.BettingRound(
             'test',
             self.table,
             raise_invalid_actions = True,
             open_fold_allowed = True,
-            starting_player = self.Coral,
         )
+        self.betting_round.listen()
 
         self.Andy.decrease_stack(50)
         self.Andy.increase_bet_level(50)

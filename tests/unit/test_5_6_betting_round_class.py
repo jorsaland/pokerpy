@@ -75,87 +75,6 @@ class TestBettingRoundInstantiation(BaseTestCase):
                 self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(type(bad_table).__name__))
 
 
-    def test_min_bet_type_error(self):
-
-        "Tests type error detection on field min_bet."
-
-        bad_amounts = ('300', 300.0, Decimal('300'))
-
-        for bad_amount in bad_amounts:
-
-            with self.subTest(min_bet=bad_amount):
-                with self.assertRaises(TypeError) as context:
-                    engines.BettingRound('test', self.table, min_bet=bad_amount)
-                self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
-
-
-    def test_starting_player_type_error(self):
-
-        "Tests type error detection on field starting_player."
-
-        bad_starting_players = ('Dino', 1)
-
-        for bad_starting_player in bad_starting_players:
-
-            with self.subTest(starting_player=bad_starting_player):
-                with self.assertRaises(TypeError) as context:
-                    engines.BettingRound('test', self.table, starting_player=bad_starting_player)
-                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_starting_player).__name__))
-
-
-    def test_stopping_player_type_error(self):
-
-        "Tests type error detection on field stopping_player."
-
-        bad_stopping_players = ('Dino', 1)
-
-        for bad_stopping_player in bad_stopping_players:
-
-            with self.subTest(stopping_player=bad_stopping_player):
-                with self.assertRaises(TypeError) as context:
-                    engines.BettingRound('test', self.table, stopping_player=bad_stopping_player)
-                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_stopping_player).__name__))
-
-
-    def test_min_bet_value_error(self):
-
-        "Tests value error detection on field min_bet."
-
-        bad_min_bet = 0
-        with self.subTest('zero minimum bet'):
-            with self.assertRaises(ValueError) as context:
-                engines.BettingRound('test', self.table, min_bet=bad_min_bet)
-            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
-
-        bad_min_bet = -10
-        with self.subTest('negative minimum bet'):
-            with self.assertRaises(ValueError) as context:
-                engines.BettingRound('test', self.table, min_bet=bad_min_bet)
-            self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
-
-
-    def test_starting_player_value_error(self):
-
-        "Tests value error detection on field starting_player."
-
-        player_not_in_table = structures.Player('Zero', 1000)
-        with self.subTest('player not in table'):
-            with self.assertRaises(ValueError) as context:
-                engines.BettingRound('test', self.table, starting_player=player_not_in_table)
-            self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
-
-
-    def test_stopping_player_value_error(self):
-
-        "Tests value error detection on field stopping_player."
-
-        player_not_in_table = structures.Player('Zero', 1000)
-        with self.subTest('player not in table'):
-            with self.assertRaises(ValueError) as context:
-                engines.BettingRound('test', self.table, stopping_player=player_not_in_table)
-            self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
-
-
     def test_valid_input(self):
 
         "Tests valid input."
@@ -164,9 +83,6 @@ class TestBettingRoundInstantiation(BaseTestCase):
         with self.subTest('simple instantiation'):
             self.assertEqual(betting_round.name, 'test')
             self.assertEqual(betting_round.table, self.table)
-            self.assertEqual(betting_round.table.min_bet, 1)
-            self.assertEqual(betting_round.table.starting_player, self.Andy)
-            self.assertEqual(betting_round.table.stopping_player, self.Fomi)
             self.assertEqual(betting_round.lap_counts, 0)
             self.assertFalse(betting_round.is_completed)
             self.assertFalse(betting_round.open_fold_allowed)
@@ -175,18 +91,12 @@ class TestBettingRoundInstantiation(BaseTestCase):
         betting_round = engines.BettingRound(
             'test',
             self.table,
-            min_bet = 10,
-            starting_player = self.Boa,
-            stopping_player = self.Epa,
             open_fold_allowed = True,
             raise_invalid_actions = True,
         )
         with self.subTest('complex instantiation'):
             self.assertEqual(betting_round.name, 'test')
             self.assertEqual(betting_round.table, self.table)
-            self.assertEqual(betting_round.table.min_bet, 10)
-            self.assertEqual(betting_round.table.starting_player, self.Boa)
-            self.assertEqual(betting_round.table.stopping_player, self.Epa)
             self.assertEqual(betting_round.lap_counts, 0)
             self.assertFalse(betting_round.is_completed)
             self.assertTrue(betting_round.open_fold_allowed)

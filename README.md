@@ -1,6 +1,6 @@
 # PokerPy 0.7 - alpha (under development)
 
-A new context manager is implemented to run a full hand cycle, composed of multiple betting rounds and the showdow with the structure of a Texas Hold'em game. This will feed the version demos which for the first time will attempt to simulate the button rotation logic. This is expected to be the last alpha version.
+A new context manager is implemented to run a full hand cycle, composed of multiple betting rounds and the showdow with the structure of a Texas Hold'em game. This will feed the version demos which for the first time will attempt to simulate the button rotation logic. The betting round is no longer supporting input for minimum bet, starting player or stopping player. To update these parameters, the appropiate table methods have to be called directly.
 
 
 ## License

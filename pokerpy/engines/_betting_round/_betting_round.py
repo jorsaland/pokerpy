@@ -58,9 +58,6 @@ class BettingRound:
         name: str,
         table: Table,
         *,
-        min_bet: (int|None) = None,
-        starting_player: (Player|None) = None,
-        stopping_player: (Player|None) = None,
         open_fold_allowed = False,
         raise_invalid_actions = False
     ):
@@ -68,34 +65,16 @@ class BettingRound:
         validate_type_str(name)
         validate_type_table(table)
 
-        # Fixed variables
+        # Fixed attributes
         self._listener: (Generator[Player]|None) = None
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
         self._raise_invalid_actions = bool(raise_invalid_actions)
 
-        # State variables
+        # State attributes
         self._lap_counts = 0
         self._is_completed = False
-
-        if min_bet is not None:
-            validate_type_int(min_bet)
-            validate_int_positive(min_bet)
-            table.set_min_bet(min_bet)
-            table.set_min_raise_increase(min_bet)
-
-        if starting_player is not None:
-            validate_type_player(starting_player)
-            validate_player_in_table(starting_player, table.players)
-            table.set_starting_player(starting_player)
-
-        if stopping_player is not None:
-            validate_type_player(stopping_player)
-            validate_player_in_table(stopping_player, table.players)
-        else:
-            stopping_player = table.get_previous_player(table.starting_player)
-        table.set_stopping_player(stopping_player)
 
 
     @property
@@ -154,6 +133,7 @@ class BettingRound:
         if self._listener is None:
             self.reset_betting_round_states(self.table)
             self._listener = run_listener(self)
+
         return self._listener
 
 
