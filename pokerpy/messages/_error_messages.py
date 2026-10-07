@@ -36,5 +36,5 @@ msg_wildcard = "we live in a society"
 
 # Runtime errors
 msg_betting_round_was_not_completed = "the betting round was closed before being completed"
-msg_overloaded_betting_round_message = "some players could not be listened because the betting round already ended"
+msg_overloaded_betting_round = "some players could not be listened because the betting round already ended"
 msg_forbidden_action = "the requested action is not allowed in this context"

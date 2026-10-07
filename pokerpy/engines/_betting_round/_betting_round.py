@@ -25,7 +25,7 @@ import secrets
 from pokerpy.logger import get_logger
 from pokerpy.messages import (
     msg_betting_round_was_not_completed,
-    msg_overloaded_betting_round_message,
+    msg_overloaded_betting_round,
 )
 from pokerpy.structures import Player, Table
 from pokerpy.validations import (
@@ -117,7 +117,7 @@ class BettingRound:
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
         if exception_type is StopIteration:
             self._is_completed = True
-            exception = RuntimeError(msg_overloaded_betting_round_message)
+            exception = RuntimeError(msg_overloaded_betting_round)
         self.close(exception)
 
 

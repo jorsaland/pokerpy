@@ -531,7 +531,7 @@ class TestBettingRoundFlow(BaseTestCase):
                     player.request_action(structures.Action(constants.ACTION_CHECK))
                 next(betting_round.listen()) ## overloaded listener
 
-        self.assertEqual(context.exception.args[0], messages.msg_overloaded_betting_round_message)
+        self.assertEqual(context.exception.args[0], messages.msg_overloaded_betting_round)
 
 
 if __name__ == '__main__':
