@@ -35,6 +35,18 @@ def validate_int_amount_smaller_than_stack(amount: int, stack: int):
         raise ValueError(messages.msg_amount_larger_than_stack.format(amount, stack))
 
 
+def validate_int_small_blind_relation_to_big_blind(small_blind: int, big_blind: (int|None)):
+
+    "Validates small blind and big blind are correctly related."
+
+    if big_blind is None:
+        raise ValueError(messages.msg_bb_unset_sb_set)
+
+    if small_blind >= big_blind:
+        raise ValueError(messages.msg_bb_not_larger_than_sb)
+
+
+
 def validate_int_positive(amount: int):
 
     "Validates an integer is positive."
