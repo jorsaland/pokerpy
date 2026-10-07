@@ -31,13 +31,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         ]
 
         self.table = structures.Table(self.setup_players, min_bet=100)
-
-        self.Andy = self.setup_players[0]
-        self.Boa = self.setup_players[1]
-        self.Coral = self.setup_players[2]
-        self.Dino = self.setup_players[3]
-        self.Epa = self.setup_players[4]
-        self.Fomi = self.setup_players[5]
+        self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
 
     def test_non_closing_folded_player(self):

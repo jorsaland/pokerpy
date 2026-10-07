@@ -30,13 +30,7 @@ class BaseTestCase(TestCase):
             structures.Player('Epa', 1000),
             structures.Player('Fomi', 1000),
         ]
-
-        self.Andy = self.setup_players[0]
-        self.Boa = self.setup_players[1]
-        self.Coral = self.setup_players[2]
-        self.Dino = self.setup_players[3]
-        self.Epa = self.setup_players[4]
-        self.Fomi = self.setup_players[5]
+        self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
         self.setup_full_deck = tuple(structures.Card(value, suit) for value, suit in constants.sorted_card_values_and_suits)
 
