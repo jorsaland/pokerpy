@@ -30,10 +30,8 @@ from pokerpy.messages import (
 from pokerpy.structures import Player, Table
 from pokerpy.validations import (
     validate_int_positive,
-    validate_player_in_table,
     validate_type_int,
     validate_type_str,
-    validate_type_player,
     validate_type_table,
 )
 
