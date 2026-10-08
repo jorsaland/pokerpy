@@ -28,6 +28,7 @@ from pokerpy.logger import get_logger
 
 from ._gather_pot import gather_pot
 from ._prompt_player import prompt_player
+from ._refund_excess import refund_excess
 if TYPE_CHECKING:
     from ._betting_round import BettingRound
 
@@ -65,4 +66,5 @@ def run_listener(betting_round: "BettingRound"):
                 break
     
     logger.info(f'Number of laps: {betting_round.lap_counts}')
+    refund_excess(betting_round.table)
     gather_pot(betting_round.table)

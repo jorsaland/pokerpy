@@ -73,7 +73,7 @@
 
 - **Pot (`pot`):** Total amount of chips being played for in the betting round.
 
-- **Central pot (`central_pot`):** "Part of the pot that is already placed at the center of the table, split into main and side pots."
+- **Split central pot (`split_central_pot`):** "Part of the pot that is already placed at the center of the table, split into main and side pots."
 
 
 # Properties of engines
