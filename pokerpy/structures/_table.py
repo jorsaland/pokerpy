@@ -56,7 +56,6 @@ class Table:
         *,
         min_bet: int = 1,
         starting_player: (Player|None) = None,
-        stopping_player: (Player|None) = None,
     ):
 
         validate_type_list(players)
@@ -71,11 +70,8 @@ class Table:
         validate_type_player(starting_player)
         validate_player_in_table(starting_player, players)
 
-        if stopping_player is None:
-            starting_player_index = players.index(starting_player)
-            stopping_player = players[starting_player_index - 1]
-        validate_type_player(stopping_player)
-        validate_player_in_table(stopping_player, players)
+        starting_player_index = players.index(starting_player)
+        stopping_player = players[starting_player_index - 1]
 
         self._players = players
         self._min_bet = min_bet

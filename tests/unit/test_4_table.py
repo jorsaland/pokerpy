@@ -113,20 +113,6 @@ class TestTableInstantiation(BaseTestCase):
                 self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_starting_player).__name__))
 
 
-    def test_stopping_player_type_error(self):
-
-        "Tests type error detection on field stopping_player."
-
-        bad_stopping_players = ('Dino', 1)
-
-        for bad_stopping_player in bad_stopping_players:
-
-            with self.subTest(stopping_player=bad_stopping_player):
-                with self.assertRaises(TypeError) as context:
-                    structures.Table(self.setup_players, stopping_player=bad_stopping_player)
-                self.assertEqual(context.exception.args[0], messages.msg_not_player_instance.format(type(bad_stopping_player).__name__))
-
-
     def test_players_value_error(self):
 
         "Tests value error detection on field players."
@@ -165,17 +151,6 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
 
 
-    def test_stopping_player_value_error(self):
-
-        "Tests value error detection on field stopping_player."
-
-        player_not_in_table = structures.Player('Zero', 1000)
-        with self.subTest('player not in table'):
-            with self.assertRaises(ValueError) as context:
-                structures.Table(self.setup_players, stopping_player=player_not_in_table)
-            self.assertEqual(context.exception.args[0], messages.msg_player_not_in_table.format(player_not_in_table.name))
-
-
     def test_valid_input(self):
 
         "Tests valid input."
@@ -200,8 +175,7 @@ class TestTableInstantiation(BaseTestCase):
         table = structures.Table(
             self.setup_players,
             min_bet = 10,
-            starting_player = self.setup_players[1],
-            stopping_player = self.setup_players[-2],
+            starting_player = self.Dino,
         )
         with self.subTest('complex instantiation'):
             self.assertTupleEqual(table.deck, self.setup_full_deck)
@@ -209,9 +183,9 @@ class TestTableInstantiation(BaseTestCase):
             self.assertTupleEqual(table.players, tuple(self.setup_players))
             self.assertTupleEqual(table.live_players, tuple(self.setup_players))
             self.assertTupleEqual(table.actionable_players, tuple(self.setup_players))
-            self.assertEqual(table.starting_player, self.Boa)
-            self.assertEqual(table.stopping_player, self.Epa)
-            self.assertEqual(table.current_player, self.Boa)
+            self.assertEqual(table.starting_player, self.Dino)
+            self.assertEqual(table.stopping_player, self.Coral)
+            self.assertEqual(table.current_player, self.Dino)
             self.assertEqual(table.bet_level, 0)
             self.assertEqual(table.full_bet_level, 0)
             self.assertEqual(table.min_bet, 10)
