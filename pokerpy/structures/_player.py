@@ -114,7 +114,7 @@ class Player:
     @property
     def pot_index(self):
         "Index of the deepest pot the player is playing for, being 0 the main pot."
-        return self._pot_index
+        return self._pot_index if not self.is_folded else None
 
 
     def __repr__(self):

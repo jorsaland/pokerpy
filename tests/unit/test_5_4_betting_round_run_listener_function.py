@@ -70,18 +70,23 @@ class BaseForcedBetsTestCase(TestCase):
         )
         self.betting_round.listen()
 
+        # SB
         self.Andy.decrease_stack(50)
         self.Andy.increase_bet_level(50)
 
+        # BB
         self.Boa.decrease_stack(100)
         self.Boa.increase_bet_level(100)
 
+        # optional BB
         self.Coral.decrease_stack(100)
         self.Coral.increase_bet_level(100)
 
+        # optional BB
         self.Epa.decrease_stack(100)
         self.Epa.increase_bet_level(100)
 
+        # bet level on BB
         self.table.set_bet_level(100)
         self.table.set_full_bet_level(100)
 
@@ -2414,9 +2419,9 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
     "Runs unit tests on run_listener function chaining actions to make all players go all-in."
 
 
-    def test_starting_with_full_stacks(self):
+    def test_all_in_chain_starting_with_full_stacks(self):
 
-        "Tests players starting with full stacks."
+        "Tests players going all-in starting with full stacks."
 
         laps_and_players_and_actions = (
             (1, self.Andy, structures.Action(constants.ACTION_CHECK)),
@@ -2465,9 +2470,57 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
             self.assertEqual(self.betting_round.lap_counts, lap)
 
 
-    def test_starting_with_under_stacks(self):
+    def test_all_in_chain_starting_with_full_stacks_and_forced_bets(self):
 
-        "Tests players starting with stacks smaller than full stacks."
+        "Tests players going all-in starting with full stacks, some of them placing forced bets."
+
+        BaseForcedBetsTestCase.setUp(self)
+
+        laps_and_players_and_actions = (
+            (1, self.Coral, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Epa, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Andy, structures.Action(constants.ACTION_CALL, 50)),
+            (1, self.Boa, structures.Action(constants.ACTION_BET, 200)), # +200
+            (2, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Epa, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Fomi, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Andy, structures.Action(constants.ACTION_RAISE, 500)), # +300
+            (2, self.Boa, structures.Action(constants.ACTION_CALL, 300)),
+            (3, self.Coral, structures.Action(constants.ACTION_CALL, 300)),
+            (3, self.Dino, structures.Action(constants.ACTION_CALL, 300)),
+            (3, self.Epa, structures.Action(constants.ACTION_CALL, 300)),
+            (3, self.Fomi, structures.Action(constants.ACTION_RAISE, 700)), # +400
+            (3, self.Andy, structures.Action(constants.ACTION_CALL, 400)),
+            (3, self.Boa, structures.Action(constants.ACTION_CALL, 400)),
+            (4, self.Coral, structures.Action(constants.ACTION_CALL, 400)),
+            (4, self.Dino, structures.Action(constants.ACTION_CALL, 400)),
+            (4, self.Epa, structures.Action(constants.ACTION_CALL, 400)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_all_in_chain_starting_with_under_stacks(self):
+
+        "Tests players going all-in starting with stacks smaller than full stacks."
 
         for player in self.setup_players:
             player.decrease_stack(player.stack)
@@ -2516,6 +2569,269 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
                 next(generator)
             self.assertIsNone(context.exception.value)
             self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+    def test_all_in_chain_starting_with_under_stacks_and_forced_bets(self):
+
+        "Tests players going all-in starting with stacks smaller than full stacks, some of them placing forced bets."
+
+        BaseForcedBetsTestCase.setUp(self)
+
+        for player in self.setup_players:
+            player.decrease_stack(player.stack)
+
+        self.Andy.increase_stack(150) # already placed 50 SB
+        self.Boa.increase_stack(100) # already placed 100 BB
+        self.Coral.increase_stack(400) # already placed optional 100 BB
+        self.Dino.increase_stack(500)
+        self.Epa.increase_stack(900) # already placed optional 100 BB
+        self.Fomi.increase_stack(1000)
+
+        laps_and_players_and_actions = (
+            (1, self.Coral, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Epa, structures.Action(constants.ACTION_CHECK)),
+            (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
+            (1, self.Andy, structures.Action(constants.ACTION_CALL, 50)),
+            (1, self.Boa, structures.Action(constants.ACTION_BET, 100)), # +100
+            (2, self.Coral, structures.Action(constants.ACTION_RAISE, 200)), # +100
+            (2, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Epa, structures.Action(constants.ACTION_CALL, 200)),
+            (2, self.Fomi, structures.Action(constants.ACTION_RAISE, 500)), # +300
+            (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
+            (3, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Dino, structures.Action(constants.ACTION_CALL, 200)),
+            (3, self.Epa, structures.Action(constants.ACTION_RAISE, 700)), # +400
+            (3, self.Fomi, structures.Action(constants.ACTION_CALL, 400)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+class TestBettingRoundRunListenerFunctionWithRefunds(BaseTestCase):
+
+
+    "Runs unit tests on run_listener function on cases where refund is required, having the big blind player could not pay a full big blind."
+
+
+    def test_deepest_pot_has_a_single_folded_player(self):
+
+        "Tests an optional big blind folds as well as every one else, so nobody pays the placed amount."
+
+        # SB
+        self.Andy.decrease_stack(50)
+        self.Andy.increase_bet_level(50)
+
+        # BB (incomplete, all-in)
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_bet_level(50)
+
+        # optional BB
+        self.Coral.decrease_stack(100)
+        self.Coral.increase_bet_level(100)
+
+        # table starting conditions
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+        self.table.set_starting_player(self.Coral)
+        self.table.set_stopping_player(self.Boa)
+
+        laps_and_players_and_actions = (
+            (1, self.Coral, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Andy, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 900)
+            self.assertEqual(self.Dino.stack, 1000)
+            self.assertEqual(self.Epa.stack, 1000)
+            self.assertEqual(self.Fomi.stack, 1000)
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 950) # got back the 50 excess
+            self.assertEqual(self.Dino.stack, 1000)
+            self.assertEqual(self.Epa.stack, 1000)
+            self.assertEqual(self.Fomi.stack, 1000)
+            self.assertTupleEqual(self.table.split_central_pot, (150,))
+
+
+    def test_deepest_pot_has_multiple_folded_player(self):
+
+        "Tests multiple optional big blinds fold as well as every one else, so nobody pays the placed amount."
+
+        # SB
+        self.Andy.decrease_stack(50)
+        self.Andy.increase_bet_level(50)
+
+        # BB (incomplete, all-in)
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_bet_level(50)
+
+        # optional BB
+        self.Coral.decrease_stack(100)
+        self.Coral.increase_bet_level(100)
+
+        # optional BB
+        self.Dino.decrease_stack(100)
+        self.Dino.increase_bet_level(100)
+
+        # table starting conditions
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+        self.table.set_starting_player(self.Coral)
+        self.table.set_stopping_player(self.Boa)
+
+        laps_and_players_and_actions = (
+            (1, self.Coral, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Andy, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 900)
+            self.assertEqual(self.Dino.stack, 900)
+            self.assertEqual(self.Epa.stack, 1000)
+            self.assertEqual(self.Fomi.stack, 1000)
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 950) # got back the 50 excess
+            self.assertEqual(self.Dino.stack, 950) # got back the 50 excess
+            self.assertEqual(self.Epa.stack, 1000)
+            self.assertEqual(self.Fomi.stack, 1000)
+            self.assertTupleEqual(self.table.split_central_pot, (200,))
+
+
+    def test_two_deepest_pots_have_multiple_folded_player(self):
+
+        """
+        Tests multiple optional blinds from different sizes fold as well as every one else, so nobody pays the placed amount.
+        This is a weird case because usually optional blind is always a big blind, but who knows, there are some awful poker versions nowadays that people like anyway.
+        """
+
+        # SB
+        self.Andy.decrease_stack(50)
+        self.Andy.increase_bet_level(50)
+
+        # BB (incomplete, all-in)
+        self.Boa.decrease_stack(self.Boa.stack)
+        self.Boa.increase_bet_level(50)
+
+        # optional BB
+        self.Coral.decrease_stack(100)
+        self.Coral.increase_bet_level(100)
+
+        # optional BB
+        self.Dino.decrease_stack(100)
+        self.Dino.increase_bet_level(100)
+
+        # optional BB
+        self.Epa.decrease_stack(200)
+        self.Epa.increase_bet_level(200)
+
+        # optional BB
+        self.Fomi.decrease_stack(200)
+        self.Fomi.increase_bet_level(200)
+
+        # table starting conditions
+        self.table.set_bet_level(200)
+        self.table.set_full_bet_level(200)
+        self.table.set_starting_player(self.Coral)
+        self.table.set_stopping_player(self.Boa)
+
+        laps_and_players_and_actions = (
+            (1, self.Coral, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Dino, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
+            (1, self.Andy, structures.Action(constants.ACTION_FOLD)),
+        )
+
+        generator = engines.run_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 900)
+            self.assertEqual(self.Dino.stack, 900)
+            self.assertEqual(self.Epa.stack, 800)
+            self.assertEqual(self.Fomi.stack, 800)
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+            self.assertEqual(self.Andy.stack, 950)
+            self.assertEqual(self.Boa.stack, 0)
+            self.assertEqual(self.Coral.stack, 950) # got back the 50 excess
+            self.assertEqual(self.Dino.stack, 950) # got back the 50 excess
+            self.assertEqual(self.Epa.stack, 950) # got back the 150 excess
+            self.assertEqual(self.Fomi.stack, 950) # got back the 150 excess
+            self.assertTupleEqual(self.table.split_central_pot, (300,))
 
 
 if __name__ == '__main__':
