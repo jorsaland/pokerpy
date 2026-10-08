@@ -61,7 +61,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -74,7 +74,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
 
     def test_one_bettor_player_with_zero_starting_pot(self):
@@ -101,7 +101,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -114,7 +114,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (100,))
+            self.assertTupleEqual(self.table.split_central_pot, (100,))
 
 
     def test_equal_bettor_players_with_zero_starting_pot(self):
@@ -144,7 +144,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -157,7 +157,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (400,))
+            self.assertTupleEqual(self.table.split_central_pot, (400,))
 
 
     def test_unequal_bettor_players_with_zero_starting_pot(self):
@@ -187,7 +187,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -200,7 +200,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 1)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 2)
-            self.assertTupleEqual(self.table.central_pot, (600, 900, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (600, 900, 600))
 
 
     def test_unequal_bettor_players_lower_folded_with_zero_starting_pot(self):
@@ -232,7 +232,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -245,7 +245,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (1500, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (1500, 600))
 
 
     def test_unequal_bettor_players_middle_folded_with_zero_starting_pot(self):
@@ -276,7 +276,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -289,7 +289,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (600, 1500))
+            self.assertTupleEqual(self.table.split_central_pot, (600, 1500))
 
 
     def test_unequal_bettor_players_first_and_middle_folded_with_zero_starting_pot(self):
@@ -322,7 +322,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (0,))
+            self.assertTupleEqual(self.table.split_central_pot, (0,))
 
         engines.gather_pot(self.table)
 
@@ -335,7 +335,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (2100,))
+            self.assertTupleEqual(self.table.split_central_pot, (2100,))
 
 
 class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
@@ -371,7 +371,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -384,7 +384,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
 
     def test_one_bettor_player_with_starting_main_pot(self):
@@ -411,7 +411,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -424,7 +424,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1100,))
+            self.assertTupleEqual(self.table.split_central_pot, (1100,))
 
 
     def test_equal_bettor_players_with_starting_main_pot(self):
@@ -454,7 +454,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -467,7 +467,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1400,))
+            self.assertTupleEqual(self.table.split_central_pot, (1400,))
 
 
     def test_unequal_bettor_players_with_starting_main_pot(self):
@@ -497,7 +497,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -510,7 +510,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 1)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 2)
-            self.assertTupleEqual(self.table.central_pot, (1600, 900, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (1600, 900, 600))
 
 
     def test_unequal_bettor_players_lower_folded_with_starting_main_pot(self):
@@ -542,7 +542,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -555,7 +555,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (2500, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (2500, 600))
 
 
     def test_unequal_bettor_players_middle_folded_with_starting_main_pot(self):
@@ -586,7 +586,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -599,7 +599,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (1600, 1500))
+            self.assertTupleEqual(self.table.split_central_pot, (1600, 1500))
 
 
     def test_unequal_bettor_players_first_and_middle_folded_with_starting_main_pot(self):
@@ -632,7 +632,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000,))
+            self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
         engines.gather_pot(self.table)
 
@@ -645,7 +645,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (3100,))
+            self.assertTupleEqual(self.table.split_central_pot, (3100,))
 
 
 class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
@@ -685,7 +685,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -698,7 +698,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
 
     def test_one_bettor_player_with_starting_side_pots(self):
@@ -725,7 +725,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -738,7 +738,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2100))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2100))
 
 
     def test_equal_bettor_players_with_starting_side_pots(self):
@@ -768,7 +768,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -781,7 +781,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertIsNone(self.Fomi.pot_index)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2400))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2400))
 
 
     def test_unequal_bettor_players_with_starting_side_pots(self):
@@ -811,7 +811,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -824,7 +824,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 1)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 2)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2600, 900, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2600, 900, 600))
 
 
     def test_unequal_bettor_players_lower_folded_with_starting_side_pots(self):
@@ -856,7 +856,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -869,7 +869,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Dino.pot_index, 0)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 3500, 600))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 3500, 600))
 
 
     def test_unequal_bettor_players_middle_folded_with_starting_side_pots(self):
@@ -900,7 +900,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -913,7 +913,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 1)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2600, 1500))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2600, 1500))
 
 
     def test_unequal_bettor_players_first_and_middle_folded_with_starting_side_pots(self):
@@ -946,7 +946,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 2000))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
         engines.gather_pot(self.table)
 
@@ -959,7 +959,7 @@ class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Dino.pot_index)
             self.assertIsNone(self.Epa.pot_index)
             self.assertEqual(self.Fomi.pot_index, 0)
-            self.assertTupleEqual(self.table.central_pot, (1000, 500, 4100))
+            self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 4100))
 
 
 if __name__ == '__main__':

@@ -39,7 +39,7 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 def display_cards_and_money(table: v06.Table):
     print('\n--------------------------------------------------')
-    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | pot: {table.pot} | divided pot: {list(table.central_pot)}')
+    print(f'Common cards: {"".join(str(c) for c in table.common_cards) if table.common_cards else None} | pot: {table.pot} | divided pot: {list(table.split_central_pot)}')
     for player in table.live_players:
         hand = figure_out_hand(player.cards + table.common_cards)
         if hand is not None:

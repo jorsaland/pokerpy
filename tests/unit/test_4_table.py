@@ -195,7 +195,7 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(table.min_bet, 1)
             self.assertEqual(table.min_raise_increase, 1)
             self.assertEqual(table.pot, 0)
-            self.assertTupleEqual(table.central_pot, (0,))
+            self.assertTupleEqual(table.split_central_pot, (0,))
 
         table = structures.Table(
             self.setup_players,
@@ -216,7 +216,7 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(table.full_bet_level, 0)
             self.assertEqual(table.min_bet, 10)
             self.assertEqual(table.min_raise_increase, 10)
-            self.assertTupleEqual(table.central_pot, (0,))
+            self.assertTupleEqual(table.split_central_pot, (0,))
             self.assertEqual(table.pot, 0)
 
 
@@ -483,7 +483,7 @@ class TestTablePotMethodsAndAttributes(BaseTestCase):
         expected_central_pot = (0,)
         with self.subTest('before increases and adding side pots', expected_pot=expected_pot, expected_central_pot=expected_central_pot):
             self.assertEqual(table.pot, 0)
-            self.assertTupleEqual(table.central_pot, (0,))
+            self.assertTupleEqual(table.split_central_pot, (0,))
 
         for i, amount in enumerate(amounts):
             table.increase_central_pot(amount)
@@ -491,7 +491,7 @@ class TestTablePotMethodsAndAttributes(BaseTestCase):
             expected_pot = sum(amounts[:i+1])
             with self.subTest('increase, before adding side pots', amount=amount, expected_pot=expected_pot, expected_central_pot=expected_central_pot):
                 self.assertEqual(table.pot, expected_pot)
-                self.assertTupleEqual(table.central_pot, expected_central_pot)
+                self.assertTupleEqual(table.split_central_pot, expected_central_pot)
 
         for j in range(1, SIDE_POT_ITERATIONS):
             table.add_side_pot()
@@ -501,7 +501,7 @@ class TestTablePotMethodsAndAttributes(BaseTestCase):
                 expected_central_pot = tuple(sum(amounts) for _ in range(j)) + (sum(amounts[:i+1]),)
                 with self.subTest('increase central pot and side pots', side_pot=j, amount=amount, expected_pot=expected_pot, expected_central_pot=expected_central_pot):
                     self.assertEqual(table.pot, expected_pot)
-                    self.assertTupleEqual(table.central_pot, expected_central_pot)
+                    self.assertTupleEqual(table.split_central_pot, expected_central_pot)
 
         for i, player in enumerate(self.setup_players, start=1):
             player.increase_bet_level(PLAYER_BET_LEVEL_INCREASE)
@@ -509,7 +509,7 @@ class TestTablePotMethodsAndAttributes(BaseTestCase):
             expected_central_pot = tuple(sum(amounts) for _ in range(SIDE_POT_ITERATIONS))
             with self.subTest('increase player bet level', player=player.name, expected_pot=expected_pot, expected_central_pot=expected_central_pot):
                 self.assertEqual(table.pot, expected_pot)
-                self.assertEqual(table.central_pot, expected_central_pot)
+                self.assertEqual(table.split_central_pot, expected_central_pot)
 
         table.clear_central_pot()
         for player in self.setup_players:
@@ -518,7 +518,7 @@ class TestTablePotMethodsAndAttributes(BaseTestCase):
         expected_central_pot = (0,)
         with self.subTest('clear central pot', expected_pot=expected_pot, expected_side_pot=expected_central_pot):
             self.assertEqual(table.pot, expected_pot)
-            self.assertTupleEqual(table.central_pot, expected_central_pot)
+            self.assertTupleEqual(table.split_central_pot, expected_central_pot)
 
 
 class TestTablePlayerMethods(BaseTestCase):

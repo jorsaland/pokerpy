@@ -86,7 +86,7 @@ class Table:
 
         self._bet_level = 0
         self._full_bet_level = 0
-        self._central_pot: list[int] = [0]
+        self._split_central_pot: list[int] = [0]
 
         self._deck: list[Card] = [Card(value, suit) for value, suit in sorted_card_values_and_suits]
         self._common_cards: list[Card] = []
@@ -176,12 +176,12 @@ class Table:
     @property
     def pot(self):
         "Total amount of chips being played for in the betting round."
-        return sum(self._central_pot) + sum(player.bet_level for player in self._players)
+        return sum(self._split_central_pot) + sum(player.bet_level for player in self._players)
 
     @property
-    def central_pot(self):
+    def split_central_pot(self):
         "Part of the pot that is already placed at the center of the table, split into main and side pots."
-        return tuple(self._central_pot)
+        return tuple(self._split_central_pot)
 
 
     # Methods related to cards
@@ -267,27 +267,34 @@ class Table:
 
     def increase_central_pot(self, amount: int):
 
-        "Adds an amount to the central_pot property."
+        "Adds an amount to the deepest pot in the split_central_pot property."
 
         validate_type_int(amount)
         validate_int_positive_or_zero(amount)
 
-        self._central_pot[-1] += amount
+        self._split_central_pot[-1] += amount
 
 
     def add_side_pot(self):
 
-        "Adds a new side pot to the central_pot property."
+        "Adds a new side pot to the split_central_pot property."
 
-        self._central_pot.append(0)
+        self._split_central_pot.append(0)
+
+
+    def remove_side_pot(self):
+
+        "Removes the last side pot in the split_central_pot property."
+
+        self._split_central_pot.pop()
 
 
     def clear_central_pot(self):
 
-        "Resets the central_pot property."
+        "Resets the split_central_pot property."
 
-        self._central_pot.clear()
-        self._central_pot.append(0)
+        self._split_central_pot.clear()
+        self._split_central_pot.append(0)
 
 
     # Methods related to players setting
