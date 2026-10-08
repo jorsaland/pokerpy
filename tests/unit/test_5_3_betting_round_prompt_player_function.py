@@ -281,5 +281,28 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
         self.assertEqual(context.exception.cause, messages.signal_last_player_in_hand)
 
 
+    def test_no_further_action_possible(self):
+
+        "Tests prompted player cannot parse an action when everyone else is folded or all-in and there is no amount to call."
+
+        self.table.set_current_player(self.Andy)
+
+        self.Boa.mark_is_folded()
+        self.Coral.mark_is_folded()
+        self.Dino.decrease_stack(self.Dino.stack)
+        self.Epa.decrease_stack(self.Epa.stack)
+        self.Fomi.decrease_stack(self.Fomi.stack)
+
+        generator = engines.prompt_player(
+            table = self.table,
+            open_fold_allowed = False,
+            raise_invalid_actions = True,
+        )
+
+        with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
+            next(generator)
+        self.assertEqual(context.exception.cause, messages.signal_no_further_action_possible)
+
+
 if __name__ == '__main__':
     main()

@@ -26,6 +26,7 @@ from pokerpy.messages import (
     signal_folded_stopping_player,
     signal_last_player_in_hand,
     signal_passive_stopping_player,
+    signal_no_further_action_possible,
 )
 from pokerpy.structures import Table
 
@@ -47,6 +48,17 @@ def prompt_player(
 
     if len(table.live_players) == 1:
         raise CloseBettingRoundSignal(signal_last_player_in_hand)
+
+    # This is an edge case that may happen when the small blind is all-in and every other player
+    # folds. Then, the big blind is not allowed to play because there are no players to bet (he is
+    # the last actionable player) or to call (the bet level difference between the table and the
+    # player is zero). If the bet level difference was larger than zero, that would mean that the
+    # player still has the choice to call or fold.
+    if (
+        len(table.actionable_players) == 1 and
+        table.bet_level - table.current_player.bet_level == 0
+    ):
+        raise CloseBettingRoundSignal(signal_no_further_action_possible)
 
     if table.current_player.is_folded:
         if table.current_player == table.stopping_player:
