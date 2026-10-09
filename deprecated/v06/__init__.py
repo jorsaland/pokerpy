@@ -20,7 +20,7 @@ PokerPy under development! (Alpha)
 
 # Info
 __author__ = 'Andrés Saldarriaga Jordan (jorsaland)'
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 
 # Content
@@ -33,4 +33,3 @@ from .constants import (
 )
 from .engines import BettingRound
 from .structures import Action, Card, Hand, Player, Table
-from . import beta

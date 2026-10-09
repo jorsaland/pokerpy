@@ -28,6 +28,7 @@ from deprecated.v06.logger import get_logger
 
 from ._gather_pot import gather_pot
 from ._prompt_player import prompt_player
+from ._refund_excess import refund_excess
 if TYPE_CHECKING:
     from ._betting_round import BettingRound
 
@@ -41,10 +42,12 @@ def run_listener(betting_round: "BettingRound"):
     Starts the betting round generator that rotates the player turns.
     """
 
-    # If a betting round starts with only one player who is not folded or all-in, does not make
-    # sense for that player to play. However, if the round is already going on, that player can
-    # actually choose an action between calling and folding. That is why here is an if statement
-    # and not a while loop.
+    # If a betting round starts with only one actionable player (who has not folded or gone
+    # all-in), it does not make sense for that player to play, as there is no one to respond. On
+    # the other hand, if a round is already going on and there is only one actionable player, that
+    # player can actually call or fold. This if statement makes sure the round only starts if there
+    # is more than one actionable player, still allowing to prompt a last actionable player in an
+    # ongoing round.
     if len(betting_round.table.actionable_players) > 1:
 
         for player in cycle(betting_round.table.iter_players()):
@@ -63,4 +66,5 @@ def run_listener(betting_round: "BettingRound"):
                 break
     
     logger.info(f'Number of laps: {betting_round.lap_counts}')
+    refund_excess(betting_round.table)
     gather_pot(betting_round.table)

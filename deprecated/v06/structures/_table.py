@@ -86,7 +86,7 @@ class Table:
 
         self._bet_level = 0
         self._full_bet_level = 0
-        self._central_pot: list[int] = [0]
+        self._split_central_pot: list[int] = [0]
 
         self._deck: list[Card] = [Card(value, suit) for value, suit in sorted_card_values_and_suits]
         self._common_cards: list[Card] = []
@@ -157,9 +157,9 @@ class Table:
     @property
     def full_bet_level(self):
         """
-        Part of the bet level matching the last full bet or raise. It may be smaller than a the bet
-        level when a player goes all-in for less than a minimum bet or raise. In that case, other
-        players can complete the full bet, in addition to folding or calling.
+        Part of the bet level matching the last full bet or raise. When a player goes all-in for
+        less than a full bet or raise, it stays the same. Only when a player completes the bet or
+        raise, it is increased.
         """
         return self._full_bet_level
 
@@ -176,12 +176,12 @@ class Table:
     @property
     def pot(self):
         "Total amount of chips being played for in the betting round."
-        return sum(self._central_pot) + sum(player.bet_level for player in self._players)
+        return sum(self._split_central_pot) + sum(player.bet_level for player in self._players)
 
     @property
-    def central_pot(self):
+    def split_central_pot(self):
         "Part of the pot that is already placed at the center of the table, split into main and side pots."
-        return tuple(self._central_pot)
+        return tuple(self._split_central_pot)
 
 
     # Methods related to cards
@@ -267,27 +267,27 @@ class Table:
 
     def increase_central_pot(self, amount: int):
 
-        "Adds an amount to the central_pot property."
+        "Adds an amount to the deepest pot in the split_central_pot property."
 
         validate_type_int(amount)
         validate_int_positive_or_zero(amount)
 
-        self._central_pot[-1] += amount
+        self._split_central_pot[-1] += amount
 
 
     def add_side_pot(self):
 
-        "Adds a new side pot to the central_pot property."
+        "Adds a new side pot to the split_central_pot property."
 
-        self._central_pot.append(0)
+        self._split_central_pot.append(0)
 
 
     def clear_central_pot(self):
 
-        "Resets the central_pot property."
+        "Resets the split_central_pot property."
 
-        self._central_pot.clear()
-        self._central_pot.append(0)
+        self._split_central_pot.clear()
+        self._split_central_pot.append(0)
 
 
     # Methods related to players setting

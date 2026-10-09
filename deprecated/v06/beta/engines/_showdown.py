@@ -67,7 +67,7 @@ def showdown(table: Table):
 
     logger.info(f'Remaining players: {", ".join(player.name for player in table.live_players)}')
 
-    for i, side_pot in enumerate(table.central_pot):
+    for i, side_pot in enumerate(table.split_central_pot):
 
         winners: list[Player] = []
 
