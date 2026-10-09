@@ -40,7 +40,7 @@ from pokerpy.validations import (
 
 
 from .._betting_round._betting_round import BettingRound
-from ._run_listener import run_listener
+from ._run_listener import run_hand_cycle_listener
 
 
 logger = get_logger()
@@ -180,7 +180,7 @@ class HandCycle:
 
         if self._listener is None:
             self.reset_hand_cycle_states(self.table)
-            self._listener = run_listener(self)
+            self._listener = run_hand_cycle_listener(self)
 
         return self._listener
 
