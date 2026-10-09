@@ -42,7 +42,6 @@ class Action:
         validate_type_int(amount)
 
         validate_str_action_category(category)
-        
         if category in (ACTION_FOLD, ACTION_CHECK):
             validate_int_zero(amount)
         else:

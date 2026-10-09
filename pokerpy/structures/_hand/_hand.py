@@ -47,8 +47,8 @@ class Hand:
 
         # Check input type
         validate_type_iterable(cards)
-
         validate_all_type_card(cards)
+
         cards_list = list(cards)
 
         # Transform input

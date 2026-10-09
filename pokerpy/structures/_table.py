@@ -60,14 +60,14 @@ class Table:
 
         validate_type_list(players)
         validate_all_type_player(players)
-        validate_not_empty_table(players)
-
         validate_type_int(min_bet)
-        validate_int_positive(min_bet)
+        if starting_player is not None:
+            validate_type_player(starting_player)
 
+        validate_not_empty_table(players)
+        validate_int_positive(min_bet)
         if starting_player is None:
             starting_player = players[0]
-        validate_type_player(starting_player)
         validate_player_in_table(starting_player, players)
 
         starting_player_index = players.index(starting_player)
