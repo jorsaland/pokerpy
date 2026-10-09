@@ -71,7 +71,7 @@ for player in players:
 - Stage B features and refactors are implemented.
 
 ### 0.6.1
-- A detected misbehaviour in the beta showdown function is fixed.
+- Edge case misbehaviours are fixed. This includes updates in function `promt_player` and a new function `refund_excess`
 
 ## Upcoming versions
 
