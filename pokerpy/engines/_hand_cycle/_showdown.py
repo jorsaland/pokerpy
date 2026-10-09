@@ -65,8 +65,6 @@ def showdown(table: Table):
     if not isinstance(table, Table):
         raise TypeError(msg_not_table_instance.format(type(table).__name__))
 
-    logger.info(f'Remaining players: {", ".join(player.name for player in table.live_players)}')
-
     for i, side_pot in enumerate(table.split_central_pot):
 
         winners: list[Player] = []
@@ -86,9 +84,9 @@ def showdown(table: Table):
         if len(winners) == 1:
             winner = winners[0]
             if i == 0:
-                logger.info(f'{winner.name} wins main pot: {side_pot}!')
+                logger.info(f'{winner.name} wins main pot: {side_pot}')
             else:
-                logger.info(f'{winner.name} wins side pot {i}: {side_pot}!')
+                logger.info(f'{winner.name} wins side pot {i}: {side_pot}')
             winner.increase_stack(side_pot)
         else:
             break_tie(winners, side_pot, i)

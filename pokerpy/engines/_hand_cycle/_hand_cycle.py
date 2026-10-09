@@ -22,7 +22,7 @@ from collections.abc import Generator
 import secrets
 
 
-from pokerpy.logger import get_logger
+from pokerpy.logger import get_logger, wrap_internal_log
 from pokerpy.messages import (
     msg_hand_cycle_was_not_completed,
     msg_overloaded_hand_cycle,
@@ -225,6 +225,8 @@ class HandCycle:
                 player.assign_card(card)
                 logger.info(f'Dealer deals card {card} to {player.name}.')
 
+        logger.info(wrap_internal_log())
+
 
     def deal_common_cards(self, cards_count: int):
 
@@ -239,7 +241,8 @@ class HandCycle:
             self.table.assign_common_card(card)
         
         logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.table.common_cards[-cards_count:])}.')
-    
+        logger.info(wrap_internal_log())
+
 
     # Methods related to state
 
