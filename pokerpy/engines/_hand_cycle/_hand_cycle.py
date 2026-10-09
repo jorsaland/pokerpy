@@ -101,6 +101,7 @@ class HandCycle:
         self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State attributes
+        self._current_betting_round: (BettingRound|None) = None
         self._is_completed = False
 
 
@@ -133,6 +134,11 @@ class HandCycle:
     def extra_big_blind_players(self):
         "Players placing an extra big blind."
         return tuple(self._extra_big_blind_players)
+
+    @property
+    def current_betting_round(self):
+        "Betting round taking place."
+        return self._current_betting_round
 
     @property
     def is_completed(self):
@@ -236,6 +242,20 @@ class HandCycle:
     
 
     # Methods related to state
+
+
+    def set_current_betting_round(self, betting_round: BettingRound):
+
+        "Sets a betting round as the current one."
+
+        self._current_betting_round = betting_round
+
+
+    def reset_current_betting_round(self):
+
+        "Resets current betting round."
+
+        self._current_betting_round = None
 
 
     @staticmethod

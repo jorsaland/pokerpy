@@ -82,8 +82,9 @@ def ante_round(table: Table, *, ante: int):
 
 
 def preflop(
-    table: Table,
     *,
+    hand_cycle: "HandCycle",
+    table: Table,
     small_blind: (int|None),
     big_blind: (int|None),
     extra_big_blind_players: tuple[Player],
@@ -108,6 +109,8 @@ def preflop(
     )
 
     with betting_round:
+
+        hand_cycle.set_current_betting_round(betting_round)
 
         if small_blind:
 
@@ -161,11 +164,14 @@ def preflop(
         betting_round.deal_cards_to_players(2)
         yield from betting_round.listen()
 
+    hand_cycle.reset_current_betting_round()
+
     display_cards_and_money(table)
     print(f'\n============ ENDING {PREFLOP.upper()} ============\n')
 
 
 def postflop(
+    hand_cycle: "HandCycle",
     table: Table,
     round_name: str,
     open_fold_allowed: bool,
@@ -187,6 +193,8 @@ def postflop(
 
     with betting_round:
 
+        hand_cycle.set_current_betting_round(betting_round)
+
         # Deal three cards to table if round is flop and one if is turn or river
 
         if round_name == FLOP:
@@ -197,6 +205,7 @@ def postflop(
         # Let players to play
         yield from betting_round.listen()
 
+    hand_cycle.reset_current_betting_round()
 
     display_cards_and_money(table)
     print(f'\n============ ENDING {round_name.upper()} ============\n')
@@ -216,6 +225,7 @@ def run_listener(hand_cycle: "HandCycle"):
         ante_round(hand_cycle.table, ante=hand_cycle.ante)
 
     yield from preflop(
+        hand_cycle = hand_cycle,
         table = hand_cycle.table,
         small_blind = hand_cycle.small_blind,
         big_blind = hand_cycle.big_blind,
@@ -226,6 +236,7 @@ def run_listener(hand_cycle: "HandCycle"):
 
     for round_name in after_preflop_round_names:
         keep_playing = yield from postflop(
+            hand_cycle = hand_cycle,
             table = hand_cycle.table,
             round_name = round_name,
             open_fold_allowed = hand_cycle.open_fold_allowed,
