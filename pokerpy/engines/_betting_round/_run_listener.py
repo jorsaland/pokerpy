@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 logger = get_logger()
 
 
-def run_listener(betting_round: "BettingRound"):
+def run_betting_round_listener(betting_round: "BettingRound"):
 
     """
     Starts the betting round generator that rotates the player turns.

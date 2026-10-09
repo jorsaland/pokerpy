@@ -4,7 +4,7 @@ Namespace for engine classes.
 
 
 from ._betting_round._betting_round import BettingRound
-from ._betting_round._run_listener import run_listener
+from ._betting_round._run_listener import run_betting_round_listener
 from ._betting_round._prompt_player import prompt_player
 from ._betting_round._await_player import await_player
 from ._betting_round._gather_pot import gather_pot
