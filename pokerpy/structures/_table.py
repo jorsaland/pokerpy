@@ -278,13 +278,6 @@ class Table:
         self._split_central_pot.append(0)
 
 
-    def remove_side_pot(self):
-
-        "Removes the last side pot in the split_central_pot property."
-
-        self._split_central_pot.pop()
-
-
     def clear_central_pot(self):
 
         "Resets the split_central_pot property."
