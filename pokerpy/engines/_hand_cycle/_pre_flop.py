@@ -22,11 +22,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import PREFLOP
-from pokerpy.logger import (
-    get_logger,
-    wrap_internal_log,
-    wrap_middle_log,
-)
+from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
 from pokerpy.structures import Player, Table
 
 
@@ -36,9 +32,6 @@ from ._display_status import display_cards_and_money
 
 if TYPE_CHECKING:
     from ._hand_cycle import HandCycle
-
-
-logger = get_logger()
 
 
 def pre_flop(

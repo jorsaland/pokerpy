@@ -16,15 +16,12 @@
 "Defines the function that runs the round where all players place antes"
 
 
-from pokerpy.logger import get_logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_middle_log
 from pokerpy.structures import Table
 
 
 from .._betting_round._gather_pot import gather_pot
 from ._display_status import display_cards_and_money
-
-
-logger = get_logger()
 
 
 def ante_round(table: Table, *, ante: int):

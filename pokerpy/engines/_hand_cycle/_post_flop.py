@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import FLOP
-from pokerpy.logger import get_logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_middle_log
 from pokerpy.structures import Table
 
 
@@ -33,9 +33,6 @@ from ._display_status import display_cards_and_money
 
 if TYPE_CHECKING:
     from ._hand_cycle import HandCycle
-
-
-logger = get_logger()
 
 
 def post_flop(

@@ -18,15 +18,12 @@ Defines the function that listens to a player until it chooses a valid action.
 """
 
 
-from pokerpy.logger import get_logger
+from pokerpy.logger import logger
 from pokerpy.messages import msg_forbidden_action
 from pokerpy.structures import Player
 
 
 from ._get_valid_actions import get_valid_actions
-
-
-logger = get_logger()
 
 
 def await_player(

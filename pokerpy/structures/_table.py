@@ -19,7 +19,6 @@ Defines the class that represents a poker table.
 
 
 from pokerpy.constants import sorted_card_values_and_suits
-from pokerpy.logger import get_logger
 from pokerpy.validations import (
     validate_all_type_player,
     validate_card_in_deck,
@@ -37,9 +36,6 @@ from pokerpy.validations import (
 
 from ._card import Card
 from ._player import Player
-
-
-logger = get_logger()
 
 
 class Table:

@@ -22,7 +22,7 @@ from collections.abc import Generator
 import secrets
 
 
-from pokerpy.logger import get_logger
+from pokerpy.logger import logger, wrap_external_log
 from pokerpy.messages import (
     msg_betting_round_was_not_completed,
     msg_overloaded_betting_round,
@@ -38,9 +38,6 @@ from pokerpy.validations import (
 
 from ._get_valid_actions import get_valid_actions
 from ._run_listener import run_betting_round_listener
-
-
-logger = get_logger()
 
 
 class BettingRound:
@@ -154,7 +151,7 @@ class BettingRound:
 
         # Validate the listener has ended
         if not self.is_completed:
-            logger.critical('====== THE BETTING ROUND WAS CLOSED BEFORE ENDING ======')
+            logger.critical(wrap_external_log('the betting round was closed before ending'))
             raise RuntimeError(msg_betting_round_was_not_completed)
 
 

@@ -1,10 +1,11 @@
 """
-Defines the constants regarding to the debugging logger.
+Defines the constants regarding to the internal logger.
 """
 
 
 LOGGER_NAME = 'PokerPy'
 LOGGER_FORMAT = '%(name)s (%(levelname)s): %(message)s'
+LOGGER_LEVEL = 'DEBUG'
 
 INTERNAL_WRAPPER_LENGTH = 70
 INTERNAL_WRAPPER_LEFT_JUST = 10

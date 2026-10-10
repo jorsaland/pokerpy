@@ -18,11 +18,8 @@ Defines the functions that display status info logs.
 """
 
 
-from pokerpy.logger import get_logger, wrap_internal_log
+from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.structures import Table
-
-
-logger = get_logger()
 
 
 def display_cards_and_money(table: Table):

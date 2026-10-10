@@ -22,7 +22,7 @@ from collections.abc import Generator
 import secrets
 
 
-from pokerpy.logger import get_logger, wrap_internal_log
+from pokerpy.logger import logger, wrap_internal_log, wrap_external_log
 from pokerpy.messages import (
     msg_hand_cycle_was_not_completed,
     msg_overloaded_hand_cycle,
@@ -41,9 +41,6 @@ from pokerpy.validations import (
 
 from .._betting_round._betting_round import BettingRound
 from ._run_listener import run_hand_cycle_listener
-
-
-logger = get_logger()
 
 
 class HandCycle:
@@ -204,7 +201,7 @@ class HandCycle:
 
         # Validate the listener has ended
         if not self.is_completed:
-            logger.critical('====== THE HAND CYCLE ROUND WAS CLOSED BEFORE ENDING ======')
+            logger.critical(wrap_external_log('the hand cycle was closed before ending'))
             raise RuntimeError(msg_hand_cycle_was_not_completed)
 
 

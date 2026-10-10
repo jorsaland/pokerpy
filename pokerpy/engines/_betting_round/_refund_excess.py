@@ -19,6 +19,7 @@ situation happens when players place optional blinds and then they fold.
 """
 
 
+from pokerpy.logger import logger
 from pokerpy.structures import Player, Table
 
 
@@ -55,5 +56,6 @@ def refund_excess(table: Table):
 
         max_levels_difference = max_bet_level - next_max_bet_level
         for player in max_level_players:
+            logger.debug(f'--- refund {max_levels_difference} to {player.name}')
             player.decrease_bet_level(max_levels_difference)
             player.increase_stack(max_levels_difference)

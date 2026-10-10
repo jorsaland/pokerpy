@@ -19,11 +19,8 @@ Defines the function that updates statuses according to the chosen action.
 
 
 from pokerpy.constants import ACTION_BET, ACTION_FOLD, ACTION_RAISE
-from pokerpy.logger import get_logger, wrap_internal_log
+from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.structures import Action, Player, Table
-
-
-logger = get_logger()
 
 
 def set_action_effects(*, table: Table, player: Player, action: Action):

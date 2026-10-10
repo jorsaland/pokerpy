@@ -6,7 +6,7 @@ Defines the function that calls the PokerPy logger.
 import logging
 
 
-from pokerpy.constants import LOGGER_FORMAT, LOGGER_NAME
+from pokerpy.constants import LOGGER_FORMAT, LOGGER_NAME, LOGGER_LEVEL
 
 
 def get_logger():
@@ -23,7 +23,10 @@ def get_logger():
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
 
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(getattr(logging, LOGGER_LEVEL.upper()))
         logger.addHandler(handler)
     
     return logger
+
+
+logger = get_logger()

@@ -23,7 +23,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.exceptions import CloseBettingRoundSignal, JumpToNextPlayerSignal
-from pokerpy.logger import get_logger
+from pokerpy.logger import logger
 
 
 from ._gather_pot import gather_pot
@@ -31,9 +31,6 @@ from ._prompt_player import prompt_player
 from ._refund_excess import refund_excess
 if TYPE_CHECKING:
     from ._betting_round import BettingRound
-
-
-logger = get_logger()
 
 
 def run_betting_round_listener(betting_round: "BettingRound"):

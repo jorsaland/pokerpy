@@ -21,11 +21,7 @@ Defines the function that assigns the hands to the players.
 from itertools import combinations
 
 
-from pokerpy.logger import get_logger
 from pokerpy.structures import Hand, Table
-
-
-logger = get_logger()
 
 
 def assign_hands(table: Table):

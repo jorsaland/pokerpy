@@ -22,11 +22,8 @@ from collections.abc import Sequence
 
 
 from pokerpy.messages import msg_not_table_instance
-from pokerpy.logger import get_logger
+from pokerpy.logger import logger
 from pokerpy.structures import Player, Table
-
-
-logger = get_logger()
 
 
 def break_tie(winners: Sequence[Player], pot: int, pot_index: int):

@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import after_preflop_round_names
-from pokerpy.logger import get_logger, wrap_external_log, wrap_middle_log
+from pokerpy.logger import logger, wrap_external_log, wrap_middle_log
 
 
 from ._ante_round import ante_round
@@ -31,9 +31,6 @@ from ._showdown import showdown
 
 if TYPE_CHECKING:
     from ._hand_cycle import HandCycle
-
-
-logger = get_logger()
 
 
 def run_hand_cycle_listener(hand_cycle: "HandCycle"):
