@@ -9,7 +9,12 @@ cd ..
 
 source ./env/bin/activate
 clear
-python -m unittest discover tests/unit
+
+if python -c "import pytest" &> /dev/null; then
+    python -m pytest
+else
+    python -m unittest discover tests/unit
+fi
 
 printf "\n\n"
 echo -n "--- ENTER ---"

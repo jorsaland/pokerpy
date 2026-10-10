@@ -7,10 +7,16 @@ Push-Location ../
 
 # Run unit tests
 
+./env/Scripts/Activate.ps1
 Clear-Host
 
-./env/Scripts/Activate.ps1
-python -m unittest discover tests/unit
+python -c "import pytest" 2>$null
+
+if ($LASTEXITCODE -eq 0) {
+    pytest
+} else {
+    python -m unittest discover tests/unit
+}
 deactivate
 
 # Revert location and exit
