@@ -69,7 +69,7 @@ def pre_flop(
 
         if small_blind:
 
-            small_blind_player = table.players[0]
+            small_blind_player = table.get_next_player(table.players[table.button_position])
 
             if not small_blind_player.stack:
                 logger.info(f"{small_blind_player.name} IS ALL-IN, CANNOT PLACE SMALL BLIND")
@@ -85,7 +85,10 @@ def pre_flop(
 
         if big_blind:
 
-            big_blind_player = table.players[1]
+            big_blind_player = table
+            big_blind_player = table.get_next_player(table.players[table.button_position])
+            if small_blind:
+                big_blind_player = table.get_next_player(big_blind_player)
 
             if not big_blind_player.stack:
                 logger.info(f"{big_blind_player.name} IS ALL-IN, CANNOT PLACE BIG BLIND")
@@ -102,20 +105,20 @@ def pre_flop(
             table.set_full_bet_level(big_blind)
             logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
 
-        for player in extra_big_blind_players:
+            for player in extra_big_blind_players:
 
-            if player in table.players[:2]:
-                continue
+                if player in table.players[:2]:
+                    continue
 
-            amount = big_blind if player.stack > big_blind else player.stack
-            player.decrease_stack(amount)
-            player.increase_bet_level(amount)
-            logger.info(
-                f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
-                f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
-            )
-            logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
-            logger.info(wrap_internal_log())
+                amount = big_blind if player.stack > big_blind else player.stack
+                player.decrease_stack(amount)
+                player.increase_bet_level(amount)
+                logger.info(
+                    f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
+                    f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
+                )
+                logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
+                logger.info(wrap_internal_log())
 
         hand_cycle.deal_cards_to_players(2)
 

@@ -52,6 +52,7 @@ class Table:
         *,
         min_bet: int = 1,
         starting_player: (Player|None) = None,
+        button_position: int = 0,
     ):
 
         validate_type_list(players)
@@ -59,12 +60,15 @@ class Table:
         validate_type_int(min_bet)
         if starting_player is not None:
             validate_type_player(starting_player)
+        validate_type_int(button_position)
 
         validate_not_empty_table(players)
         validate_int_positive(min_bet)
         if starting_player is None:
             starting_player = players[0]
-        validate_player_in_table(starting_player, players)
+        else:
+            validate_player_in_table(starting_player, players)
+        validate_int_positive_or_zero(button_position)
 
         starting_player_index = players.index(starting_player)
         stopping_player = players[starting_player_index - 1]
@@ -74,6 +78,7 @@ class Table:
         self._min_raise_increase = min_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
+        self._button_position = button_position
         self._current_player = starting_player
 
         self._bet_level = 0
@@ -132,6 +137,11 @@ class Table:
         player.
         """
         return self._stopping_player
+
+    @property
+    def button_position(self):
+        "Seat number that holds the button."
+        return self._button_position
 
     @property
     def current_player(self):
@@ -303,6 +313,18 @@ class Table:
         validate_player_in_table(player, self.players)
 
         self._stopping_player = player
+
+
+    def set_button_position(self, position: int):
+
+        "Sets the button_player property."
+
+        validate_type_int(position)
+        validate_int_positive_or_zero(position)
+    
+        position %= len(self.players)
+
+        self._button_position = position
 
 
     def set_current_player(self, player: Player):
