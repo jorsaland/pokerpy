@@ -56,7 +56,7 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
         table = hand_cycle.table,
         small_blind = hand_cycle.small_blind,
         big_blind = hand_cycle.big_blind,
-        extra_big_blind_players = hand_cycle.extra_big_blind_players,
+        extra_big_blind_players = list(hand_cycle.extra_big_blind_players),
         open_fold_allowed = hand_cycle.open_fold_allowed,
         raise_invalid_actions = hand_cycle.raise_invalid_actions,
     )

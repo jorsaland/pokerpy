@@ -54,6 +54,9 @@ def post_flop(
 
     logger.info(wrap_middle_log(f'starting {round_name}'))
 
+    starting_player = table.get_next_player(table.players[table.button_position])
+    table.set_starting_player(starting_player)
+
     betting_round = BettingRound(
         name = round_name,
         table = table,

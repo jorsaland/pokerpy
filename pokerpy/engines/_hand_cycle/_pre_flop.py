@@ -40,7 +40,7 @@ def pre_flop(
     table: Table,
     small_blind: (int|None),
     big_blind: (int|None),
-    extra_big_blind_players: tuple[Player],
+    extra_big_blind_players: list[Player],
     open_fold_allowed: bool,
     raise_invalid_actions: bool,
 ):
@@ -49,12 +49,12 @@ def pre_flop(
 
     logger.info(wrap_middle_log(f'starting {PREFLOP}'))
 
-    if small_blind and big_blind:
-        table.set_starting_player(table.players[2])
-    elif big_blind:
-        table.set_starting_player(table.players[1])
-    else:
-        table.set_starting_player(table.players[0])
+    starting_player = table.get_next_player(table.players[table.button_position])
+    if big_blind:
+        starting_player = table.get_next_player(starting_player)
+    if small_blind:
+        starting_player = table.get_next_player(starting_player)
+    table.set_starting_player(starting_player)
 
     betting_round = BettingRound(
         name = PREFLOP,
@@ -70,6 +70,8 @@ def pre_flop(
         if small_blind:
 
             small_blind_player = table.get_next_player(table.players[table.button_position])
+            if small_blind_player in extra_big_blind_players:
+                extra_big_blind_players.remove(small_blind_player)
 
             if not small_blind_player.stack:
                 logger.info(f"{small_blind_player.name} IS ALL-IN, CANNOT PLACE SMALL BLIND")
@@ -89,6 +91,9 @@ def pre_flop(
             big_blind_player = table.get_next_player(table.players[table.button_position])
             if small_blind:
                 big_blind_player = table.get_next_player(big_blind_player)
+
+            if big_blind_player in extra_big_blind_players:
+                extra_big_blind_players.remove(big_blind_player)
 
             if not big_blind_player.stack:
                 logger.info(f"{big_blind_player.name} IS ALL-IN, CANNOT PLACE BIG BLIND")
