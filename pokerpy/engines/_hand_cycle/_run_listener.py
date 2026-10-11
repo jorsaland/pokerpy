@@ -37,7 +37,9 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
 
     "Starts the hand cycle generator that rotates the player turns."
 
-    logger.info(wrap_external_log(f'starting hand cycle {hand_cycle.name}', new_line=True))
+    # At least two players are needed to run the hand cycle.
+    if len(hand_cycle.table.actionable_players) < 2:
+        return
 
     hand_cycle.table.set_min_bet(hand_cycle.big_blind)
 
@@ -74,5 +76,3 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
         display_pot_indexes(hand_cycle.table)
         showdown(hand_cycle.table)
     logger.info(wrap_middle_log(new_line=True))
-
-    logger.info(wrap_external_log(f'ending hand cycle {hand_cycle.name}', new_line=True))

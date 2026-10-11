@@ -13,6 +13,7 @@ import random
 
 
 import pokerpy as pk
+from pokerpy.logger import logger, wrap_external_log
 
 
 # Constants
@@ -80,6 +81,8 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
         open_fold_allowed = open_fold_allowed,
     )
 
+    logger.info(wrap_external_log(f'starting hand cycle {hand_cycle.name}', new_line=True))
+
     with hand_cycle:
 
         for player in hand_cycle.listen():
@@ -108,6 +111,8 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
             else:
                 action_amount = amount_range[0]
             player.request_action(pk.Action(category=action_name, amount=action_amount))
+
+    logger.info(wrap_external_log(f'ending hand cycle {hand_cycle.name}', new_line=True))
 
 
 def main():
