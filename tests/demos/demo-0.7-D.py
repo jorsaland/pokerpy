@@ -48,12 +48,12 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
         button_position = (table.button_position + 1) % len(table.players)
         button_player = table.players[button_position]
         big_blind_player = table.get_next_player(button_player)
-        for player in table.iter_players(starting_player=table.get_next_player(big_blind_player)):
+        for player in table.iter_players(starting_player=big_blind_player):
             if player.stack == 0:
                 button_position = (button_position + 1) % len(table.players)
             else:
                 table.set_button_position(button_position)
-                table.set_starting_player(player)
+                table.set_starting_player(table.get_next_player(player))
                 break
 
         hand_cycle = pk.HandCycle(

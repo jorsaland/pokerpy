@@ -48,13 +48,8 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
         button_position = (table.button_position + 1) % len(table.players)
         button_player = table.players[button_position]
-        for player in table.iter_players(starting_player=table.get_next_player(button_player)):
-            if player.stack == 0:
-                button_position = (button_position + 1) % len(table.players)
-            else:
-                table.set_button_position(button_position)
-                table.set_starting_player(player)
-                break
+        table.set_button_position(button_position)
+        table.set_starting_player(table.get_next_player(button_player))
 
         hand_cycle = pk.HandCycle(
             name = f'hand {i+1}',
