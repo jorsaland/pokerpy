@@ -42,17 +42,24 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
     print(  '=== STARTING GAME: folding only allowed UNDER BET ==='  )
     print(  '======================================================\n')
 
-    table.set_button_position(len(player_names) - 1)
+    table.set_button_player(table.players[-1])
 
-    for i in range(10):
+    n = 0
+    while len(table.actionable_players) > 1:
 
-        button_position = (table.button_position + 1) % len(table.players)
-        button_player = table.players[button_position]
-        table.set_button_position(button_position)
-        table.set_starting_player(table.get_next_player(button_player))
+        n += 1
+
+        previous_button_player = table.button_player
+
+        button_player = table.get_next_player(previous_button_player)
+        for player in table.iter_players(starting_player=button_player):
+            if player.stack == 0:
+                continue
+            table.set_button_player(player)
+            break
 
         hand_cycle = pk.HandCycle(
-            name = f'hand {i+1}',
+            name = f'hand {n}',
             table = table,
             ante = ANTE,
             extra_big_blind_players = [player for player in table.players[2:] if random.randint(0, 1)],

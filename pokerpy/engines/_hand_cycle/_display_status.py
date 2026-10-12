@@ -34,7 +34,7 @@ def display_cards_and_money(table: Table):
 
     for player in table.players:
         logger.info(
-            f"{'(B)' if table.players[table.button_position] == player else '   '} "
+            f"{'(B)' if table.button_player == player else '   '} "
             f"{'(F)' if player.is_folded else '   '} "
             f"{player.name.ljust(max_name_length)} | "
             f"cards: {''.join(str(c) for c in player.cards) if player.cards else 'N/A     '} | "

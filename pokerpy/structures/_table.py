@@ -52,23 +52,46 @@ class Table:
         *,
         min_bet: int = 1,
         starting_player: (Player|None) = None,
-        button_position: int = 0,
+        button_player: (Player|None) = None,
+        small_blind_player: (Player|None) = None,
+        big_blind_player: (Player|None) = None,
     ):
 
         validate_type_list(players)
         validate_all_type_player(players)
         validate_type_int(min_bet)
+
         if starting_player is not None:
             validate_type_player(starting_player)
-        validate_type_int(button_position)
+        if button_player is not None:
+            validate_type_player(button_player)
+        if small_blind_player is not None:
+            validate_type_player(small_blind_player)
+        if big_blind_player is not None:
+            validate_type_player(big_blind_player)
 
         validate_not_empty_table(players)
         validate_int_positive(min_bet)
+
         if starting_player is None:
             starting_player = players[0]
         else:
             validate_player_in_table(starting_player, players)
-        validate_int_positive_or_zero(button_position)
+
+        if button_player is None:
+            button_player = players[0]
+        else:
+            validate_player_in_table(button_player, players)
+
+        if small_blind_player is None:
+            small_blind_player = players[0]
+        else:
+            validate_player_in_table(small_blind_player, players)
+
+        if big_blind_player is None:
+            big_blind_player = players[0]
+        else:
+            validate_player_in_table(big_blind_player, players)
 
         starting_player_index = players.index(starting_player)
         stopping_player = players[starting_player_index - 1]
@@ -78,7 +101,9 @@ class Table:
         self._min_raise_increase = min_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
-        self._button_position = button_position
+        self._small_blind_player = small_blind_player
+        self._big_blind_player = big_blind_player
+        self._button_player = button_player
         self._current_player = starting_player
 
         self._bet_level = 0
@@ -139,9 +164,19 @@ class Table:
         return self._stopping_player
 
     @property
-    def button_position(self):
-        "Seat number that holds the button."
-        return self._button_position
+    def button_player(self):
+        "Player that holds the button."
+        return self._button_player
+
+    @property
+    def small_blind_player(self):
+        "Player that places the small blind."
+        return self._small_blind_player
+
+    @property
+    def big_blind_player(self):
+        "Player that places the big blind."
+        return self._big_blind_player
 
     @property
     def current_player(self):
@@ -315,16 +350,34 @@ class Table:
         self._stopping_player = player
 
 
-    def set_button_position(self, position: int):
+    def set_button_player(self, player: Player):
 
         "Sets the button_player property."
 
-        validate_type_int(position)
-        validate_int_positive_or_zero(position)
-    
-        position %= len(self.players)
+        validate_type_player(player)
+        validate_player_in_table(player, self.players)
 
-        self._button_position = position
+        self._button_player = player
+
+
+    def set_small_blind_player(self, player: Player):
+
+        "Sets the small_blind_player property."
+
+        validate_type_player(player)
+        validate_player_in_table(player, self.players)
+
+        self._small_blind_player = player
+
+
+    def set_big_blind_player(self, player: Player):
+
+        "Sets the big_blind_player property."
+
+        validate_type_player(player)
+        validate_player_in_table(player, self.players)
+
+        self._big_blind_player = player
 
 
     def set_current_player(self, player: Player):

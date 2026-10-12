@@ -49,11 +49,11 @@ def pre_flop(
 
     logger.info(wrap_middle_log(f'starting {PREFLOP}'))
 
-    starting_player = table.get_next_player(table.players[table.button_position])
+
     if big_blind:
-        starting_player = table.get_next_player(starting_player)
-    if small_blind:
-        starting_player = table.get_next_player(starting_player)
+        starting_player = table.get_next_player(table.big_blind_player)
+    else:
+        starting_player = table.get_next_player(table.button_player)
     table.set_starting_player(starting_player)
 
     betting_round = BettingRound(
@@ -69,7 +69,8 @@ def pre_flop(
 
         if small_blind:
 
-            small_blind_player = table.get_next_player(table.players[table.button_position])
+            small_blind_player = table.small_blind_player
+
             if small_blind_player in extra_big_blind_players:
                 extra_big_blind_players.remove(small_blind_player)
 
@@ -87,10 +88,7 @@ def pre_flop(
 
         if big_blind:
 
-            big_blind_player = table
-            big_blind_player = table.get_next_player(table.players[table.button_position])
-            if small_blind:
-                big_blind_player = table.get_next_player(big_blind_player)
+            big_blind_player = table.big_blind_player
 
             if big_blind_player in extra_big_blind_players:
                 extra_big_blind_players.remove(big_blind_player)
