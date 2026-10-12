@@ -80,8 +80,8 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
                 else:
                     print(f'To full call: {amount_to_full_call} | to full raise: {hand_cycle.table.full_bet_level + hand_cycle.table.min_raise_increase} | bet level: {player.bet_level}')
 
-                assert hand_cycle.current_betting_round is not None
-                range_by_action = hand_cycle.current_betting_round.get_action_ranges()
+                assert hand_cycle.betting_round is not None
+                range_by_action = hand_cycle.betting_round.get_action_ranges()
                 action_name, amount_range = random.choice([
                     (name, amount_range) for name, amount_range in range_by_action.items() if amount_range is not None
                 ])

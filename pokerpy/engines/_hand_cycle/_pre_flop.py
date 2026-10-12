@@ -65,7 +65,7 @@ def pre_flop(
 
     with betting_round:
 
-        hand_cycle.set_current_betting_round(betting_round)
+        hand_cycle.set_betting_round(betting_round)
 
         if small_blind:
 
@@ -128,7 +128,7 @@ def pre_flop(
 
         yield from betting_round.listen()
 
-    hand_cycle.reset_current_betting_round()
+    hand_cycle.reset_betting_round()
 
     display_cards_and_money(table)
     logger.info(wrap_middle_log(f'ending {PREFLOP}', new_line=True))
