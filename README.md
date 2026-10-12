@@ -23,17 +23,23 @@ A brief documentation is provided on structures and engines. Also, a diagram rep
 import pokerpy as pk
 import random
 
+
 # Implement server
+
 def await_client_device(player: pk.Player, available_actions: dict[str, range]):
-    # Send to client player and options
+
+    # Send current player and options to the client's device
     print(f'{player.name = }')
     print(f'{available_actions = }\n')
-    # Receive from client the requested action
+
+    # Receive the requested action from client's device
     action_name = random.choice(list(available_actions.keys()))
     amount = random.choice(available_actions[action_name])
     return pk.Action(action_name, amount)
 
-# Instantiate players once
+
+# Instantiate players and table once
+
 players = [
     pk.Player('Andy', stack=1000),
     pk.Player('Boa', stack=1000),
@@ -41,16 +47,29 @@ players = [
     pk.Player('Dino', stack=1000),
 ]
 
-# Instantiate table
 table = pk.Table(players)
 
-# Run betting round
+
+# Run Texas Hold'em hand
+
+hand_cycle = pk.HandCycle('hand 1', table=table, ante=1, small_blind=5, big_blind=10)
+with hand_cycle:
+    for player in hand_cycle.listen():
+        action_ranges = hand_cycle.betting_round.get_action_ranges()
+        action = await_client_device(player, action_ranges)
+        player.request_action(action)
+
+
+# Or run a single betting round
+
 with pk.BettingRound('flop', table=table) as betting_round:
     for player in betting_round.listen():
         action = await_client_device(player, betting_round.get_action_ranges())
         player.request_action(action)
 
+
 # Results
+
 print(f'POT: {table.pot}')
 for player in players:
     print(f"{player.name}'s stack {player.stack}")
