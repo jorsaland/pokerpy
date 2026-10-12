@@ -107,10 +107,11 @@ def pre_flop(
             table.set_bet_level(big_blind)
             table.set_full_bet_level(big_blind)
             logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
+            logger.info(wrap_internal_log())
 
             for player in extra_big_blind_players:
 
-                if player in table.players[:2]:
+                if player.is_folded or player.stack == 0:
                     continue
 
                 amount = big_blind if player.stack > big_blind else player.stack
