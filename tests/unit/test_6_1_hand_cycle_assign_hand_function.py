@@ -13,7 +13,7 @@ from unittest import main, TestCase
 from pokerpy import engines, structures
 
 
-class TestBettingRoundAssignHandFunction(TestCase):
+class TestHandCycleAssignHandFunction(TestCase):
 
 
     "Runs unit tests on assign_hand function."
