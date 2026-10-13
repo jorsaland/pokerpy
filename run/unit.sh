@@ -11,9 +11,9 @@ source ./env/bin/activate
 clear
 
 if python -c "import pytest" &> /dev/null; then
-    python -m pytest
+    pytest -x
 else
-    python -m unittest discover tests/unit
+    python -m unittest discover -f tests/unit
 fi
 
 printf "\n\n"

@@ -13,9 +13,9 @@ Clear-Host
 python -c "import pytest" 2>$null
 
 if ($LASTEXITCODE -eq 0) {
-    pytest
+    pytest -x
 } else {
-    python -m unittest discover tests/unit
+    python -m unittest discover -f tests/unit
 }
 deactivate
 
