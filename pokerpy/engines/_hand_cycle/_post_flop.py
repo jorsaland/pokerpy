@@ -35,18 +35,14 @@ if TYPE_CHECKING:
     from ._hand_cycle import HandCycle
 
 
-def post_flop(
-    hand_cycle: "HandCycle",
-    table: Table,
-    round_name: str,
-    open_fold_allowed: bool,
-    raise_invalid_actions: bool,
-):
+def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     """
     Runs the betting round for the flop, turn or river. Returns a boolean value indicating if the
     round should keep going or not.
     """
+
+    table = hand_cycle.table
 
     # Break before starting if only remains one player
     if len(table.live_players) == 1:
@@ -60,8 +56,8 @@ def post_flop(
     betting_round = BettingRound(
         name = round_name,
         table = table,
-        open_fold_allowed = open_fold_allowed,
-        raise_invalid_actions = raise_invalid_actions,
+        open_fold_allowed = hand_cycle.open_fold_allowed,
+        raise_invalid_actions = hand_cycle.raise_invalid_actions,
     )
 
     with betting_round:

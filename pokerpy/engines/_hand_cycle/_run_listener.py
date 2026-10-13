@@ -51,24 +51,10 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
     if hand_cycle.ante:
         ante_round(hand_cycle.table, ante=hand_cycle.ante)
 
-    yield from pre_flop(
-        hand_cycle = hand_cycle,
-        table = hand_cycle.table,
-        small_blind = hand_cycle.small_blind,
-        big_blind = hand_cycle.big_blind,
-        extra_big_blind_players = list(hand_cycle.extra_big_blind_players),
-        open_fold_allowed = hand_cycle.open_fold_allowed,
-        raise_invalid_actions = hand_cycle.raise_invalid_actions,
-    )
+    yield from pre_flop(hand_cycle)
 
     for round_name in after_preflop_round_names:
-        keep_playing = yield from post_flop(
-            hand_cycle = hand_cycle,
-            table = hand_cycle.table,
-            round_name = round_name,
-            open_fold_allowed = hand_cycle.open_fold_allowed,
-            raise_invalid_actions = hand_cycle.raise_invalid_actions,
-        )
+        keep_playing = yield from post_flop(hand_cycle, round_name)
         if not keep_playing:
             break
 
