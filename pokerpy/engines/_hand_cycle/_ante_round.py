@@ -31,7 +31,7 @@ def ante_round(table: Table, *, ante: int):
     logger.info(wrap_middle_log('placing antes'))
 
     logger.info(f'Ante size: {ante}')
-    for player in table.players:
+    for player in table.actionable_players:
         amount = ante if player.stack > ante else player.stack
         player.decrease_stack(amount)
         player.increase_bet_level(amount)
