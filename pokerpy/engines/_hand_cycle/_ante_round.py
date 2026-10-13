@@ -20,7 +20,6 @@ from pokerpy.logger import logger, wrap_middle_log
 from pokerpy.structures import Table
 
 
-from .._gather_pot import gather_pot
 from ._display_status import display_cards_and_money
 
 
@@ -36,6 +35,6 @@ def ante_round(table: Table, *, ante: int):
         player.decrease_stack(amount)
         player.increase_bet_level(amount)
 
-    gather_pot(table)
+    table.gather_pot()
     display_cards_and_money(table)
     logger.info(wrap_middle_log('antes placed', new_line=True))

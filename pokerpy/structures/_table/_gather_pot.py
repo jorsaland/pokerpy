@@ -14,18 +14,20 @@
 
 
 """
-Defines the function that gathers the chips from the users into the central pot.
+Defines the method that gathers the chips from the users into the central pot.
 """
 
 
-from pokerpy.structures import Table
+from typing import TYPE_CHECKING
 
 
-def gather_pot(table: Table):
+if TYPE_CHECKING:
+    from ._table import Table
 
-    """
-    Gathers the chips from the users into the central pot.
-    """
+
+def gather_pot_method(table: "Table"):
+
+    "Gathers the chips from the users into the central pot."
 
     while table.bettor_players:
 

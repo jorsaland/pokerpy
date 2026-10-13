@@ -104,7 +104,7 @@ def validate_type_table(obj):
 
     "Validates an object is of type Table."
 
-    from pokerpy.structures._table import Table
+    from pokerpy.structures import Table
 
     if not isinstance(obj, Table):
         raise TypeError(messages.msg_not_table_instance.format(type(obj).__name__))

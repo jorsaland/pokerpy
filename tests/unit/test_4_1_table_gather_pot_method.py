@@ -1,5 +1,5 @@
 """
-Defines unit tests on gather_pot function.
+Defines unit tests on Table method gather_pot.
 """
 
 
@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import engines, structures
+from pokerpy import structures
 
 
 class BaseTestCase(TestCase):
@@ -34,10 +34,10 @@ class BaseTestCase(TestCase):
         self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
 
-class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
+class TestGatherPotMethodWithZeroStartingPot(BaseTestCase):
 
 
-    "Runs unit tests on gather_pot function where the starting pot is zero."
+    "Runs unit tests on Table method gather_pot where the starting pot is zero."
 
 
     def test_no_bettor_players_with_zero_starting_pot(self):
@@ -63,7 +63,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -103,7 +103,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -146,7 +146,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -189,7 +189,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -234,7 +234,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -278,7 +278,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -324,7 +324,7 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -338,10 +338,10 @@ class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertTupleEqual(self.table.split_central_pot, (2100,))
 
 
-class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
+class TestGatherPotMethodWithStartingMainPot(BaseTestCase):
 
 
-    "Runs unit tests on gather_pot function where there is a starting main pot."
+    "Runs unit tests on Table method gather_pot where there is a starting main pot."
 
 
     def setUp(self):
@@ -373,7 +373,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -413,7 +413,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -456,7 +456,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -499,7 +499,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -544,7 +544,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -588,7 +588,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -634,7 +634,7 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000,))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -648,10 +648,10 @@ class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertTupleEqual(self.table.split_central_pot, (3100,))
 
 
-class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
+class TestGatherPotMethodWithStartingSidePots(BaseTestCase):
 
 
-    "Runs unit tests on gather_pot function where there are starting side pots."
+    "Runs unit tests on Table method gather_pot where there are starting side pots."
 
 
     def setUp(self):
@@ -687,7 +687,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -727,7 +727,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -770,7 +770,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertIsNone(self.Fomi.pot_index)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -813,7 +813,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -858,7 +858,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -902,7 +902,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:
@@ -948,7 +948,7 @@ class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
             self.assertEqual(self.Fomi.pot_index, 0)
             self.assertTupleEqual(self.table.split_central_pot, (1000, 500, 2000))
 
-        engines.gather_pot(self.table)
+        self.table.gather_pot()
 
         with self.subTest('after gather'):
             for player in self.setup_players:

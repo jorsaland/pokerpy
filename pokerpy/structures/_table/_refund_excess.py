@@ -14,16 +14,24 @@
 
 
 """
-Iteratively refunds the deepest side pots if the participating players are all folded. This
-situation happens when players place optional blinds and then they fold.
+Defines the method that iteratively refunds the deepest side pots if the participating players are
+all folded.
 """
 
 
+from typing import TYPE_CHECKING
+
+
 from pokerpy.logger import logger
-from pokerpy.structures import Player, Table
 
 
-def refund_excess(table: Table):
+from .._player import Player
+
+if TYPE_CHECKING:
+    from ._table import Table
+
+
+def refund_excess_method(table: "Table"):
 
     """
     Iteratively refunds the deepest side pots if the participating players are all folded. This

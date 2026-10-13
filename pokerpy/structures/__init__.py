@@ -13,4 +13,4 @@ from ._hand._get_category import get_category
 
 from ._player import Player
 
-from ._table import Table
+from ._table._table import Table

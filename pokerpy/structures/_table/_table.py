@@ -34,8 +34,12 @@ from pokerpy.validations import (
 )
 
 
-from ._card import Card
-from ._player import Player
+from .._card import Card
+from .._player import Player
+
+from ._gather_pot import gather_pot_method
+from ._iter_players import iter_players_method
+from ._refund_excess import refund_excess_method
 
 
 class Table:
@@ -418,26 +422,29 @@ class Table:
         return self.players[reference_player_index - 1]
 
 
+    # High-level methods
+
+
+    def gather_pot(self):
+
+        "Gathers the chips from the users into the central pot."
+
+        return gather_pot_method(self)
+
+
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
 
         "Iterates over all the players."
 
-        if starting_player is None:
-            starting_player = self.starting_player
+        return iter_players_method(
+            self,
+            starting_player = starting_player,
+            reverse = reverse,
+        )
 
-        validate_type_player(starting_player)
-        validate_player_in_table(starting_player, self.players)
 
-        if reverse:
-            get_player = self.get_previous_player
-        else:
-            get_player = self.get_next_player
+    def refund_excess(self):
 
-        def generator():
-            yield starting_player
-            next_player = get_player(starting_player)
-            while next_player != starting_player:
-                yield next_player
-                next_player = get_player(next_player)
-        
-        return generator()
+        "Iteratively refunds the deepest side pots if the participating players are all folded."
+
+        return refund_excess_method(self)

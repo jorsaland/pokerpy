@@ -10,10 +10,10 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import engines, structures
+from pokerpy import structures
 
 
-class TestRefundExcessFunction(TestCase):
+class TestRefundExcessMethod(TestCase):
 
 
     "Runs unit tests on refund_excess function."
@@ -66,7 +66,7 @@ class TestRefundExcessFunction(TestCase):
             self.assertEqual(self.Epa.bet_level, 500)
             self.assertEqual(self.Fomi.bet_level, 500)
 
-        engines.refund_excess(self.table)
+        self.table.refund_excess()
 
         with self.subTest('after refund'):
             self.assertEqual(self.Andy.stack, 900)
@@ -117,7 +117,7 @@ class TestRefundExcessFunction(TestCase):
             self.assertEqual(self.Epa.bet_level, 500)
             self.assertEqual(self.Fomi.bet_level, 500)
 
-        engines.refund_excess(self.table)
+        self.table.refund_excess()
 
         with self.subTest('after refund'):
             self.assertEqual(self.Andy.stack, 900)
@@ -169,7 +169,7 @@ class TestRefundExcessFunction(TestCase):
             self.assertEqual(self.Epa.bet_level, 500)
             self.assertEqual(self.Fomi.bet_level, 500)
 
-        engines.refund_excess(self.table)
+        self.table.refund_excess()
 
         with self.subTest('after refund'):
             self.assertEqual(self.Andy.stack, 900)
@@ -222,7 +222,7 @@ class TestRefundExcessFunction(TestCase):
             self.assertEqual(self.Epa.bet_level, 500)
             self.assertEqual(self.Fomi.bet_level, 500)
 
-        engines.refund_excess(self.table)
+        self.table.refund_excess()
 
         with self.subTest('after refund'):
             self.assertEqual(self.Andy.stack, 900)
@@ -276,7 +276,7 @@ class TestRefundExcessFunction(TestCase):
             self.assertEqual(self.Epa.bet_level, 500)
             self.assertEqual(self.Fomi.bet_level, 500)
 
-        engines.refund_excess(self.table)
+        self.table.refund_excess()
 
         with self.subTest('after refund'):
             self.assertEqual(self.Andy.stack, 900)
