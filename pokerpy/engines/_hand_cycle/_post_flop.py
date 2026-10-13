@@ -28,7 +28,7 @@ from pokerpy.structures import Table
 
 from .._betting_round._betting_round import BettingRound
 
-from ._assign_hands import assign_hands
+from ._assign_hand import assign_hand
 from ._display_status import display_cards_and_money
 
 if TYPE_CHECKING:
@@ -74,7 +74,9 @@ def post_flop(
             hand_cycle.deal_common_cards(3)        
         else:
             hand_cycle.deal_common_cards(1)
-        assign_hands(table)
+
+        for player in table.players:
+            assign_hand(player=player, common_cards=table.common_cards)
 
         # Let players to play
         yield from betting_round.listen()

@@ -21,23 +21,21 @@ Defines the function that assigns the hands to the players.
 from itertools import combinations
 
 
-from pokerpy.structures import Hand, Table
+from pokerpy.structures import Card, Hand, Player
 
 
-def assign_hands(table: Table):
+def assign_hand(player: Player, common_cards: tuple[Card, ...]):
 
-    "Assigns the hands to the players."
+    "Assigns a hand to a player according to Texas Hold'em rules."
 
-    for player in table.players:
+    cards = player.cards + common_cards
 
-        cards = player.cards + table.common_cards
+    if len(cards) < 5:
+        return
     
-        if len(cards) < 5:
-            continue
-        
-        if len(cards) == 5:
-            hand = Hand(cards)
-        else:
-            hand = max(Hand(combination) for combination in combinations(cards, 5))
+    if len(cards) == 5:
+        hand = Hand(cards)
+    else:
+        hand = max(Hand(combination) for combination in combinations(cards, 5))
 
-        player.assign_hand(hand)
+    player.assign_hand(hand)
