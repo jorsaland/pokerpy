@@ -26,7 +26,8 @@ from pokerpy.exceptions import CloseBettingRoundSignal, JumpToNextPlayerSignal
 from pokerpy.logger import logger
 
 
-from ._gather_pot import gather_pot
+from .._gather_pot import gather_pot
+
 from ._prompt_player import prompt_player
 from ._refund_excess import refund_excess
 if TYPE_CHECKING:

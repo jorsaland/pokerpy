@@ -1,5 +1,5 @@
 """
-Defines unit tests on set_action_effects function.
+Defines unit tests on gather_pot function.
 """
 
 
@@ -34,7 +34,7 @@ class BaseTestCase(TestCase):
         self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
 
-class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
+class TestGatherPotFunctionWithZeroStartingPot(BaseTestCase):
 
 
     "Runs unit tests on gather_pot function where the starting pot is zero."
@@ -338,7 +338,7 @@ class TestBettingRoundGatherPotFunctionWithZeroStartingPot(BaseTestCase):
             self.assertTupleEqual(self.table.split_central_pot, (2100,))
 
 
-class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
+class TestGatherPotFunctionWithStartingMainPot(BaseTestCase):
 
 
     "Runs unit tests on gather_pot function where there is a starting main pot."
@@ -648,7 +648,7 @@ class TestBettingRoundGatherPotFunctionWithStartingMainPot(BaseTestCase):
             self.assertTupleEqual(self.table.split_central_pot, (3100,))
 
 
-class TestBettingRoundGatherPotFunctionWithStartingSidePots(BaseTestCase):
+class TestGatherPotFunctionWithStartingSidePots(BaseTestCase):
 
 
     "Runs unit tests on gather_pot function where there are starting side pots."

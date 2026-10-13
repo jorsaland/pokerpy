@@ -20,7 +20,7 @@ from pokerpy.logger import logger, wrap_middle_log
 from pokerpy.structures import Table
 
 
-from .._betting_round._gather_pot import gather_pot
+from .._gather_pot import gather_pot
 from ._display_status import display_cards_and_money
 
 
