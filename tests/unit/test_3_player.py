@@ -57,6 +57,7 @@ class TestPlayerInstantiation(TestCase):
         self.assertEqual(player.cards, ())
         self.assertIsNone(player.hand)
         self.assertIsNone(player.requested_action)
+        self.assertFalse(player.is_optional_blind)
         self.assertEqual(player.stack, 1000)
         self.assertEqual(player.bet_level, 0)
         self.assertEqual(player.pot_index, 0)
@@ -436,6 +437,19 @@ class TestPlayerBooleanMethods(TestCase):
         self.assertTrue(player.has_played)
         player.unmark_has_played()
         self.assertFalse(player.has_played)
+
+
+    def test_requested_optional_blind(self):
+
+        "Tests status update in attribute has_played."
+
+        player = structures.Player('Andy', 1000)
+
+        self.assertFalse(player.is_optional_blind)
+        player.mark_is_optional_blind()
+        self.assertTrue(player.is_optional_blind)
+        player.unmark_is_optional_blind()
+        self.assertFalse(player.is_optional_blind)
 
 
 if __name__ == '__main__':
