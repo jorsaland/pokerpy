@@ -31,15 +31,16 @@ def place_extra_big_blinds(blind_amount: int, eligible_players: Iterable[Player]
 
         yield player
 
-        if player.is_optional_blind:
+        if not player.is_extra_blind or not player.stack:
+            continue
 
-            amount = blind_amount if player.stack > blind_amount else player.stack
+        amount = blind_amount if player.stack > blind_amount else player.stack
 
-            player.decrease_stack(amount)
-            player.increase_bet_level(amount)
+        player.decrease_stack(amount)
+        player.increase_bet_level(amount)
 
-            logger.info(
-                f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
-                f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
-            )
-            logger.info(wrap_internal_log())
+        logger.info(
+            f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
+            f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
+        )
+        logger.info(wrap_internal_log())

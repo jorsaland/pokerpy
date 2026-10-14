@@ -74,7 +74,7 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
                 if hand_cycle.in_extra_big_blinds_phase:
                     if random.randint(0, 1):
-                        player.mark_is_optional_blind()
+                        player.mark_is_extra_blind()
                     continue
 
                 amount_to_full_call = table.bet_level - player.bet_level

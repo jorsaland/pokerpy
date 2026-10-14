@@ -69,7 +69,7 @@ class TestPlayerInstantiation(TestCase):
             self.assertEqual(player.cards, ())
             self.assertIsNone(player.hand)
             self.assertIsNone(player.requested_action)
-            self.assertFalse(player.is_optional_blind)
+            self.assertFalse(player.is_extra_blind)
             self.assertEqual(player.stack, 1000)
             self.assertEqual(player.bet_level, 0)
             self.assertEqual(player.pot_index, 0)
@@ -82,7 +82,7 @@ class TestPlayerInstantiation(TestCase):
             self.assertEqual(player.cards, ())
             self.assertIsNone(player.hand)
             self.assertIsNone(player.requested_action)
-            self.assertFalse(player.is_optional_blind)
+            self.assertFalse(player.is_extra_blind)
             self.assertEqual(player.stack, 0)
             self.assertEqual(player.bet_level, 0)
             self.assertEqual(player.pot_index, 0)
@@ -469,11 +469,11 @@ class TestPlayerBooleanMethods(TestCase):
 
         player = structures.Player('Andy', 1000)
 
-        self.assertFalse(player.is_optional_blind)
-        player.mark_is_optional_blind()
-        self.assertTrue(player.is_optional_blind)
-        player.unmark_is_optional_blind()
-        self.assertFalse(player.is_optional_blind)
+        self.assertFalse(player.is_extra_blind)
+        player.mark_is_extra_blind()
+        self.assertTrue(player.is_extra_blind)
+        player.unmark_is_extra_blind()
+        self.assertFalse(player.is_extra_blind)
 
 
 if __name__ == '__main__':
