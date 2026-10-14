@@ -45,10 +45,7 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
     table = hand_cycle.table
 
     assert table.button_player is not None
-
-    # Break before starting if only remains one player
-    if len(table.live_players) == 1:
-        return False
+    assert len(table.live_players) > 1
 
     logger.info(wrap_middle_log(f'starting {round_name}'))
 
@@ -85,5 +82,3 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     display_cards_and_money(table)
     logger.info(wrap_middle_log(f'ending {round_name}', new_line=True))
-
-    return True

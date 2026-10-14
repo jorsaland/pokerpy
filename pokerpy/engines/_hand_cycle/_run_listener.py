@@ -59,9 +59,9 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
     yield from pre_flop(hand_cycle)
 
     for round_name in after_preflop_round_names:
-        keep_playing = yield from post_flop(hand_cycle, round_name)
-        if not keep_playing:
+        if len(table.live_players) == 1:
             break
+        yield from post_flop(hand_cycle, round_name)
 
     if len(hand_cycle.table.live_players) > 1:
         logger.info(wrap_middle_log('showdown'))
