@@ -39,12 +39,13 @@ def build_players():
 
     players: list[pk.Player] = []
 
-    if random.randint(0, 1):
-        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-    else:
+    # if random.randint(0, 1):
+    #     players.append(pk.Player(player_names[0], 1))
+    #     players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+    # else:
+    if True:
         players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
+        players.append(pk.Player(player_names[1], 1))
 
     nerfed_ante_name, nerfed_blind_name = random.sample(player_names[2:], k=2)
     for name in player_names[2:]:
@@ -67,7 +68,10 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
     table.set_button_player(table.players[-1])
     table.set_small_blind_player(table.players[0])
-    table.set_big_blind_player(table.players[1])
+    big_blind_player = table.players[1]
+    while big_blind_player.stack <= ANTE:
+        big_blind_player = table.get_next_player(big_blind_player)
+    table.set_big_blind_player(big_blind_player)
 
     hand_cycle = pk.HandCycle(
         name = 'open-fold-allowed' if open_fold_allowed else 'open-fold-forbidden',
