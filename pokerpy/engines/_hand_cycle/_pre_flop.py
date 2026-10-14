@@ -42,7 +42,6 @@ def pre_flop(hand_cycle: "HandCycle"):
     logger.info(wrap_middle_log(f'starting {PREFLOP}'))
 
     table = hand_cycle.table
-    extra_big_blind_players = list(hand_cycle.extra_big_blind_players)
 
     assert table.button is not None
 
@@ -66,25 +65,22 @@ def pre_flop(hand_cycle: "HandCycle"):
 
         logger.info(wrap_internal_log())
 
+        optional_blind_eligible_players = list(table.actionable_players)
+
         if table.small_blind:
             amount, player = table.small_blind
-            place_small_blind(
-                amount = amount,
-                player = player,
-                extra_big_blind_players = extra_big_blind_players,
-            )
+            if player in optional_blind_eligible_players:
+                optional_blind_eligible_players.remove(player)
+            place_small_blind(amount, player)
 
         if table.big_blind:
             amount, player = table.big_blind
-            place_big_blind(
-                amount = amount,
-                player = player,
-                extra_big_blind_players = extra_big_blind_players,
-            )
-            place_extra_big_blinds(
-                amount = amount,
-                extra_big_blind_players = extra_big_blind_players,
-            )
+            if player in optional_blind_eligible_players:
+                optional_blind_eligible_players.remove(player)
+            place_big_blind(amount, player)
+            hand_cycle.mark_in_extra_big_blinds_phase()
+            yield from place_extra_big_blinds(amount, optional_blind_eligible_players)
+            hand_cycle.unmark_in_extra_big_blinds_phase()
             table.set_bet_level(amount)
             table.set_full_bet_level(amount)
 

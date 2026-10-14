@@ -16,26 +16,30 @@
 "Defines the function that runs the event for placing extra big blinds."
 
 
+from collections.abc import Iterable
+
+
 from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.structures import Player
 
 
-def place_extra_big_blinds(*, amount: int, extra_big_blind_players: list[Player]):
+def place_extra_big_blinds(blind_amount: int, eligible_players: Iterable[Player]):
 
     "Runs the event for placing extra big blinds."
 
-    for player in extra_big_blind_players:
+    for player in eligible_players:
 
-        if player.is_folded or player.stack == 0:
-            continue
+        yield player
 
-        amount = amount if player.stack > amount else player.stack
+        if player.requested_optional_blind:
 
-        player.decrease_stack(amount)
-        player.increase_bet_level(amount)
+            amount = blind_amount if player.stack > blind_amount else player.stack
 
-        logger.info(
-            f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
-            f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
-        )
-        logger.info(wrap_internal_log())
+            player.decrease_stack(amount)
+            player.increase_bet_level(amount)
+
+            logger.info(
+                f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
+                f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
+            )
+            logger.info(wrap_internal_log())

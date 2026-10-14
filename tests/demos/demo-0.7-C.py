@@ -59,7 +59,6 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
         hand_cycle = pk.HandCycle(
             name = f'hand {n}',
             table = table,
-            extra_big_blind_players = [player for player in table.players[2:] if random.randint(0, 1)],
             open_fold_allowed = open_fold_allowed,
         )
 

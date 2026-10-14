@@ -20,27 +20,24 @@ from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.structures import Player
 
 
-def place_small_blind(*, amount: int, player: Player, extra_big_blind_players: list[Player]):
+def place_small_blind(amount: int, player: Player):
 
     "Runs the small blind placing event."
 
-    if player in extra_big_blind_players:
-        extra_big_blind_players.remove(player)
-
     if not player.stack:
         logger.info(f"{player.name} IS ALL-IN, CANNOT PLACE SMALL BLIND")
+        return
 
-    if player.stack:
-        amount = (
-            amount
-            if player.stack > amount
-            else player.stack
-        )
-        player.decrease_stack(amount)
-        player.increase_bet_level(amount)
-        logger.info(
-            f"{player.name} PLACES SMALL BLIND {amount} "
-            f"({player.name}'s bet level: {player.bet_level} | "
-            f"stack: {player.stack})"
-        )
-        logger.info(wrap_internal_log())
+    amount = (
+        amount
+        if player.stack > amount
+        else player.stack
+    )
+    player.decrease_stack(amount)
+    player.increase_bet_level(amount)
+    logger.info(
+        f"{player.name} PLACES SMALL BLIND {amount} "
+        f"({player.name}'s bet level: {player.bet_level} | "
+        f"stack: {player.stack})"
+    )
+    logger.info(wrap_internal_log())

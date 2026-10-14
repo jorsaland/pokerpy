@@ -20,12 +20,9 @@ from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.structures import Player
 
 
-def place_big_blind(*, amount: int, player: Player, extra_big_blind_players: list[Player]):
+def place_big_blind(amount: int, player: Player):
 
     "Runs the big blind placing event."
-
-    if player in extra_big_blind_players:
-        extra_big_blind_players.remove(player)
 
     assert player.stack
 

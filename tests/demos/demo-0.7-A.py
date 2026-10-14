@@ -45,7 +45,6 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
     hand_cycle = pk.HandCycle(
         name = 'open-fold-allowed' if open_fold_allowed else 'open-fold-forbidden',
         table = table,
-        extra_big_blind_players = [player for player in table.players[2:] if random.randint(0, 1)],
         open_fold_allowed = open_fold_allowed,
     )
 
@@ -54,6 +53,11 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
     with hand_cycle:
 
         for player in hand_cycle.listen():
+
+            if hand_cycle.in_extra_big_blinds_phase:
+                if random.randint(0, 1):
+                    player.request_optional_blind()
+                continue
 
             amount_to_full_call = table.bet_level - player.bet_level
             if amount_to_full_call == 0:

@@ -61,6 +61,7 @@ class Player:
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
         self._requested_action: (Action|None) = None
+        self._requested_optional_blind = False
         self._stack = stack
         self._bet_level = 0
         self._pot_index = 0
@@ -87,6 +88,11 @@ class Player:
     def requested_action(self):
         "Action the player has requested in a betting round."
         return self._requested_action
+
+    @property
+    def requested_optional_blind(self):
+        "Whether the player has requested to place an optional blind."
+        return self._requested_optional_blind
 
     @property
     def stack(self):
@@ -133,6 +139,16 @@ class Player:
     def clear_action(self):
         "Resets the requested_action property back to None."
         self._requested_action = None
+
+
+    def request_optional_blind(self):
+        "Requests to place an optional blind"
+        self._requested_optional_blind = True
+
+
+    def clear_optional_blind(self):
+        "Resets the decision to place an optional blind"
+        self._requested_optional_blind = False
 
 
     # Methods to affect cards and hand

@@ -29,12 +29,9 @@ from pokerpy.messages import (
 )
 from pokerpy.structures import Player, Table
 from pokerpy.validations import (
-    validate_all_type_player,
-    validate_int_small_blind_relation_to_big_blind,
     validate_int_positive,
     validate_type_int,
     validate_type_str,
-    validate_type_list,
     validate_type_table,
 )
 
@@ -56,7 +53,6 @@ class HandCycle:
         name: str,
         table: Table,
         *,
-        extra_big_blind_players: (list[Player]|None) = None,
         open_fold_allowed = False,
         raise_invalid_actions = False
     ):
@@ -64,20 +60,17 @@ class HandCycle:
         # Type validations
         validate_type_str(name)
         validate_type_table(table)
-        if extra_big_blind_players is not None:
-            validate_type_list(extra_big_blind_players)
-            validate_all_type_player(extra_big_blind_players)
 
         # Fixed attributes
         self._listener: (Generator[Player]|None) = None
         self._name = name
         self._table = table
-        self._extra_big_blind_players = extra_big_blind_players or []
         self._open_fold_allowed = bool(open_fold_allowed)
         self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State attributes
         self._betting_round: (BettingRound|None) = None
+        self._in_extra_big_blinds_phase = False
         self._is_completed = False
 
 
@@ -92,14 +85,14 @@ class HandCycle:
         return self._table
 
     @property
-    def extra_big_blind_players(self):
-        "Players placing an extra big blind."
-        return tuple(self._extra_big_blind_players)
-
-    @property
     def betting_round(self):
         "Betting round taking place."
         return self._betting_round
+
+    @property
+    def in_extra_big_blinds_phase(self):
+        "Whether the betting round is in the phase of placing extra big blinds"
+        return self._in_extra_big_blinds_phase
 
     @property
     def is_completed(self):
@@ -209,17 +202,22 @@ class HandCycle:
 
 
     def set_betting_round(self, betting_round: BettingRound):
-
         "Sets a betting round as the current one."
-
         self._betting_round = betting_round
 
 
     def reset_betting_round(self):
-
         "Resets current betting round."
-
         self._betting_round = None
+
+
+    def mark_in_extra_big_blinds_phase(self):
+        "Marks the hand cycle as in the phase of placing extra big blinds."
+        self._in_extra_big_blinds_phase = True
+
+    def unmark_in_extra_big_blinds_phase(self):
+        "Unmarks the hand cycle as in the phase of placing extra big blinds."
+        self._in_extra_big_blinds_phase = False
 
 
     @staticmethod
@@ -240,3 +238,4 @@ class HandCycle:
             player.clear_hand()
             player.reset_pot_index()
             player.unmark_is_folded()
+            player.clear_optional_blind()
