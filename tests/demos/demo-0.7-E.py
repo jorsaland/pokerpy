@@ -37,10 +37,6 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dani', 'Epa', 'Fomi']
 
 def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
-    print('\n======================================================'  )
-    print(  '=== STARTING GAME: folding only allowed UNDER BET ==='  )
-    print(  '======================================================\n')
-
     table.set_ante(ANTE)
     table.set_small_blind(SMALL_BLIND)
     table.set_big_blind(BIG_BLIND)
