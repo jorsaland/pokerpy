@@ -171,6 +171,10 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(table.min_raise_increase, 1)
             self.assertEqual(table.pot, 0)
             self.assertTupleEqual(table.split_central_pot, (0,))
+            self.assertIsNone(table.ante)
+            self.assertIsNone(table.button)
+            self.assertIsNone(table.small_blind)
+            self.assertIsNone(table.big_blind)
 
         table = structures.Table(
             self.setup_players,
@@ -192,6 +196,10 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(table.min_raise_increase, 10)
             self.assertTupleEqual(table.split_central_pot, (0,))
             self.assertEqual(table.pot, 0)
+            self.assertIsNone(table.ante)
+            self.assertIsNone(table.button)
+            self.assertIsNone(table.small_blind)
+            self.assertIsNone(table.big_blind)
 
 
 class TestTableCardMethodsAndAttributes(BaseTestCase):
@@ -320,6 +328,7 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
             table.set_min_raise_increase,
             table.set_bet_level,
             table.set_full_bet_level,
+            table.set_ante,
         )
 
         bad_amounts = ('1000', 1000.0, Decimal('1000'), None)
@@ -343,6 +352,7 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
         methods = (
             table.set_min_bet,
             table.set_min_raise_increase,
+            table.set_ante,
         )
 
         for method in methods:
@@ -392,6 +402,7 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
             (1,             table.set_min_raise_increase, structures.Table.min_raise_increase.fget.__name__),
             (0,             table.set_bet_level,          structures.Table.bet_level.fget.__name__),
             (0,             table.set_full_bet_level,     structures.Table.full_bet_level.fget.__name__),
+            (None,          table.set_ante,               structures.Table.ante.fget.__name__),
         )
 
         amounts = (50, 100, 150, 200)
@@ -511,6 +522,7 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_starting_player,
             table.set_stopping_player,
             table.set_current_player,
+            table.set_button,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -539,6 +551,7 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_starting_player,
             table.set_stopping_player,
             table.set_current_player,
+            table.set_button,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -562,6 +575,7 @@ class TestTablePlayerMethods(BaseTestCase):
             (self.setup_players[0],  table.set_starting_player, structures.Table.starting_player.fget.__name__),
             (self.setup_players[-1], table.set_stopping_player, structures.Table.stopping_player.fget.__name__),
             (self.setup_players[0],  table.set_current_player,  structures.Table.current_player.fget.__name__),
+            (None,                   table.set_button,          structures.Table.button.fget.__name__),
         )
 
         for initial_value, method, property_name in setup:
