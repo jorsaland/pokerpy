@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import FLOP
-from pokerpy.logger import logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
 from pokerpy.structures import Table
 
 
@@ -44,13 +44,15 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     table = hand_cycle.table
 
+    assert table.button is not None
+
     # Break before starting if only remains one player
     if len(table.live_players) == 1:
         return False
 
     logger.info(wrap_middle_log(f'starting {round_name}'))
 
-    starting_player = table.get_next_player(table.button_player)
+    starting_player = table.get_next_player(table.button)
     table.set_starting_player(starting_player)
 
     betting_round = BettingRound(
@@ -63,6 +65,8 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
     with betting_round:
 
         hand_cycle.set_betting_round(betting_round)
+
+        logger.info(wrap_internal_log())
 
         # Deal three cards to table if round is flop and one if is turn or river
 

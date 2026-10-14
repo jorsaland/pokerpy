@@ -41,36 +41,36 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
     print(  '=== STARTING GAME: folding only allowed UNDER BET ==='  )
     print(  '======================================================\n')
 
-    table.set_button_player(table.players[-1])
-    table.set_small_blind_player(table.players[0])
-    table.set_big_blind_player(table.players[1])
+    table.set_ante(ANTE)
+    table.set_button(table.players[-1])
+    table.set_small_blind(BIG_BLIND, table.players[0])
+    table.set_big_blind(BIG_BLIND, table.players[1])
 
     n = 0
     while len(table.actionable_players) > 1:
 
         n += 1
 
-        previous_small_blind_player = table.small_blind_player
-        previous_big_blind_player = table.big_blind_player
+        assert table.small_blind is not None
+        assert table.big_blind is not None
+        _, previous_small_blind_player = table.small_blind
+        _, previous_big_blind_player = table.big_blind
 
         big_blind_player = table.get_next_player(previous_big_blind_player)
         for player in table.iter_players(starting_player=big_blind_player):
             if player.stack == 0:
                 continue
             if len(table.actionable_players) == 2:
-                table.set_button_player(previous_big_blind_player)
+                table.set_button(previous_big_blind_player)
             else:
-                table.set_button_player(previous_small_blind_player)
-            table.set_small_blind_player(previous_big_blind_player)
-            table.set_big_blind_player(player)
+                table.set_button(previous_small_blind_player)
+            table.set_small_blind(SMALL_BLIND, previous_big_blind_player)
+            table.set_big_blind(BIG_BLIND, player)
             break
 
         hand_cycle = pk.HandCycle(
             name = f'hand {n}',
             table = table,
-            ante = ANTE,
-            small_blind = SMALL_BLIND,
-            big_blind = BIG_BLIND,
             extra_big_blind_players = [player for player in table.players[2:] if random.randint(0, 1)],
             open_fold_allowed = open_fold_allowed,
         )
@@ -83,9 +83,9 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
                 amount_to_full_call = table.bet_level - player.bet_level
                 if amount_to_full_call == 0:
-                    print(f'To full bet: {hand_cycle.table.min_bet} | bet level: {player.bet_level}')
+                    logger.info(f'To full bet: {hand_cycle.table.min_bet} | bet level: {player.bet_level}')
                 else:
-                    print(f'To full call: {amount_to_full_call} | to full raise: {hand_cycle.table.full_bet_level + hand_cycle.table.min_raise_increase} | bet level: {player.bet_level}')
+                    logger.info(f'To full call: {amount_to_full_call} | to full raise: {hand_cycle.table.full_bet_level + hand_cycle.table.min_raise_increase} | bet level: {player.bet_level}')
 
                 assert hand_cycle.betting_round is not None
                 range_by_action = hand_cycle.betting_round.get_action_ranges()

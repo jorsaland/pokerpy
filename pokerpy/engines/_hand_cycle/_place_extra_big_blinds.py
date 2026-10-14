@@ -17,10 +17,10 @@
 
 
 from pokerpy.logger import logger, wrap_internal_log
-from pokerpy.structures import Player, Table
+from pokerpy.structures import Player
 
 
-def place_extra_big_blinds(*, table: Table, extra_big_blind_players: list[Player], big_blind: int):
+def place_extra_big_blinds(*, amount: int, extra_big_blind_players: list[Player]):
 
     "Runs the event for placing extra big blinds."
 
@@ -29,7 +29,7 @@ def place_extra_big_blinds(*, table: Table, extra_big_blind_players: list[Player
         if player.is_folded or player.stack == 0:
             continue
 
-        amount = big_blind if player.stack > big_blind else player.stack
+        amount = amount if player.stack > amount else player.stack
 
         player.decrease_stack(amount)
         player.increase_bet_level(amount)
@@ -38,5 +38,4 @@ def place_extra_big_blinds(*, table: Table, extra_big_blind_players: list[Player
             f"{player.name} PLACES OPTIONAL BIG BLIND {amount} "
             f"({player.name}'s bet level: {player.bet_level} | stack: {player.stack})"
         )
-        logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())

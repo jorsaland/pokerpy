@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import after_preflop_round_names
-from pokerpy.logger import logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
 
 
 from ._ante_round import ante_round
@@ -37,19 +37,25 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
 
     "Starts the hand cycle generator that rotates the player turns."
 
-    for player in hand_cycle.table.players:
+    table = hand_cycle.table
+
+    # At least two players are needed to run the hand cycle.
+    if len(table.actionable_players) < 2:
+        return
+
+    if not table.button:
+        table.set_button(table.players[0])
+
+    for player in table.players:
         if player.stack == 0:
             player.mark_is_folded()
 
-    # At least two players are needed to run the hand cycle.
-    if len(hand_cycle.table.actionable_players) < 2:
-        return
+    if table.big_blind:
+        amount, _ = table.big_blind
+        table.set_min_bet(amount)
 
-    if hand_cycle.big_blind:
-        hand_cycle.table.set_min_bet(hand_cycle.big_blind)
-
-    if hand_cycle.ante:
-        ante_round(hand_cycle.table, ante=hand_cycle.ante)
+    if table.ante:
+        ante_round(hand_cycle.table)
 
     yield from pre_flop(hand_cycle)
 
@@ -66,4 +72,6 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
         logger.info(wrap_middle_log('no showdown'))
         display_pot_indexes(hand_cycle.table)
         showdown(hand_cycle.table)
+    logger.info(wrap_internal_log())
+
     logger.info(wrap_middle_log(new_line=True))

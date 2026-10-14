@@ -56,9 +56,6 @@ class Table:
         *,
         min_bet: int = 1,
         starting_player: (Player|None) = None,
-        button_player: (Player|None) = None,
-        small_blind_player: (Player|None) = None,
-        big_blind_player: (Player|None) = None,
     ):
 
         validate_type_list(players)
@@ -67,49 +64,28 @@ class Table:
 
         if starting_player is not None:
             validate_type_player(starting_player)
-        if button_player is not None:
-            validate_type_player(button_player)
-        if small_blind_player is not None:
-            validate_type_player(small_blind_player)
-        if big_blind_player is not None:
-            validate_type_player(big_blind_player)
 
         validate_not_empty_table(players)
         validate_int_positive(min_bet)
+        if starting_player is not None:
+            validate_player_in_table(starting_player, players)
 
         if starting_player is None:
             starting_player = players[0]
-        else:
-            validate_player_in_table(starting_player, players)
-
-        if button_player is None:
-            button_player = players[0]
-        else:
-            validate_player_in_table(button_player, players)
-
-        if small_blind_player is None:
-            small_blind_player = players[0]
-        else:
-            validate_player_in_table(small_blind_player, players)
-
-        if big_blind_player is None:
-            big_blind_player = players[0]
-        else:
-            validate_player_in_table(big_blind_player, players)
-
         starting_player_index = players.index(starting_player)
         stopping_player = players[starting_player_index - 1]
 
         self._players = players
-        self._min_bet = min_bet
-        self._min_raise_increase = min_bet
         self._starting_player = starting_player
         self._stopping_player = stopping_player
-        self._small_blind_player = small_blind_player
-        self._big_blind_player = big_blind_player
-        self._button_player = button_player
         self._current_player = starting_player
+        self._ante = None
+        self._small_blind = None
+        self._big_blind = None
+        self._button = None
 
+        self._min_bet = min_bet
+        self._min_raise_increase = min_bet
         self._bet_level = 0
         self._full_bet_level = 0
         self._split_central_pot: list[int] = [0]
@@ -168,19 +144,24 @@ class Table:
         return self._stopping_player
 
     @property
-    def button_player(self):
+    def button(self):
         "Player that holds the button."
-        return self._button_player
+        return self._button
 
     @property
-    def small_blind_player(self):
-        "Player that places the small blind."
-        return self._small_blind_player
+    def ante(self):
+        "Ante amount."
+        return self._ante
 
     @property
-    def big_blind_player(self):
-        "Player that places the big blind."
-        return self._big_blind_player
+    def small_blind(self):
+        "Small blind amount and player."
+        return self._small_blind
+
+    @property
+    def big_blind(self):
+        "Big blind amount and player."
+        return self._big_blind
 
     @property
     def current_player(self):
@@ -354,34 +335,50 @@ class Table:
         self._stopping_player = player
 
 
-    def set_button_player(self, player: Player):
+    def set_button(self, player: Player):
 
-        "Sets the button_player property."
-
-        validate_type_player(player)
-        validate_player_in_table(player, self.players)
-
-        self._button_player = player
-
-
-    def set_small_blind_player(self, player: Player):
-
-        "Sets the small_blind_player property."
+        "Sets the button property."
 
         validate_type_player(player)
         validate_player_in_table(player, self.players)
 
-        self._small_blind_player = player
+        self._button = player
 
 
-    def set_big_blind_player(self, player: Player):
+    def set_ante(self, amount: int):
 
-        "Sets the big_blind_player property."
+        "Sets the ante property."
 
+        validate_type_int(amount)
+        validate_int_positive(amount)
+
+        self._ante = amount
+
+
+    def set_small_blind(self, amount: int, player: Player):
+
+        "Sets the small_blind property."
+
+        validate_type_int(amount)
         validate_type_player(player)
+
+        validate_int_positive(amount)
         validate_player_in_table(player, self.players)
 
-        self._big_blind_player = player
+        self._small_blind = (amount, player)
+
+
+    def set_big_blind(self, amount: int, player: Player):
+
+        "Sets the big_blind property."
+
+        validate_type_int(amount)
+        validate_type_player(player)
+
+        validate_int_positive(amount)
+        validate_player_in_table(player, self.players)
+
+        self._big_blind = (amount, player)
 
 
     def set_current_player(self, player: Player):

@@ -16,22 +16,25 @@
 "Defines the function that runs the round where all players place antes"
 
 
-from pokerpy.logger import logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
 from pokerpy.structures import Table
 
 
 from ._display_status import display_cards_and_money
 
 
-def ante_round(table: Table, *, ante: int):
+def ante_round(table: Table):
 
     "Runs the round where all players place antes."
 
+    assert table.ante is not None
+
     logger.info(wrap_middle_log('placing antes'))
 
-    logger.info(f'Ante size: {ante}')
+    logger.info(wrap_internal_log())
+    logger.info(f'Ante size: {table.ante}')
     for player in table.actionable_players:
-        amount = ante if player.stack > ante else player.stack
+        amount = table.ante if player.stack > table.ante else player.stack
         player.decrease_stack(amount)
         player.increase_bet_level(amount)
 

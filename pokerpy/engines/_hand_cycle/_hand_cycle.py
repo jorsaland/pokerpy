@@ -56,9 +56,6 @@ class HandCycle:
         name: str,
         table: Table,
         *,
-        ante: (int|None) = None,
-        small_blind: (int|None) = None,
-        big_blind: (int|None) = None,
         extra_big_blind_players: (list[Player]|None) = None,
         open_fold_allowed = False,
         raise_invalid_actions = False
@@ -67,32 +64,14 @@ class HandCycle:
         # Type validations
         validate_type_str(name)
         validate_type_table(table)
-        if ante is not None:
-            validate_type_int(ante)
-        if small_blind is not None:
-            validate_type_int(small_blind)
-        if big_blind is not None:
-            validate_type_int(big_blind)
         if extra_big_blind_players is not None:
             validate_type_list(extra_big_blind_players)
             validate_all_type_player(extra_big_blind_players)
-
-        # Value validations
-        if ante is not None:
-            validate_int_positive(ante)
-        if big_blind is not None:
-            validate_int_positive(big_blind)
-        if small_blind is not None:
-            validate_int_positive(small_blind)
-            validate_int_small_blind_relation_to_big_blind(small_blind, big_blind)
 
         # Fixed attributes
         self._listener: (Generator[Player]|None) = None
         self._name = name
         self._table = table
-        self._ante = ante
-        self._small_blind = small_blind
-        self._big_blind = big_blind
         self._extra_big_blind_players = extra_big_blind_players or []
         self._open_fold_allowed = bool(open_fold_allowed)
         self._raise_invalid_actions = bool(raise_invalid_actions)
@@ -111,21 +90,6 @@ class HandCycle:
     def table(self):
         "Table in which the hand cycle takes place."
         return self._table
-
-    @property
-    def ante(self):
-        "Amount to be placed by all players as ante."
-        return self._ante
-
-    @property
-    def small_blind(self):
-        "Amount to be placed by the small blind."
-        return self._small_blind
-
-    @property
-    def big_blind(self):
-        "Amount to be placed by the big blind."
-        return self._big_blind
 
     @property
     def extra_big_blind_players(self):

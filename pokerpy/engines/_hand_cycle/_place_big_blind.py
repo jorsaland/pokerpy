@@ -17,35 +17,28 @@
 
 
 from pokerpy.logger import logger, wrap_internal_log
-from pokerpy.structures import Player, Table
+from pokerpy.structures import Player
 
 
-def place_big_blind(*, table: Table, extra_big_blind_players: list[Player], big_blind: int):
+def place_big_blind(*, amount: int, player: Player, extra_big_blind_players: list[Player]):
 
     "Runs the big blind placing event."
 
-    big_blind_player = table.big_blind_player
+    if player in extra_big_blind_players:
+        extra_big_blind_players.remove(player)
 
-    if big_blind_player in extra_big_blind_players:
-        extra_big_blind_players.remove(big_blind_player)
+    assert player.stack
 
-    if not big_blind_player.stack:
-        logger.info(f"{big_blind_player.name} IS ALL-IN, CANNOT PLACE BIG BLIND")
-    else:
-        amount = (
-            big_blind
-            if big_blind_player.stack > big_blind
-            else big_blind_player.stack
-        )
-        big_blind_player.decrease_stack(amount)
-        big_blind_player.increase_bet_level(amount)
-        logger.info(
-            f"{big_blind_player.name} PLACES BIG BLIND {amount} "
-            f"({big_blind_player.name}'s bet level: {big_blind_player.bet_level} | "
-            f"stack: {big_blind_player.stack})"
-        )
-
-    table.set_bet_level(big_blind)
-    table.set_full_bet_level(big_blind)
-    logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
+    amount = (
+        amount
+        if player.stack > amount
+        else player.stack
+    )
+    player.decrease_stack(amount)
+    player.increase_bet_level(amount)
+    logger.info(
+        f"{player.name} PLACES BIG BLIND {amount} "
+        f"({player.name}'s bet level: {player.bet_level} | "
+        f"stack: {player.stack})"
+    )
     logger.info(wrap_internal_log())

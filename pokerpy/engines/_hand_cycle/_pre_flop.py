@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.constants import PREFLOP
-from pokerpy.logger import logger, wrap_middle_log
+from pokerpy.logger import logger, wrap_middle_log, wrap_internal_log
 
 
 from .._betting_round._betting_round import BettingRound
@@ -44,10 +44,13 @@ def pre_flop(hand_cycle: "HandCycle"):
     table = hand_cycle.table
     extra_big_blind_players = list(hand_cycle.extra_big_blind_players)
 
-    if hand_cycle.big_blind:
-        starting_player = table.get_next_player(table.big_blind_player)
+    assert table.button is not None
+
+    if table.big_blind:
+        _, player = table.big_blind
+        starting_player = table.get_next_player(player)
     else:
-        starting_player = table.get_next_player(table.button_player)
+        starting_player = table.get_next_player(table.button)
     table.set_starting_player(starting_player)
 
     betting_round = BettingRound(
@@ -58,24 +61,36 @@ def pre_flop(hand_cycle: "HandCycle"):
     )
 
     with betting_round:
+
         hand_cycle.set_betting_round(betting_round)
-        if hand_cycle.small_blind:
+
+        logger.info(wrap_internal_log())
+
+        if table.small_blind:
+            amount, player = table.small_blind
             place_small_blind(
-                table = table,
+                amount = amount,
+                player = player,
                 extra_big_blind_players = extra_big_blind_players,
-                small_blind = hand_cycle.small_blind,
             )
-        if hand_cycle.big_blind:
+
+        if table.big_blind:
+            amount, player = table.big_blind
             place_big_blind(
-                table = table,
+                amount = amount,
+                player = player,
                 extra_big_blind_players = extra_big_blind_players,
-                big_blind = hand_cycle.big_blind,
             )
             place_extra_big_blinds(
-                table = table,
+                amount = amount,
                 extra_big_blind_players = extra_big_blind_players,
-                big_blind = hand_cycle.big_blind,
             )
+            table.set_bet_level(amount)
+            table.set_full_bet_level(amount)
+
+        logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
+        logger.info(wrap_internal_log())
+
         hand_cycle.deal_cards_to_players(2)
         yield from betting_round.listen()
 

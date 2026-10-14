@@ -37,22 +37,14 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
-    if not open_fold_allowed:
-        print('\n======================================================'  )
-        print(  '=== STARTING CYCLE: folding only allowed UNDER BET ==='  )
-        print(  '======================================================\n')
-    
-    else:
-        print('\n=============================================='  )
-        print(  '=== STARTING CYCLE: folding allowed ALWAYS ==='  )
-        print(  '==============================================\n')
+    table.set_ante(ANTE)
+    table.set_button(table.players[-1])
+    table.set_small_blind(SMALL_BLIND, table.players[0])
+    table.set_big_blind(BIG_BLIND, table.players[1])
 
     hand_cycle = pk.HandCycle(
         name = 'open-fold-allowed' if open_fold_allowed else 'open-fold-forbidden',
         table = table,
-        ante = ANTE,
-        small_blind = SMALL_BLIND,
-        big_blind = BIG_BLIND,
         extra_big_blind_players = [player for player in table.players[2:] if random.randint(0, 1)],
         open_fold_allowed = open_fold_allowed,
     )
@@ -65,9 +57,9 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
             amount_to_full_call = table.bet_level - player.bet_level
             if amount_to_full_call == 0:
-                print(f'To full bet: {hand_cycle.table.min_bet} | bet level: {player.bet_level}')
+                logger.info(f'To full bet: {hand_cycle.table.min_bet} | bet level: {player.bet_level}')
             else:
-                print(f'To full call: {amount_to_full_call} | to full raise: {hand_cycle.table.full_bet_level + hand_cycle.table.min_raise_increase} | bet level: {player.bet_level}')
+                logger.info(f'To full call: {amount_to_full_call} | to full raise: {hand_cycle.table.full_bet_level + hand_cycle.table.min_raise_increase} | bet level: {player.bet_level}')
 
             assert hand_cycle.betting_round is not None
             range_by_action = hand_cycle.betting_round.get_action_ranges()
