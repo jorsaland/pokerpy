@@ -200,6 +200,8 @@ class TestTableInstantiation(BaseTestCase):
             self.assertIsNone(table.button_player)
             self.assertIsNone(table.small_blind)
             self.assertIsNone(table.big_blind)
+            self.assertIsNone(table.small_blind_player)
+            self.assertIsNone(table.big_blind_player)
 
 
 class TestTableCardMethodsAndAttributes(BaseTestCase):
@@ -329,6 +331,8 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
             table.set_bet_level,
             table.set_full_bet_level,
             table.set_ante,
+            table.set_small_blind,
+            table.set_big_blind,
         )
 
         bad_amounts = ('1000', 1000.0, Decimal('1000'), None)
@@ -353,6 +357,8 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
             table.set_min_bet,
             table.set_min_raise_increase,
             table.set_ante,
+            table.set_small_blind,
+            table.set_big_blind,
         )
 
         for method in methods:
@@ -403,6 +409,8 @@ class TestTableMoneyMethodsAndAttributes(BaseTestCase):
             (0,             table.set_bet_level,          structures.Table.bet_level.fget.__name__),
             (0,             table.set_full_bet_level,     structures.Table.full_bet_level.fget.__name__),
             (None,          table.set_ante,               structures.Table.ante.fget.__name__),
+            (None,          table.set_small_blind,        structures.Table.small_blind.fget.__name__),
+            (None,          table.set_big_blind,          structures.Table.big_blind.fget.__name__),
         )
 
         amounts = (50, 100, 150, 200)
@@ -523,6 +531,8 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_stopping_player,
             table.set_current_player,
             table.set_button_player,
+            table.set_small_blind_player,
+            table.set_big_blind_player,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -552,6 +562,8 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_stopping_player,
             table.set_current_player,
             table.set_button_player,
+            table.set_small_blind_player,
+            table.set_big_blind_player,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -571,11 +583,13 @@ class TestTablePlayerMethods(BaseTestCase):
         table = structures.Table(self.setup_players)
 
         setup = (
-          # (initial_value,          method,                    property_name)
-            (self.setup_players[0],  table.set_starting_player, structures.Table.starting_player.fget.__name__),
-            (self.setup_players[-1], table.set_stopping_player, structures.Table.stopping_player.fget.__name__),
-            (self.setup_players[0],  table.set_current_player,  structures.Table.current_player.fget.__name__),
-            (None,                   table.set_button_player,          structures.Table.button_player.fget.__name__),
+          # (initial_value,          method,                       property_name)
+            (self.setup_players[0],  table.set_starting_player,    structures.Table.starting_player.fget.__name__),
+            (self.setup_players[-1], table.set_stopping_player,    structures.Table.stopping_player.fget.__name__),
+            (self.setup_players[0],  table.set_current_player,     structures.Table.current_player.fget.__name__),
+            (None,                   table.set_button_player,      structures.Table.button_player.fget.__name__),
+            (None,                   table.set_small_blind_player, structures.Table.small_blind_player.fget.__name__),
+            (None,                   table.set_big_blind_player,   structures.Table.big_blind_player.fget.__name__),
         )
 
         for initial_value, method, property_name in setup:
