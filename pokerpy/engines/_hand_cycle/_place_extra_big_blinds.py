@@ -31,7 +31,7 @@ def place_extra_big_blinds(blind_amount: int, eligible_players: Iterable[Player]
 
         yield player
 
-        if player.requested_optional_blind:
+        if player.is_optional_blind:
 
             amount = blind_amount if player.stack > blind_amount else player.stack
 

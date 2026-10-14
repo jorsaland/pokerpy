@@ -238,4 +238,4 @@ class HandCycle:
             player.clear_hand()
             player.reset_pot_index()
             player.unmark_is_folded()
-            player.clear_optional_blind()
+            player.unmark_is_optional_blind()

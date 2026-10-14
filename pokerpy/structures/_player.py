@@ -61,7 +61,7 @@ class Player:
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
         self._requested_action: (Action|None) = None
-        self._requested_optional_blind = False
+        self._is_optional_blind = False
         self._stack = stack
         self._bet_level = 0
         self._pot_index = 0
@@ -90,9 +90,9 @@ class Player:
         return self._requested_action
 
     @property
-    def requested_optional_blind(self):
+    def is_optional_blind(self):
         "Whether the player has requested to place an optional blind."
-        return self._requested_optional_blind
+        return self._is_optional_blind
 
     @property
     def stack(self):
@@ -139,16 +139,6 @@ class Player:
     def clear_action(self):
         "Resets the requested_action property back to None."
         self._requested_action = None
-
-
-    def request_optional_blind(self):
-        "Requests to place an optional blind"
-        self._requested_optional_blind = True
-
-
-    def clear_optional_blind(self):
-        "Resets the decision to place an optional blind"
-        self._requested_optional_blind = False
 
 
     # Methods to affect cards and hand
@@ -222,17 +212,22 @@ class Player:
         "Marks the has_played property."
         self._has_played = True
 
-
     def unmark_has_played(self):
         "Unmarks the has_played property."
         self._has_played = False
-
 
     def mark_is_folded(self):
         "Marks the is_folded property."
         self._is_folded = True
 
-
     def unmark_is_folded(self):
         "Unmarks the is_folded property."
         self._is_folded = False
+
+    def mark_is_optional_blind(self):
+        "Requests to place an optional blind"
+        self._is_optional_blind = True
+
+    def unmark_is_optional_blind(self):
+        "Resets the decision to place an optional blind"
+        self._is_optional_blind = False
