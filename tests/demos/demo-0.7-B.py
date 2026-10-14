@@ -62,9 +62,12 @@ def build_players():
 def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 
     table.set_ante(ANTE)
-    table.set_button(table.players[-1])
-    table.set_small_blind(SMALL_BLIND, table.players[0])
-    table.set_big_blind(BIG_BLIND, table.players[1])
+    table.set_small_blind(SMALL_BLIND)
+    table.set_big_blind(BIG_BLIND)
+
+    table.set_button_player(table.players[-1])
+    table.set_small_blind_player(table.players[0])
+    table.set_big_blind_player(table.players[1])
 
     hand_cycle = pk.HandCycle(
         name = 'open-fold-allowed' if open_fold_allowed else 'open-fold-forbidden',

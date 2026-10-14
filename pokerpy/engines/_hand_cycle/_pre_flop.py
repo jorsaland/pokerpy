@@ -43,13 +43,13 @@ def pre_flop(hand_cycle: "HandCycle"):
 
     table = hand_cycle.table
 
-    assert table.button is not None
+    assert table.button_player is not None
 
     if table.big_blind:
-        _, player = table.big_blind
-        starting_player = table.get_next_player(player)
+        assert table.big_blind_player
+        starting_player = table.get_next_player(table.big_blind_player)
     else:
-        starting_player = table.get_next_player(table.button)
+        starting_player = table.get_next_player(table.button_player)
     table.set_starting_player(starting_player)
 
     betting_round = BettingRound(
@@ -68,21 +68,21 @@ def pre_flop(hand_cycle: "HandCycle"):
         optional_blind_eligible_players = list(table.actionable_players)
 
         if table.small_blind:
-            amount, player = table.small_blind
-            if player in optional_blind_eligible_players:
-                optional_blind_eligible_players.remove(player)
-            place_small_blind(amount, player)
+            assert table.small_blind_player
+            if table.small_blind_player in optional_blind_eligible_players:
+                optional_blind_eligible_players.remove(table.small_blind_player)
+            place_small_blind(table.small_blind, table.small_blind_player)
 
         if table.big_blind:
-            amount, player = table.big_blind
-            if player in optional_blind_eligible_players:
-                optional_blind_eligible_players.remove(player)
-            place_big_blind(amount, player)
+            assert table.big_blind_player
+            if table.big_blind_player in optional_blind_eligible_players:
+                optional_blind_eligible_players.remove(table.big_blind_player)
+            place_big_blind(table.big_blind, table.big_blind_player)
             hand_cycle.mark_in_extra_big_blinds_phase()
-            yield from place_extra_big_blinds(amount, optional_blind_eligible_players)
+            yield from place_extra_big_blinds(table.big_blind, optional_blind_eligible_players)
             hand_cycle.unmark_in_extra_big_blinds_phase()
-            table.set_bet_level(amount)
-            table.set_full_bet_level(amount)
+            table.set_bet_level(table.big_blind)
+            table.set_full_bet_level(table.big_blind)
 
         logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())

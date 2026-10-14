@@ -38,14 +38,14 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dani', 'Epa', 'Fomi']
 def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
     table.set_ante(ANTE)
-    table.set_button(table.players[-1])
+    table.set_button_player(table.players[-1])
 
     n = 0
     while len(table.actionable_players) > 1:
 
         n += 1
 
-        previous_button_player = table.button
+        previous_button_player = table.button_player
 
         assert previous_button_player is not None
 
@@ -53,7 +53,7 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
         for player in table.iter_players(starting_player=button_player):
             if player.stack == 0:
                 continue
-            table.set_button(player)
+            table.set_button_player(player)
             break
 
         hand_cycle = pk.HandCycle(

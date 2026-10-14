@@ -44,7 +44,7 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     table = hand_cycle.table
 
-    assert table.button is not None
+    assert table.button_player is not None
 
     # Break before starting if only remains one player
     if len(table.live_players) == 1:
@@ -52,7 +52,7 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     logger.info(wrap_middle_log(f'starting {round_name}'))
 
-    starting_player = table.get_next_player(table.button)
+    starting_player = table.get_next_player(table.button_player)
     table.set_starting_player(starting_player)
 
     betting_round = BettingRound(

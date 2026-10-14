@@ -37,23 +37,27 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dani', 'Epa', 'Fomi']
 def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
     table.set_ante(ANTE)
-    table.set_button(table.players[-1])
-    table.set_big_blind(BIG_BLIND, table.players[0])
+    table.set_big_blind(BIG_BLIND)
+
+    table.set_button_player(table.players[-1])
+    table.set_big_blind_player(table.players[0])
 
     n = 0
     while len(table.actionable_players) > 1:
 
         n += 1
 
-        assert table.big_blind is not None
-        _, previous_big_blind_player = table.big_blind
+        assert table.big_blind
+        assert table.big_blind_player
+
+        previous_big_blind_player = table.big_blind_player
 
         big_blind_player = table.get_next_player(previous_big_blind_player)
         for player in table.iter_players(starting_player=big_blind_player):
             if player.stack == 0:
                 continue
-            table.set_button(previous_big_blind_player)
-            table.set_big_blind(BIG_BLIND, player)
+            table.set_button_player(previous_big_blind_player)
+            table.set_big_blind_player(player)
             break
 
         hand_cycle = pk.HandCycle(

@@ -172,7 +172,7 @@ class TestTableInstantiation(BaseTestCase):
             self.assertEqual(table.pot, 0)
             self.assertTupleEqual(table.split_central_pot, (0,))
             self.assertIsNone(table.ante)
-            self.assertIsNone(table.button)
+            self.assertIsNone(table.button_player)
             self.assertIsNone(table.small_blind)
             self.assertIsNone(table.big_blind)
 
@@ -197,7 +197,7 @@ class TestTableInstantiation(BaseTestCase):
             self.assertTupleEqual(table.split_central_pot, (0,))
             self.assertEqual(table.pot, 0)
             self.assertIsNone(table.ante)
-            self.assertIsNone(table.button)
+            self.assertIsNone(table.button_player)
             self.assertIsNone(table.small_blind)
             self.assertIsNone(table.big_blind)
 
@@ -522,7 +522,7 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_starting_player,
             table.set_stopping_player,
             table.set_current_player,
-            table.set_button,
+            table.set_button_player,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -551,7 +551,7 @@ class TestTablePlayerMethods(BaseTestCase):
             table.set_starting_player,
             table.set_stopping_player,
             table.set_current_player,
-            table.set_button,
+            table.set_button_player,
             table.get_next_player,
             table.get_previous_player,
         )
@@ -575,7 +575,7 @@ class TestTablePlayerMethods(BaseTestCase):
             (self.setup_players[0],  table.set_starting_player, structures.Table.starting_player.fget.__name__),
             (self.setup_players[-1], table.set_stopping_player, structures.Table.stopping_player.fget.__name__),
             (self.setup_players[0],  table.set_current_player,  structures.Table.current_player.fget.__name__),
-            (None,                   table.set_button,          structures.Table.button.fget.__name__),
+            (None,                   table.set_button_player,          structures.Table.button_player.fget.__name__),
         )
 
         for initial_value, method, property_name in setup:

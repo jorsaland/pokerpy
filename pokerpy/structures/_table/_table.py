@@ -80,9 +80,11 @@ class Table:
         self._stopping_player = stopping_player
         self._current_player = starting_player
         self._ante = None
+        self._button_player = None
         self._small_blind = None
+        self._small_blind_player = None
         self._big_blind = None
-        self._button = None
+        self._big_blind_player = None
 
         self._min_bet = min_bet
         self._min_raise_increase = min_bet
@@ -144,9 +146,9 @@ class Table:
         return self._stopping_player
 
     @property
-    def button(self):
+    def button_player(self):
         "Player that holds the button."
-        return self._button
+        return self._button_player
 
     @property
     def ante(self):
@@ -155,13 +157,23 @@ class Table:
 
     @property
     def small_blind(self):
-        "Small blind amount and player."
+        "Small blind amount."
         return self._small_blind
 
     @property
+    def small_blind_player(self):
+        "Small blind player."
+        return self._small_blind_player
+
+    @property
     def big_blind(self):
-        "Big blind amount and player."
+        "Big blind amount."
         return self._big_blind
+
+    @property
+    def big_blind_player(self):
+        "Big blind player."
+        return self._big_blind_player
 
     @property
     def current_player(self):
@@ -287,6 +299,36 @@ class Table:
         self._full_bet_level = amount
 
 
+    def set_ante(self, amount: int):
+
+        "Sets the ante property."
+
+        validate_type_int(amount)
+        validate_int_positive(amount)
+
+        self._ante = amount
+
+
+    def set_small_blind(self, amount: int):
+
+        "Sets the small_blind property."
+
+        validate_type_int(amount)
+        validate_int_positive(amount)
+
+        self._small_blind = amount
+
+
+    def set_big_blind(self, amount: int):
+
+        "Sets the big_blind property."
+
+        validate_type_int(amount)
+        validate_int_positive(amount)
+
+        self._big_blind = amount
+
+
     def increase_central_pot(self, amount: int):
 
         "Adds an amount to the deepest pot in the split_central_pot property."
@@ -335,50 +377,34 @@ class Table:
         self._stopping_player = player
 
 
-    def set_button(self, player: Player):
+    def set_button_player(self, player: Player):
 
         "Sets the button property."
 
         validate_type_player(player)
         validate_player_in_table(player, self.players)
 
-        self._button = player
+        self._button_player = player
 
 
-    def set_ante(self, amount: int):
+    def set_small_blind_player(self, player: Player):
 
-        "Sets the ante property."
+        "Sets the small_blind_player property."
 
-        validate_type_int(amount)
-        validate_int_positive(amount)
-
-        self._ante = amount
-
-
-    def set_small_blind(self, amount: int, player: Player):
-
-        "Sets the small_blind property."
-
-        validate_type_int(amount)
         validate_type_player(player)
-
-        validate_int_positive(amount)
         validate_player_in_table(player, self.players)
 
-        self._small_blind = (amount, player)
+        self._small_blind_player = player
 
 
-    def set_big_blind(self, amount: int, player: Player):
+    def set_big_blind_player(self, player: Player):
 
-        "Sets the big_blind property."
+        "Sets the big_blind_player property."
 
-        validate_type_int(amount)
         validate_type_player(player)
-
-        validate_int_positive(amount)
         validate_player_in_table(player, self.players)
 
-        self._big_blind = (amount, player)
+        self._big_blind_player = player
 
 
     def set_current_player(self, player: Player):

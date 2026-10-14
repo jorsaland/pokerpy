@@ -43,16 +43,15 @@ def run_hand_cycle_listener(hand_cycle: "HandCycle"):
     if len(table.actionable_players) < 2:
         return
 
-    if not table.button:
-        table.set_button(table.players[0])
+    if not table.button_player:
+        table.set_button_player(table.players[0])
 
     for player in table.players:
         if player.stack == 0:
             player.mark_is_folded()
 
     if table.big_blind:
-        amount, _ = table.big_blind
-        table.set_min_bet(amount)
+        table.set_min_bet(table.big_blind)
 
     if table.ante:
         ante_round(hand_cycle.table)
