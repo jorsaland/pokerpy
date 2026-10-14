@@ -48,22 +48,46 @@ class TestPlayerInstantiation(TestCase):
                 self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_stack).__name__))
 
 
+    def test_stack_value_errors(self):
+
+        "Tests value error detection on field stack."
+
+        bad_stack = -10
+        with self.subTest('negative stack'):
+            with self.assertRaises(ValueError) as context:
+                structures.Player(name='Andy', stack=bad_stack)
+            self.assertEqual(context.exception.args[0], messages.msg_not_positive_or_zero_value.format(bad_stack))
+
+
     def test_valid_player_instantiation(self):
 
         "Tests valid player instantiation."
 
         player = structures.Player('Andy', 1000)
-        self.assertEqual(player.name, 'Andy')
-        self.assertEqual(player.cards, ())
-        self.assertIsNone(player.hand)
-        self.assertIsNone(player.requested_action)
-        self.assertFalse(player.is_optional_blind)
-        self.assertEqual(player.stack, 1000)
-        self.assertEqual(player.bet_level, 0)
-        self.assertEqual(player.pot_index, 0)
-        self.assertFalse(player.is_folded)
-        self.assertFalse(player.has_played)
+        with self.subTest('positive stack'):
+            self.assertEqual(player.name, 'Andy')
+            self.assertEqual(player.cards, ())
+            self.assertIsNone(player.hand)
+            self.assertIsNone(player.requested_action)
+            self.assertFalse(player.is_optional_blind)
+            self.assertEqual(player.stack, 1000)
+            self.assertEqual(player.bet_level, 0)
+            self.assertEqual(player.pot_index, 0)
+            self.assertFalse(player.is_folded)
+            self.assertFalse(player.has_played)
 
+        player = structures.Player('Andy', 0)
+        with self.subTest('zero stack'):
+            self.assertEqual(player.name, 'Andy')
+            self.assertEqual(player.cards, ())
+            self.assertIsNone(player.hand)
+            self.assertIsNone(player.requested_action)
+            self.assertFalse(player.is_optional_blind)
+            self.assertEqual(player.stack, 0)
+            self.assertEqual(player.bet_level, 0)
+            self.assertEqual(player.pot_index, 0)
+            self.assertFalse(player.is_folded)
+            self.assertFalse(player.has_played)
 
 class TestPlayerActionMethods(TestCase):
 

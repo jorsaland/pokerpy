@@ -21,7 +21,6 @@ Defines the class that represents a poker player.
 from pokerpy.validations import (
     validate_int_amount_smaller_than_bet_level,
     validate_int_amount_smaller_than_stack,
-    validate_int_positive,
     validate_int_positive_or_zero,
     validate_iterable_not_contains_card,
     validate_type_action,
@@ -52,7 +51,7 @@ class Player:
         validate_type_str(name)
         validate_type_int(stack)
 
-        validate_int_positive(stack)
+        validate_int_positive_or_zero(stack)
 
         # Fixed variables
         self._name = name
