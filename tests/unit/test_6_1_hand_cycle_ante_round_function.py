@@ -32,6 +32,17 @@ class TestHandCycleAnteRoundFunction(TestCase):
         self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
         self.table = structures.Table(self.setup_players)
+        self.table.set_ante(10)
+
+
+    def test_unset_ante(self):
+
+        "Tests when the ante was not set."
+
+        table = structures.Table(self.setup_players)
+
+        with self.assertRaises(AssertionError):
+            engines.ante_round(table)
 
 
     def test_no_actionable_players(self):
@@ -46,7 +57,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                 self.assertEqual(player.stack, 1000)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -83,7 +94,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                     self.assertEqual(player.stack, 5)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -110,7 +121,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                 self.assertEqual(player.stack, 1000)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -148,7 +159,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                     self.assertEqual(player.stack, 5)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -196,7 +207,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                     self.assertEqual(player.stack, 7)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -219,7 +230,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                 self.assertEqual(player.stack, 1000)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
@@ -257,7 +268,7 @@ class TestHandCycleAnteRoundFunction(TestCase):
                     self.assertEqual(player.stack, 5)
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
-        engines.ante_round(self.table, ante=10)
+        engines.ante_round(self.table)
 
         with self.subTest('after ante round'):
             for player in self.setup_players:
