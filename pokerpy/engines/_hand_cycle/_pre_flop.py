@@ -62,14 +62,15 @@ def pre_flop(hand_cycle: "HandCycle"):
     with betting_round:
 
         hand_cycle.set_betting_round(betting_round)
-
         logger.info(wrap_internal_log())
-
-        optional_blind_eligible_players = list(table.actionable_players)
 
         if table.big_blind:
 
             assert table.big_blind_player
+            optional_blind_eligible_players = [
+                player for player in table.iter_players(starting_player)
+                if player in table.actionable_players
+            ]
 
             if table.small_blind:
                 assert table.small_blind_player
