@@ -67,20 +67,24 @@ def pre_flop(hand_cycle: "HandCycle"):
 
         optional_blind_eligible_players = list(table.actionable_players)
 
-        if table.small_blind:
-            assert table.small_blind_player
-            if table.small_blind_player in optional_blind_eligible_players:
-                optional_blind_eligible_players.remove(table.small_blind_player)
-            place_small_blind(table.small_blind, table.small_blind_player)
-
         if table.big_blind:
+
             assert table.big_blind_player
+
+            if table.small_blind:
+                assert table.small_blind_player
+                if table.small_blind_player in optional_blind_eligible_players:
+                    optional_blind_eligible_players.remove(table.small_blind_player)
+                place_small_blind(table.small_blind, table.small_blind_player)
+
             if table.big_blind_player in optional_blind_eligible_players:
                 optional_blind_eligible_players.remove(table.big_blind_player)
             place_big_blind(table.big_blind, table.big_blind_player)
+ 
             hand_cycle.mark_in_extra_big_blinds_phase()
             yield from place_extra_big_blinds(table.big_blind, optional_blind_eligible_players)
             hand_cycle.unmark_in_extra_big_blinds_phase()
+ 
             table.set_bet_level(table.big_blind)
             table.set_full_bet_level(table.big_blind)
 
