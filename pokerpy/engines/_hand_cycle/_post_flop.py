@@ -62,7 +62,6 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
     with betting_round:
 
         hand_cycle.set_betting_round(betting_round)
-
         logger.info(wrap_internal_log())
 
         # Deal three cards to table if round is flop and one if is turn or river
