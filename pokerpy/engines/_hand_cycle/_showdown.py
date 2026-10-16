@@ -59,6 +59,8 @@ def showdown(table: Table):
     Determines who are the winners among the remaining players and distributes the pot between them.
     """
 
+    assert table.live_players
+
     for i, side_pot in enumerate(table.split_central_pot):
 
         winners: list[Player] = []
