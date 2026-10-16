@@ -59,9 +59,6 @@ def showdown(table: Table):
     Determines who are the winners among the remaining players and distributes the pot between them.
     """
 
-    if not isinstance(table, Table):
-        raise TypeError(msg_not_table_instance.format(type(table).__name__))
-
     for i, side_pot in enumerate(table.split_central_pot):
 
         winners: list[Player] = []
