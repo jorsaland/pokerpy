@@ -21,19 +21,16 @@ Defines the functions to distribute the pot at the end of a cycle.
 from collections.abc import Sequence
 
 
-from pokerpy.messages import msg_not_table_instance
 from pokerpy.logger import logger
 from pokerpy.structures import Player, Table
 
 
-def break_tie(winners: Sequence[Player], pot: int, pot_index: int):
+def break_tie(winners: Sequence[Player], pot: int):
 
     """
     Distributes the central pot between the tied winners.
     """
 
-    pot_name = 'main pot' if pot_index == 0 else f'side pot {pot_index}'
-    logger.info(f'it is a tie for {pot_name}! winners: {", ".join([w.name for w in winners])}.')
     profit_per_winner = pot // len(winners)
     remainder = pot % len(winners)
     profit_by_winner = {winner: profit_per_winner for winner in winners}
@@ -46,10 +43,7 @@ def break_tie(winners: Sequence[Player], pot: int, pot_index: int):
 
     for winner in winners:
         profit = profit_by_winner[winner]
-        if pot_index == 0:
-            logger.info(f'{winner.name} wins {profit}.')
-        else:
-            logger.info(f'{winner.name} wins {profit}.')
+        logger.info(f'{winner.name} wins {profit}.')
         winner.increase_stack(profit)
 
 
@@ -85,4 +79,6 @@ def showdown(table: Table):
                 logger.info(f'{winner.name} wins side pot {i}: {side_pot}')
             winner.increase_stack(side_pot)
         else:
-            break_tie(winners, side_pot, i)
+            pot_name = 'main pot' if i == 0 else f'side pot {i}'
+            logger.info(f'it is a tie for {pot_name}! winners: {", ".join([w.name for w in winners])}.')
+            break_tie(winners, side_pot)
