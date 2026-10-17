@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from ._hand_cycle import HandCycle
 
 
-def run_hand_cycle_listener(hand_cycle: "HandCycle"):
+def run_listener(hand_cycle: "HandCycle"):
 
     "Starts the hand cycle generator that rotates the player turns."
 

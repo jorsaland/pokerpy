@@ -94,7 +94,7 @@ class BaseForcedBetsTestCase(TestCase):
 class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when the first requested action is fold."
+    "Runs unit tests on run_listener function when the first requested action is fold."
 
 
     def test_folds(self):
@@ -475,7 +475,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
 class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when the first requested action is check."
+    "Runs unit tests on run_listener function when the first requested action is check."
 
 
     def test_check_to_folds(self):
@@ -865,7 +865,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
 class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when the first requested action is bet."
+    "Runs unit tests on run_listener function when the first requested action is bet."
 
 
     def test_bet_to_folds(self):
@@ -1255,7 +1255,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when there are forced bets and the first requested action is fold."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is fold."
 
 
     def test_with_blinds_folds(self):
@@ -1636,7 +1636,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when there are forced bets and the first requested action is fold."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is fold."
 
 
     def test_with_blinds_check_or_call_to_folds(self):
@@ -2026,7 +2026,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForcedBetsTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function when there are forced bets and the first requested action is bet."
+    "Runs unit tests on run_listener function when there are forced bets and the first requested action is bet."
 
 
     def test_with_blinds_bet_or_raise_to_folds(self):
@@ -2416,7 +2416,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
 class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function chaining actions to make all players go all-in."
+    "Runs unit tests on run_listener function chaining actions to make all players go all-in."
 
 
     def test_all_in_chain_starting_with_full_stacks(self):
@@ -2626,7 +2626,7 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
 class TestBettingRoundRunListenerFunctionHavingSBAllIn(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function, having the small blind is all-in and big blind cannot play because everyone else is folded or all-in for equal or less than a big blind."
+    "Runs unit tests on run_listener function, having the small blind is all-in and big blind cannot play because everyone else is folded or all-in for equal or less than a big blind."
 
 
     def test_sb_all_in_when_deepest_pot_has_no_folded_player(self):
@@ -2891,7 +2891,7 @@ class TestBettingRoundRunListenerFunctionHavingSBAllIn(BaseTestCase):
 class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
 
 
-    "Runs unit tests on run_betting_round_listener function, having the big blind is all-in and the small blind cannot play because everyone else is folded or all-in for equal or less than a small blind."
+    "Runs unit tests on run_listener function, having the big blind is all-in and the small blind cannot play because everyone else is folded or all-in for equal or less than a small blind."
 
 
     def test_bb_all_in_when_deepest_pot_has_no_folded_player(self):

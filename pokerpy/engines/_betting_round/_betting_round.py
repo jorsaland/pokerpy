@@ -37,7 +37,7 @@ from pokerpy.validations import (
 
 
 from ._get_valid_actions import get_valid_actions
-from ._run_listener import run_betting_round_listener
+from ._run_listener import run_listener
 
 
 class BettingRound:
@@ -127,7 +127,7 @@ class BettingRound:
 
         if self._listener is None:
             self.reset_betting_round_states(self.table)
-            self._listener = run_betting_round_listener(self)
+            self._listener = run_listener(self)
 
         return self._listener
 
