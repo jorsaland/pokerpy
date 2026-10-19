@@ -24,7 +24,9 @@ def place_big_blind(amount: int, player: Player):
 
     "Runs the big blind placing event."
 
-    assert player.stack
+    if not player.stack:
+        logger.info(f"{player.name} IS ALL-IN, CANNOT PLACE BIG BLIND")
+        return
 
     amount = (
         amount

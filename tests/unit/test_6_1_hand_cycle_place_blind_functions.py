@@ -103,9 +103,11 @@ class TestHandCyclePlaceBigBlindFunction(TestCase):
             self.assertEqual(player.stack, 0)
             self.assertEqual(player.bet_level, 0)
 
-        with self.subTest('failed big blind placing'):
-            with self.assertRaises(AssertionError):
-                engines.place_big_blind(100, player)
+        engines.place_big_blind(100, player)
+
+        with self.subTest('after big blind placing'):
+            self.assertEqual(player.stack, 0)
+            self.assertEqual(player.bet_level, 0)
 
 
     def test_stack_under_big_blind(self):
