@@ -66,6 +66,9 @@ def pre_flop(hand_cycle: "HandCycle"):
 
         if table.big_blind:
 
+            table.set_bet_level(table.big_blind)
+            table.set_full_bet_level(table.big_blind)
+
             assert table.big_blind_player
             extra_blind_eligible_players = [
                 player for player in table.iter_players(starting_player)
@@ -86,9 +89,6 @@ def pre_flop(hand_cycle: "HandCycle"):
             yield from place_extra_big_blinds(table.big_blind, extra_blind_eligible_players)
             hand_cycle.unmark_in_extra_big_blinds_phase()
  
-            table.set_bet_level(table.big_blind)
-            table.set_full_bet_level(table.big_blind)
-
         logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())
 

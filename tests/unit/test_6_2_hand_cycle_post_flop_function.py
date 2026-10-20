@@ -42,6 +42,68 @@ class TestPostFlopFunction(TestCase):
         self.hand_cycle.deal_cards_to_players(2)
 
 
+    def run_test(
+        self,
+        *,
+        round_name: str,
+        expected_starting_player: structures.Player,
+        players_and_actions: tuple[
+            tuple[structures.Player, structures.Action],
+            ...
+        ],
+    ):
+
+        "Runs the shared validations for the tests without blinds."
+
+        if round_name == constants.FLOP:
+            cards_count_before = 0
+            cards_count_after = 3
+        elif round_name == constants.TURN:
+            cards_count_before = 3
+            cards_count_after = 4
+        elif round_name == constants.RIVER:
+            cards_count_before = 4
+            cards_count_after = 5
+        else:
+            raise AssertionError
+
+        generator = engines.post_flop(self.hand_cycle, round_name)
+
+        with self.subTest('before generator start-up'):
+            self.assertIsNone(self.hand_cycle.betting_round)
+            self.assertEqual(self.table.starting_player, self.setup_players[0])
+            self.assertEqual(len(self.table.common_cards), cards_count_before)
+
+        with self.subTest('after listener start-up'):
+            next_player = next(generator)
+            self.assertEqual(self.hand_cycle.betting_round.name, round_name)
+            self.assertEqual(self.table.starting_player, expected_starting_player)
+            self.assertEqual(len(self.table.common_cards), cards_count_after)
+
+        for i, (player, action) in enumerate(players_and_actions, 1):
+            with self.subTest('action phase', player=player.name):
+                self.assertEqual(self.hand_cycle.betting_round.name, round_name)
+                self.assertEqual(self.table.starting_player, expected_starting_player)
+                self.assertEqual(len(self.table.common_cards), cards_count_after)
+                self.assertEqual(player, next_player)
+                player.request_action(action)
+                if i < len(players_and_actions):
+                    next_player = next(generator)
+
+        with self.subTest('before listener termination'):
+            self.assertEqual(self.hand_cycle.betting_round.name, round_name)
+            self.assertEqual(self.table.starting_player, expected_starting_player)
+            self.assertEqual(len(self.table.common_cards), cards_count_after)
+            self.assertEqual(players_and_actions[-1][0], next_player)
+
+        with self.subTest('after listener termination'):
+            with self.assertRaises(StopIteration):
+                next(generator)
+            self.assertIsNone(self.hand_cycle.betting_round)
+            self.assertEqual(self.table.starting_player, expected_starting_player)
+            self.assertEqual(len(self.table.common_cards), cards_count_after)
+
+
     def test_flop(self):
 
         "Tests flop."
@@ -57,40 +119,11 @@ class TestPostFlopFunction(TestCase):
             (self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         ]
 
-        generator = engines.post_flop(self.hand_cycle, constants.FLOP)
-
-        with self.subTest('before pre-flop'):
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertEqual(len(self.table.common_cards), 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        for player, action in players_and_actions:
-            next_player = next(generator)
-            with self.subTest('action phase', player=player.name):
-                self.assertIsNotNone(self.hand_cycle.betting_round)
-                self.assertEqual(self.hand_cycle.betting_round.name, constants.FLOP)
-                self.assertFalse(self.hand_cycle.betting_round.is_completed)
-                self.assertEqual(len(self.table.common_cards), 3)
-                self.assertEqual(next_player, player)
-                self.assertEqual(len(player.cards), 2)
-            player.request_action(action)
-
-        with self.subTest('before closing', player=player.name):
-            self.assertIsNotNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (0,))
-
-        assert (betting_round := self.hand_cycle.betting_round)
-        with self.subTest('after closing'):
-            with self.assertRaises(StopIteration):
-                next(generator)
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertTrue(betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (600,))
-            for player in self.setup_players:
-                self.assertEqual(player.stack, 900)
-                self.assertEqual(player.bet_level, 0)
+        self.run_test(
+            round_name = constants.FLOP,
+            players_and_actions = players_and_actions,
+            expected_starting_player = self.Boa,
+        )
 
 
     def test_turn(self):
@@ -109,40 +142,11 @@ class TestPostFlopFunction(TestCase):
             (self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         ]
 
-        generator = engines.post_flop(self.hand_cycle, constants.TURN)
-
-        with self.subTest('before pre-flop'):
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertEqual(len(self.table.common_cards), 3)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        for player, action in players_and_actions:
-            next_player = next(generator)
-            with self.subTest('action phase', player=player.name):
-                self.assertIsNotNone(self.hand_cycle.betting_round)
-                self.assertEqual(self.hand_cycle.betting_round.name, constants.TURN)
-                self.assertFalse(self.hand_cycle.betting_round.is_completed)
-                self.assertEqual(len(self.table.common_cards), 4)
-                self.assertEqual(next_player, player)
-                self.assertEqual(len(player.cards), 2)
-            player.request_action(action)
-
-        with self.subTest('before closing', player=player.name):
-            self.assertIsNotNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (0,))
-
-        assert (betting_round := self.hand_cycle.betting_round)
-        with self.subTest('after closing'):
-            with self.assertRaises(StopIteration):
-                next(generator)
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertTrue(betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (600,))
-            for player in self.setup_players:
-                self.assertEqual(player.stack, 900)
-                self.assertEqual(player.bet_level, 0)
+        self.run_test(
+            round_name = constants.TURN,
+            players_and_actions = players_and_actions,
+            expected_starting_player = self.Boa,
+        )
 
 
     def test_river(self):
@@ -161,40 +165,11 @@ class TestPostFlopFunction(TestCase):
             (self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         ]
 
-        generator = engines.post_flop(self.hand_cycle, constants.RIVER)
-
-        with self.subTest('before pre-flop'):
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertEqual(len(self.table.common_cards), 4)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        for player, action in players_and_actions:
-            next_player = next(generator)
-            with self.subTest('action phase', player=player.name):
-                self.assertIsNotNone(self.hand_cycle.betting_round)
-                self.assertEqual(self.hand_cycle.betting_round.name, constants.RIVER)
-                self.assertFalse(self.hand_cycle.betting_round.is_completed)
-                self.assertEqual(len(self.table.common_cards), 5)
-                self.assertEqual(next_player, player)
-                self.assertEqual(len(player.cards), 2)
-            player.request_action(action)
-
-        with self.subTest('before closing', player=player.name):
-            self.assertIsNotNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (0,))
-
-        assert (betting_round := self.hand_cycle.betting_round)
-        with self.subTest('after closing'):
-            with self.assertRaises(StopIteration):
-                next(generator)
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertTrue(betting_round.is_completed)
-            self.assertTupleEqual(self.table.split_central_pot, (600,))
-            for player in self.setup_players:
-                self.assertEqual(player.stack, 900)
-                self.assertEqual(player.bet_level, 0)
+        self.run_test(
+            round_name = constants.RIVER,
+            players_and_actions = players_and_actions,
+            expected_starting_player = self.Boa,
+        )
 
 
 if __name__ == '__main__':

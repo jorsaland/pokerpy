@@ -74,6 +74,8 @@ class BaseTestCase(TestCase):
         ]
     ):
 
+        "Runs the shared validations for the tests."
+
         generator = engines.run_hand_cycle_listener(self.hand_cycle)
 
         with self.subTest('listener start-up'):
