@@ -73,7 +73,7 @@ class TestShowdownFunctionWithoutSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Andy.stack, 1000)
             self.assertEqual(self.Boa.stack, 0)
@@ -126,7 +126,7 @@ class TestShowdownFunctionWithoutSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Andy.stack, 1000)
             self.assertEqual(self.Boa.stack, 0)
@@ -169,7 +169,7 @@ class TestShowdownFunctionWithoutSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 200)
             self.assertEqual(self.Coral.stack, 200)
@@ -212,7 +212,7 @@ class TestShowdownFunctionWithoutSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 201)
             self.assertEqual(self.Coral.stack, 200)
@@ -255,7 +255,7 @@ class TestShowdownFunctionWithoutSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 201)
             self.assertEqual(self.Coral.stack, 201)
@@ -323,7 +323,7 @@ class TestShowdownFunctionWithSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Andy.stack, 1100)
             self.assertEqual(self.Boa.stack, 0)
@@ -381,7 +381,7 @@ class TestShowdownFunctionWithSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 200)
             self.assertEqual(self.Coral.stack, 200)
@@ -439,7 +439,7 @@ class TestShowdownFunctionWithSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 201)
             self.assertEqual(self.Coral.stack, 200)
@@ -497,7 +497,7 @@ class TestShowdownFunctionWithSidePots(BaseTestCase):
 
         engines.showdown(self.table)
 
-        with self.subTest('before showdown'):
+        with self.subTest('after showdown'):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
             self.assertEqual(self.Boa.stack, 201)
             self.assertEqual(self.Coral.stack, 201)

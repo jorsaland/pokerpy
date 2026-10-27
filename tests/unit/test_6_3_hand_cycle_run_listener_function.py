@@ -29,8 +29,8 @@ class BaseTestCase(TestCase):
             structures.Player('Epa', 1000),
             structures.Player('Fomi', 1000),
             structures.Player('Goma', 1000),
-            structures.Player('Hilo', 1000),
-            structures.Player('Iris', 1000),
+            structures.Player('Hilo', 0),
+            structures.Player('Iris', 0),
         ]
 
         self.table = structures.Table(self.setup_players, min_bet=100)
@@ -60,10 +60,10 @@ class BaseTestCase(TestCase):
         self.table.set_small_blind_player(self.Boa)
         self.table.set_big_blind_player(self.Coral)
 
+        self.Fomi.mark_is_extra_blind()
         self.Goma.mark_is_extra_blind()
-        self.Hilo.mark_is_extra_blind()
 
-        self.extra_blind_candidates = (self.Dino, self.Epa, self.Fomi, self.Goma, self.Hilo, self.Iris, self.Andy)
+        self.extra_blind_candidates = (self.Dino, self.Epa, self.Fomi, self.Goma, self.Andy)
 
 
     def run_test(
@@ -74,12 +74,20 @@ class BaseTestCase(TestCase):
         ]
     ):
 
+        "Runs the shared validations for the tests."
+
         generator = engines.run_hand_cycle_listener(self.hand_cycle)
 
-        with self.subTest('listener start-up'):
+        with self.subTest('before generator start-up'):
             self.assertIsNone(self.hand_cycle.betting_round)
+            for player in (self.Hilo, self.Iris):
+                self.assertFalse(player.is_folded)
+
+        with self.subTest('after generator start-up'):
             next_player = next(generator)
             self.assertIsNotNone(self.hand_cycle.betting_round)
+            for player in (self.Hilo, self.Iris):
+                self.assertTrue(player.is_folded)
 
         for i, player in enumerate(self.extra_blind_candidates, 1):
             with self.subTest('extra blinds', player=player.name):
@@ -233,10 +241,8 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_BET, 400)),
@@ -244,7 +250,6 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
             (constants.PREFLOP, 2, self.Epa,   structures.Action(constants.ACTION_RAISE, 890)), # all-in
             (constants.PREFLOP, 2, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.PREFLOP, 2, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Andy,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Boa,   structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Coral, structures.Action(constants.ACTION_FOLD)),
@@ -272,10 +277,8 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_BET, 390)), # all-in
@@ -283,16 +286,12 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
             (constants.PREFLOP, 2, self.Epa,   structures.Action(constants.ACTION_RAISE, 800)),
             (constants.PREFLOP, 2, self.Fomi,  structures.Action(constants.ACTION_CALL, 800)),
             (constants.PREFLOP, 2, self.Goma,  structures.Action(constants.ACTION_CALL, 800)),
-            (constants.PREFLOP, 2, self.Hilo,  structures.Action(constants.ACTION_CALL, 800)),
-            (constants.PREFLOP, 2, self.Iris,  structures.Action(constants.ACTION_CALL, 800)),
             (constants.PREFLOP, 2, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.PREFLOP, 2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.PREFLOP, 3, self.Dino,  structures.Action(constants.ACTION_RAISE, 500)), # all-in
             (constants.PREFLOP, 3, self.Epa,   structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.PREFLOP, 3, self.Fomi,   structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.PREFLOP, 3, self.Goma,   structures.Action(constants.ACTION_CALL, 90)), # all-in
-            (constants.PREFLOP, 3, self.Hilo,   structures.Action(constants.ACTION_CALL, 90)), # all-in
-            (constants.PREFLOP, 3, self.Iris,   structures.Action(constants.ACTION_CALL, 90)), # all-in
 
         )
 
@@ -316,10 +315,8 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_BET, 390)), # all-in
@@ -327,7 +324,6 @@ class TestHandCycleRunListenerFunctionUpToPreFlop(BaseTestCase):
             (constants.PREFLOP, 2, self.Epa,   structures.Action(constants.ACTION_RAISE, 800)),
             (constants.PREFLOP, 2, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.PREFLOP, 2, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 2, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.PREFLOP, 2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.PREFLOP, 3, self.Dino,  structures.Action(constants.ACTION_RAISE, 500)), # all-in
@@ -352,10 +348,8 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -365,7 +359,6 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    2, self.Dino,  structures.Action(constants.ACTION_FOLD)),
 
@@ -391,10 +384,8 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -405,8 +396,6 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.FLOP,    1, self.Iris,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.FLOP,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -414,8 +403,6 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
             (constants.FLOP,    2, self.Epa,   structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.FLOP,    2, self.Fomi,  structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.FLOP,    2, self.Goma,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.FLOP,    2, self.Hilo,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.FLOP,    2, self.Iris,  structures.Action(constants.ACTION_CALL, 290)), # all-in
 
         )
 
@@ -439,10 +426,8 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -453,7 +438,6 @@ class TestHandCycleRunListenerFunctionUpToFlop(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.FLOP,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -479,10 +463,8 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -492,7 +474,6 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_CALL, 300)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
 
             (constants.TURN,    1, self.Coral,   structures.Action(constants.ACTION_CHECK)),
@@ -522,10 +503,8 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -536,8 +515,6 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.FLOP,    1, self.Iris,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.FLOP,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -547,8 +524,6 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.TURN,    1, self.Goma,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.TURN,    1, self.Hilo,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.TURN,    1, self.Iris,  structures.Action(constants.ACTION_CALL, 290)), # all-in
 
         )
 
@@ -572,10 +547,8 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -584,9 +557,8 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
             (constants.FLOP,    1, self.Coral, structures.Action(constants.ACTION_BET, 100)),
             (constants.FLOP,    1, self.Dino,  structures.Action(constants.ACTION_RAISE, 300)),
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
-            (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 600)),
+            (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.FLOP,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.FLOP,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -594,7 +566,6 @@ class TestHandCycleRunListenerFunctionUpToTurn(BaseTestCase):
 
             (constants.TURN,    1, self.Dino,  structures.Action(constants.ACTION_BET, 290)), # all-in
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_FOLD)),
-            (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
 
         )
 
@@ -615,10 +586,8 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -629,8 +598,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Iris,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CHECK)),
 
             (constants.TURN,    1, self.Boa,   structures.Action(constants.ACTION_CHECK)),
@@ -639,8 +606,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_CALL, 300)),
             (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 300)),
             (constants.TURN,    1, self.Goma,  structures.Action(constants.ACTION_CALL, 300)),
-            (constants.TURN,    1, self.Hilo,  structures.Action(constants.ACTION_CALL, 300)),
-            (constants.TURN,    1, self.Iris,  structures.Action(constants.ACTION_CALL, 300)),
             (constants.TURN,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 300)),
             (constants.TURN,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 300)),
             (constants.TURN,    2, self.Coral, structures.Action(constants.ACTION_CALL, 200)),
@@ -651,8 +616,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.RIVER,   1, self.Epa,   structures.Action(constants.ACTION_CALL, 400)),
             (constants.RIVER,   1, self.Fomi,  structures.Action(constants.ACTION_CALL, 400)),
             (constants.RIVER,   1, self.Goma,  structures.Action(constants.ACTION_CALL, 400)),
-            (constants.RIVER,   1, self.Hilo,  structures.Action(constants.ACTION_CALL, 400)),
-            (constants.RIVER,   1, self.Iris,  structures.Action(constants.ACTION_CALL, 400)),
             (constants.RIVER,   1, self.Andy,  structures.Action(constants.ACTION_CALL, 400)),
             (constants.RIVER,   2, self.Boa,   structures.Action(constants.ACTION_CALL, 400)),
             (constants.RIVER,   2, self.Coral, structures.Action(constants.ACTION_CALL, 400)),
@@ -670,10 +633,8 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -683,19 +644,16 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
 
             (constants.TURN,    1, self.Coral, structures.Action(constants.ACTION_BET, 100)),
             (constants.TURN,    1, self.Dino,  structures.Action(constants.ACTION_RAISE, 300)),
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_CALL, 300)),
-            (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 300)),
+            (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.TURN,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.TURN,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.TURN,    2, self.Coral, structures.Action(constants.ACTION_FOLD)),
 
             (constants.RIVER,   1, self.Dino,  structures.Action(constants.ACTION_BET, 400)),
             (constants.RIVER,   1, self.Epa,   structures.Action(constants.ACTION_FOLD)),
-            (constants.RIVER,   1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
 
         )
 
@@ -719,10 +677,8 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -733,8 +689,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Iris,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CHECK)),
 
             (constants.TURN,    1, self.Boa,   structures.Action(constants.ACTION_CHECK)),
@@ -743,8 +697,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
             (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.TURN,    1, self.Goma,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.TURN,    1, self.Hilo,  structures.Action(constants.ACTION_CALL, 600)),
-            (constants.TURN,    1, self.Iris,  structures.Action(constants.ACTION_CALL, 600)),
             (constants.TURN,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.TURN,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.TURN,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -754,8 +706,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.RIVER,   1, self.Epa,   structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.RIVER,   1, self.Fomi,  structures.Action(constants.ACTION_CALL, 290)), # all-in
             (constants.RIVER,   1, self.Goma,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.RIVER,   1, self.Hilo,  structures.Action(constants.ACTION_CALL, 290)), # all-in
-            (constants.RIVER,   1, self.Iris,  structures.Action(constants.ACTION_CALL, 290)), # all-in
 
         )
 
@@ -779,10 +729,8 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
 
             (constants.PREFLOP, 1, self.Dino,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Epa,   structures.Action(constants.ACTION_CALL, 100)),
-            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CALL, 100)),
+            (constants.PREFLOP, 1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.PREFLOP, 1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
-            (constants.PREFLOP, 1, self.Iris,  structures.Action(constants.ACTION_FOLD)),
             (constants.PREFLOP, 1, self.Andy,  structures.Action(constants.ACTION_CALL, 100)),
             (constants.PREFLOP, 1, self.Boa,   structures.Action(constants.ACTION_CALL, 50)),
             (constants.PREFLOP, 1, self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -793,16 +741,14 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
             (constants.FLOP,    1, self.Epa,   structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Goma,  structures.Action(constants.ACTION_CHECK)),
-            (constants.FLOP,    1, self.Hilo,  structures.Action(constants.ACTION_CHECK)),
             (constants.FLOP,    1, self.Andy,  structures.Action(constants.ACTION_CHECK)),
 
             (constants.TURN,    1, self.Boa,   structures.Action(constants.ACTION_CHECK)),
             (constants.TURN,    1, self.Coral, structures.Action(constants.ACTION_BET, 100)),
             (constants.TURN,    1, self.Dino,  structures.Action(constants.ACTION_RAISE, 300)),
             (constants.TURN,    1, self.Epa,   structures.Action(constants.ACTION_RAISE, 600)),
-            (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_CALL, 600)),
+            (constants.TURN,    1, self.Fomi,  structures.Action(constants.ACTION_FOLD)),
             (constants.TURN,    1, self.Goma,  structures.Action(constants.ACTION_FOLD)),
-            (constants.TURN,    1, self.Hilo,  structures.Action(constants.ACTION_FOLD)),
             (constants.TURN,    1, self.Andy,  structures.Action(constants.ACTION_CALL, 90)), # all-in
             (constants.TURN,    2, self.Boa,   structures.Action(constants.ACTION_CALL, 390)), # all-in
             (constants.TURN,    2, self.Coral, structures.Action(constants.ACTION_CALL, 290)), # all-in
@@ -810,7 +756,6 @@ class TestHandCycleRunListenerFunctionUpToRiver(BaseTestCase):
 
             (constants.RIVER,   1, self.Dino,  structures.Action(constants.ACTION_CHECK)),
             (constants.RIVER,   1, self.Epa,   structures.Action(constants.ACTION_CHECK)),
-            (constants.RIVER,   1, self.Fomi,  structures.Action(constants.ACTION_CHECK)),
 
         )
 

@@ -41,7 +41,35 @@ class BaseTestCase(TestCase):
         )
 
 
-class BaseForcedBetsTestCase(TestCase):
+    def run_test(
+            self,
+            laps_and_players_and_actions: tuple[
+                tuple[int, structures.Player, structures.Action],
+                ...
+            ]
+        ):
+
+        "Runs the shared validations for the tests."
+
+        generator = engines.run_betting_round_listener(self.betting_round)
+
+        with self.subTest('before actions'):
+            self.assertEqual(self.betting_round.lap_counts, 0)
+
+        for lap, player, action in laps_and_players_and_actions:
+            player.request_action(action)
+            with self.subTest(player=player, action=action):
+                self.assertEqual(next(generator), player)
+                self.assertEqual(self.betting_round.lap_counts, lap)
+
+        with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+            self.assertEqual(self.betting_round.lap_counts, lap)
+
+
+class BaseForcedBetsTestCase(BaseTestCase):
 
 
     "Base class for test cases that require a shared setup with forced bets."
@@ -109,22 +137,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Epa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_fold_to_checks(self):
@@ -140,22 +153,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CHECK)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_fold_to_bet_to_folds(self):
@@ -171,22 +169,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_fold_to_bet_to_calls(self):
@@ -202,22 +185,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_check_to_folds(self):
@@ -233,22 +201,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_checks(self):
@@ -264,22 +217,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CHECK)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_check_to_bet_to_folds(self):
@@ -296,22 +234,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_check_to_bet_to_calls(self):
@@ -328,22 +251,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_bet_to_folds(self):
@@ -359,22 +267,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_bet_to_calls(self):
@@ -390,22 +283,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_bet_to_raise_to_folds(self):
@@ -422,22 +300,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_fold_to_bet_to_raise_to_calls(self):
@@ -454,22 +317,7 @@ class TestBettingRoundRunListenerFunctionStartingWithFold(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
@@ -491,22 +339,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_fold_to_checks(self):
@@ -522,22 +355,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CHECK)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_fold_to_bet_to_folds(self):
@@ -554,22 +372,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_fold_to_bet_to_calls(self):
@@ -586,22 +389,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_check_to_folds(self):
@@ -617,22 +405,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_checks(self):
@@ -648,22 +421,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CHECK)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_check_to_bet_to_folds(self):
@@ -681,22 +439,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_check_to_bet_to_calls(self):
@@ -714,22 +457,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_bet_to_folds(self):
@@ -746,22 +474,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_bet_to_calls(self):
@@ -778,22 +491,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_bet_to_raise_to_folds(self):
@@ -811,22 +509,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_check_to_bet_to_raise_to_calls(self):
@@ -844,22 +527,7 @@ class TestBettingRoundRunListenerFunctionStartingWithCheck(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
@@ -881,22 +549,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_fold_to_calls(self):
@@ -912,22 +565,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_fold_to_raise_to_folds(self):
@@ -944,22 +582,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_fold_to_raise_to_calls(self):
@@ -976,22 +599,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_call_to_folds(self):
@@ -1007,22 +615,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_calls(self):
@@ -1038,22 +631,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (1, self.Fomi, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_call_to_raise_to_folds(self):
@@ -1071,22 +649,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_call_to_raise_to_calls(self):
@@ -1104,22 +667,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_raise_to_folds(self):
@@ -1136,22 +684,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_raise_to_calls(self):
@@ -1168,22 +701,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_raise_to_raise_to_folds(self):
@@ -1201,22 +719,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_bet_to_raise_to_raise_to_calls(self):
@@ -1234,22 +737,7 @@ class TestBettingRoundRunListenerFunctionStartingWithBet(BaseTestCase):
             (2, self.Boa, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForcedBetsTestCase):
@@ -1270,22 +758,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Andy, structures.Action(constants.ACTION_FOLD)), # SB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_fold_to_checks_or_calls(self):
@@ -1301,22 +774,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_CHECK)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_fold_to_bet_to_folds(self):
@@ -1332,22 +790,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_fold_to_bet_to_calls(self):
@@ -1363,22 +806,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_check_or_call_to_folds(self):
@@ -1394,22 +822,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_checks_or_calls(self):
@@ -1425,22 +838,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_CHECK)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_check_or_call_to_bet_or_raise_to_folds(self):
@@ -1457,22 +855,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_check_or_call_to_bet_or_raise_to_calls(self):
@@ -1489,22 +872,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_bet_or_raise_to_folds(self):
@@ -1520,22 +888,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_bet_or_raise_to_calls(self):
@@ -1551,22 +904,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_bet_or_raise_to_raise_to_folds(self):
@@ -1583,22 +921,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_fold_to_bet_or_raise_to_raise_to_calls(self):
@@ -1615,22 +938,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithFold(BaseForc
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(BaseForcedBetsTestCase):
@@ -1652,22 +960,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_fold_to_checks_or_calls(self):
@@ -1683,22 +976,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (1, self.Boa, structures.Action(constants.ACTION_CHECK)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_fold_to_bet_or_raise_to_folds(self):
@@ -1715,22 +993,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Coral, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_fold_to_bet_or_raise_to_calls(self):
@@ -1747,22 +1010,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Coral, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_check_or_call_to_folds(self):
@@ -1778,22 +1026,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_checks_or_calls(self):
@@ -1809,22 +1042,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (1, self.Boa, structures.Action(constants.ACTION_CHECK)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_check_or_call_to_bet_or_raise_to_folds(self):
@@ -1842,22 +1060,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_or_call_to_check_or_call_to_bet_or_raise_to_calls(self):
@@ -1875,22 +1078,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_to_bet_or_raise_to_folds(self):
@@ -1907,22 +1095,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Coral, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_to_bet_or_raise_to_calls(self):
@@ -1939,22 +1112,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Coral, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_to_bet_or_raise_to_raise_to_folds(self):
@@ -1972,22 +1130,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_check_to_bet_or_raise_to_raise_to_calls(self):
@@ -2005,22 +1148,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithCheckOrCall(B
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForcedBetsTestCase):
@@ -2042,22 +1170,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_fold_to_calls(self):
@@ -2073,22 +1186,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_fold_to_raise_to_folds(self):
@@ -2105,22 +1203,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Coral, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_fold_to_raise_to_calls(self):
@@ -2137,22 +1220,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Coral, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_call_to_folds(self):
@@ -2168,22 +1236,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (1, self.Boa, structures.Action(constants.ACTION_FOLD)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_calls(self):
@@ -2199,22 +1252,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (1, self.Boa, structures.Action(constants.ACTION_CALL, 100)), # BB
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_call_to_raise_to_folds(self):
@@ -2232,22 +1270,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_call_to_raise_to_calls(self):
@@ -2265,22 +1288,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_raise_to_folds(self):
@@ -2297,22 +1305,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Coral, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_raise_to_calls(self):
@@ -2329,22 +1322,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Coral, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_raise_to_raise_to_folds(self):
@@ -2362,22 +1340,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Dino, structures.Action(constants.ACTION_FOLD)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_with_blinds_bet_or_raise_to_raise_to_raise_to_calls(self):
@@ -2395,22 +1358,7 @@ class TestBettingRoundRunListenerFunctionWithForcedBetsStartingWithBet(BaseForce
             (2, self.Dino, structures.Action(constants.ACTION_CALL, 100)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
@@ -2452,22 +1400,7 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
             (5, self.Boa, structures.Action(constants.ACTION_CALL, 400)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_all_in_chain_starting_with_full_stacks_and_forced_bets(self):
@@ -2500,22 +1433,7 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
             (4, self.Epa, structures.Action(constants.ACTION_CALL, 400)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_all_in_chain_starting_with_under_stacks(self):
@@ -2553,22 +1471,7 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
             (3, self.Fomi, structures.Action(constants.ACTION_CALL, 400)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
     def test_all_in_chain_starting_with_under_stacks_and_forced_bets(self):
@@ -2605,22 +1508,7 @@ class TestBettingRoundRunListenerFunctionAllInChain(BaseTestCase):
             (3, self.Fomi, structures.Action(constants.ACTION_CALL, 400)),
         )
 
-        generator = engines.run_betting_round_listener(self.betting_round)
-
-        with self.subTest('before actions'):
-            self.assertEqual(self.betting_round.lap_counts, 0)
-
-        for lap, player, action in laps_and_players_and_actions:
-            player.request_action(action)
-            with self.subTest(player=player, action=action):
-                self.assertEqual(next(generator), player)
-                self.assertEqual(self.betting_round.lap_counts, lap)
-
-        with self.subTest('after actions'):
-            with self.assertRaises(StopIteration) as context:
-                next(generator)
-            self.assertIsNone(context.exception.value)
-            self.assertEqual(self.betting_round.lap_counts, lap)
+        self.run_test(laps_and_players_and_actions)
 
 
 class TestBettingRoundRunListenerFunctionHavingSBAllIn(BaseTestCase):

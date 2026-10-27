@@ -59,7 +59,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after valid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state', action=action):
+        with self.subTest('generator termination', action=action):
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertEqual(context.exception.value, action)
@@ -90,7 +90,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
                 self.assertEqual(next(generator), self.Andy)
                 self.assertIsNone(self.Andy.requested_action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             self.assertEqual(next(generator), self.Andy)
             self.assertIsNone(self.Andy.requested_action)
 
@@ -125,7 +125,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after valid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertEqual(context.exception.value, action)
@@ -160,7 +160,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after invalid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             self.assertEqual(next(generator), self.Andy)
             self.assertEqual(self.Andy.requested_action, action)
 
@@ -193,7 +193,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after invalid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             with self.assertRaises(RuntimeError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
@@ -235,7 +235,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after valid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             self.assertEqual(next(generator), self.Andy)
             self.assertEqual(self.Andy.requested_action, action)
 
@@ -273,7 +273,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         with self.subTest('after valid request'):
             self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             with self.assertRaises(RuntimeError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
@@ -319,7 +319,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
                 self.Andy.request_action(action)
                 self.assertEqual(self.Andy.requested_action, action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             self.assertEqual(next(generator), self.Andy)
             self.assertEqual(self.Andy.requested_action, action)
 
@@ -369,7 +369,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             self.Andy.request_action(valid_action)
             self.assertEqual(self.Andy.requested_action, valid_action)
 
-        with self.subTest('later state'):
+        with self.subTest('generator termination'):
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertEqual(context.exception.value, valid_action)
