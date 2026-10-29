@@ -293,7 +293,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertEqual(next(betting_round.listen()), self.Andy)
             self.Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
             with self.assertRaises(RuntimeError) as context:
-                self.assertEqual(next(betting_round.listen()), self.Andy)
+                next(betting_round.listen())
             self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
             with self.assertRaises(StopIteration) as context:
                 next(betting_round.listen())
@@ -334,7 +334,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertEqual(next(betting_round.listen()), self.Andy)
             self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
             with self.assertRaises(RuntimeError) as context:
-                self.assertEqual(next(betting_round.listen()), self.Andy)
+                next(betting_round.listen())
             self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
             with self.assertRaises(StopIteration) as context:
                 next(betting_round.listen())
@@ -414,6 +414,7 @@ class TestBettingRoundFlow(BaseTestCase):
 
         with self.subTest('close before time'):
             with self.assertRaises(RuntimeError) as context:
+                next(betting_round.listen())
                 betting_round.close()
             self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
             self.assertFalse(betting_round.is_completed)
