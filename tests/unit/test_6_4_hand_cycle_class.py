@@ -35,6 +35,27 @@ class BaseTestCase(TestCase):
         self.table = structures.Table(self.setup_players)
 
 
+class BaseFlowTestCase(BaseTestCase):
+
+
+    "Base class for test cases that require a shared setup for flow unit tests."
+
+
+    def setUp(self):
+
+        super().setUp()
+
+        self.table.set_small_blind(50)
+        self.table.set_big_blind(100)
+
+        self.table.set_button_player(self.Andy)
+        self.table.set_small_blind_player(self.Boa)
+        self.table.set_big_blind_player(self.Coral)
+
+        self.extra_blind_players = (self.Dino, self.Epa, self.Fomi, self.Andy)
+        self.round_names = (constants.PREFLOP, *constants.after_preflop_round_names)
+
+
 class TestHandCycleInstantiation(BaseTestCase):
 
 
@@ -344,107 +365,13 @@ class TestHandCycleMethods(BaseTestCase):
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
 
 
-class TestHandCycleFlow(BaseTestCase):
+class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
 
 
-    "Runs unit tests on hand cycle flow."
+    "Runs unit tests on hand cycle flow without context manager."
 
 
-    def setUp(self):
-
-        super().setUp()
-        self.table.set_button_player(self.setup_players[-1])
-        self.round_names = (constants.PREFLOP, *constants.after_preflop_round_names)
-
-
-    def test_flow_behaviour_from_boolean_setup(self):
-
-        "Tests flow behaviour depending on boolean parameters."
-
-        open_fold_allowed = True
-        raise_invalid_actions = True
-        hand_cycle = engines.HandCycle(
-            'test',
-            self.table,
-            open_fold_allowed = open_fold_allowed,
-            raise_invalid_actions = raise_invalid_actions
-        )
-
-        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            # no action parsed
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
-            with self.assertRaises(RuntimeError) as context:
-                self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
-            with self.assertRaises(StopIteration) as context:
-                next(hand_cycle.listen())
-            self.assertIsNone(context.exception.value)
-
-        self.setUp()
-        open_fold_allowed = True
-        raise_invalid_actions = False
-        hand_cycle = engines.HandCycle(
-            'test',
-            self.table,
-            open_fold_allowed = open_fold_allowed,
-            raise_invalid_actions = raise_invalid_actions
-        )
-
-        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            # no action parsed
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_CALL, 100))
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
-            self.assertEqual(next(hand_cycle.listen()), self.Boa)
-
-        self.setUp()
-        open_fold_allowed = False
-        raise_invalid_actions = True
-        hand_cycle = engines.HandCycle(
-            'test',
-            self.table,
-            open_fold_allowed = open_fold_allowed,
-            raise_invalid_actions = raise_invalid_actions
-        )
-
-        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            # no action parsed
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
-            with self.assertRaises(RuntimeError) as context:
-                self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
-            with self.assertRaises(StopIteration) as context:
-                next(hand_cycle.listen())
-            self.assertIsNone(context.exception.value)
-
-
-        self.setUp()
-        open_fold_allowed = False
-        raise_invalid_actions = False
-        hand_cycle = engines.HandCycle(
-            'test',
-            self.table,
-            open_fold_allowed = open_fold_allowed,
-            raise_invalid_actions = raise_invalid_actions
-        )
-
-        with self.subTest(open_fold_allowed=open_fold_allowed, raise_invalid_actions=raise_invalid_actions):
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            # no action parsed
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_FOLD))
-            self.assertEqual(next(hand_cycle.listen()), self.Andy)
-            self.Andy.request_action(structures.Action(constants.ACTION_CHECK))
-            self.assertEqual(next(hand_cycle.listen()), self.Boa)
-
-
-    def test_flow_with_function_next_missing_close(self):
+    def test_no_context_manager_flow_with_function_next_missing_close(self):
 
         "Tests flow with function next, missing close method."
 
@@ -452,14 +379,37 @@ class TestHandCycleFlow(BaseTestCase):
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
-        for round_name in self.round_names:
-            for player in self.setup_players:
+        for player in self.extra_blind_players:
+            with self.subTest('extra blind phase (preflop)', player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+            if player == self.Boa:
+                action = structures.Action(constants.ACTION_CALL, 50)
+            elif player == self.Coral:
+                action = structures.Action(constants.ACTION_CHECK)
+            else:
+                action = structures.Action(constants.ACTION_CALL, 100)
+            with self.subTest(round=constants.PREFLOP, player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                player.request_action(action)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        for round_name in constants.after_preflop_round_names:
+            for player in [*self.setup_players[1:], *self.setup_players[:1]]:
                 with self.subTest(round=round_name, player=player.name):
                     self.assertEqual(next(hand_cycle.listen()), player)
                     player.request_action(structures.Action(constants.ACTION_CHECK))
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
 
         with self.subTest('after actions'):
@@ -467,10 +417,11 @@ class TestHandCycleFlow(BaseTestCase):
                 next(hand_cycle.listen())
             self.assertIsNone(context.exception.value)
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
 
-    def test_flow_with_function_next_calling_close_at_end(self):
+    def test_no_context_manager_flow_with_function_next_calling_close_at_end(self):
 
         "Tests flow with function next, using close method at the end."
 
@@ -478,23 +429,71 @@ class TestHandCycleFlow(BaseTestCase):
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
-        for round_name in self.round_names:
-            for player in self.setup_players:
+        for player in self.extra_blind_players:
+            with self.subTest('extra blind phase (preflop)', player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+            if player == self.Boa:
+                action = structures.Action(constants.ACTION_CALL, 50)
+            elif player == self.Coral:
+                action = structures.Action(constants.ACTION_CHECK)
+            else:
+                action = structures.Action(constants.ACTION_CALL, 100)
+            with self.subTest(round=constants.PREFLOP, player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                player.request_action(action)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        for round_name in constants.after_preflop_round_names:
+            for player in [*self.setup_players[1:], *self.setup_players[:1]]:
                 with self.subTest(round=round_name, player=player.name):
                     self.assertEqual(next(hand_cycle.listen()), player)
                     player.request_action(structures.Action(constants.ACTION_CHECK))
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
 
         hand_cycle.close()
+
         with self.subTest('after actions'):
+            with self.assertRaises(StopIteration) as context:
+                next(hand_cycle.listen())
+            self.assertIsNone(context.exception.value)
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
 
 
-    def test_flow_with_function_next_calling_close_before_end(self):
+    def test_no_context_manager_flow_with_function_next_calling_close_at_extra_blind_phase(self):
+
+        "Tests flow with function next, using close method at extra blind phase."
+
+        hand_cycle = engines.HandCycle('test', self.table)
+
+        with self.subTest('before actions'):
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('close at extra blind phase (preflop)'):
+            with self.assertRaises(RuntimeError) as context:
+                hand_cycle.close()
+            self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+
+    def test_no_context_manager_flow_with_function_next_calling_close_before_end(self):
 
         "Tests flow with function next, using close method before the end."
 
@@ -502,17 +501,40 @@ class TestHandCycleFlow(BaseTestCase):
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
-        with self.subTest('close before time'):
+        for player in self.extra_blind_players:
+            with self.subTest('extra blind phase (preflop)', player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+            if player == self.Boa:
+                action = structures.Action(constants.ACTION_CALL, 50)
+            elif player == self.Coral:
+                action = structures.Action(constants.ACTION_CHECK)
+            else:
+                action = structures.Action(constants.ACTION_CALL, 100)
+            with self.subTest(round=constants.PREFLOP, player=player.name):
+                self.assertEqual(next(hand_cycle.listen()), player)
+                player.request_action(action)
+                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('close at flop'):
             with self.assertRaises(RuntimeError) as context:
                 hand_cycle.close()
             self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
 
-    def test_flow_with_loop_missing_close(self):
+    def test_no_context_manager_flow_with_loop_missing_close(self):
 
         "Tests flow with for loop, missing close method."
 
@@ -520,22 +542,53 @@ class TestHandCycleFlow(BaseTestCase):
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
         for i, player in enumerate(hand_cycle.listen()):
-            round_name = self.round_names[i // len(self.setup_players)]
-            with self.subTest(round=round_name, player=player.name):
-                self.assertEqual(player, self.setup_players[i % len(self.setup_players)])
-                player.request_action(structures.Action(constants.ACTION_CHECK))
-                self.assertEqual(hand_cycle.betting_round.name, round_name)
-                self.assertFalse(hand_cycle.is_completed)
+
+            if i <= 3:
+                with self.subTest('extra blind phase (preflop)', player=player.name):
+                    self.assertEqual(player, self.extra_blind_players[i])
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            elif i <= 9:
+                if player == self.Boa:
+                    action = structures.Action(constants.ACTION_CALL, 50)
+                elif player == self.Coral:
+                    action = structures.Action(constants.ACTION_CHECK)
+                else:
+                    action = structures.Action(constants.ACTION_CALL, 100)
+                with self.subTest(round=constants.PREFLOP, player=player.name):
+                    self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                    player.request_action(action)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            elif i <= 27:
+                if i <= 15:
+                    round_name = constants.FLOP
+                elif i <= 21:
+                    round_name = constants.TURN
+                else:
+                    round_name = constants.RIVER
+                with self.subTest(round=round_name, player=player.name):
+                    self.assertEqual(player, [*self.setup_players[1:], *self.setup_players[:1]][(i-10) % 6])
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertEqual(hand_cycle.betting_round.name, round_name)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
 
         with self.subTest('after actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
 
-    def test_flow_with_loop_calling_close_at_end(self):
+    def test_no_context_manager_flow_with_loop_calling_close_at_end(self):
 
         "Tests flow with for loop, calling close method at the end."
 
@@ -543,105 +596,528 @@ class TestHandCycleFlow(BaseTestCase):
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
         for i, player in enumerate(hand_cycle.listen()):
-            round_name = self.round_names[i // len(self.setup_players)]
-            with self.subTest(round=round_name, player=player.name):
-                self.assertEqual(player, self.setup_players[i % len(self.setup_players)])
-                player.request_action(structures.Action(constants.ACTION_CHECK))
-                self.assertEqual(hand_cycle.betting_round.name, round_name)
-                self.assertFalse(hand_cycle.is_completed)
+
+            if i <= 3:
+                with self.subTest('extra blind phase (preflop)', player=player.name):
+                    self.assertEqual(player, self.extra_blind_players[i])
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            elif i <= 9:
+                if player == self.Boa:
+                    action = structures.Action(constants.ACTION_CALL, 50)
+                elif player == self.Coral:
+                    action = structures.Action(constants.ACTION_CHECK)
+                else:
+                    action = structures.Action(constants.ACTION_CALL, 100)
+                with self.subTest(round=constants.PREFLOP, player=player.name):
+                    self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                    player.request_action(action)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            elif i <= 27:
+                if i <= 15:
+                    round_name = constants.FLOP
+                elif i <= 21:
+                    round_name = constants.TURN
+                else:
+                    round_name = constants.RIVER
+                with self.subTest(round=round_name, player=player.name):
+                    self.assertEqual(player, [*self.setup_players[1:], *self.setup_players[:1]][(i-10) % 6])
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertEqual(hand_cycle.betting_round.name, round_name)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
 
         hand_cycle.close()
+
         with self.subTest('after actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
 
 
-    def test_flow_with_loop_calling_close_before_end(self):
+    def test_no_context_manager_flow_with_loop_calling_close_at_extra_blind_phase(self):
 
-        "Tests flow with for loop, calling close method at the end."
+        "Tests flow with for loop, using close method at extra blind phase."
 
         hand_cycle = engines.HandCycle('test', self.table)
 
         with self.subTest('before actions'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
-        with self.subTest('close before time'):
+        with self.subTest('close at extra blind phase (preflop)'):
             with self.assertRaises(RuntimeError) as context:
                 for _ in hand_cycle.listen():
                     hand_cycle.close()
                     break
+
+        with self.subTest('after actions'):
             self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
 
 
-    def test_flow_with_context_manager_missing_close(self):
+    def test_no_context_manager_flow_with_loop_calling_close_before_end(self):
 
-        "Tests flow with context manager, missing close method."
+        "Tests flow with for loop, calling close method at the end."
+
+
+        hand_cycle = engines.HandCycle('test', self.table)
+
+        with self.subTest('before actions'):
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('close before time'):
+
+            with self.assertRaises(RuntimeError) as context:
+
+                for i, player in enumerate(hand_cycle.listen()):
+
+                    if i <= 3: # extra blind phase
+                        self.assertEqual(player, self.extra_blind_players[i])
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                    elif i <= 9: # preflop
+                        if player == self.Boa:
+                            action = structures.Action(constants.ACTION_CALL, 50)
+                        elif player == self.Coral:
+                            action = structures.Action(constants.ACTION_CHECK)
+                        else:
+                            action = structures.Action(constants.ACTION_CALL, 100)
+                        player.request_action(action)
+                        self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                        player.request_action(action)
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                    else:
+                        hand_cycle.close()
+                        break
+
+        with self.subTest('after actions'):
+            self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+
+class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
+
+
+    "Runs unit tests on hand cycle flow with context manager."
+
+
+    def test_context_manager_flow_with_function_next_missing_close(self):
+
+        "Tests flow with function next, missing close method."
 
         with engines.HandCycle('test', self.table) as hand_cycle:
 
-            for player in hand_cycle.listen():
-                player.request_action(structures.Action(constants.ACTION_CHECK))
-
-            with self.subTest('after actions inside manager'):
+            with self.subTest('before actions'):
                 self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
 
-        with self.subTest('after actions outside manager'):
+            for player in self.extra_blind_players:
+                with self.subTest('extra blind phase (preflop)', player=player.name):
+                    self.assertEqual(next(hand_cycle.listen()), player)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+                if player == self.Boa:
+                    action = structures.Action(constants.ACTION_CALL, 50)
+                elif player == self.Coral:
+                    action = structures.Action(constants.ACTION_CHECK)
+                else:
+                    action = structures.Action(constants.ACTION_CALL, 100)
+                with self.subTest(round=constants.PREFLOP, player=player.name):
+                    self.assertEqual(next(hand_cycle.listen()), player)
+                    player.request_action(action)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            for round_name in constants.after_preflop_round_names:
+                for player in [*self.setup_players[1:], *self.setup_players[:1]]:
+                    with self.subTest(round=round_name, player=player.name):
+                        self.assertEqual(next(hand_cycle.listen()), player)
+                        player.request_action(structures.Action(constants.ACTION_CHECK))
+                        self.assertEqual(hand_cycle.betting_round.name, round_name)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+            with self.subTest('after actions'):
+                with self.assertRaises(StopIteration) as context:
+                    next(hand_cycle.listen())
+                self.assertIsNone(context.exception.value)
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
 
 
-    def test_flow_with_context_manager_calling_close_at_end(self):
+    def test_context_manager_flow_with_function_next_calling_close_at_end(self):
 
-        "Tests flow with context manager, using close method at the end."
+        "Tests flow with function next, using close method at the end."
 
         with engines.HandCycle('test', self.table) as hand_cycle:
 
-            for player in hand_cycle.listen():
-                player.request_action(structures.Action(constants.ACTION_CHECK))
+            with self.subTest('before actions'):
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+            for player in self.extra_blind_players:
+                with self.subTest('extra blind phase (preflop)', player=player.name):
+                    self.assertEqual(next(hand_cycle.listen()), player)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+                if player == self.Boa:
+                    action = structures.Action(constants.ACTION_CALL, 50)
+                elif player == self.Coral:
+                    action = structures.Action(constants.ACTION_CHECK)
+                else:
+                    action = structures.Action(constants.ACTION_CALL, 100)
+                with self.subTest(round=constants.PREFLOP, player=player.name):
+                    self.assertEqual(next(hand_cycle.listen()), player)
+                    player.request_action(action)
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+            for round_name in constants.after_preflop_round_names:
+                for player in [*self.setup_players[1:], *self.setup_players[:1]]:
+                    with self.subTest(round=round_name, player=player.name):
+                        self.assertEqual(next(hand_cycle.listen()), player)
+                        player.request_action(structures.Action(constants.ACTION_CHECK))
+                        self.assertEqual(hand_cycle.betting_round.name, round_name)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
             hand_cycle.close() ## redundant, the context manager closes the round
 
-            with self.subTest('after actions inside manager'):
+            with self.subTest('after actions'):
+                with self.assertRaises(StopIteration) as context:
+                    next(hand_cycle.listen())
+                self.assertIsNone(context.exception.value)
                 self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertTrue(hand_cycle.is_completed)
 
-        with self.subTest('after actions outside manager'):
+        with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
 
 
-    def test_flow_with_context_manager_calling_close_before_end(self):
+    def test_context_manager_flow_with_function_next_calling_close_at_extra_blind_phase(self):
 
-        "Tests flow with context manager, using close method before the end."
+        "Tests flow with function next, using close method at extra blind phase."
 
-        with self.assertRaises(RuntimeError) as context:
+        with self.assertRaises(RuntimeError) as outer_context:
+
             with engines.HandCycle('test', self.table) as hand_cycle:
-                hand_cycle.close()
 
-        self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
-        self.assertIsNone(hand_cycle.betting_round)
-        self.assertFalse(hand_cycle.is_completed)
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('close at extra blind phase (preflop)'):
+                    with self.assertRaises(RuntimeError) as inner_context:
+                        hand_cycle.close()
+                    self.assertEqual(inner_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
 
 
-    def test_flow_with_context_manager_overloading_the_listener(self):
+    def test_context_manager_flow_with_function_next_calling_close_before_end(self):
 
-        "Tests flow with context manager, using close method at the end."
+        "Tests flow with function next, using close method before the end."
 
-        with self.assertRaises(RuntimeError) as context:
+        with self.assertRaises(RuntimeError) as outer_context:
+
             with engines.HandCycle('test', self.table) as hand_cycle:
-                for player in hand_cycle.listen():
-                    player.request_action(structures.Action(constants.ACTION_CHECK))
-                next(hand_cycle.listen()) ## overloaded listener
 
-        self.assertEqual(context.exception.args[0], messages.msg_overloaded_hand_cycle)
-        self.assertIsNone(hand_cycle.betting_round)
-        self.assertTrue(hand_cycle.is_completed)
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                for player in self.extra_blind_players:
+                    with self.subTest('extra blind phase (preflop)', player=player.name):
+                        self.assertEqual(next(hand_cycle.listen()), player)
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                for player in [*self.setup_players[3:], *self.setup_players[:3]]:
+                    if player == self.Boa:
+                        action = structures.Action(constants.ACTION_CALL, 50)
+                    elif player == self.Coral:
+                        action = structures.Action(constants.ACTION_CHECK)
+                    else:
+                        action = structures.Action(constants.ACTION_CALL, 100)
+                    with self.subTest(round=constants.PREFLOP, player=player.name):
+                        self.assertEqual(next(hand_cycle.listen()), player)
+                        player.request_action(action)
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('close at flop'):
+                    with self.assertRaises(RuntimeError) as inner_context:
+                        hand_cycle.close()
+                    self.assertEqual(inner_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+
+    def test_context_manager_flow_with_loop_missing_close(self):
+
+        "Tests flow with for loop, missing close method."
+
+        with engines.HandCycle('test', self.table) as hand_cycle:
+
+            with self.subTest('before actions'):
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+            for i, player in enumerate(hand_cycle.listen()):
+
+                if i <= 3:
+                    with self.subTest('extra blind phase (preflop)', player=player.name):
+                        self.assertEqual(player, self.extra_blind_players[i])
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                elif i <= 9:
+                    if player == self.Boa:
+                        action = structures.Action(constants.ACTION_CALL, 50)
+                    elif player == self.Coral:
+                        action = structures.Action(constants.ACTION_CHECK)
+                    else:
+                        action = structures.Action(constants.ACTION_CALL, 100)
+                    with self.subTest(round=constants.PREFLOP, player=player.name):
+                        self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                        player.request_action(action)
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                elif i <= 27:
+                    if i <= 15:
+                        round_name = constants.FLOP
+                    elif i <= 21:
+                        round_name = constants.TURN
+                    else:
+                        round_name = constants.RIVER
+                    with self.subTest(round=round_name, player=player.name):
+                        self.assertEqual(player, [*self.setup_players[1:], *self.setup_players[:1]][(i-10) % 6])
+                        player.request_action(structures.Action(constants.ACTION_CHECK))
+                        self.assertEqual(hand_cycle.betting_round.name, round_name)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+            with self.subTest('after actions'):
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertTrue(hand_cycle.is_completed)
+
+
+    def test_context_manager_flow_with_loop_calling_close_at_end(self):
+
+        "Tests flow with for loop, calling close method at the end."
+
+        with engines.HandCycle('test', self.table) as hand_cycle:
+
+            with self.subTest('before actions'):
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertFalse(hand_cycle.is_completed)
+
+            for i, player in enumerate(hand_cycle.listen()):
+
+                if i <= 3:
+                    with self.subTest('extra blind phase (preflop)', player=player.name):
+                        self.assertEqual(player, self.extra_blind_players[i])
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                elif i <= 9:
+                    if player == self.Boa:
+                        action = structures.Action(constants.ACTION_CALL, 50)
+                    elif player == self.Coral:
+                        action = structures.Action(constants.ACTION_CHECK)
+                    else:
+                        action = structures.Action(constants.ACTION_CALL, 100)
+                    with self.subTest(round=constants.PREFLOP, player=player.name):
+                        self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                        player.request_action(action)
+                        self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+                elif i <= 27:
+                    if i <= 15:
+                        round_name = constants.FLOP
+                    elif i <= 21:
+                        round_name = constants.TURN
+                    else:
+                        round_name = constants.RIVER
+                    with self.subTest(round=round_name, player=player.name):
+                        self.assertEqual(player, [*self.setup_players[1:], *self.setup_players[:1]][(i-10) % 6])
+                        player.request_action(structures.Action(constants.ACTION_CHECK))
+                        self.assertEqual(hand_cycle.betting_round.name, round_name)
+                        self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                        self.assertFalse(hand_cycle.is_completed)
+
+            hand_cycle.close()
+
+            with self.subTest('after actions'):
+                self.assertIsNone(hand_cycle.betting_round)
+                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                self.assertTrue(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertTrue(hand_cycle.is_completed)
+
+
+    def test_context_manager_flow_with_loop_calling_close_at_extra_blind_phase(self):
+
+        "Tests flow with for loop, using close method at extra blind phase."
+
+        with self.assertRaises(RuntimeError) as outer_context:
+
+            with engines.HandCycle('test', self.table) as hand_cycle:
+
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('close at extra blind phase (preflop)'):
+                    with self.assertRaises(RuntimeError) as inner_context:
+                        for _ in hand_cycle.listen():
+                            hand_cycle.close()
+                            break
+
+                with self.subTest('after actions'):
+                    self.assertEqual(inner_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
+
+
+    def test_context_manager_flow_with_loop_calling_close_before_end(self):
+
+        "Tests flow with for loop, calling close method at the end."
+
+        with self.assertRaises(RuntimeError) as outer_context:
+
+            with engines.HandCycle('test', self.table) as hand_cycle:
+
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('close before time'):
+
+                    with self.assertRaises(RuntimeError) as inner_context:
+
+                        for i, player in enumerate(hand_cycle.listen()):
+
+                            if i <= 3: # extra blind phase
+                                self.assertEqual(player, self.extra_blind_players[i])
+                                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                                self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                                self.assertFalse(hand_cycle.is_completed)
+
+                            elif i <= 9: # preflop
+                                if player == self.Boa:
+                                    action = structures.Action(constants.ACTION_CALL, 50)
+                                elif player == self.Coral:
+                                    action = structures.Action(constants.ACTION_CHECK)
+                                else:
+                                    action = structures.Action(constants.ACTION_CALL, 100)
+                                player.request_action(action)
+                                self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                                player.request_action(action)
+                                self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                                self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                                self.assertFalse(hand_cycle.is_completed)
+
+                            else:
+                                hand_cycle.close()
+                                break
+
+                with self.subTest('after actions'):
+                    self.assertEqual(inner_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertFalse(hand_cycle.is_completed)
 
 
 if __name__ == '__main__':
