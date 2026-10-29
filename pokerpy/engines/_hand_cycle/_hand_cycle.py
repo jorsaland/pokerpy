@@ -150,6 +150,8 @@ class HandCycle:
         except StopIteration:
             self._is_completed = True
         finally:
+            self.reset_betting_round()
+            self.unmark_in_extra_big_blinds_phase()
             self.reset_hand_cycle_states(self.table)
 
         # Raise catched exceptions
