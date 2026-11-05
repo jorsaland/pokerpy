@@ -268,13 +268,13 @@ class TestBettingRoundMethods(BaseTestCase):
             )
 
 
-class TestBettingRoundFlow(BaseTestCase):
+class TestBettingRoundFlowWithoutContextManager(BaseTestCase):
 
 
-    "Runs unit tests on betting round flow."
+    "Runs unit tests on betting round flow without context manager."
 
 
-    def test_flow_behaviour_from_boolean_setup(self):
+    def test_no_context_manager_flow_behaviour_from_boolean_setup(self):
 
         "Tests flow behaviour depending on boolean parameters."
 
@@ -361,7 +361,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertEqual(next(betting_round.listen()), self.Boa)
 
 
-    def test_flow_with_function_next_missing_close(self):
+    def test_no_context_manager_flow_with_function_next_missing_close(self):
 
         "Tests flow with function next, missing close method."
 
@@ -383,7 +383,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertFalse(betting_round.is_completed)
 
 
-    def test_flow_with_function_next_calling_close_at_end(self):
+    def test_no_context_manager_flow_with_function_next_calling_close_at_end(self):
 
         "Tests flow with function next, using close method at the end."
 
@@ -403,7 +403,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertTrue(betting_round.is_completed)
 
 
-    def test_flow_with_function_next_calling_close_before_end(self):
+    def test_no_context_manager_flow_with_function_next_calling_close_before_end(self):
 
         "Tests flow with function next, using close method before the end."
 
@@ -413,14 +413,14 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertFalse(betting_round.is_completed)
 
         with self.subTest('close before time'):
+            next(betting_round.listen())
             with self.assertRaises(RuntimeError) as context:
-                next(betting_round.listen())
                 betting_round.close()
             self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
             self.assertFalse(betting_round.is_completed)
 
 
-    def test_flow_with_loop_missing_close(self):
+    def test_no_context_manager_flow_with_loop_missing_close(self):
 
         "Tests flow with for loop, missing close method."
 
@@ -439,7 +439,7 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertFalse(betting_round.is_completed)
 
 
-    def test_flow_with_loop_calling_close_at_end(self):
+    def test_no_context_manager_flow_with_loop_calling_close_at_end(self):
 
         "Tests flow with for loop, calling close method at the end."
 
@@ -455,11 +455,12 @@ class TestBettingRoundFlow(BaseTestCase):
                 self.assertFalse(betting_round.is_completed)
 
         betting_round.close()
+
         with self.subTest('after actions'):
             self.assertTrue(betting_round.is_completed)
 
 
-    def test_flow_with_loop_calling_close_before_end(self):
+    def test_no_context_manager_flow_with_loop_calling_close_before_end(self):
 
         "Tests flow with for loop, calling close method at the end."
 
@@ -477,62 +478,184 @@ class TestBettingRoundFlow(BaseTestCase):
             self.assertFalse(betting_round.is_completed)
 
 
-    def test_flow_with_context_manager_missing_close(self):
+class TestBettingRoundFlowWithContextManager(BaseTestCase):
 
-        "Tests flow with context manager, missing close method."
+
+    "Runs unit tests on betting round flow with context manager."
+
+
+    def test_context_manager_flow_with_function_next_missing_close(self):
+
+        "Tests flow with function next, missing close method."
 
         with engines.BettingRound('test', self.table) as betting_round:
 
-            for player in betting_round.listen():
-                player.request_action(structures.Action(constants.ACTION_CHECK))
-
-            with self.subTest('after actions inside manager'):
+            with self.subTest('before actions'):
                 self.assertFalse(betting_round.is_completed)
 
-        with self.subTest('after actions outside manager'):
+            for player in self.setup_players:
+                with self.subTest(player=player):
+                    self.assertEqual(next(betting_round.listen()), player)
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertFalse(betting_round.is_completed)
+
+            with self.subTest('after actions'):
+                with self.assertRaises(StopIteration) as context:
+                    next(betting_round.listen())
+                self.assertIsNone(context.exception.value)
+                self.assertFalse(betting_round.is_completed)
+
+        with self.subTest('after exit'):
             self.assertTrue(betting_round.is_completed)
 
 
-    def test_flow_with_context_manager_calling_close_at_end(self):
+    def test_context_manager_flow_with_function_next_calling_close_at_end(self):
 
-        "Tests flow with context manager, using close method at the end."
+        "Tests flow with function next, using close method at the end."
 
         with engines.BettingRound('test', self.table) as betting_round:
 
-            for player in betting_round.listen():
-                player.request_action(structures.Action(constants.ACTION_CHECK))
+            with self.subTest('before actions'):
+                self.assertFalse(betting_round.is_completed)
+
+            for player in self.setup_players:
+                with self.subTest(player=player):
+                    self.assertEqual(next(betting_round.listen()), player)
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertFalse(betting_round.is_completed)
+
             betting_round.close() ## redundant, the context manager closes the round
 
-            with self.subTest('after actions inside manager'):
+            with self.subTest('after actions'):
                 self.assertTrue(betting_round.is_completed)
 
-        with self.subTest('after actions outside manager'):
+        with self.subTest('after exit'):
             self.assertTrue(betting_round.is_completed)
 
 
-    def test_flow_with_context_manager_calling_close_before_end(self):
+    def test_context_manager_flow_with_function_next_calling_close_before_end(self):
 
-        "Tests flow with context manager, using close method before the end."
+        "Tests flow with function next, using close method before the end."
 
-        with self.assertRaises(RuntimeError) as context:
+        with self.assertRaises(RuntimeError) as outer_context:
+
             with engines.BettingRound('test', self.table) as betting_round:
-                betting_round.close()
 
-        self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
-        self.assertFalse(betting_round.is_completed)
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+
+                with self.subTest('close before time'):
+                    next(betting_round.listen())
+                    with self.assertRaises(RuntimeError) as context:
+                        betting_round.close()
+                    self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
+                    self.assertFalse(betting_round.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
 
 
-    def test_flow_with_context_manager_overloading_the_listener(self):
+    def test_context_manager_flow_with_loop_missing_close(self):
 
-        "Tests flow with context manager, using close method at the end."
+        "Tests flow with for loop, missing close method."
 
-        with self.assertRaises(RuntimeError) as context:
-            with engines.BettingRound('test', self.table) as betting_round:
-                for player in betting_round.listen():
+        with engines.BettingRound('test', self.table) as betting_round:
+
+            with self.subTest('before actions'):
+                self.assertFalse(betting_round.is_completed)
+
+            for i, player in enumerate(betting_round.listen()):
+                with self.subTest(player=self.setup_players[i]):
+                    self.assertEqual(player, self.setup_players[i])
                     player.request_action(structures.Action(constants.ACTION_CHECK))
-                next(betting_round.listen()) ## overloaded listener
+                    self.assertFalse(betting_round.is_completed)
 
-        self.assertEqual(context.exception.args[0], messages.msg_overloaded_betting_round)
+            with self.subTest('after actions'):
+                self.assertFalse(betting_round.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertTrue(betting_round.is_completed)
+
+
+    def test_context_manager_flow_with_loop_calling_close_at_end(self):
+
+        "Tests flow with for loop, calling close method at the end."
+
+        with engines.BettingRound('test', self.table) as betting_round:
+
+            with self.subTest('before actions'):
+                self.assertFalse(betting_round.is_completed)
+
+            for i, player in enumerate(betting_round.listen()):
+                with self.subTest(player=self.setup_players[i]):
+                    self.assertEqual(player, self.setup_players[i])
+                    player.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertFalse(betting_round.is_completed)
+
+            betting_round.close() ## redundant, the context manager closes the round
+
+            with self.subTest('after actions'):
+                self.assertTrue(betting_round.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertTrue(betting_round.is_completed)
+
+
+    def test_context_manager_flow_with_loop_calling_close_before_end(self):
+
+        "Tests flow with for loop, calling close method at the end."
+
+        with self.assertRaises(RuntimeError) as outer_context:
+
+            with engines.BettingRound('test', self.table) as betting_round:
+
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+
+                with self.subTest('close before time'):
+                    with self.assertRaises(RuntimeError) as inner_context:
+                        for _ in betting_round.listen():
+                            betting_round.close()
+                            break
+                    self.assertEqual(inner_context.exception.args[0], messages.msg_betting_round_was_not_completed)
+                    self.assertFalse(betting_round.is_completed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
+
+
+    def test_context_manager_flow_overloading_the_listener(self):
+
+        "Tests flow, overloading the listener."
+
+        with self.assertRaises(RuntimeError) as outer_context:
+
+            with engines.BettingRound('test', self.table) as betting_round:
+
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+
+                for i, player in enumerate(betting_round.listen()):
+                    with self.subTest(player=self.setup_players[i]):
+                        self.assertEqual(player, self.setup_players[i])
+                        player.request_action(structures.Action(constants.ACTION_CHECK))
+                        self.assertFalse(betting_round.is_completed)
+
+                with self.subTest('after actions'):
+                    self.assertFalse(betting_round.is_completed)
+
+                with self.subTest('listener overload'):
+                    with self.assertRaises(StopIteration) as inner_context:
+                        next(betting_round.listen())
+                    self.assertIsNone(inner_context.exception.value)
+                    self.assertFalse(betting_round.is_completed)
+                raise inner_context.exception
+        
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_overloaded_betting_round)
+            self.assertTrue(betting_round.is_completed)
 
 
 if __name__ == '__main__':
