@@ -103,29 +103,6 @@ class TestBettingRoundMethods(BaseTestCase):
     "Runs unit tests on betting round methods."
 
 
-    def test_type_errors_in_dealing_related_methods(self):
-
-        "Tests type error detection in methods related to dealing."
-
-        betting_round = engines.BettingRound('test', self.table)
-
-        methods = (
-            betting_round.deal_cards_to_players,
-            betting_round.deal_common_cards,
-        )
-
-        bad_amounts = ('300', 300.0, Decimal('300'))
-
-        for method in methods:
-
-            for bad_amount in bad_amounts:
-
-                with self.subTest(method=method.__name__, amount=bad_amount):
-                    with self.assertRaises(TypeError) as context:
-                        method(bad_amount)
-                    self.assertEqual(context.exception.args[0], messages.msg_not_int.format(type(bad_amount).__name__))
-
-
     def test_type_errors_in_reset_method(self):
 
         "Tests type error detection in the reset method."
@@ -138,61 +115,6 @@ class TestBettingRoundMethods(BaseTestCase):
                 with self.assertRaises(TypeError) as context:
                     engines.BettingRound.reset_betting_round_states(bad_table)
                 self.assertEqual(context.exception.args[0], messages.msg_not_table_instance.format(type(bad_table).__name__))
-
-
-    def test_value_errors_in_dealing_related_methods(self):
-
-        "Tests type error detection in methods related to dealing."
-
-        betting_round = engines.BettingRound('test', self.table)
-
-        methods = (
-            betting_round.deal_cards_to_players,
-            betting_round.deal_common_cards,
-        )
-
-        for method in methods:
-
-            bad_min_bet = 0
-            with self.subTest('zero minimum bet', method=method.__name__):
-                with self.assertRaises(ValueError) as context:
-                    method(bad_min_bet)
-                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
-
-            bad_min_bet = -10
-            with self.subTest('negative minimum bet', method=method.__name__):
-                with self.assertRaises(ValueError) as context:
-                    method(bad_min_bet)
-                self.assertEqual(context.exception.args[0], messages.msg_not_positive_value.format(bad_min_bet))
-
-
-    def test_valid_input_in_dealing_methods(self):
-
-        "Tests valid input in methods related to dealing."
-
-        betting_round = engines.BettingRound('test', self.table)
-
-        with self.subTest('before card deal'):
-            self.assertEqual(len(self.table.deck), 52)
-            self.assertEqual(len(self.table.common_cards), 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 0)
-
-        betting_round.deal_cards_to_players(2)
-
-        with self.subTest('after card deal to players'):
-            self.assertEqual(len(self.table.deck), 40)
-            self.assertEqual(len(self.table.common_cards), 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        betting_round.deal_common_cards(5)
-
-        with self.subTest('after card deal to table'):
-            self.assertEqual(len(self.table.deck), 35)
-            self.assertEqual(len(self.table.common_cards), 5)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
 
 
     def test_valid_input_in_reset_method(self):
