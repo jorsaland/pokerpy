@@ -91,12 +91,12 @@ class HandCycle:
 
     @property
     def in_extra_big_blinds_phase(self):
-        "Whether the betting round is in the phase of placing extra big blinds"
+        "Whether the hand cycle is in the phase of placing extra big blinds."
         return self._in_extra_big_blinds_phase
 
     @property
     def is_completed(self):
-        "Whether the betting round already ended."
+        "Whether the hand cycle already ended."
         return self._is_completed
 
     @property

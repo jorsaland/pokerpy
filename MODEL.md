@@ -1,6 +1,13 @@
 # Properties of structures
 
 
+### Action (`Action`)
+
+- **Category (`category`):** Name of the action (fold, check, call, bet and raise).
+
+- **Amount (`amount`):** Amount of chips placed in front during the action.
+
+
 ### Card (`Card`)
 
 - **Value (`value`):** Rank of the card (numbers from 2 to 10, jacks, queens, kings and aces).
@@ -15,13 +22,6 @@
 - **Category (`category`):** Rank of the hand (high card, pair, two pair, three of a kind, straight, flush, full house, four of a kind, straight flush and royal flush).
 
 
-### Action (`Action`)
-
-- **Category (`category`):** Name of the action (fold, check, call, bet and raise).
-
-- **Amount (`amount`):** Amount of chips placed in front during the action.
-
-
 ### Player (`Player`)
 
 - **Name (`name`):** Player's identifier, unique within the table.
@@ -31,6 +31,8 @@
 - **Hand (`hand`):** Hand the player holds, according to the game rules.
 
 - **Requested action (`requested_action`):** Action the player has requested in a betting round.
+
+- **Is extra blind (`is_extra_blind`):** Whether the player has requested to place an extra blind.
 
 - **Stack (`stack`):** Chips the player has available to play.
 
@@ -61,6 +63,18 @@
 
 - **Stopping player (`stopping_player`):** Player who acts last in the betting round. This may be updated during the betting round, depending on the actions taken by other players. Defaults to the player before the starting player.
 
+- **Button player (`button_player`):** Player that holds the button.
+
+- **Ante (`ante`):** Ante amount.
+
+- **Small blind (`small_blind`):** Small blind amount.
+
+- **Small blind player (`small_blind_player`):** Small blind player.
+
+- **Big blind (`big_blind`):** Big blind amount.
+
+- **Big blind player (`big_blind_player`):** Big blind player.
+
 - **Current player (`current_player`):** Player who is being awaited to play. Defaults to the starting player.
 
 - **Bet level (`bet_level`):** Largest amount of chips a player has placed in front during the current betting round, which other players must match in order to call.
@@ -87,9 +101,26 @@
 
 - **Lap counts (`lap_counts`):** Number of times the action passes through the starting player (even if folded or all-in).
 
+- **Is completed (`is_completed`):** Whether the betting round already ended.
+
 - **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 
-- **Is completed (`is_completed`):** Whether the betting round already ended.
+- **Raise invalid actions (`raise_invalid_actions`):** Whether an exception should be raised when an invalid action is chosen, or the player should be prompted again.
+
+
+### Hand cycle (`HandCycle`)
+
+- **Name (`name`):** Hand cycle's identifier, unique within the game.
+
+- **Table (`table`):** Table in which the hand cycle takes place.
+
+- **Betting round (`betting_round`):** Betting round taking place.
+
+- **In extra big blinds phase (`in_extra_big_blinds_phase`):** Whether the hand cycle is in the phase of placing extra big blinds.
+
+- **Is completed (`is_completed`):** Whether the hand cycle already ended.
+
+- **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 
 - **Raise invalid actions (`raise_invalid_actions`):** Whether an exception should be raised when an invalid action is chosen, or the player should be prompted again.
 

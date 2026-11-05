@@ -95,12 +95,12 @@ class Player:
 
     @property
     def stack(self):
-        "Amount of chips the player has placed in front during the current betting round."
+        "Chips the player has available to play."
         return self._stack
 
     @property
     def bet_level(self):
-        "Amount of chips that the player has placed in front during the betting round."
+        "Amount of chips the player has placed in front during the betting round."
         return self._bet_level
 
     @property
