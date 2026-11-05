@@ -485,6 +485,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertFalse(hand_cycle.is_completed)
 
         with self.subTest('close at extra blind phase (preflop)'):
+            next(hand_cycle.listen())
             with self.assertRaises(RuntimeError) as context:
                 hand_cycle.close()
             self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
@@ -849,6 +850,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertFalse(hand_cycle.is_completed)
 
                 with self.subTest('close at extra blind phase (preflop)'):
+                    next(hand_cycle.listen())
                     with self.assertRaises(RuntimeError) as inner_context:
                         hand_cycle.close()
                     self.assertEqual(inner_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
