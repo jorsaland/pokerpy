@@ -1,5 +1,5 @@
 """
-Defines unit tests on BettingRound class.
+Defines unit tests on HandCycle class.
 """
 
 
