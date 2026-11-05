@@ -29,7 +29,7 @@ ANTE = 1
 SMALL_BLIND = 5
 BIG_BLIND = 10
 
-STACK_MIN_SIZE = BIG_BLIND + ANTE
+STACK_MIN_SIZE = BIG_BLIND + ANTE + 1
 STACK_MAX_SIZE = 10_000
 
 player_names = ['Andy', 'Boa', 'Coral', 'Dani', 'Epa', 'Fomi']
@@ -116,7 +116,7 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
         input('\n\n--- ENTER ---\n')
 
 def main():
-    table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE + 1, STACK_MAX_SIZE)) for name in player_names])
+    table = pk.Table([pk.Player(name, stack=random.randint(STACK_MIN_SIZE, STACK_MAX_SIZE)) for name in player_names])
     game(table)
 
 
