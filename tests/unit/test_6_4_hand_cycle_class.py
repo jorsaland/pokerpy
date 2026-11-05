@@ -1122,5 +1122,76 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
             self.assertFalse(hand_cycle.is_completed)
 
 
+    def test_context_manager_flow_overloading_the_listener(self):
+
+        "Tests flow, overloading the listener."
+
+        with self.assertRaises(RuntimeError) as outer_context:
+
+            with engines.HandCycle('test', self.table) as hand_cycle:
+
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                for i, player in enumerate(hand_cycle.listen()):
+
+                    if i <= 3:
+                        with self.subTest('extra blind phase (preflop)', player=player.name):
+                            self.assertEqual(player, self.extra_blind_players[i])
+                            self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                            self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                            self.assertFalse(hand_cycle.is_completed)
+
+                    elif i <= 9:
+                        if player == self.Boa:
+                            action = structures.Action(constants.ACTION_CALL, 50)
+                        elif player == self.Coral:
+                            action = structures.Action(constants.ACTION_CHECK)
+                        else:
+                            action = structures.Action(constants.ACTION_CALL, 100)
+                        with self.subTest(round=constants.PREFLOP, player=player.name):
+                            self.assertEqual(player, [*self.setup_players[3:], *self.setup_players[:3]][i-4])
+                            player.request_action(action)
+                            self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                            self.assertFalse(hand_cycle.is_completed)
+
+                    elif i <= 27:
+                        if i <= 15:
+                            round_name = constants.FLOP
+                        elif i <= 21:
+                            round_name = constants.TURN
+                        else:
+                            round_name = constants.RIVER
+                        with self.subTest(round=round_name, player=player.name):
+                            self.assertEqual(player, [*self.setup_players[1:], *self.setup_players[:1]][(i-10) % 6])
+                            player.request_action(structures.Action(constants.ACTION_CHECK))
+                            self.assertEqual(hand_cycle.betting_round.name, round_name)
+                            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                            self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('after actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+
+                with self.subTest('listener overload'):
+                    with self.assertRaises(StopIteration) as inner_context:
+                        next(hand_cycle.listen())
+                    self.assertIsNone(inner_context.exception.value)
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+                raise inner_context.exception
+
+        with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], messages.msg_overloaded_hand_cycle)
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+            self.assertTrue(hand_cycle.is_completed)
+
+
 if __name__ == '__main__':
     main()
