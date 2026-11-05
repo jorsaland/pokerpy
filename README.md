@@ -81,6 +81,10 @@ for player in players:
 - Detached from tag *0.6.0*.
 - All version features are implemented.
 
+### 0.7.1
+- Updated version due to PyPI restrictions with deleted packages.
+
+
 ## Upcoming versions
 
 - **0.8 - beta:** A context manager will be implemented to run a full No Limit Texas Hold'em cash game. This manager will implement the features that occur between hand cycles, such as button movement, players entering and leaving the table, and proper handling of heads-up situations. Also, a basic documentation will be provided to illustrate how to use the high level features.
