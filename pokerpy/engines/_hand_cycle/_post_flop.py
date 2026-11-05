@@ -23,7 +23,6 @@ from typing import TYPE_CHECKING
 
 from pokerpy.constants import FLOP
 from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
-from pokerpy.structures import Table
 
 
 from .._betting_round._betting_round import BettingRound

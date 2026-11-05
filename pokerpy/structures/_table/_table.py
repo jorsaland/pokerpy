@@ -455,6 +455,13 @@ class Table:
         return gather_pot_method(self)
 
 
+    def refund_excess(self):
+
+        "Iteratively refunds the deepest side pots if the participating players are all folded."
+
+        return refund_excess_method(self)
+
+
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
 
         "Iterates over all the players."
@@ -464,10 +471,3 @@ class Table:
             starting_player = starting_player,
             reverse = reverse,
         )
-
-
-    def refund_excess(self):
-
-        "Iteratively refunds the deepest side pots if the participating players are all folded."
-
-        return refund_excess_method(self)

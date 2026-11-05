@@ -217,6 +217,7 @@ class HandCycle:
         "Marks the hand cycle as in the phase of placing extra big blinds."
         self._in_extra_big_blinds_phase = True
 
+
     def unmark_in_extra_big_blinds_phase(self):
         "Unmarks the hand cycle as in the phase of placing extra big blinds."
         self._in_extra_big_blinds_phase = False
