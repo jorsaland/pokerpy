@@ -52,7 +52,7 @@ table = pk.Table(players)
 
 # Run Texas Hold'em hand
 
-hand_cycle = pk.HandCycle('hand 1', table=table, ante=1, small_blind=5, big_blind=10)
+hand_cycle = pk.HandCycle('hand 1', table=table)
 with hand_cycle:
     for player in hand_cycle.listen():
         action_ranges = hand_cycle.betting_round.get_action_ranges()
