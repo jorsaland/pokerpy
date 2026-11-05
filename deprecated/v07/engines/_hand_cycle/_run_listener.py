@@ -1,0 +1,76 @@
+# Copyright 2026 Andrés Saldarriaga Jordan (jorsaland)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+"Defines the function that starts the hand cycle generator that rotates the player turns."
+
+
+from typing import TYPE_CHECKING
+
+
+from deprecated.v07.constants import after_preflop_round_names
+from deprecated.v07.logger import logger, wrap_internal_log, wrap_middle_log
+
+
+from ._ante_round import ante_round
+from ._display_status import display_pot_indexes
+from ._pre_flop import pre_flop
+from ._post_flop import post_flop
+from ._showdown import showdown
+
+if TYPE_CHECKING:
+    from ._hand_cycle import HandCycle
+
+
+def run_listener(hand_cycle: "HandCycle"):
+
+    "Starts the hand cycle generator that rotates the player turns."
+
+    table = hand_cycle.table
+
+    # At least two players are needed to run the hand cycle.
+    if len(table.actionable_players) < 2:
+        return
+
+    if not table.button_player:
+        table.set_button_player(table.players[0])
+
+    for player in table.players:
+        if player.stack == 0:
+            player.mark_is_folded()
+
+    if table.big_blind:
+        table.set_min_bet(table.big_blind)
+
+    if table.ante:
+        ante_round(hand_cycle.table)
+
+    yield from pre_flop(hand_cycle)
+
+    for round_name in after_preflop_round_names:
+        if len(table.live_players) == 1:
+            break
+        yield from post_flop(hand_cycle, round_name)
+
+    if len(hand_cycle.table.live_players) > 1:
+        logger.info(wrap_middle_log('showdown'))
+        display_pot_indexes(hand_cycle.table)
+        showdown(hand_cycle.table)
+    else:
+        logger.info(wrap_middle_log('no showdown'))
+        display_pot_indexes(hand_cycle.table)
+        showdown(hand_cycle.table)
+    logger.info(wrap_internal_log())
+
+    logger.info(wrap_middle_log(new_line=True))
