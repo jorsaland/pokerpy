@@ -39,13 +39,12 @@ def build_players():
 
     players: list[pk.Player] = []
 
-    # if random.randint(0, 1):
-    #     players.append(pk.Player(player_names[0], 1))
-    #     players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-    # else:
-    if True:
+    if random.randint(0, 1):
+        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
+        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+    else:
         players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-        players.append(pk.Player(player_names[1], 1))
+        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
 
     nerfed_ante_name, nerfed_blind_name = random.sample(player_names[2:], k=2)
     for name in player_names[2:]:
