@@ -14,13 +14,13 @@
 
 
 """
-PokerPy under development! (Alpha)
+PokerPy under development! (Beta)
 """
 
 
 # Info
 __author__ = 'Andrés Saldarriaga Jordan (jorsaland)'
-__version__ = '0.7.1'
+__version__ = '0.8.0'
 
 
 # Content

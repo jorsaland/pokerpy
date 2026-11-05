@@ -1,7 +1,6 @@
-# PokerPy 0.7 - alpha (under development)
+# PokerPy 0.8 - beta (under development)
 
-A new context manager is implemented to run a full hand cycle, composed of multiple betting rounds and the showdow with the structure of a Texas Hold'em game. This will feed the version demos which for the first time will attempt to simulate the button rotation logic. The betting round is no longer supporting input for minimum bet, starting player or stopping player. To update these parameters, the appropiate table methods have to be called directly. By now, players cannot leave or enter the table, once instantiated.
-
+Added a context manager that runs a full No Limit Texas Hold'em cash game, handling everything that occurs between hand cycles, such as button movement, players entering and leaving the table, and proper heads-up play. The engine generators no longer yield players. Instead, they yield a state object containing all the information needed to choose an action. Likewise, `HandCycle` no longer picks cards itself with `secrets.choice`. It now yields a state object and leaves the card choice to the developer using the library, although `secrets.choice` will be suggested in the final usage documentation.
 
 ## License
 
@@ -76,15 +75,10 @@ for player in players:
 
 ## Current version
 
-### 0.7.0
-- Detached from tag *0.6.0*.
+### 0.8.0
+- Detached from tag *0.7.1*.
 - All version features are implemented.
-
-### 0.7.1
-- Updated version due to PyPI restrictions with deleted packages.
-
 
 ## Upcoming versions
 
-- **0.8 - beta:** A context manager will be implemented to run a full No Limit Texas Hold'em cash game. This manager will implement the features that occur between hand cycles, such as button movement, players entering and leaving the table, and proper handling of heads-up situations. Also, a basic documentation will be provided to illustrate how to use the high level features.
 - **1.0 - stable:** The first stable release. API classes will wrap the core classes, as a separate layer in charge of input validations. Besides this, no new features are planned for this release, though some adjustments or enhancements may arise from final testing and feedback. Also, a full documentation will be provided.
