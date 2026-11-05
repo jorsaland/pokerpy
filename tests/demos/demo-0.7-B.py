@@ -12,8 +12,8 @@ sys.path.insert(0, '.')
 import random
 
 
-import pokerpy as pk
-from pokerpy.logger import logger, wrap_external_log
+import deprecated.v07 as v07
+from deprecated.v07.logger import logger, wrap_external_log
 
 
 # Constants
@@ -37,14 +37,14 @@ player_names = ['Andy', 'Boa', 'Coral', 'Dino', 'Epa', 'Fomi']
 
 def build_players():
 
-    players: list[pk.Player] = []
+    players: list[v07.Player] = []
 
     if random.randint(0, 1):
-        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+        players.append(v07.Player(player_names[0], random.randrange(STACK_MIN_SIZE, SMALL_BLIND)))
+        players.append(v07.Player(player_names[1], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
     else:
-        players.append(pk.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
-        players.append(pk.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
+        players.append(v07.Player(player_names[0], random.randrange(STACK_MIN_SIZE, STACK_MAX_SIZE)))
+        players.append(v07.Player(player_names[1], random.randrange(STACK_MIN_SIZE, BIG_BLIND)))
 
     nerfed_ante_name, nerfed_blind_name = random.sample(player_names[2:], k=2)
     for name in player_names[2:]:
@@ -54,12 +54,12 @@ def build_players():
             stack = random.randrange(STACK_MIN_SIZE, BIG_BLIND)
         else:
             stack = random.randint(STACK_MIN_SIZE, STACK_MAX_SIZE)
-        players.append(pk.Player(name, stack))
+        players.append(v07.Player(name, stack))
 
     return players
 
 
-def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
+def cycle(table: v07.Table, *, open_fold_allowed: bool = False):
 
     table.set_ante(ANTE)
     table.set_small_blind(SMALL_BLIND)
@@ -72,7 +72,7 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
         big_blind_player = table.get_next_player(big_blind_player)
     table.set_big_blind_player(big_blind_player)
 
-    hand_cycle = pk.HandCycle(
+    hand_cycle = v07.HandCycle(
         name = 'open-fold-allowed' if open_fold_allowed else 'open-fold-forbidden',
         table = table,
         open_fold_allowed = open_fold_allowed,
@@ -100,19 +100,19 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
             action_name, amount_range = random.choice([
                 (name, amount_range) for name, amount_range in range_by_action.items() if amount_range is not None
             ])
-            if action_name == pk.ACTION_BET:
+            if action_name == v07.ACTION_BET:
                 action_amount = random.randint(table.pot//2, table.pot*2)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
-            elif action_name == pk.ACTION_RAISE:
-                amount_to_call = range_by_action[pk.ACTION_CALL][0]
+            elif action_name == v07.ACTION_RAISE:
+                amount_to_call = range_by_action[v07.ACTION_CALL][0]
                 smallest_amount = amount_to_call + hand_cycle.table.min_raise_increase
                 action_amount = random.randint(smallest_amount, smallest_amount*3)
                 if action_amount not in amount_range:
                     action_amount = amount_range[-1]
             else:
                 action_amount = amount_range[0]
-            player.request_action(pk.Action(category=action_name, amount=action_amount))
+            player.request_action(v07.Action(category=action_name, amount=action_amount))
 
     logger.info(wrap_external_log(f'ending hand cycle {hand_cycle.name}', new_line=True))
 
@@ -120,12 +120,12 @@ def cycle(table: pk.Table, *, open_fold_allowed: bool = False):
 def main():
 
     # Cycle not allowing open fold
-    table = pk.Table(build_players())
+    table = v07.Table(build_players())
     cycle(table)
     input('\n\n--- ENTER ---\n')
 
     # Cycle allowing open fold
-    table = pk.Table(build_players())
+    table = v07.Table(build_players())
     cycle(table, open_fold_allowed=True)
     input('\n\n--- ENTER ---\n')
 
