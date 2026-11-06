@@ -125,8 +125,29 @@
 - **Raise invalid actions (`raise_invalid_actions`):** Whether an exception should be raised when an invalid action is chosen, or the player should be prompted again.
 
 
-# Communication model from controller
+# Communication model
 
+
+### Legend
+
+```mermaid
+flowchart LR
+
+        i1(instance)@{ shape: circle }
+        i2(instance)@{ shape: circle }
+        m1(method)@{ shape: text }
+        m2(method)@{ shape: text }
+
+        i1 ===> |CONTAINS| i2
+        i1 --> |calls| m1
+        m1 --> |from| i2
+        m1 -.-> |calls| m2
+        m2 --> |from| i2
+
+```
+
+
+### From controller
 
 ```mermaid
 flowchart LR
@@ -147,13 +168,12 @@ flowchart LR
 
     %% Container relations
 
-    HC ===> |CONTAINS| BR
-    BR ===> |CONTAINS| T
     T ===> |CONTAINS| P
     T ===> |CONTAINS| Cd
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
     P ===> |CONTAINS| A
+    H ===> |CONTAINS| Cd
 
 
     %% Methods
@@ -162,10 +182,6 @@ flowchart LR
     HC.close(close)@{ shape: text } -->  HC
     HC.deal_cards_to_players(deal_cards_to_players)@{ shape: text } -->  HC
     HC.deal_common_cards(deal_common_cards)@{ shape: text } -->  HC
-    HC.set_betting_round(set_betting_round)@{ shape: text } -->  HC
-    HC.reset_betting_round(reset_betting_round)@{ shape: text } -->  HC
-    HC.mark_in_extra_big_blinds_phase(mark_in_extra_big_blinds_phase)@{ shape: text } -->  HC
-    HC.unmark_in_extra_big_blinds_phase(unmark_in_extra_big_blinds_phase)@{ shape: text } -->  HC
     HC.reset_hand_cycle_states(reset_hand_cycle_states)@{ shape: text } -->  HC
 
     BR.get_action_ranges(get_action_ranges)@{ shape: text } --> BR
@@ -218,22 +234,15 @@ flowchart LR
     HC.listen -.-> HC.close
     HC.listen -.-> HC.deal_cards_to_players
     HC.listen -.-> HC.deal_common_cards
-    HC.listen -.-> HC.set_betting_round
-    HC.listen -.-> HC.reset_betting_round
-    HC.listen -.-> HC.mark_in_extra_big_blinds_phase
-    HC.listen -.-> HC.unmark_in_extra_big_blinds_phase
     HC.listen -.-> HC.reset_hand_cycle_states
 
-    HC.close -.-> HC.reset_betting_round
-    HC.close -.-> HC.unmark_in_extra_big_blinds_phase
     HC.close -.-> HC.reset_hand_cycle_states
 
 
 ```
 
 
-# Communication model from hand cycle
-
+### From hand cycle
 
 ```mermaid
 flowchart LR
@@ -253,19 +262,18 @@ flowchart LR
     %% Container relations
 
     HC ===> |CONTAINS| BR
-    BR ===> |CONTAINS| T
     T ===> |CONTAINS| P
     T ===> |CONTAINS| Cd
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
     P ===> |CONTAINS| A
+    H ===> |CONTAINS| Cd
 
 
     %% Methods
 
     BR.close(close)@{ shape: text } -->  BR
     BR.listen(listen)@{ shape: text } -->  BR
-    BR.increase_counter(increase_counter)@{ shape: text } -->  BR
     BR.reset_betting_round_states(reset_betting_round_states)@{ shape: text } -->  BR
 
     T.remove_card_from_deck(remove_card_from_deck)@{ shape: text } --> T
@@ -342,7 +350,6 @@ flowchart LR
 
     %% Helper method relations
 
-    BR.listen -.-> BR.increase_counter
     BR.listen -.-> BR.reset_betting_round_states
 
     BR.close -.-> BR.listen
@@ -358,8 +365,7 @@ flowchart LR
 ```
 
 
-# Communication model from betting round
-
+### From betting round
 
 ```mermaid
 flowchart LR
@@ -383,6 +389,7 @@ flowchart LR
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
     P ===> |CONTAINS| A
+    H ===> |CONTAINS| Cd
 
 
     %% Methods
