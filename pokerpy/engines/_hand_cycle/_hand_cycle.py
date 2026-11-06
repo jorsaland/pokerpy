@@ -120,7 +120,6 @@ class HandCycle:
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
         if exception_type is StopIteration:
-            self._is_completed = True
             exception = RuntimeError(msg_overloaded_hand_cycle)
         self.close(exception)
 
@@ -148,7 +147,7 @@ class HandCycle:
             if not self.is_completed:
                 next(self.listen())
         except StopIteration:
-            self._is_completed = True
+            pass
         finally:
             self.reset_betting_round()
             self.unmark_in_extra_big_blinds_phase()

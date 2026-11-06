@@ -77,7 +77,7 @@ for player in players:
 
 ### 0.8.0
 - Detached from tag *0.7.1*.
-- All version features are implemented.
+- Engines mark themselves as completed at the end of the `run_listener` function, independently of the `close` method.
 
 ## Upcoming versions
 

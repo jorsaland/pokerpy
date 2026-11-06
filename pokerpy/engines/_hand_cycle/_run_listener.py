@@ -74,3 +74,4 @@ def run_listener(hand_cycle: "HandCycle"):
     logger.info(wrap_internal_log())
 
     logger.info(wrap_middle_log(new_line=True))
+    hand_cycle._is_completed = True
