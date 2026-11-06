@@ -171,13 +171,6 @@ class BettingRound:
         )
 
 
-    def increase_counter(self):
-
-        "Registers a new lap."
-
-        self._lap_counts += 1
-
-
     @staticmethod
     def reset_betting_round_states(table: Table):
 
@@ -193,3 +186,15 @@ class BettingRound:
         for player in table.players:
             player.unmark_has_played()
             player.clear_action()
+
+
+    # Helper methods
+
+
+    def _increase_counter(self):
+        "Registers a new lap."
+        self._lap_counts += 1
+
+    def _mark_is_completed(self):
+        "Mark round as completed."
+        self._is_completed = True

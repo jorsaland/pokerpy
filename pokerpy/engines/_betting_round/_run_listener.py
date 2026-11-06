@@ -48,7 +48,7 @@ def run_listener(betting_round: "BettingRound"):
         for player in cycle(betting_round.table.iter_players()):
             betting_round.table.set_current_player(player)
             if player == betting_round.table.starting_player:
-                betting_round.increase_counter()
+                betting_round._increase_counter()
             try:
                 yield from prompt_player(
                     table = betting_round.table,
@@ -64,4 +64,4 @@ def run_listener(betting_round: "BettingRound"):
     betting_round.table.refund_excess()
     betting_round.table.gather_pot()
 
-    betting_round._is_completed = True
+    betting_round._mark_is_completed()

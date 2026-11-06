@@ -158,21 +158,6 @@ class TestBettingRoundMethods(BaseTestCase):
                 self.assertIsNone(player.requested_action)
 
 
-    def test_counter_increase_method(self):
-
-        "Tests valid input in the method that increases the counter."
-
-        betting_round = engines.BettingRound('test', self.table)
-
-        with self.subTest('before counter increase'):
-            self.assertEqual(betting_round.lap_counts, 0)
-
-        for i in range(1, 6):
-            with self.subTest('counter increase', i=i):
-                betting_round.increase_counter()
-                self.assertEqual(betting_round.lap_counts, i)
-
-
     def test_action_ranges_method(self):
 
         "Tests valid input in the method that retrieves the action ranges."
