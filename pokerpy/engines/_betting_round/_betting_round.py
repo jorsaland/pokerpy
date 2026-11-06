@@ -107,7 +107,6 @@ class BettingRound:
 
     def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
         if exception_type is StopIteration:
-            self._is_completed = True
             exception = RuntimeError(msg_overloaded_betting_round)
         self.close(exception)
 
@@ -135,7 +134,7 @@ class BettingRound:
             if not self.is_completed:
                 next(self.listen())
         except StopIteration:
-            self._is_completed = True
+            pass
         finally:
             self.reset_betting_round_states(self.table)
 

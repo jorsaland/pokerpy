@@ -63,3 +63,5 @@ def run_listener(betting_round: "BettingRound"):
     logger.info(f'Number of laps: {betting_round.lap_counts}')
     betting_round.table.refund_excess()
     betting_round.table.gather_pot()
+
+    betting_round._is_completed = True
