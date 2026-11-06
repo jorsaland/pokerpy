@@ -60,7 +60,7 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
 
     with betting_round:
 
-        hand_cycle.set_betting_round(betting_round)
+        hand_cycle._set_betting_round(betting_round)
         logger.info(wrap_internal_log())
 
         # Deal three cards to table if round is flop and one if is turn or river
@@ -76,7 +76,7 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
         # Let players to play
         yield from betting_round.listen()
 
-    hand_cycle.reset_betting_round()
+    hand_cycle._reset_betting_round()
 
     display_cards_and_money(table)
     logger.info(wrap_middle_log(f'ending {round_name}', new_line=True))

@@ -328,43 +328,6 @@ class TestHandCycleMethods(BaseTestCase):
             self.assertTupleEqual(self.table.split_central_pot, (0,))
 
 
-    def test_betting_round_setup_methods(self):
-
-        "Tests valid input in the methods that set the current betting round."
-
-        hand_cycle = engines.HandCycle('test', self.table)
-        betting_round = engines.BettingRound('test', self.table)
-
-        with self.subTest('before betting round setup'):
-            self.assertIsNone(hand_cycle.betting_round)
-
-        with self.subTest('after betting round setup'):
-            hand_cycle.set_betting_round(betting_round)
-            self.assertEqual(hand_cycle.betting_round, betting_round)
-
-        with self.subTest('after betting round reset'):
-            hand_cycle.reset_betting_round()
-            self.assertIsNone(hand_cycle.betting_round)
-
-
-    def test_extra_blind_setup_methods(self):
-
-        "Tests valid input in the methods that set the extra blind phase indicator."
-
-        hand_cycle = engines.HandCycle('test', self.table)
-
-        with self.subTest('before indicator setup'):
-            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
-
-        with self.subTest('after indicator setup'):
-            hand_cycle.mark_in_extra_big_blinds_phase()
-            self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
-
-        with self.subTest('after indicator reset'):
-            hand_cycle.unmark_in_extra_big_blinds_phase()
-            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
-
-
 class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
 
 

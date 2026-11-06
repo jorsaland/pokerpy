@@ -149,8 +149,8 @@ class HandCycle:
         except StopIteration:
             pass
         finally:
-            self.reset_betting_round()
-            self.unmark_in_extra_big_blinds_phase()
+            self._reset_betting_round()
+            self._unmark_in_extra_big_blinds_phase()
             self.reset_hand_cycle_states(self.table)
 
         # Raise catched exceptions
@@ -202,26 +202,6 @@ class HandCycle:
     # Methods related to state
 
 
-    def set_betting_round(self, betting_round: BettingRound):
-        "Sets a betting round as the current one."
-        self._betting_round = betting_round
-
-
-    def reset_betting_round(self):
-        "Resets current betting round."
-        self._betting_round = None
-
-
-    def mark_in_extra_big_blinds_phase(self):
-        "Marks the hand cycle as in the phase of placing extra big blinds."
-        self._in_extra_big_blinds_phase = True
-
-
-    def unmark_in_extra_big_blinds_phase(self):
-        "Unmarks the hand cycle as in the phase of placing extra big blinds."
-        self._in_extra_big_blinds_phase = False
-
-
     @staticmethod
     def reset_hand_cycle_states(table: Table):
 
@@ -241,3 +221,27 @@ class HandCycle:
             player.reset_pot_index()
             player.unmark_is_folded()
             player.unmark_is_extra_blind()
+
+
+    # Helper methods
+
+
+    def _set_betting_round(self, betting_round: BettingRound):
+        "Sets a betting round as the current one."
+        self._betting_round = betting_round
+
+    def _reset_betting_round(self):
+        "Resets current betting round."
+        self._betting_round = None
+
+    def _mark_in_extra_big_blinds_phase(self):
+        "Marks the hand cycle as in the phase of placing extra big blinds."
+        self._in_extra_big_blinds_phase = True
+
+    def _unmark_in_extra_big_blinds_phase(self):
+        "Unmarks the hand cycle as in the phase of placing extra big blinds."
+        self._in_extra_big_blinds_phase = False
+
+    def _mark_is_completed(self):
+        "Mark round as completed."
+        self._is_completed = True

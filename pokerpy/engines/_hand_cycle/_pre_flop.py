@@ -61,7 +61,7 @@ def pre_flop(hand_cycle: "HandCycle"):
 
     with betting_round:
 
-        hand_cycle.set_betting_round(betting_round)
+        hand_cycle._set_betting_round(betting_round)
         logger.info(wrap_internal_log())
 
         if table.big_blind:
@@ -85,9 +85,9 @@ def pre_flop(hand_cycle: "HandCycle"):
                 extra_blind_eligible_players.remove(table.big_blind_player)
             place_big_blind(table.big_blind, table.big_blind_player)
  
-            hand_cycle.mark_in_extra_big_blinds_phase()
+            hand_cycle._mark_in_extra_big_blinds_phase()
             yield from place_extra_big_blinds(table.big_blind, extra_blind_eligible_players)
-            hand_cycle.unmark_in_extra_big_blinds_phase()
+            hand_cycle._unmark_in_extra_big_blinds_phase()
  
         logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())
@@ -95,7 +95,7 @@ def pre_flop(hand_cycle: "HandCycle"):
         hand_cycle.deal_cards_to_players(2)
         yield from betting_round.listen()
 
-    hand_cycle.reset_betting_round()
+    hand_cycle._reset_betting_round()
 
     display_cards_and_money(table)
     logger.info(wrap_middle_log(f'ending {PREFLOP}', new_line=True))
