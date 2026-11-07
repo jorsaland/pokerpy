@@ -66,9 +66,9 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             self.assertIsNone(self.Andy.requested_action)
 
 
-    def test_skip_actions(self):
+    def test_hard_skip_action(self):
 
-        "Tests skipping action parsing multiple times."
+        "Tests skipping action parsing, with the generator set to raise an error."
 
         generator = engines.await_player(
             player = self.Andy,
@@ -81,21 +81,18 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             raise_invalid_actions = True,
         )
 
-        with self.subTest('before request'):
+        with self.subTest('before skipping'):
             self.assertEqual(next(generator), self.Andy)
             self.assertIsNone(self.Andy.requested_action)
-
-        for i in range(5):
-            with self.subTest('after skipping', i=i):
-                self.assertEqual(next(generator), self.Andy)
-                self.assertIsNone(self.Andy.requested_action)
 
         with self.subTest('generator termination'):
-            self.assertEqual(next(generator), self.Andy)
+            with self.assertRaises(RuntimeError) as context:
+                next(generator)
+            self.assertEqual(context.exception.args[0], messages.msg_missing_action)
             self.assertIsNone(self.Andy.requested_action)
 
 
-    def test_skip_actions_and_parse_a_valid_action(self):
+    def test_soft_skip_actions_and_parse_a_valid_action(self):
 
         "Tests skipping action parsing multiple times and finally parsing a valid action."
 
@@ -109,7 +106,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             min_raise_increase = 2,
             is_last_actionable_player = False,
             open_fold_allowed = False,
-            raise_invalid_actions = True,
+            raise_invalid_actions = False,
         )
 
         with self.subTest('before request'):
@@ -130,39 +127,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
                 next(generator)
             self.assertEqual(context.exception.value, action)
             self.assertIsNone(self.Andy.requested_action)
-
-
-    def test_soft_parse_an_invalid_action(self):
-
-        "Tests parsing an invalid action, with the generator set to ignore it."
-
-        self.table.set_bet_level(2)
-        self.table.set_full_bet_level(2)
-
-        action = structures.Action(constants.ACTION_CHECK)
-
-        generator = engines.await_player(
-            player = self.Andy,
-            bet_level = self.table.bet_level,
-            full_bet_level = self.table.full_bet_level,
-            min_bet = 2,
-            min_raise_increase = 2,
-            is_last_actionable_player = False,
-            open_fold_allowed = False,
-            raise_invalid_actions = False,
-        )
-
-        with self.subTest('before request'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertIsNone(self.Andy.requested_action)
-
-        self.Andy.request_action(action)
-        with self.subTest('after invalid request'):
-            self.assertEqual(self.Andy.requested_action, action)
-
-        with self.subTest('generator termination'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertEqual(self.Andy.requested_action, action)
 
 
     def test_hard_parse_an_invalid_action(self):
@@ -200,14 +164,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             self.assertEqual(self.Andy.requested_action, action)
 
 
-    def test_skip_actions_and_soft_parse_an_invalid_action(self):
+    def test_soft_parse_invalid_actions_and_parse_a_valid_action(self):
 
-        "Tests skipping action parsing multiple times and finally parsing an invalid action, with the generator set to ignore it."
+        "Tests parsing an invalid action multiple times and finally parsing a valid action."
 
         self.table.set_bet_level(2)
         self.table.set_full_bet_level(2)
 
-        action = structures.Action(constants.ACTION_CHECK)
+        invalid_action = structures.Action(constants.ACTION_CHECK)
+        valid_action = structures.Action(constants.ACTION_CALL, 2)
 
         generator = engines.await_player(
             player = self.Andy,
@@ -220,78 +185,36 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             raise_invalid_actions = False,
         )
 
-        # Evaluate next states
-
         with self.subTest('before request'):
             self.assertEqual(next(generator), self.Andy)
             self.assertIsNone(self.Andy.requested_action)
 
+        self.Andy.request_action(invalid_action)
         for i in range(5):
-            with self.subTest('after skipping', i=i):
+            with self.subTest('after invalid request', i=i):
                 self.assertEqual(next(generator), self.Andy)
-                self.assertIsNone(self.Andy.requested_action)
+                self.assertEqual(self.Andy.requested_action, invalid_action)
 
-        self.Andy.request_action(action)
+        self.Andy.request_action(valid_action)
         with self.subTest('after valid request'):
-            self.assertEqual(self.Andy.requested_action, action)
+            self.assertEqual(self.Andy.requested_action, valid_action)
 
         with self.subTest('generator termination'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertEqual(self.Andy.requested_action, action)
-
-
-    def test_skip_actions_and_hard_parse_an_invalid_action(self):
-
-        "Tests skipping action parsing multiple times and finally parsing an invalid action, with the generator set to raise an error."
-
-        self.table.set_bet_level(2)
-        self.table.set_full_bet_level(2)
-
-        action = structures.Action(constants.ACTION_CHECK)
-
-        generator = engines.await_player(
-            player = self.Andy,
-            bet_level = self.table.bet_level,
-            full_bet_level = self.table.full_bet_level,
-            min_bet = 2,
-            min_raise_increase = 2,
-            is_last_actionable_player = False,
-            open_fold_allowed = False,
-            raise_invalid_actions = True,
-        )
-
-        with self.subTest('before request'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertIsNone(self.Andy.requested_action)
-
-        for i in range(5):
-            with self.subTest('after skipping', i=i):
-                self.assertEqual(next(generator), self.Andy)
-                self.assertIsNone(self.Andy.requested_action)
-
-        self.Andy.request_action(action)
-        with self.subTest('after valid request'):
-            self.assertEqual(self.Andy.requested_action, action)
-
-        with self.subTest('generator termination'):
-            with self.assertRaises(RuntimeError) as context:
+            with self.assertRaises(StopIteration) as context:
                 next(generator)
-            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
-            self.assertEqual(self.Andy.requested_action, action)
+            self.assertEqual(context.exception.value, valid_action)
+            self.assertIsNone(self.Andy.requested_action)
 
 
-    def test_skip_actions_and_soft_parse_multiple_invalid_actions(self):
+    def test_soft_skip_actions_and_parse_invalid_actions_and_parse_a_valid_action(self):
 
-        "Tests skipping action parsing multiple times and finally parsing multiple invalid actions, with the generator set to ignore them."
+        "Tests skipping action parsing and parsing multiple invalid actions, with the generator set to ignore them, and finally parsing a valid action."
 
         self.table.set_bet_level(2)
         self.table.set_full_bet_level(2)
 
-        actions = [
-            structures.Action(constants.ACTION_CHECK),
-            structures.Action(constants.ACTION_CALL, 1),
-            structures.Action(constants.ACTION_RAISE, 1),
-        ]
+        invalid_action = structures.Action(constants.ACTION_CHECK)
+        valid_action = structures.Action(constants.ACTION_CALL, 2)
 
         generator = engines.await_player(
             player = self.Andy,
@@ -309,64 +232,18 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             self.assertIsNone(self.Andy.requested_action)
 
         for i in range(5):
-            with self.subTest('skipping', i=i):
+            with self.subTest('after skipping', i=i):
                 self.assertEqual(next(generator), self.Andy)
                 self.assertIsNone(self.Andy.requested_action)
 
-        for action in actions:
-            with self.subTest('after invalid action', action=action):
-                self.assertEqual(next(generator), self.Andy)
-                self.Andy.request_action(action)
-                self.assertEqual(self.Andy.requested_action, action)
-
-        with self.subTest('generator termination'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertEqual(self.Andy.requested_action, action)
-
-
-    def test_skip_actions_soft_parse_multiple_invalid_actions_and_parse_a_valid_action(self):
-
-        "Tests parsing multiple invalid actions, with the generator set to ignore them, and finally parsing a valid action."
-
-        self.table.set_bet_level(2)
-        self.table.set_full_bet_level(2)
-
-        invalid_actions = [
-            structures.Action(constants.ACTION_CHECK),
-            structures.Action(constants.ACTION_CALL, 1),
-            structures.Action(constants.ACTION_BET, 1),
-        ]
-        valid_action = structures.Action(constants.ACTION_FOLD)
-
-        generator = engines.await_player(
-            player = self.Andy,
-            bet_level = self.table.bet_level,
-            full_bet_level = self.table.full_bet_level,
-            min_bet = 2,
-            min_raise_increase = 2,
-            is_last_actionable_player = False,
-            open_fold_allowed = False,
-            raise_invalid_actions = False,
-        )
-
-        with self.subTest('before request'):
-            self.assertEqual(next(generator), self.Andy)
-            self.assertIsNone(self.Andy.requested_action)
-
+        self.Andy.request_action(invalid_action)
         for i in range(5):
-            with self.subTest('skipping', i=i):
+            with self.subTest('after invalid request', i=i):
                 self.assertEqual(next(generator), self.Andy)
-                self.assertIsNone(self.Andy.requested_action)
+                self.assertEqual(self.Andy.requested_action, invalid_action)
 
-        for action in invalid_actions:
-            with self.subTest('after invalid action', action=action):
-                self.assertEqual(next(generator), self.Andy)
-                self.Andy.request_action(action)
-                self.assertEqual(self.Andy.requested_action, action)
-
-        with self.subTest('after valid action', action=valid_action):
-            self.assertEqual(next(generator), self.Andy)
-            self.Andy.request_action(valid_action)
+        self.Andy.request_action(valid_action)
+        with self.subTest('after valid request'):
             self.assertEqual(self.Andy.requested_action, valid_action)
 
         with self.subTest('generator termination'):

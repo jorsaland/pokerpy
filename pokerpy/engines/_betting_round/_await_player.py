@@ -19,7 +19,7 @@ Defines the function that listens to a player until it chooses a valid action.
 
 
 from pokerpy.logger import logger
-from pokerpy.messages import msg_forbidden_action
+from pokerpy.messages import msg_forbidden_action, msg_missing_action
 from pokerpy.structures import Player
 
 
@@ -52,7 +52,10 @@ def await_player(
         # Determine whether action is valid or not
 
         action = player.requested_action
+
         if action is None:
+            if raise_invalid_actions:
+                raise RuntimeError(msg_missing_action)
             continue
 
         amount_range_by_action = get_valid_actions(

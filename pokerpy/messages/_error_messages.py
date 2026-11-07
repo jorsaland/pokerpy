@@ -42,3 +42,4 @@ msg_hand_cycle_was_not_completed = "the hand cycle was closed before being compl
 msg_overloaded_betting_round = "some players could not be listened because the betting round already ended"
 msg_overloaded_hand_cycle = "some players could not be listened because the hand cycle already ended"
 msg_forbidden_action = "the requested action is not allowed in this context"
+msg_missing_action = "no action was requested"
