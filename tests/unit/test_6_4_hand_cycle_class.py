@@ -344,6 +344,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in self.extra_blind_players:
             with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -351,6 +352,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in [*self.setup_players[3:], *self.setup_players[:3]]:
             if player == self.Boa:
@@ -365,6 +367,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for round_name in constants.after_preflop_round_names:
             for player in [*self.setup_players[1:], *self.setup_players[:1]]:
@@ -374,11 +377,13 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after actions'):
             self.assertEqual(hand_cycle.betting_round.name, constants.RIVER)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_function_next_calling_close_at_end(self):
@@ -391,6 +396,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in self.extra_blind_players:
             with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -398,6 +404,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in [*self.setup_players[3:], *self.setup_players[:3]]:
             if player == self.Boa:
@@ -412,6 +419,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for round_name in constants.after_preflop_round_names:
             for player in [*self.setup_players[1:], *self.setup_players[:1]]:
@@ -421,11 +429,13 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after actions, before close'):
             self.assertEqual(hand_cycle.betting_round.name, constants.RIVER)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         hand_cycle.close() # needed in this case to finish the generator after the last action
 
@@ -433,6 +443,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_function_next_calling_close_at_extra_blind_phase(self):
@@ -445,6 +456,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('close before time'):
             next(hand_cycle.listen())
@@ -456,6 +468,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_function_next_calling_close_before_end(self):
@@ -468,6 +481,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in self.extra_blind_players:
             with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -475,6 +489,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for player in [*self.setup_players[3:], *self.setup_players[:3]]:
             if player == self.Boa:
@@ -489,6 +504,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                 self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('close before time'):
             with self.assertRaises(RuntimeError) as inner_context:
@@ -499,16 +515,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
-
-        with self.subTest('close before time'):
-            with self.assertRaises(RuntimeError) as context:
-                hand_cycle.close()
-
-        with self.subTest('after close'):
-            self.assertEqual(context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
-            self.assertIsNone(hand_cycle.betting_round)
-            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
-            self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_loop_missing_close(self):
@@ -521,6 +528,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for i, player in enumerate(hand_cycle.listen()):
 
@@ -530,6 +538,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             elif i <= 9:
                 if player == self.Boa:
@@ -544,6 +553,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             elif i <= 27:
                 if i <= 15:
@@ -558,11 +568,13 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after actions'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_loop_calling_close_at_end(self):
@@ -575,6 +587,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         for i, player in enumerate(hand_cycle.listen()):
 
@@ -584,6 +597,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             elif i <= 9:
                 if player == self.Boa:
@@ -598,6 +612,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             elif i <= 27:
                 if i <= 15:
@@ -612,11 +627,13 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, round_name)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after actions, before close'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         hand_cycle.close() # redundant, the loop already closed the generator
 
@@ -624,6 +641,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_loop_calling_close_at_extra_blind_phase(self):
@@ -636,6 +654,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('close before time'):
             context = None
@@ -649,6 +668,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_no_context_manager_flow_with_loop_calling_close_before_end(self):
@@ -662,6 +682,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('close before time'):
 
@@ -674,6 +695,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 elif i <= 9: # preflop
                     if player == self.Boa:
@@ -688,6 +710,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 else:
                     with self.assertRaises(RuntimeError) as context:
@@ -699,6 +722,7 @@ class TestHandCycleFlowWithoutContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
 class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
@@ -717,6 +741,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for player in self.extra_blind_players:
                 with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -724,6 +749,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for player in [*self.setup_players[3:], *self.setup_players[:3]]:
                 if player == self.Boa:
@@ -738,6 +764,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for round_name in constants.after_preflop_round_names:
                 for player in [*self.setup_players[1:], *self.setup_players[:1]]:
@@ -747,16 +774,19 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, round_name)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             with self.subTest('after actions'):
                 self.assertEqual(hand_cycle.betting_round.name, constants.RIVER)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_function_next_calling_close_at_end(self):
@@ -769,6 +799,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for player in self.extra_blind_players:
                 with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -776,6 +807,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for player in [*self.setup_players[3:], *self.setup_players[:3]]:
                 if player == self.Boa:
@@ -790,6 +822,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for round_name in constants.after_preflop_round_names:
                 for player in [*self.setup_players[1:], *self.setup_players[:1]]:
@@ -799,11 +832,13 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, round_name)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             with self.subTest('after actions, before close'):
                 self.assertEqual(hand_cycle.betting_round.name, constants.RIVER)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             hand_cycle.close() # redundant, the context manager will close the generator
 
@@ -811,11 +846,13 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertTrue(hand_cycle.is_completed)
+                self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_function_next_calling_close_at_extra_blind_phase(self):
@@ -830,6 +867,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('close before time'):
                     next(hand_cycle.listen())
@@ -841,12 +879,14 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_function_next_calling_close_before_end(self):
@@ -861,6 +901,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 for player in self.extra_blind_players:
                     with self.subTest('extra blind phase (preflop)', player=player.name):
@@ -868,6 +909,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 for player in [*self.setup_players[3:], *self.setup_players[:3]]:
                     if player == self.Boa:
@@ -882,6 +924,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('close before time'):
                     with self.assertRaises(RuntimeError) as inner_context:
@@ -892,12 +935,14 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_loop_missing_close(self):
@@ -910,6 +955,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for i, player in enumerate(hand_cycle.listen()):
 
@@ -919,6 +965,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 elif i <= 9:
                     if player == self.Boa:
@@ -933,6 +980,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 elif i <= 27:
                     if i <= 15:
@@ -947,16 +995,19 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, round_name)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             with self.subTest('after actions'):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertTrue(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_loop_calling_close_at_end(self):
@@ -969,6 +1020,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertFalse(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             for i, player in enumerate(hand_cycle.listen()):
 
@@ -978,6 +1030,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 elif i <= 9:
                     if player == self.Boa:
@@ -992,6 +1045,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 elif i <= 27:
                     if i <= 15:
@@ -1006,11 +1060,13 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                         self.assertEqual(hand_cycle.betting_round.name, round_name)
                         self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                         self.assertFalse(hand_cycle.is_completed)
+                        self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             with self.subTest('after actions, before close'):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertTrue(hand_cycle.is_completed)
+                self.assertFalse(hand_cycle.was_reseted_at_closure)
 
             hand_cycle.close() # redundant, the loop already closed the generator
 
@@ -1018,11 +1074,13 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                 self.assertIsNone(hand_cycle.betting_round)
                 self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                 self.assertTrue(hand_cycle.is_completed)
+                self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_loop_calling_close_at_extra_blind_phase(self):
@@ -1037,6 +1095,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('close before time'):
                     inner_context = None
@@ -1050,12 +1109,14 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_with_loop_calling_close_before_end(self):
@@ -1070,6 +1131,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('close before time'):
 
@@ -1082,6 +1144,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                             self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                             self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                             self.assertFalse(hand_cycle.is_completed)
+                            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                         elif i <= 9: # preflop
                             if player == self.Boa:
@@ -1095,6 +1158,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                             self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                             self.assertFalse(hand_cycle.is_completed)
+                            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                         else:
                             with self.assertRaises(RuntimeError) as inner_context:
@@ -1106,12 +1170,14 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertTrue(hand_cycle.was_reseted_at_closure)
 
         with self.subTest('after exit'):
             self.assertEqual(outer_context.exception.args[0], messages.msg_hand_cycle_was_not_completed)
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_overloading_the_listener(self):
@@ -1126,6 +1192,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 for i, player in enumerate(hand_cycle.listen()):
 
@@ -1135,6 +1202,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                             self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                             self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
                             self.assertFalse(hand_cycle.is_completed)
+                            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                     elif i <= 9:
                         if player == self.Boa:
@@ -1149,6 +1217,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                             self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
                             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                             self.assertFalse(hand_cycle.is_completed)
+                            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                     elif i <= 27:
                         if i <= 15:
@@ -1163,11 +1232,13 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                             self.assertEqual(hand_cycle.betting_round.name, round_name)
                             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                             self.assertFalse(hand_cycle.is_completed)
+                            self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('after actions'):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertTrue(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
 
                 with self.subTest('listener overload'):
                     with self.assertRaises(StopIteration) as inner_context:
@@ -1176,6 +1247,7 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
                     self.assertIsNone(hand_cycle.betting_round)
                     self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
                     self.assertTrue(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
                 raise inner_context.exception
 
         with self.subTest('after exit'):
@@ -1183,18 +1255,40 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
             self.assertIsNone(hand_cycle.betting_round)
             self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertTrue(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
     def test_context_manager_flow_raising_exception(self):
 
         "Tests flow, raising an exception inside the context manager."
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as outer_context:
+
             with engines.HandCycle('test', self.table) as hand_cycle:
-                raise ValueError()
-        
+
+                with self.subTest('before actions'):
+                    self.assertIsNone(hand_cycle.betting_round)
+                    self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
+
+                with self.subTest('raise exception'):
+                    next(hand_cycle.listen())
+                    with self.assertRaises(ValueError) as inner_context:
+                        raise ValueError('inner error')
+                    self.assertEqual(inner_context.exception.args[0], 'inner error')
+                    self.assertEqual(hand_cycle.betting_round.name, constants.PREFLOP)
+                    self.assertTrue(hand_cycle.in_extra_big_blinds_phase)
+                    self.assertFalse(hand_cycle.is_completed)
+                    self.assertFalse(hand_cycle.was_reseted_at_closure)
+                raise inner_context.exception
+
         with self.subTest('after exit'):
+            self.assertEqual(outer_context.exception.args[0], 'inner error')
+            self.assertIsNone(hand_cycle.betting_round)
+            self.assertFalse(hand_cycle.in_extra_big_blinds_phase)
             self.assertFalse(hand_cycle.is_completed)
+            self.assertTrue(hand_cycle.was_reseted_at_closure)
 
 
 if __name__ == '__main__':

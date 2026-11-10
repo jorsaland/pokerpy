@@ -72,6 +72,7 @@ class HandCycle:
         self._betting_round: (BettingRound|None) = None
         self._in_extra_big_blinds_phase = False
         self._is_completed = False
+        self._was_reseted_at_closure = False
 
 
     @property
@@ -100,6 +101,11 @@ class HandCycle:
         return self._is_completed
 
     @property
+    def was_reseted_at_closure(self):
+        "Whether the hand cycle states were reseted at closure (helps to track closure behaviour in unit tests)."
+        return self._was_reseted_at_closure
+
+    @property
     def open_fold_allowed(self):
         "Whether folding is allowed when there is no bet or raise to respond to."
         return self._open_fold_allowed
@@ -124,7 +130,10 @@ class HandCycle:
             self.close()
             return
 
+        self._reset_betting_round()
+        self._unmark_in_extra_big_blinds_phase()
         self.reset_hand_cycle_states(self.table)
+        self._was_reseted_at_closure = True
         if exception_type is StopIteration:
             raise RuntimeError(msg_overloaded_hand_cycle) from exception_value
 
@@ -157,6 +166,7 @@ class HandCycle:
             self._reset_betting_round()
             self._unmark_in_extra_big_blinds_phase()
             self.reset_hand_cycle_states(self.table)
+            self._was_reseted_at_closure = True
 
         if not self.is_completed:
             logger.critical(wrap_external_log('the hand cycle was closed before ending'))
