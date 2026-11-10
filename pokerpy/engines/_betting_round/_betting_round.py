@@ -105,10 +105,15 @@ class BettingRound:
         return self
 
 
-    def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
+    def __exit__(self, exception_type: (type|None), exception_value: (BaseException|None), _):
+
+        if exception_type is None:
+            self.close()
+            return
+
+        self.reset_betting_round_states(self.table)
         if exception_type is StopIteration:
-            exception = RuntimeError(msg_overloaded_betting_round)
-        self.close(exception)
+            raise RuntimeError(msg_overloaded_betting_round) from exception_value
 
 
     # Methods to control the listener
@@ -125,11 +130,10 @@ class BettingRound:
         return self._listener
 
 
-    def close(self, exception: (BaseException|None) = None):
+    def close(self):
 
         "Runs the last step in the betting round."
 
-        # End running iteration after last yield
         try:
             if not self.is_completed:
                 next(self.listen())
@@ -138,11 +142,6 @@ class BettingRound:
         finally:
             self.reset_betting_round_states(self.table)
 
-        # Raise catched exceptions
-        if exception is not None:
-            raise exception
-
-        # Validate the listener has ended
         if not self.is_completed:
             logger.critical(wrap_external_log('the betting round was closed before ending'))
             raise RuntimeError(msg_betting_round_was_not_completed)

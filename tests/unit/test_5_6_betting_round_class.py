@@ -494,5 +494,17 @@ class TestBettingRoundFlowWithContextManager(BaseTestCase):
             self.assertTrue(betting_round.is_completed)
 
 
+    def test_context_manager_flow_raising_exception(self):
+
+        "Tests flow, raising an exception inside the context manager."
+
+        with self.assertRaises(ValueError):
+            with engines.BettingRound('test', self.table) as betting_round:
+                raise ValueError()
+        
+        with self.subTest('after exit'):
+            self.assertFalse(betting_round.is_completed)
+
+
 if __name__ == '__main__':
     main()

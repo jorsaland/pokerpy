@@ -118,10 +118,15 @@ class HandCycle:
         return self
 
 
-    def __exit__(self, exception_type: (type|None), exception: (BaseException|None), _):
+    def __exit__(self, exception_type: (type|None), exception_value: (BaseException|None), _):
+
+        if exception_type is None:
+            self.close()
+            return
+
+        self.reset_hand_cycle_states(self.table)
         if exception_type is StopIteration:
-            exception = RuntimeError(msg_overloaded_hand_cycle)
-        self.close(exception)
+            raise RuntimeError(msg_overloaded_hand_cycle) from exception_value
 
 
     # Methods to control the listener
@@ -138,7 +143,7 @@ class HandCycle:
         return self._listener
 
 
-    def close(self, exception: (BaseException|None) = None):
+    def close(self):
 
         "Runs the last step in the betting round."
 
@@ -153,11 +158,6 @@ class HandCycle:
             self._unmark_in_extra_big_blinds_phase()
             self.reset_hand_cycle_states(self.table)
 
-        # Raise catched exceptions
-        if exception is not None:
-            raise exception
-
-        # Validate the listener has ended
         if not self.is_completed:
             logger.critical(wrap_external_log('the hand cycle was closed before ending'))
             raise RuntimeError(msg_hand_cycle_was_not_completed)

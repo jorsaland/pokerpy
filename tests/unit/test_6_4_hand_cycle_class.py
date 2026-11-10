@@ -1185,5 +1185,17 @@ class TestHandCycleFlowWithContextManager(BaseFlowTestCase):
             self.assertTrue(hand_cycle.is_completed)
 
 
+    def test_context_manager_flow_raising_exception(self):
+
+        "Tests flow, raising an exception inside the context manager."
+
+        with self.assertRaises(ValueError):
+            with engines.HandCycle('test', self.table) as hand_cycle:
+                raise ValueError()
+        
+        with self.subTest('after exit'):
+            self.assertFalse(hand_cycle.is_completed)
+
+
 if __name__ == '__main__':
     main()
