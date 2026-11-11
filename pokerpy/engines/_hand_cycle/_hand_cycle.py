@@ -133,6 +133,15 @@ class HandCycle:
             self.close()
             return
 
+        # Closes the listener generator on the abort path. If an exception is raised on the
+        # caller's side (for example in a state method such as deal_cards), the generator stays
+        # suspended at yield and its nested with blocks do not unwind. Their cleanup would then run
+        # at garbage collection or interpreter shutdown, when imports no longer work, producing a
+        # misleading "ImportError: sys.meta_path is None" that hides the real error. Generator's
+        # method close() throws GeneratorExit through every `yield from`, so the cleanup runs here,
+        # deterministically. It is a harmless if the generator has already finished.
+        self._listener.close()
+
         self._reset_betting_round()
         self._unmark_in_extra_big_blinds_phase()
         self.reset_hand_cycle_states(self.table)
