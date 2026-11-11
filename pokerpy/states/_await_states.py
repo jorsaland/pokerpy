@@ -226,4 +226,57 @@ class PlayerCardsDealAwait(Await):
         validate_type_iterable(cards)
         validate_all_type_card(cards)
 
-        self._dealt_cards = cards
+        self._dealt_cards = tuple(cards)
+
+
+class CommonCardsDealAwait(Await):
+
+
+    "Await object for common cards dealing."
+
+
+    def __init__(self, *, count: int, deck: tuple[Card, ...]):
+
+        self._count = count
+        self._deck = deck
+
+        self._dealt_cards: tuple[Card, ...] = ()
+
+
+    @property
+    def count(self):
+        "Number of cards to be dealt."
+        return self._count
+
+    @property
+    def deck(self):
+        "Available cards in the deck."
+        return self._deck
+
+    @property
+    def dealt_cards(self):
+        "Cards dealt to the player."
+        return self._dealt_cards
+
+
+    def to_dict(self):
+
+        "Serializes the state object to JSON format."
+
+        card_dicts: list[CardDict] = [{'value': card.value, 'suit': card.suit} for card in self.deck]
+
+        state_dict: PlayerCardsDealAwaitDict = {
+            'count': self.count,
+            'deck': card_dicts,
+        }
+        return state_dict
+
+
+    def deal_cards(self, cards: Iterable[Card]):
+
+        "Chooses an action to request."
+
+        validate_type_iterable(cards)
+        validate_all_type_card(cards)
+
+        self._dealt_cards = tuple(cards)

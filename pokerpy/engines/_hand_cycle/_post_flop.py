@@ -28,6 +28,7 @@ from pokerpy.logger import logger, wrap_internal_log, wrap_middle_log
 from .._betting_round._betting_round import BettingRound
 
 from ._assign_hand import assign_hand
+from ._deal_common_cards import deal_common_cards
 from ._display_status import display_cards_and_money
 
 if TYPE_CHECKING:
@@ -66,9 +67,9 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
         # Deal three cards to table if round is flop and one if is turn or river
 
         if round_name == FLOP:
-            hand_cycle.deal_common_cards(3)        
+            yield from deal_common_cards(hand_cycle, 3)
         else:
-            hand_cycle.deal_common_cards(1)
+            yield from deal_common_cards(hand_cycle, 1)
 
         for player in table.players:
             assign_hand(player=player, common_cards=table.common_cards)

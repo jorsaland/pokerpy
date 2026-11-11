@@ -18,25 +18,10 @@ Defines the class that represents a betting round context manager.
 """
 
 
-import secrets
-
-
-from pokerpy.logger import logger, wrap_internal_log, wrap_external_log
-from pokerpy.messages import (
-    msg_hand_cycle_was_not_completed,
-    msg_overloaded_hand_cycle,
-)
-from pokerpy.states import PlayerCardsDealAwait
+from pokerpy.logger import logger, wrap_external_log
+from pokerpy.messages import msg_hand_cycle_was_not_completed, msg_overloaded_hand_cycle
 from pokerpy.structures import Table
-from pokerpy.validations import (
-    validate_int_positive,
-    validate_iterable_has_n_cards,
-    validate_iterable_not_repeated_cards,
-    validate_card_in_deck,
-    validate_type_int,
-    validate_type_str,
-    validate_type_table,
-)
+from pokerpy.validations import validate_type_str, validate_type_table
 
 
 from .._betting_round._betting_round import BettingRound
@@ -183,25 +168,6 @@ class HandCycle:
         if not self.is_completed:
             logger.critical(wrap_external_log('the hand cycle was closed before ending'))
             raise RuntimeError(msg_hand_cycle_was_not_completed)
-
-
-    # Methods to deal cards
-
-
-    def deal_common_cards(self, cards_count: int):
-
-        "Deals common cards to table."
-
-        validate_type_int(cards_count)
-        validate_int_positive(cards_count)
-
-        for _ in range(cards_count):
-            card = secrets.choice(self.table.deck)
-            self.table.remove_card_from_deck(card)
-            self.table.assign_common_card(card)
-        
-        logger.info(f'Dealer deals common cards: {"".join(str(card) for card in self.table.common_cards[-cards_count:])}.')
-        logger.info(wrap_internal_log())
 
 
     # Methods related to state
