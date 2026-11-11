@@ -71,12 +71,12 @@ def validate_int_zero(amount: int):
         raise ValueError(messages.msg_not_zero_value.format(amount))
 
 
-def validate_iterable_5_cards_hand(cards: Iterable["structures.Card"]):
+def validate_iterable_has_n_cards(cards: Iterable["structures.Card"], amount: int):
 
-    "Validates a hand contains exactly five cards."
+    "Validates an iterable contains an exact amount cards."
 
-    if len(cards) != 5:
-        raise ValueError(messages.msg_not_five_cards_hand)
+    if len(cards) != amount:
+        raise ValueError(messages.msg_not_exact_amount_of_cards.format(amount))
 
 
 def validate_iterable_not_repeated_cards(cards: Iterable["structures.Card"]):

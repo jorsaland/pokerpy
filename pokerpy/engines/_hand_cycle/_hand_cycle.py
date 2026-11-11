@@ -26,9 +26,13 @@ from pokerpy.messages import (
     msg_hand_cycle_was_not_completed,
     msg_overloaded_hand_cycle,
 )
+from pokerpy.states import PlayerCardsDealAwait
 from pokerpy.structures import Table
 from pokerpy.validations import (
     validate_int_positive,
+    validate_iterable_has_n_cards,
+    validate_iterable_not_repeated_cards,
+    validate_card_in_deck,
     validate_type_int,
     validate_type_str,
     validate_type_table,
@@ -173,23 +177,6 @@ class HandCycle:
 
 
     # Methods to deal cards
-
-    
-    def deal_cards_to_players(self, cards_count: int):
-
-        "Deals cards to players in equal amounts."
-
-        validate_type_int(cards_count)
-        validate_int_positive(cards_count)
-
-        for _ in range(cards_count):
-            for player in self.table.live_players:
-                card = secrets.choice(self.table.deck)
-                self.table.remove_card_from_deck(card)
-                player.assign_card(card)
-                logger.info(f'Dealer deals card {card} to {player.name}.')
-
-        logger.info(wrap_internal_log())
 
 
     def deal_common_cards(self, cards_count: int):

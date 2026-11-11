@@ -16,11 +16,17 @@
 "Defines the classes that represent await states."
 
 
+from collections.abc import Iterable
 from typing import Literal, TypedDict
 
 
-from pokerpy.structures import Action, Player
-from pokerpy.validations import validate_type_action
+from pokerpy.structures import Action, Card, Player
+from pokerpy.validations import (
+    validate_type_action,
+    validate_type_iterable,
+    validate_all_type_card,
+    validate_iterable_not_repeated_cards,
+)
 
 
 ActionName = Literal['check', "fold", "call", "bet", "raise"]
@@ -30,6 +36,9 @@ class PlayerDict(TypedDict):
     name: str
     stack: int
 
+class CardDict(TypedDict):
+    value: str
+    suit: str
 
 class RangeDict(TypedDict):
     min: int
@@ -46,6 +55,12 @@ class PlayerBlindAwaitDict(TypedDict):
     place_blind: bool
 
 
+class PlayerCardsDealAwaitDict(TypedDict):
+    player: PlayerDict
+    count: int
+    deck: list[CardDict]
+
+
 class Await:
     "Base class that represents an await state."
     pass
@@ -58,8 +73,10 @@ class PlayerBlindAwait(Await):
 
 
     def __init__(self, *, player: Player, amount: int):
+
         self._player = player
         self._amount = amount
+
         self._placed_blind = False
 
 
@@ -106,8 +123,10 @@ class PlayerActionAwait(Await):
 
 
     def __init__(self, *, player: Player, ranges: dict[ActionName, RangeDict]):
+
         self._player = player
         self._ranges = ranges
+
         self._requested_action: Action|None = None
 
 
@@ -147,3 +166,64 @@ class PlayerActionAwait(Await):
 
         validate_type_action(action)
         self._requested_action = action
+
+
+class PlayerCardsDealAwait(Await):
+
+
+    "Await object for player cards dealing."
+
+
+    def __init__(self, *, player: Player, count: int, deck: tuple[Card, ...]):
+
+        self._player = player
+        self._count = count
+        self._deck = deck
+
+        self._dealt_cards: tuple[Card, ...] = ()
+
+
+    @property
+    def player(self):
+        "Player to be awaited."
+        return self._player
+
+    @property
+    def count(self):
+        "Number of cards to be dealt."
+        return self._count
+
+    @property
+    def deck(self):
+        "Available cards in the deck."
+        return self._deck
+
+    @property
+    def dealt_cards(self):
+        "Cards dealt to the player."
+        return self._dealt_cards
+
+
+    def to_dict(self):
+
+        "Serializes the state object to JSON format."
+
+        player_dict: PlayerDict = {'name': self.player.name, 'stack': self.player.stack}
+        card_dicts: list[CardDict] = [{'value': card.value, 'suit': card.suit} for card in self.deck]
+
+        state_dict: PlayerCardsDealAwaitDict = {
+            'player': player_dict,
+            'count': self.count,
+            'deck': card_dicts,
+        }
+        return state_dict
+
+
+    def deal_cards(self, cards: Iterable[Card]):
+
+        "Chooses an action to request."
+
+        validate_type_iterable(cards)
+        validate_all_type_card(cards)
+
+        self._dealt_cards = cards

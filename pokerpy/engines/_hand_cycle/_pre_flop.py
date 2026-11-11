@@ -27,6 +27,7 @@ from pokerpy.logger import logger, wrap_middle_log, wrap_internal_log
 
 from .._betting_round._betting_round import BettingRound
 
+from ._deal_cards_to_players import deal_cards_to_players
 from ._display_status import display_cards_and_money
 from ._place_big_blind import place_big_blind
 from ._place_extra_big_blinds import place_extra_big_blinds
@@ -92,7 +93,7 @@ def pre_flop(hand_cycle: "HandCycle"):
         logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())
 
-        hand_cycle.deal_cards_to_players(2)
+        yield from deal_cards_to_players(hand_cycle, 2)
         yield from betting_round.listen()
 
     hand_cycle._reset_betting_round()

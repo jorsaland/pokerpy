@@ -1,0 +1,62 @@
+# Copyright 2026 Andrés Saldarriaga Jordan (jorsaland)
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+"""
+Defines the function that starts the hand cycle generator that rotates the player turns.
+"""
+
+
+from typing import TYPE_CHECKING
+
+
+from pokerpy.logger import logger, wrap_internal_log
+from pokerpy.states import PlayerCardsDealAwait
+from pokerpy.validations import (
+    validate_card_in_deck,
+    validate_int_positive,
+    validate_iterable_has_n_cards,
+    validate_iterable_not_repeated_cards,
+    validate_type_int,
+)
+
+
+if TYPE_CHECKING:
+    from ._hand_cycle import HandCycle
+
+
+def deal_cards_to_players(hand_cycle: "HandCycle", cards_count: int):
+
+    "Deals cards to players in equal amounts."
+
+    validate_type_int(cards_count)
+    validate_int_positive(cards_count)
+
+    for player in hand_cycle.table.live_players:
+
+        yield (await_state := PlayerCardsDealAwait(player=player, count=cards_count, deck=hand_cycle.table.deck))
+
+        chosen_cards = await_state.dealt_cards
+
+        validate_iterable_has_n_cards(chosen_cards, cards_count)
+        validate_iterable_not_repeated_cards(chosen_cards)
+        for card in chosen_cards:
+            validate_card_in_deck(card, hand_cycle.table.deck)
+
+        for card in chosen_cards:
+            hand_cycle.table.remove_card_from_deck(card)
+            player.assign_card(card)
+        logger.info(f'Dealer deals cards {"".join(str(card) for card in chosen_cards)} to {player.name}.')
+
+    logger.info(wrap_internal_log())

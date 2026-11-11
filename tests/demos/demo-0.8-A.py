@@ -11,6 +11,7 @@ sys.path.insert(0, '.')
 
 
 import random
+import secrets
 
 
 import pokerpy as pk
@@ -87,6 +88,11 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
                     assert isinstance(await_state, pk.PlayerBlindAwait)
                     if random.randint(0, 1):
                         await_state.place_blind()
+                    continue
+
+                if isinstance(await_state, pk.PlayerCardsDealAwait):
+                    cards = secrets.SystemRandom().sample(await_state.deck, await_state.count)
+                    await_state.deal_cards(cards)
                     continue
 
                 assert isinstance(await_state, pk.PlayerActionAwait)

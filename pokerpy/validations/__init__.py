@@ -25,7 +25,7 @@ from ._value_validations import (
     validate_int_positive_or_zero,
     validate_int_small_blind_relation_to_big_blind,
     validate_int_zero,
-    validate_iterable_5_cards_hand,
+    validate_iterable_has_n_cards,
     validate_iterable_not_contains_card,
     validate_iterable_not_repeated_cards,
     validate_player_in_table,
