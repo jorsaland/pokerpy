@@ -20,6 +20,7 @@ Defines the function that listens to a player until it chooses a valid action.
 
 from pokerpy.logger import logger
 from pokerpy.messages import msg_forbidden_action, msg_missing_action
+from pokerpy.states import PlayerActionAwait
 from pokerpy.structures import Player
 
 
@@ -47,17 +48,6 @@ def await_player(
 
         # Await for player's action
 
-        yield player
-
-        # Determine whether action is valid or not
-
-        action = player.requested_action
-
-        if action is None:
-            if raise_invalid_actions:
-                raise RuntimeError(msg_missing_action)
-            continue
-
         amount_range_by_action = get_valid_actions(
             player_stack = player.stack,
             player_bet_level = player.bet_level,
@@ -69,6 +59,18 @@ def await_player(
             is_last_actionable_player = is_last_actionable_player,
             open_fold_allowed = open_fold_allowed,
         )
+
+        yield (await_state := PlayerActionAwait(player=player, ranges=amount_range_by_action))
+
+        # Determine whether action is valid or not
+
+        action = await_state.requested_action
+
+        if action is None:
+            if raise_invalid_actions:
+                raise RuntimeError(msg_missing_action)
+            continue
+
         amount_range = amount_range_by_action.get(action.category)
         if amount_range is not None and action.amount in amount_range:
             break
@@ -79,5 +81,4 @@ def await_player(
 
     # Reset player and return requested action
 
-    player.clear_action()
     return action

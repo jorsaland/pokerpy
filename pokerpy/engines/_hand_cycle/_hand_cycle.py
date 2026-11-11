@@ -18,7 +18,6 @@ Defines the class that represents a betting round context manager.
 """
 
 
-from collections.abc import Generator
 import secrets
 
 
@@ -27,7 +26,7 @@ from pokerpy.messages import (
     msg_hand_cycle_was_not_completed,
     msg_overloaded_hand_cycle,
 )
-from pokerpy.structures import Player, Table
+from pokerpy.structures import Table
 from pokerpy.validations import (
     validate_int_positive,
     validate_type_int,
@@ -62,7 +61,7 @@ class HandCycle:
         validate_type_table(table)
 
         # Fixed attributes
-        self._listener: (Generator[Player]|None) = None
+        self._listener = None
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
@@ -230,7 +229,6 @@ class HandCycle:
             player.clear_hand()
             player.reset_pot_index()
             player.unmark_is_folded()
-            player.unmark_is_extra_blind()
 
 
     # Helper methods

@@ -18,15 +18,12 @@ Defines the class that represents a betting round context manager.
 """
 
 
-from collections.abc import Generator
-
-
 from pokerpy.logger import logger, wrap_external_log
 from pokerpy.messages import (
     msg_betting_round_was_not_completed,
     msg_overloaded_betting_round,
 )
-from pokerpy.structures import Player, Table
+from pokerpy.structures import Table
 from pokerpy.validations import validate_type_str, validate_type_table
 
 
@@ -55,7 +52,7 @@ class BettingRound:
         validate_type_table(table)
 
         # Fixed attributes
-        self._listener: (Generator[Player]|None) = None
+        self._listener = None
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
@@ -192,7 +189,6 @@ class BettingRound:
 
         for player in table.players:
             player.unmark_has_played()
-            player.clear_action()
 
 
     # Helper methods

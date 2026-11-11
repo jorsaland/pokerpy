@@ -20,6 +20,7 @@ from collections.abc import Iterable
 
 
 from pokerpy.logger import logger, wrap_internal_log
+from pokerpy.states import PlayerBlindAwait
 from pokerpy.structures import Player
 
 
@@ -29,12 +30,14 @@ def place_extra_big_blinds(blind_amount: int, eligible_players: Iterable[Player]
 
     for player in eligible_players:
 
-        yield player
-
-        if not player.is_extra_blind or not player.stack:
+        if not player.stack:
             continue
 
         amount = blind_amount if player.stack > blind_amount else player.stack
+        yield (await_state := PlayerBlindAwait(player=player, amount=amount))
+
+        if not await_state.placed_blind:
+            continue
 
         player.decrease_stack(amount)
         player.increase_bet_level(amount)

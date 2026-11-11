@@ -59,8 +59,6 @@ class Player:
         # State variables
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
-        self._requested_action: (Action|None) = None
-        self._is_extra_blind = False
         self._stack = stack
         self._bet_level = 0
         self._pot_index = 0
@@ -82,16 +80,6 @@ class Player:
     def hand(self):
         "Hand the player holds, according to the game rules."
         return self._hand
-
-    @property
-    def requested_action(self):
-        "Action the player has requested in a betting round."
-        return self._requested_action
-
-    @property
-    def is_extra_blind(self):
-        "Whether the player has requested to place an extra blind."
-        return self._is_extra_blind
 
     @property
     def stack(self):
@@ -124,20 +112,6 @@ class Player:
 
     def __repr__(self):
         return f'Player(name={self.name}, stack={self.stack})'
-
-
-    # Methods to affect actions
-
-
-    def request_action(self, action: Action):
-        "Sets the requested_action property."
-        validate_type_action(action)
-        self._requested_action = action
-
-
-    def clear_action(self):
-        "Resets the requested_action property back to None."
-        self._requested_action = None
 
 
     # Methods to affect cards and hand
@@ -222,11 +196,3 @@ class Player:
     def unmark_is_folded(self):
         "Unmarks the is_folded property."
         self._is_folded = False
-
-    def mark_is_extra_blind(self):
-        "Requests to place an extra blind"
-        self._is_extra_blind = True
-
-    def unmark_is_extra_blind(self):
-        "Resets the decision to place an extra blind"
-        self._is_extra_blind = False
