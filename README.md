@@ -27,21 +27,34 @@ A brief documentation is provided on structures and engines. Also, a diagram rep
 
 ```python
 import pokerpy as pk
-import random
+
+import json
+import secrets
+from typing import Any
 
 
 # Implement server
 
-def await_client_device(player: pk.Player, available_actions: dict[str, range]):
+def send_action_await_to_client(await_state: dict[str, Any]):
 
-    # Send current player and options to the client's device
-    print(f'{player.name = }')
-    print(f'{available_actions = }\n')
+    print(f"\n>>> Sending await state to client's device...")
+    print(f"{json.dumps(await_state)[:80]} ...")
 
-    # Receive the requested action from client's device
-    action_name = random.choice(list(available_actions.keys()))
-    amount = random.choice(available_actions[action_name])
-    return pk.Action(action_name, amount)
+    print("<<< Receiving request from client's device...")
+    print("PLAYER CHOSE TO CHECK\n")
+
+    return pk.Action(pk.ACTION_CHECK)
+
+
+def send_blind_await_to_client(await_state: dict[str, Any]):
+
+    print(f"\n>>> Sending await state to client's device...")
+    print(json.dumps(await_state))
+
+    print("<<< Receiving request from client's device...")
+    print("PLAYER CHOSE TO PLACE OPTIONAL BLIND\n")
+
+    return True
 
 
 # Instantiate players and table once
@@ -55,27 +68,38 @@ players = [
 
 table = pk.Table(players)
 
+table.set_ante(1)
+table.set_big_blind(10)
+
+table.set_button_player(players[0])
+table.set_big_blind_player(players[1])
+
 
 # Run Texas Hold'em hand
 
-with pk.HandCycle('hand 1', table=table) as hand_cycle:
-    for player in hand_cycle.listen():
-        action_ranges = hand_cycle.betting_round.get_action_ranges()
-        action = await_client_device(player, action_ranges)
-        player.request_action(action)
+with pk.HandCycle('hand 1', table=table, open_fold_allowed=True) as hand_cycle:
 
+    for await_state in hand_cycle.listen():
 
-# Or run a single betting round
+        if isinstance(await_state, (pk.PlayerDealingAwait, pk.CommonDealingAwait)):
+            cards = secrets.SystemRandom().sample(await_state.deck, await_state.count)
+            await_state.deal_cards(cards)
 
-with pk.BettingRound('flop', table=table) as betting_round:
-    for player in betting_round.listen():
-        action = await_client_device(player, betting_round.get_action_ranges())
-        player.request_action(action)
+        elif isinstance(await_state, pk.PlayerBlindAwait):
+            place_blind = send_blind_await_to_client(await_state.to_dict())
+            if place_blind:
+                await_state.place_blind()
+
+        elif isinstance(await_state, pk.PlayerActionAwait):
+            action = send_action_await_to_client(await_state.to_dict())
+            await_state.request_action(action)
+
+        else:
+            raise ValueError(f'unexpected type {type(await_state)}')
 
 
 # Results
 
-print(f'POT: {table.pot}')
 for player in players:
     print(f"{player.name}'s stack {player.stack}")
 ```
