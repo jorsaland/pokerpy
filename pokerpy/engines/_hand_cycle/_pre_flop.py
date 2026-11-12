@@ -57,7 +57,6 @@ def pre_flop(hand_cycle: "HandCycle"):
         name = PREFLOP,
         table = table,
         open_fold_allowed = hand_cycle.open_fold_allowed,
-        raise_invalid_actions = hand_cycle.raise_invalid_actions,
     )
 
     with betting_round:

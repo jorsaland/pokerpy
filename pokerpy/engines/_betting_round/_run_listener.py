@@ -53,7 +53,6 @@ def run_listener(betting_round: "BettingRound"):
                 yield from prompt_player(
                     table = betting_round.table,
                     open_fold_allowed = betting_round.open_fold_allowed,
-                    raise_invalid_actions = betting_round.raise_invalid_actions
                 )
             except JumpToNextPlayerSignal:
                 continue

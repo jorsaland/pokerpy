@@ -42,7 +42,6 @@ class HandCycle:
         table: Table,
         *,
         open_fold_allowed = False,
-        raise_invalid_actions = False
     ):
 
         # Type validations
@@ -54,7 +53,6 @@ class HandCycle:
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
-        self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State attributes
         self._betting_round: (BettingRound|None) = None
@@ -97,14 +95,6 @@ class HandCycle:
     def open_fold_allowed(self):
         "Whether folding is allowed when there is no bet or raise to respond to."
         return self._open_fold_allowed
-
-    @property
-    def raise_invalid_actions(self):
-        """
-        Whether an exception should be raised when an invalid action is chosen, or the player
-        should be prompted again.
-        """
-        return self._raise_invalid_actions
 
 
     def __enter__(self):

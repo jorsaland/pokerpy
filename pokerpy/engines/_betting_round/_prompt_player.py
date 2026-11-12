@@ -35,12 +35,7 @@ from ._await_player import await_player
 from ._set_action_effects import set_action_effects
 
 
-def prompt_player(
-        *,
-        table: Table,
-        open_fold_allowed: bool,
-        raise_invalid_actions: bool
-    ):
+def prompt_player(table: Table, open_fold_allowed: bool):
 
     """
     Evaluates if the current player is able to request an action and listens to it.
@@ -84,7 +79,6 @@ def prompt_player(
         min_raise_increase = table.min_raise_increase,
         is_last_actionable_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
         open_fold_allowed = open_fold_allowed,
-        raise_invalid_actions = raise_invalid_actions,
     )
     set_action_effects(table=table, player=table.current_player, action=action)
 

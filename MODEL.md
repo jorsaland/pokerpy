@@ -107,8 +107,6 @@
 
 - **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 
-- **Raise invalid actions (`raise_invalid_actions`):** Whether an exception should be raised when an invalid action is chosen, or the player should be prompted again.
-
 
 ### Hand cycle (`HandCycle`)
 
@@ -125,8 +123,6 @@
 - **Was reseted at closure (`was_reseted_at_closure`):** Whether the hand cycle states were reseted at closure (helps to track closure behaviour in unit tests).
 
 - **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
-
-- **Raise invalid actions (`raise_invalid_actions`):** Whether an exception should be raised when an invalid action is chosen, or the player should be prompted again.
 
 
 # Communication model

@@ -44,7 +44,6 @@ class BettingRound:
         table: Table,
         *,
         open_fold_allowed = False,
-        raise_invalid_actions = False
     ):
 
         validate_type_str(name)
@@ -55,7 +54,6 @@ class BettingRound:
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
-        self._raise_invalid_actions = bool(raise_invalid_actions)
 
         # State attributes
         self._lap_counts = 0
@@ -92,14 +90,6 @@ class BettingRound:
     def open_fold_allowed(self):
         "Whether folding is allowed when there is no bet or raise to respond to."
         return self._open_fold_allowed
-
-    @property
-    def raise_invalid_actions(self):
-        """
-        Whether an exception should be raised when an invalid action is chosen, or the player
-        should be prompted again.
-        """
-        return self._raise_invalid_actions
 
 
     def __enter__(self):
