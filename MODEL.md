@@ -142,7 +142,7 @@ flowchart LR
         m1(method)@{ shape: text }
         m2(method)@{ shape: text }
 
-        i1 ===> |CONTAINS| i2
+        i1 ===> |RELATIONSHIP| i2
         i1 --> |calls| m1
         m1 --> |from| i2
         m1 -.-> |calls| m2
@@ -161,13 +161,19 @@ flowchart LR
 
     C(Controller)@{ shape: cloud }
 
-    HC(HandCycle)@{ shape: circle }
-    BR(BettingRound)@{ shape: circle }
+    HC(HandCycle)@{ shape: hex }
+    BR(BettingRound)@{ shape: hex }
+
     T(Table)@{ shape: circle }
     P(Player)@{ shape: circle }
     H(Hand)@{ shape: circle }
     Cd(Card)@{ shape: circle }
-    A(Action)@{ shape: circle }
+    Ac(Action)@{ shape: circle }
+
+    CDAw(CommonDealingAwait)@{ shape: rounded }
+    PAAw(PlayerActionAwait)@{ shape: rounded }
+    PBAw(PlayerBlindAwait)@{ shape: rounded }
+    PDAw(PlayerDealingAwait)@{ shape: rounded }
 
 
     %% Container relations
@@ -176,19 +182,29 @@ flowchart LR
     T ===> |CONTAINS| Cd
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
-    P ===> |CONTAINS| A
+    P ===> |CONTAINS| Ac
     H ===> |CONTAINS| Cd
+
+
+    %% Yield relations
+
+    BR ===> |YIELDS| PAAw
+
+    HC ===> |YIELDS| CDAw
+    HC ===> |YIELDS| PBAw
+    HC ===> |YIELDS| PDAw
 
 
     %% Methods
 
     HC.listen(listen)@{ shape: text } -->  HC
     HC.close(close)@{ shape: text } -->  HC
-    HC.deal_cards_to_players(deal_cards_to_players)@{ shape: text } -->  HC
-    HC.deal_common_cards(deal_common_cards)@{ shape: text } -->  HC
     HC.reset_hand_cycle_states(reset_hand_cycle_states)@{ shape: text } -->  HC
 
-    BR.get_action_ranges(get_action_ranges)@{ shape: text } --> BR
+    CDAw.deal_cards(deal_cards)@{ shape: text } --> CDAw
+    PAAw.request_action(request_action)@{ shape: text } --> PAAw
+    PBAw.place_blind(place_blind)@{ shape: text } --> PBAw
+    PDAw.deal_cards(deal_cards)@{ shape: text } --> PDAw
 
     T.set_ante(set_ante)@{ shape: text } --> T
     T.set_small_blind(set_small_blind)@{ shape: text } --> T
@@ -212,7 +228,11 @@ flowchart LR
     C --> HC.listen
     C --> HC.close
 
-    C --> BR.get_action_ranges
+    C --> CDAw.deal_cards
+    C --> PAAw.request_action
+    C --> PBAw.place_blind
+    C --> PDAw.deal_cards
+
 
     C --> T.set_ante
     C --> T.set_small_blind
@@ -231,8 +251,6 @@ flowchart LR
     %% Helper method relations
 
     HC.listen -.-> HC.close
-    HC.listen -.-> HC.deal_cards_to_players
-    HC.listen -.-> HC.deal_common_cards
     HC.listen -.-> HC.reset_hand_cycle_states
 
     HC.close -.-> HC.reset_hand_cycle_states
@@ -249,13 +267,14 @@ flowchart LR
 
     %% Classes
 
-    HC(HandCycle)@{ shape: circle }
-    BR(BettingRound)@{ shape: circle }
+    HC(HandCycle)@{ shape: hex }
+    BR(BettingRound)@{ shape: hex }
+
     T(Table)@{ shape: circle }
     P(Player)@{ shape: circle }
     H(Hand)@{ shape: circle }
     Cd(Card)@{ shape: circle }
-    A(Action)@{ shape: circle }
+    Ac(Action)@{ shape: circle }
 
 
     %% Container relations
@@ -265,7 +284,7 @@ flowchart LR
     T ===> |CONTAINS| Cd
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
-    P ===> |CONTAINS| A
+    P ===> |CONTAINS| Ac
     H ===> |CONTAINS| Cd
 
 
@@ -370,12 +389,13 @@ flowchart LR
 
     %% Classes
 
-    BR(BettingRound)@{ shape: circle }
+    BR(BettingRound)@{ shape: hex }
+
     T(Table)@{ shape: circle }
     P(Player)@{ shape: circle }
     H(Hand)@{ shape: circle }
     Cd(Card)@{ shape: circle }
-    A(Action)@{ shape: circle }
+    Ac(Action)@{ shape: circle }
 
 
     %% Container relations
@@ -385,7 +405,7 @@ flowchart LR
     T ===> |CONTAINS| Cd
     P ===> |CONTAINS| H
     P ===> |CONTAINS| Cd
-    P ===> |CONTAINS| A
+    P ===> |CONTAINS| Ac
     H ===> |CONTAINS| Cd
 
 
