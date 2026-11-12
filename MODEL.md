@@ -199,11 +199,9 @@ flowchart LR
     T.get_next_player(get_next_player)@{ shape: text } --> T
     T.iter_players(iter_players)@{ shape: text } --> T
 
-    P.request_action(request_action)@{ shape: text } --> P
     P.decrease_bet_level(decrease_bet_level)@{ shape: text } --> P
     P.increase_stack(increase_stack)@{ shape: text } --> P
     P.increase_pot_index(increase_pot_index)@{ shape: text } --> P
-    P.mark_is_extra_blind(mark_is_extra_blind)@{ shape: text } --> P
 
     Cd.get_deck_position(get_deck_position)@{ shape: text } --> Cd
 
@@ -224,9 +222,6 @@ flowchart LR
     C --> T.set_big_blind_player
     C --> T.get_next_player
     C --> T.iter_players
-
-    C --> P.mark_is_extra_blind
-    C --> P.request_action
 
     T --> P.decrease_bet_level
     T --> P.increase_stack
@@ -310,7 +305,6 @@ flowchart LR
     P.reset_pot_index(reset_pot_index)@{ shape: text } --> P
     P.mark_is_folded(mark_is_folded)@{ shape: text } --> P
     P.unmark_is_folded(unmark_is_folded)@{ shape: text } --> P
-    P.unmark_is_extra_blind(unmark_is_extra_blind)@{ shape: text } --> P
 
     Cd.get_deck_position(get_deck_position)@{ shape: text } --> Cd
 
@@ -345,7 +339,6 @@ flowchart LR
     HC --> P.reset_pot_index
     HC --> P.mark_is_folded
     HC --> P.unmark_is_folded
-    HC --> P.unmark_is_extra_blind
 
     T --> P.decrease_bet_level
     T --> P.increase_stack

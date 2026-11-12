@@ -68,8 +68,6 @@ class TestPlayerInstantiation(TestCase):
             self.assertEqual(player.name, 'Andy')
             self.assertEqual(player.cards, ())
             self.assertIsNone(player.hand)
-            self.assertIsNone(player.requested_action)
-            self.assertFalse(player.is_extra_blind)
             self.assertEqual(player.stack, 1000)
             self.assertEqual(player.bet_level, 0)
             self.assertEqual(player.pot_index, 0)
@@ -81,58 +79,11 @@ class TestPlayerInstantiation(TestCase):
             self.assertEqual(player.name, 'Andy')
             self.assertEqual(player.cards, ())
             self.assertIsNone(player.hand)
-            self.assertIsNone(player.requested_action)
-            self.assertFalse(player.is_extra_blind)
             self.assertEqual(player.stack, 0)
             self.assertEqual(player.bet_level, 0)
             self.assertEqual(player.pot_index, 0)
             self.assertFalse(player.is_folded)
             self.assertFalse(player.has_played)
-
-class TestPlayerActionMethods(TestCase):
-
-
-    "Runs unit tests on player methods related to the requested action."
-
-
-    def test_action_methods_type_errors(self):
-
-        "Tests type error detection in methods related to the requested action."
-
-        player = structures.Player('Andy', stack=1000)
-
-        bad_actions = (1, 'drink', None)
-
-        for bad_action in bad_actions:
-
-            with self.subTest(action=bad_action):
-                with self.assertRaises(TypeError) as context:
-                    player.request_action(bad_action)
-                self.assertEqual(context.exception.args[0], messages.msg_not_action_instance.format(type(bad_action).__name__))
-
-
-    def test_action_methods_valid_input(self):
-
-        "Tests valid input in methods related to requested action."
-
-        actions = (
-            structures.Action(constants.ACTION_FOLD, 0),
-            structures.Action(constants.ACTION_CHECK, 0),
-            structures.Action(constants.ACTION_CALL, 100),
-            structures.Action(constants.ACTION_BET, 100),
-            structures.Action(constants.ACTION_RAISE, 100),
-        )
-
-        for action in actions:
-            player = structures.Player('Andy', 1000)
-            with self.subTest('before request', action=str(action)):
-                self.assertIsNone(player.requested_action)
-            player.request_action(action)
-            with self.subTest('after request', action=str(action)):
-                self.assertEqual(player.requested_action, action)
-            player.clear_action()
-            with self.subTest('after clear', action=str(action)):
-                self.assertIsNone(player.requested_action)
 
 
 class TestPlayerCardMethods(TestCase):
@@ -461,19 +412,6 @@ class TestPlayerBooleanMethods(TestCase):
         self.assertTrue(player.has_played)
         player.unmark_has_played()
         self.assertFalse(player.has_played)
-
-
-    def test_requested_optional_blind(self):
-
-        "Tests status update in attribute has_played."
-
-        player = structures.Player('Andy', 1000)
-
-        self.assertFalse(player.is_extra_blind)
-        player.mark_is_extra_blind()
-        self.assertTrue(player.is_extra_blind)
-        player.unmark_is_extra_blind()
-        self.assertFalse(player.is_extra_blind)
 
 
 if __name__ == '__main__':
