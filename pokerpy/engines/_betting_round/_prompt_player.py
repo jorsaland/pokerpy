@@ -32,6 +32,7 @@ from pokerpy.structures import Table
 
 
 from ._await_player import await_player
+from ._get_valid_actions import get_valid_actions
 from ._set_action_effects import set_action_effects
 
 
@@ -71,15 +72,21 @@ def prompt_player(table: Table, open_fold_allowed: bool):
             raise CloseBettingRoundSignal(signal_all_in_stopping_player)
         raise JumpToNextPlayerSignal(signal_all_in_player)
 
-    action = yield from await_player(
-        player = table.current_player,
+    action_ranges = get_valid_actions(
+        player_stack = table.current_player.stack,
+        player_bet_level = table.current_player.bet_level,
         bet_level = table.bet_level,
         full_bet_level = table.full_bet_level,
         min_bet = table.min_bet,
         min_raise_increase = table.min_raise_increase,
-        is_last_actionable_player = (table.current_player in table.actionable_players and len(table.actionable_players) == 1),
+        player_has_played = table.current_player.has_played,
+        is_last_actionable_player = (
+            table.current_player in table.actionable_players and len(table.actionable_players) == 1
+        ),
         open_fold_allowed = open_fold_allowed,
     )
+
+    action = yield from await_player(table.current_player, action_ranges)
     set_action_effects(table=table, player=table.current_player, action=action)
 
     if table.current_player == table.stopping_player:

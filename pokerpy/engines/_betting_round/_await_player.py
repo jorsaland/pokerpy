@@ -24,57 +24,25 @@ from pokerpy.states import PlayerActionAwait
 from pokerpy.structures import Player
 
 
-from ._get_valid_actions import get_valid_actions
-
-
-def await_player(
-    *, player: Player,
-    bet_level: int,
-    full_bet_level: int,
-    min_bet: int,
-    min_raise_increase: int,
-    is_last_actionable_player: bool,
-    open_fold_allowed: bool,
-):
+def await_player(player: Player, action_ranges: dict[str, range]):
 
     """
-    Listens to a player until it chooses a valid action.
+    Awaits for a player's action choice.
     """
 
-    # Player keeps its turn until selects a valid action
+    yield (await_state := PlayerActionAwait(player=player, ranges=action_ranges))
 
-    while True:
+    # Determine whether action is valid or not
 
-        # Await for player's action
+    action = await_state.requested_action
 
-        amount_range_by_action = get_valid_actions(
-            player_stack = player.stack,
-            player_bet_level = player.bet_level,
-            bet_level = bet_level,
-            full_bet_level = full_bet_level,
-            min_bet = min_bet,
-            min_raise_increase = min_raise_increase,
-            player_has_played = player.has_played,
-            is_last_actionable_player = is_last_actionable_player,
-            open_fold_allowed = open_fold_allowed,
-        )
+    if action is None:
+        logger.debug(f'--- skipped action')
+        raise RuntimeError(msg_missing_action)
 
-        yield (await_state := PlayerActionAwait(player=player, ranges=amount_range_by_action))
-
-        # Determine whether action is valid or not
-
-        action = await_state.requested_action
-
-        if action is None:
-            raise RuntimeError(msg_missing_action)
-
-        amount_range = amount_range_by_action.get(action.category)
-        if amount_range is not None and action.amount in amount_range:
-            break
-
+    amount_range = action_ranges.get(action.category)
+    if amount_range is None or action.amount not in amount_range:
         logger.debug(f'--- invalid action: {action.category}s {action.amount}')
         raise RuntimeError(msg_forbidden_action)
-
-    # Reset player and return requested action
 
     return action
