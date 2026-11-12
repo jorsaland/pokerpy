@@ -101,9 +101,9 @@
 
 - **Lap counts (`lap_counts`):** Number of times the action passes through the starting player (even if folded or all-in).
 
-- **Is completed (`is_completed`):** Whether the betting round already ended.
+- **Is completed (`is_completed`):** Whether the betting round generator reached the end.
 
-- **Was reseted at closure (`was_reseted_at_closure`):** Whether the betting round states were reseted at closure (helps to track closure behaviour in unit tests).
+- **Is closed (`is_closed`):** Whether the betting round was closed.
 
 - **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 
@@ -118,9 +118,9 @@
 
 - **In extra big blinds phase (`in_extra_big_blinds_phase`):** Whether the hand cycle is in the phase of placing extra big blinds.
 
-- **Is completed (`is_completed`):** Whether the hand cycle already ended.
+- **Is completed (`is_completed`):** Whether the hand cycle generator reached the end.
 
-- **Was reseted at closure (`was_reseted_at_closure`):** Whether the hand cycle states were reseted at closure (helps to track closure behaviour in unit tests).
+- **Is closed (`is_closed`):** Whether the hand cycle was closed.
 
 - **Open fold allowed (`open_fold_allowed`):** Whether folding is allowed when there is no bet or raise to respond to.
 

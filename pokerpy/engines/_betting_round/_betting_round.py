@@ -59,7 +59,7 @@ class BettingRound:
         # State attributes
         self._lap_counts = 0
         self._is_completed = False
-        self._was_reseted_at_closure = False
+        self._is_closed = False
 
 
     @property
@@ -79,13 +79,13 @@ class BettingRound:
 
     @property
     def is_completed(self):
-        "Whether the betting round already ended."
+        "Whether the betting round generator reached the end."
         return self._is_completed
 
     @property
-    def was_reseted_at_closure(self):
-        "Whether the betting round states were reseted at closure (helps to track closure behaviour in unit tests)."
-        return self._was_reseted_at_closure
+    def is_closed(self):
+        "Whether the betting round was closed."
+        return self._is_closed
 
     @property
     def open_fold_allowed(self):
@@ -114,7 +114,7 @@ class BettingRound:
         self._listener.close()
 
         self.reset_betting_round_states(self.table)
-        self._was_reseted_at_closure = True
+        self._is_closed = True
         if exception_type is StopIteration:
             raise RuntimeError(msg_overloaded_betting_round) from exception_value
 
@@ -137,6 +137,9 @@ class BettingRound:
 
         "Runs the last step in the betting round."
 
+        if self.is_closed:
+            return
+
         try:
             if not self.is_completed:
                 next(self.listen())
@@ -148,7 +151,7 @@ class BettingRound:
             raise exception
         finally:
             self.reset_betting_round_states(self.table)
-            self._was_reseted_at_closure = True
+            self._is_closed = True
 
         if not self.is_completed:
             logger.critical(wrap_external_log('the betting round was closed before ending'))
