@@ -95,7 +95,7 @@ with pk.HandCycle('hand 1', table=table, open_fold_allowed=True) as hand_cycle:
             await_state.request_action(action)
 
         else:
-            raise ValueError(f'unexpected type {type(await_state)}')
+            raise TypeError(f'unexpected type {type(await_state)}')
 
 
 # Results
