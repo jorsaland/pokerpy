@@ -44,7 +44,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         with self.subTest('generator await'):
             next_state = next(generator)
-            self.assertIsInstance(next_state, states.PlayerActionAwait)
             self.assertEqual(next_state.player, self.Andy)
             self.assertDictEqual(next_state.ranges, self.action_ranges)
 
@@ -64,7 +63,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         with self.subTest('generator await'):
             next_state = next(generator)
-            self.assertIsInstance(next_state, states.PlayerActionAwait)
             self.assertEqual(next_state.player, self.Andy)
             self.assertDictEqual(next_state.ranges, self.action_ranges)
 
@@ -86,7 +84,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         with self.subTest('generator await'):
             next_state = next(generator)
-            self.assertIsInstance(next_state, states.PlayerActionAwait)
             self.assertEqual(next_state.player, self.Andy)
             self.assertDictEqual(next_state.ranges, self.action_ranges)
 

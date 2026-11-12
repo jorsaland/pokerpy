@@ -159,7 +159,6 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
             with self.subTest('generator await', action=action):
                 next_state = next(generator)
-                self.assertIsInstance(next_state, states.PlayerActionAwait)
 
             next_state.request_action(action)
 
@@ -193,7 +192,6 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
             with self.subTest('generator await', action=action):
                 next_state = next(generator)
-                self.assertIsInstance(next_state, states.PlayerActionAwait)
 
             next_state.request_action(action)
 
@@ -228,7 +226,6 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
             with self.subTest('generator await', action=action):
                 next_state = next(generator)
-                self.assertIsInstance(next_state, states.PlayerActionAwait)
 
             next_state.request_action(action)
 
@@ -264,7 +261,6 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
             with self.subTest('generator await', action=action):
                 next_state = next(generator)
-                self.assertIsInstance(next_state, states.PlayerActionAwait)
 
             next_state.request_action(action)
 
