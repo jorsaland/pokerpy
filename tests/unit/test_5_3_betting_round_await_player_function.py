@@ -43,9 +43,9 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         generator = engines.await_player(self.Andy, self.action_ranges)
 
         with self.subTest('generator await'):
-            next_state = next(generator)
-            self.assertEqual(next_state.player, self.Andy)
-            self.assertDictEqual(next_state.ranges, self.action_ranges)
+            await_state = next(generator)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
         with self.subTest('generator end'):
             with self.assertRaises(RuntimeError) as context:
@@ -62,11 +62,11 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         generator = engines.await_player(self.Andy, self.action_ranges)
 
         with self.subTest('generator await'):
-            next_state = next(generator)
-            self.assertEqual(next_state.player, self.Andy)
-            self.assertDictEqual(next_state.ranges, self.action_ranges)
+            await_state = next(generator)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
-        next_state.request_action(action)
+        await_state.request_action(action)
 
         with self.subTest('generator end'):
             with self.assertRaises(RuntimeError) as context:
@@ -83,11 +83,11 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         generator = engines.await_player(self.Andy, self.action_ranges)
 
         with self.subTest('generator await'):
-            next_state = next(generator)
-            self.assertEqual(next_state.player, self.Andy)
-            self.assertDictEqual(next_state.ranges, self.action_ranges)
+            await_state = next(generator)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
-        next_state.request_action(action)
+        await_state.request_action(action)
 
         with self.subTest('generator end'):
             with self.assertRaises(StopIteration) as context:

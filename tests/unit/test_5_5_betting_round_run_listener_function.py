@@ -52,11 +52,11 @@ class BaseTestCase(TestCase):
             self.assertEqual(self.betting_round.lap_counts, 0)
 
         for lap, player, action in laps_and_players_and_actions:
-            next_state = next(generator)
+            await_state = next(generator)
             with self.subTest(player=player, action=action):
-                self.assertEqual(next_state.player, player)
+                self.assertEqual(await_state.player, player)
                 self.assertEqual(self.betting_round.lap_counts, lap)
-            next_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('after actions'):
             with self.assertRaises(StopIteration) as context:
@@ -1521,11 +1521,11 @@ class TestBettingRoundRunListenerFunctionHavingSBAllIn(BaseTestCase):
         generator = engines.run_betting_round_listener(self.betting_round)
 
         for lap, player, action in laps_and_players_and_actions:
-            next_state = next(generator)
+            await_state = next(generator)
             with self.subTest(player=player, action=action):
-                self.assertEqual(next_state.player, player)
+                self.assertEqual(await_state.player, player)
                 self.assertEqual(self.betting_round.lap_counts, lap)
-            next_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('last step'):
             with self.assertRaises(StopIteration) as context:
@@ -1771,11 +1771,11 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
         generator = engines.run_betting_round_listener(self.betting_round)
 
         for lap, player, action in laps_and_players_and_actions:
-            next_state = next(generator)
+            await_state = next(generator)
             with self.subTest(player=player, action=action):
-                self.assertEqual(next_state.player, player)
+                self.assertEqual(await_state.player, player)
                 self.assertEqual(self.betting_round.lap_counts, lap)
-            next_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('last step'):
             with self.assertRaises(StopIteration) as context:

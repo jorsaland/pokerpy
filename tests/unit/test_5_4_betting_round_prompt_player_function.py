@@ -158,9 +158,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
             with self.subTest('generator await', action=action):
-                next_state = next(generator)
+                await_state = next(generator)
 
-            next_state.request_action(action)
+            await_state.request_action(action)
 
             with self.subTest('generator end', action=action):
                 with self.assertRaises(StopIteration) as context:
@@ -191,9 +191,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
             with self.subTest('generator await', action=action):
-                next_state = next(generator)
+                await_state = next(generator)
 
-            next_state.request_action(action)
+            await_state.request_action(action)
 
             with self.subTest('exception raise', action=action):
                 with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -225,9 +225,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
             with self.subTest('generator await', action=action):
-                next_state = next(generator)
+                await_state = next(generator)
 
-            next_state.request_action(action)
+            await_state.request_action(action)
 
             with self.subTest('generator end', action=action):
                 with self.assertRaises(StopIteration) as context:
@@ -260,9 +260,9 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
             with self.subTest('generator await', action=action):
-                next_state = next(generator)
+                await_state = next(generator)
 
-            next_state.request_action(action)
+            await_state.request_action(action)
 
             with self.subTest('generator end', action=action):
                 with self.assertRaises(StopIteration) as context:
