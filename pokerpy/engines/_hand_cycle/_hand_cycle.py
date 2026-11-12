@@ -19,7 +19,11 @@ Defines the class that represents a betting round context manager.
 
 
 from pokerpy.logger import logger, wrap_external_log
-from pokerpy.messages import msg_hand_cycle_was_not_completed, msg_overloaded_hand_cycle
+from pokerpy.messages import (
+    msg_hand_cycle_was_not_completed,
+    msg_missing_action,
+    msg_overloaded_hand_cycle,
+)
 from pokerpy.structures import Table
 from pokerpy.validations import validate_type_str, validate_type_table
 
@@ -149,6 +153,10 @@ class HandCycle:
                 next(self.listen())
         except StopIteration:
             pass
+        except RuntimeError as exception:
+            if exception.args[0] == msg_missing_action:
+                raise RuntimeError(msg_hand_cycle_was_not_completed) # closure after skipping parsing prefers this message
+            raise exception
         finally:
             self._reset_betting_round()
             self._unmark_in_extra_big_blinds_phase()

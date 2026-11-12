@@ -21,6 +21,7 @@ Defines the class that represents a betting round context manager.
 from pokerpy.logger import logger, wrap_external_log
 from pokerpy.messages import (
     msg_betting_round_was_not_completed,
+    msg_missing_action,
     msg_overloaded_betting_round,
 )
 from pokerpy.structures import Table
@@ -141,6 +142,10 @@ class BettingRound:
                 next(self.listen())
         except StopIteration:
             pass
+        except RuntimeError as exception:
+            if exception.args[0] == msg_missing_action:
+                raise RuntimeError(msg_betting_round_was_not_completed) # closure after skipping parsing prefers this message
+            raise exception
         finally:
             self.reset_betting_round_states(self.table)
             self._was_reseted_at_closure = True
