@@ -63,9 +63,6 @@ class CommonDealingAwait(Await, DeckMixin):
 
 
     def to_dict(self):
-
-        "Serializes the state object to JSON format."
-
         state_dict: CommonDealingAwaitDict = {
             'count': self.count,
             'deck': self._build_deck_list(),

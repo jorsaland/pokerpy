@@ -62,9 +62,6 @@ class PlayerActionAwait(Await, PlayerMixin, RangesMixin):
 
 
     def to_dict(self):
-
-        "Serializes the state object to JSON format."
-
         state_dict: PlayerActionAwaitDict = {
             'player': self._build_player_dict(),
             'ranges': self._build_ranges_dict()

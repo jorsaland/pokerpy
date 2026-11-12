@@ -61,9 +61,6 @@ class PlayerBlindAwait(Await, PlayerMixin):
 
 
     def to_dict(self):
-
-        "Serializes the state object to JSON format."
-
         state_dict: PlayerBlindAwaitDict = {
             'player': self._build_player_dict(),
             'amount': self.amount

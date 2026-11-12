@@ -16,6 +16,7 @@
 "Defines the classes that represent await states."
 
 
+from abc import abstractmethod, ABC
 from typing import get_args, Literal, TypedDict
 
 
@@ -40,9 +41,14 @@ class RangeDict(TypedDict):
     max: int
 
 
-class Await:
+class Await(ABC):
+
     "Base class that represents an await state."
-    pass
+
+    @abstractmethod
+    def to_dict(self):
+        "Serializes the state object to JSON format."
+        return NotImplemented
 
 
 class PlayerMixin:

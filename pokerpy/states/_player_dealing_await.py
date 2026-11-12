@@ -70,9 +70,6 @@ class PlayerDealingAwait(Await, PlayerMixin, DeckMixin):
 
 
     def to_dict(self):
-
-        "Serializes the state object to JSON format."
-
         state_dict: PlayerDealingAwaitDict = {
             'player': self._build_player_dict(),
             'count': self.count,
