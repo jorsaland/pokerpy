@@ -90,7 +90,7 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
                         await_state.place_blind()
                     continue
 
-                if isinstance(await_state, (pk.PlayerCardsDealAwait, pk.CommonCardsDealAwait)):
+                if isinstance(await_state, (pk.PlayerDealingAwait, pk.CommonDealingAwait)):
                     cards = secrets.SystemRandom().sample(await_state.deck, await_state.count)
                     await_state.deal_cards(cards)
                     continue

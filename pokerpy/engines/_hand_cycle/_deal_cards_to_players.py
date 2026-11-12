@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.logger import logger, wrap_internal_log
-from pokerpy.states import PlayerCardsDealAwait
+from pokerpy.states import PlayerDealingAwait
 from pokerpy.validations import (
     validate_card_in_deck,
     validate_int_positive,
@@ -45,7 +45,7 @@ def deal_cards_to_players(hand_cycle: "HandCycle", cards_count: int):
 
     for player in hand_cycle.table.live_players:
 
-        yield (await_state := PlayerCardsDealAwait(player=player, count=cards_count, deck=hand_cycle.table.deck))
+        yield (await_state := PlayerDealingAwait(player=player, count=cards_count, deck=hand_cycle.table.deck))
 
         chosen_cards = await_state.dealt_cards
 

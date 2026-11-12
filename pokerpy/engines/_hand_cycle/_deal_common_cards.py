@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING
 
 
 from pokerpy.logger import logger, wrap_internal_log
-from pokerpy.states import CommonCardsDealAwait
+from pokerpy.states import CommonDealingAwait
 from pokerpy.validations import (
     validate_card_in_deck,
     validate_int_positive,
@@ -41,7 +41,7 @@ def deal_common_cards(hand_cycle: "HandCycle", cards_count: int):
     validate_type_int(cards_count)
     validate_int_positive(cards_count)
 
-    yield (await_state := CommonCardsDealAwait(count=cards_count, deck=hand_cycle.table.deck))
+    yield (await_state := CommonDealingAwait(count=cards_count, deck=hand_cycle.table.deck))
     chosen_cards = await_state.dealt_cards
 
     validate_iterable_has_n_cards(chosen_cards, cards_count)
