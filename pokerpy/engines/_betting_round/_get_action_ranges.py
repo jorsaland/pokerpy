@@ -27,7 +27,7 @@ from pokerpy.constants import (
 )
 
 
-def get_valid_actions(
+def get_action_ranges(
     *,
     player_stack: int,
     player_bet_level: int,

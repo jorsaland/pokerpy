@@ -27,7 +27,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative player stack'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = -1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -41,7 +41,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative player amount'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = -100,
                     bet_level = 0,
@@ -55,7 +55,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative bet level'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = -100,
@@ -69,7 +69,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative full bet level'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -83,7 +83,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative minimum bet'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -97,7 +97,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('zero minimum bet'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -111,7 +111,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('negative minimum raise increase'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -125,7 +125,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('zero minimum raise increase'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -144,7 +144,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('minimum raise increase smaller than minimum bet'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -158,7 +158,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('minimum raise expected level not larger than current bet level'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 200,
@@ -172,7 +172,7 @@ class TestImpossibleSituations(TestCase):
 
         with self.subTest('bet level smaller than full current level'):
             with self.assertRaises(AssertionError):
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -200,7 +200,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -219,7 +219,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -239,7 +239,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -258,7 +258,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -283,7 +283,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -302,7 +302,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -322,7 +322,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -342,7 +342,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -366,7 +366,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -386,7 +386,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has not placed money, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 0,
                     bet_level = 0,
@@ -405,7 +405,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 900,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -425,7 +425,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('has placed a big blind, open fold is not allowed'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 900,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100, ## *BB*
@@ -449,7 +449,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 20,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100, ## BB
@@ -468,7 +468,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100, ## BB
@@ -487,7 +487,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('small blind, not enough to make a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100, ## BB
@@ -507,7 +507,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('small blind, just enough to make a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100, ## BB
@@ -527,7 +527,7 @@ class TestNotFacingAnAggression(TestCase):
 
         with self.subTest('small blind, more than enough to make a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 1000,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100, ## BB
@@ -561,7 +561,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 20,
                     player_bet_level = 0,
                     bet_level = 50, ## underbet
@@ -580,7 +580,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 20,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 50, ## *BB* + underraise
@@ -599,7 +599,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 20,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 50, ## *bet* + underraise
@@ -618,7 +618,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 100, ## *overbet* + underraise
@@ -637,7 +637,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 20,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
@@ -656,7 +656,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
@@ -680,7 +680,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 0,
                     bet_level = 50, ## underbet
@@ -699,7 +699,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 50, ## *BB* + underraise
@@ -718,7 +718,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 50, ## *bet* + underraise
@@ -737,7 +737,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 100, ## *overbet* + underraise
@@ -756,7 +756,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 50, ## bet + *raise* + *underraise*
@@ -775,7 +775,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
@@ -806,7 +806,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(70, 71)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 70,
                         player_bet_level = 0,
                         bet_level = 50, ## underbet
@@ -829,7 +829,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(70, 71)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 70,
                         player_bet_level = 0,
                         bet_level = 50, ## underbet
@@ -845,7 +845,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 70,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 50, ## *bet* + underbet
@@ -864,7 +864,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 120,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 100, ## *overbet* + underraise
@@ -883,7 +883,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 70,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
@@ -902,7 +902,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 120,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
@@ -933,7 +933,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(100, 101)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 100,
                         player_bet_level = 0,
                         bet_level = 50, ## underbet
@@ -956,7 +956,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(100, 101)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 100,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 50, ## *BB* + underraise
@@ -972,7 +972,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 50, ## *bet* + underraise
@@ -991,7 +991,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 100, ## *overbet* + underraise
@@ -1010,7 +1010,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
@@ -1029,7 +1029,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
@@ -1060,7 +1060,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(100, 1001)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 1000,
                         player_bet_level = 0,
                         bet_level = 50, ## underbet
@@ -1083,7 +1083,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_BET] = range(100, 901)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 900,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 50, ## *BB* + underraise
@@ -1099,7 +1099,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 900,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 50, ## *bet* + underraise
@@ -1118,7 +1118,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 850,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 100, ## *overbet* + underraise
@@ -1137,7 +1137,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 800,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 50, ## bet + *raise* + underraise
@@ -1156,7 +1156,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 750,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 100, ## bet + *overraise* + underraise
@@ -1180,7 +1180,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 50, ## BB + underraise
@@ -1199,7 +1199,7 @@ class TestFacingAnIncompleteAggression(TestCase):
 
         with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 50, ## BB + underraise
@@ -1225,7 +1225,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(120, 121)
             with self.subTest('small blind, not enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 120,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 50, ## BB + underraise
@@ -1248,7 +1248,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 151)
             with self.subTest('small blind, just enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 150,
                         player_bet_level = 50, ## *SB*
                         bet_level = 150, ## BB + underraise
@@ -1271,7 +1271,7 @@ class TestFacingAnIncompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 951)
             with self.subTest('small blind, more than enough to complete the aggression', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 950,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 50, ## BB + underraise
@@ -1301,7 +1301,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 0,
                     bet_level = 100, ## bet
@@ -1320,7 +1320,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 100, ## *BB* + raise
@@ -1339,7 +1339,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 100, ## *bet* + raise
@@ -1358,7 +1358,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 150, ## *overbet* + raise
@@ -1377,7 +1377,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 50,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 100, ## bet + *raise* + raise
@@ -1396,7 +1396,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
@@ -1420,7 +1420,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 100, ## bet
@@ -1439,7 +1439,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 100, ## *BB* + raise
@@ -1458,7 +1458,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 100, ## *bet* + raise
@@ -1477,7 +1477,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 150, ## *overbet* + raise
@@ -1496,7 +1496,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 100, ## bet + *raise* + raise
@@ -1515,7 +1515,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
@@ -1546,7 +1546,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 151)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 150,
                         player_bet_level = 0,
                         bet_level = 100, ## bet
@@ -1569,7 +1569,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 151)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 150,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 100, ## *BB* + raise
@@ -1592,7 +1592,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 151)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 150,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 100, ## *bet* + raise
@@ -1615,7 +1615,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 150, ## *overbet* + raise
@@ -1638,7 +1638,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(150, 151)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 150,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 100, ## bet + *raise* + raise
@@ -1661,7 +1661,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
@@ -1689,7 +1689,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 201)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 200,
                         player_bet_level = 0,
                         bet_level = 100, ## bet
@@ -1712,7 +1712,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 201)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 200,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 100, ## *BB* + raise
@@ -1735,7 +1735,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 201)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 200,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 100, ## *bet* + raise
@@ -1758,7 +1758,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 150, ## *overbet* + raise
@@ -1781,7 +1781,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 201)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 200,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 100, ## bet + *raise* + raise
@@ -1804,7 +1804,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
@@ -1832,7 +1832,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 1001)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 1000,
                         player_bet_level = 0,
                         bet_level = 100, ## bet
@@ -1855,7 +1855,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 901)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 900,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 100, ## *BB* + raise
@@ -1878,7 +1878,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 901)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 900,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 100, ## *bet* + raise
@@ -1901,7 +1901,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 851)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 850,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 150, ## *overbet* + raise
@@ -1924,7 +1924,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 801)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 800,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 100, ## bet + *raise* + raise
@@ -1947,7 +1947,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 751)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 750,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 150, ## bet + *overraise* + raise
@@ -1968,7 +1968,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 100, ## BB + raise
@@ -1987,7 +1987,7 @@ class TestFacingACompleteAggression(TestCase):
 
         with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 100, ## BB + raise
@@ -2013,7 +2013,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(200, 201)
             with self.subTest('small blind, not enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 200,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 100, ## BB + raise
@@ -2036,7 +2036,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('small blind, just enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 100, ## BB + raise
@@ -2059,7 +2059,7 @@ class TestFacingACompleteAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 951)
             with self.subTest('small blind, more than enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 950,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 100, ## BB + raise
@@ -2089,7 +2089,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 0,
                     bet_level = 150, ## overbet
@@ -2108,7 +2108,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 150, ## *BB* + overraise
@@ -2127,7 +2127,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 150, ## *bet* + overraise
@@ -2146,7 +2146,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 250, ## *overbet* + overraise
@@ -2165,7 +2165,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 100,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
@@ -2184,7 +2184,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('has opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
@@ -2208,7 +2208,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has not placed money'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 0,
                     bet_level = 150, ## overbet
@@ -2227,7 +2227,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has placed a big blind'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100, ## *BB*
                     bet_level = 100 + 150, ## *BB* + overraise
@@ -2246,7 +2246,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has previously opened or called a full bet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100, ## *bet*
                     bet_level = 100 + 150, ## *bet* + overraise
@@ -2265,7 +2265,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has previously opened or called an overbet'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 250,
                     player_bet_level = 150, ## *overbet*
                     bet_level = 150 + 250, ## *overbet* + overraise
@@ -2284,7 +2284,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has previously opened or called a full raise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 100 + 100, ## bet + *raise*
                     bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
@@ -2303,7 +2303,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('player has previously opened or called an overraise'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 250,
                     player_bet_level = 100 + 150, ## bet + *overraise*
                     bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
@@ -2334,7 +2334,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 0,
                         bet_level = 150, ## overbet
@@ -2357,7 +2357,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 150, ## *BB* + overraise
@@ -2380,7 +2380,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 150, ## *bet* + overraise
@@ -2403,7 +2403,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(400, 401)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 400,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 250, ## *overbet* + overraise
@@ -2426,7 +2426,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
@@ -2449,7 +2449,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(400, 401)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 400,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
@@ -2477,7 +2477,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 0,
                         bet_level = 150, ## overbet
@@ -2500,7 +2500,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 150, ## *BB* + overraise
@@ -2523,7 +2523,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 150, ## *bet* + overraise
@@ -2546,7 +2546,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(500, 501)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 500,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 250, ## *overbet* + overraise
@@ -2569,7 +2569,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 301)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 300,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
@@ -2592,7 +2592,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(500, 501)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 500,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
@@ -2620,7 +2620,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 1001)
             with self.subTest('has not placed money', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 1000,
                         player_bet_level = 0,
                         bet_level = 150, ## overbet
@@ -2643,7 +2643,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 901)
             with self.subTest('has placed a big blind', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 900,
                         player_bet_level = 100, ## *BB*
                         bet_level = 100 + 150, ## *BB* + overraise
@@ -2666,7 +2666,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 901)
             with self.subTest('has opened or called a full bet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 900,
                         player_bet_level = 100, ## *bet*
                         bet_level = 100 + 150, ## *bet* + overraise
@@ -2689,7 +2689,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(500, 851)
             with self.subTest('has opened or called an overbet', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 850,
                         player_bet_level = 150, ## *overbet*
                         bet_level = 150 + 250, ## *overbet* + overraise
@@ -2712,7 +2712,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(300, 801)
             with self.subTest('has opened or called a full raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 800,
                         player_bet_level = 100 + 100, ## bet + *raise*
                         bet_level = 100 + 100 + 150, ## bet + *raise* + overraise
@@ -2735,7 +2735,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(500, 751)
             with self.subTest('has opened or called an overraise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 750,
                         player_bet_level = 100 + 150, ## bet + *overraise*
                         bet_level = 100 + 150 + 250, ## bet + *overraise* + overraise
@@ -2756,7 +2756,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('small blind, not enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 150,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 150, ## BB + overraise
@@ -2775,7 +2775,7 @@ class TestFacingAnOverAggression(TestCase):
 
         with self.subTest('small blind, just enough to call'):
             self.assertDictEqual(
-                engines.get_valid_actions(
+                engines.get_action_ranges(
                     player_stack = 200,
                     player_bet_level = 50, ## *SB*
                     bet_level = 100 + 150, ## BB + overraise
@@ -2801,7 +2801,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(250, 251)
             with self.subTest('small blind, not enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 250,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 150, ## BB + overraise
@@ -2824,7 +2824,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(350, 351)
             with self.subTest('small blind, just enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 350,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 150, ## BB + overraise
@@ -2847,7 +2847,7 @@ class TestFacingAnOverAggression(TestCase):
                 valid_actions[constants.ACTION_RAISE] = range(350, 951)
             with self.subTest('small blind, more than enough to make a full re-raise', is_last_actionable_player=is_last_actionable_player):
                 self.assertDictEqual(
-                    engines.get_valid_actions(
+                    engines.get_action_ranges(
                         player_stack = 950,
                         player_bet_level = 50, ## *SB*
                         bet_level = 100 + 150, ## BB + overraise

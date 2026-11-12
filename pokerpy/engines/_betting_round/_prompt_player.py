@@ -32,7 +32,7 @@ from pokerpy.structures import Table
 
 
 from ._await_player import await_player
-from ._get_valid_actions import get_valid_actions
+from ._get_action_ranges import get_action_ranges
 from ._set_action_effects import set_action_effects
 
 
@@ -72,7 +72,7 @@ def prompt_player(table: Table, *, open_fold_allowed: bool):
             raise CloseBettingRoundSignal(signal_all_in_stopping_player)
         raise JumpToNextPlayerSignal(signal_all_in_player)
 
-    action_ranges = get_valid_actions(
+    action_ranges = get_action_ranges(
         player_stack = table.current_player.stack,
         player_bet_level = table.current_player.bet_level,
         bet_level = table.bet_level,
