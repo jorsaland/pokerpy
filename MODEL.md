@@ -135,6 +135,13 @@
 ### Legend
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    curve: monotoneX
+
+---
 flowchart LR
 
         i1(instance)@{ shape: circle }
@@ -147,13 +154,20 @@ flowchart LR
         m1 --> |from| i2
         m1 -.-> |calls| m2
         m2 --> |from| i2
-
 ```
 
 
 ### From controller
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    curve: monotoneX
+
+
+---
 flowchart LR
 
 
@@ -254,14 +268,20 @@ flowchart LR
     HC.listen -.-> HC.reset_hand_cycle_states
 
     HC.close -.-> HC.reset_hand_cycle_states
-
-
 ```
 
 
 ### From hand cycle
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    curve: monotoneX
+
+
+---
 flowchart LR
 
 
@@ -376,14 +396,20 @@ flowchart LR
 
     T.iter_players -.-> T.get_next_player
     T.iter_players -.-> T.get_previous_player
-
-
 ```
 
 
 ### From betting round
 
 ```mermaid
+---
+config:
+  layout: dagre
+  flowchart:
+    curve: monotoneX
+
+
+---
 flowchart LR
 
 
@@ -482,6 +508,4 @@ flowchart LR
 
     T.iter_players -.-> T.get_next_player
     T.iter_players -.-> T.get_previous_player
-
-
 ```
