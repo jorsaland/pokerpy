@@ -27,7 +27,6 @@ from pokerpy.structures import Table
 from pokerpy.validations import validate_type_str, validate_type_table
 
 
-from ._get_valid_actions import get_valid_actions
 from ._run_listener import run_listener
 
 
@@ -162,26 +161,6 @@ class BettingRound:
 
 
     # Methods related to state
-
-
-    def get_action_ranges(self):
-
-        "Retrieves the current player and its available actions"
-
-        return get_valid_actions(
-            player_stack = self.table.current_player.stack,
-            player_bet_level = self.table.current_player.bet_level,
-            player_has_played = self.table.current_player.has_played,
-            bet_level = self.table.bet_level,
-            full_bet_level = self.table.full_bet_level,
-            min_bet = self.table.min_bet,
-            min_raise_increase = self.table.min_raise_increase,
-            is_last_actionable_player = (
-                self.table.current_player in self.table.actionable_players
-                and len(self.table.actionable_players) == 1
-            ),
-            open_fold_allowed = self.open_fold_allowed,
-        )
 
 
     @staticmethod
