@@ -1,6 +1,13 @@
-# PokerPy 0.8 - beta (under development)
+# PokerPy 0.8-stage-A - beta (under development)
 
-Added a context manager that runs a full No Limit Texas Hold'em cash game, handling everything that occurs between hand cycles, such as button movement, players entering and leaving the table, and proper heads-up play. The engine generators no longer yield players. Instead, they yield a state object containing all the information needed to choose an action. Likewise, `HandCycle` no longer picks cards itself with `secrets.choice`. It now yields a state object and leaves the card choice to the developer using the library, although `secrets.choice` will be suggested in the final usage documentation.
+Development for this version is divided into two stages (A and B).
+
+Development for this version is divided into two stages (A and B).
+
+- Stage A replaces the players yielded by betting rounds with state objects. Each state contains all the information needed to respond to it, such as the available actions and amount ranges, and also provide a method to respond. Likewise, `HandCycle` no longer picks cards itself with `secrets.choice`: it yields a state object and leaves the card choice to the developer using the library. The final usage documentation will recommend `secrets.SystemRandom().sample` for this.
+
+- Stage B will add a context manager that runs a full No Limit Texas Hold'em cash game, handling everything that occurs between hand cycles, such as button movement, players entering and leaving the table, and proper heads-up play.
+
 
 ## License
 
@@ -75,9 +82,11 @@ for player in players:
 
 ## Current version
 
-### 0.8.0
+### 0.8.0 (stage A)
 - Detached from tag *0.7.1*.
 - Engines mark themselves as completed at the end of the `run_listener` function, independently of the `close` method.
+- Engines do not yield players anymore, but state objects that contain all the information needed and a method to respond.
+- Hand cycle no longer picks cards itself with `secrets.choice`, but yields a state object instead, leaving the card choice to the developer (Demo 0.8-A uses `secrets.SystemRandom().sample` for this)
 
 ## Upcoming versions
 
