@@ -23,7 +23,6 @@ from pokerpy.validations import (
     validate_int_amount_smaller_than_stack,
     validate_int_positive_or_zero,
     validate_iterable_not_contains_card,
-    validate_type_action,
     validate_type_card,
     validate_type_hand,
     validate_type_int,
@@ -31,7 +30,6 @@ from pokerpy.validations import (
 )
 
 
-from ._action import Action
 from ._card import Card
 from ._hand._hand import Hand
 
