@@ -36,7 +36,7 @@ from ._get_valid_actions import get_valid_actions
 from ._set_action_effects import set_action_effects
 
 
-def prompt_player(table: Table, open_fold_allowed: bool):
+def prompt_player(table: Table, *, open_fold_allowed: bool):
 
     """
     Evaluates if the current player is able to request an action and listens to it.
