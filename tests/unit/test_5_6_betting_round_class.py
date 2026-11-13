@@ -744,6 +744,77 @@ class TestBettingRoundFlowWithContextManagerWithSpecialCases(BaseTestCase):
             self.assertTrue(betting_round.is_closed)
 
 
+    def test_context_manager_flow_exiting_before_end_skipping_action(self):
+
+        "Tests flow with function next, exiting the context manager before the end, skipping the awaited action."
+
+        with self.assertRaises(RuntimeError) as context:
+
+            with engines.BettingRound('test', self.table) as betting_round:
+
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+                with self.subTest('first await'):
+                    next(betting_round.listen())
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
+            self.assertTrue(betting_round.is_closed)
+
+
+    def test_context_manager_flow_exiting_before_end_parsing_valid_action(self):
+
+        "Tests flow with function next, exiting the context manager before the end, after parsing a valid action during await."
+
+        with self.assertRaises(RuntimeError) as context:
+
+            with engines.BettingRound('test', self.table) as betting_round:
+
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+                with self.subTest('first await'):
+                    await_state = next(betting_round.listen())
+                    await_state.request_action(structures.Action(constants.ACTION_CHECK))
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(context.exception.args[0], messages.msg_betting_round_was_not_completed)
+            self.assertFalse(betting_round.is_completed)
+            self.assertTrue(betting_round.is_closed)
+
+
+    def test_context_manager_flow_exiting_before_end_parsing_invalid_action(self):
+
+        "Tests flow with function next, exiting the context manager before the end, after parsing an invalid action during await."
+
+        with self.assertRaises(RuntimeError) as context:
+
+            with engines.BettingRound('test', self.table) as betting_round:
+
+                with self.subTest('before actions'):
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+                with self.subTest('first await'):
+                    await_state = next(betting_round.listen())
+                    await_state.request_action(structures.Action(constants.ACTION_RAISE, 100))
+                    self.assertFalse(betting_round.is_completed)
+                    self.assertFalse(betting_round.is_closed)
+
+        with self.subTest('after exit'):
+            self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
+            self.assertFalse(betting_round.is_completed)
+            self.assertTrue(betting_round.is_closed)
+
+
     def test_context_manager_flow_raising_exception_due_to_skipped_action(self):
 
         "Tests flow, raising an exception inside the context manager due to a skipped action."
