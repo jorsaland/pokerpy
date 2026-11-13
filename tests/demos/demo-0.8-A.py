@@ -84,8 +84,7 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
             for await_state in hand_cycle.listen():
 
-                if hand_cycle.in_extra_big_blinds_phase:
-                    assert isinstance(await_state, pk.PlayerBlindAwait)
+                if isinstance(await_state, pk.PlayerBlindAwait):
                     if random.randint(0, 1):
                         await_state.place_blind()
                     continue

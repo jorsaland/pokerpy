@@ -51,7 +51,6 @@ class HandCycle:
         self._open_fold_allowed = bool(open_fold_allowed)
 
         self._betting_round: (BettingRound|None) = None
-        self._in_extra_big_blinds_phase = False
         self._is_completed = False
         self._is_closed = False
 
@@ -90,13 +89,6 @@ class HandCycle:
         "Resets current betting round."
         self._betting_round = None
 
-    def _mark_in_extra_big_blinds_phase(self):
-        "Marks the hand cycle as in the phase of placing extra big blinds."
-        self._in_extra_big_blinds_phase = True
-
-    def _unmark_in_extra_big_blinds_phase(self):
-        "Unmarks the hand cycle as in the phase of placing extra big blinds."
-        self._in_extra_big_blinds_phase = False
 
     def _mark_is_completed(self):
         "Mark round as completed."
@@ -106,7 +98,6 @@ class HandCycle:
         "Cleans up the hand cycle."
         self.reset_hand_cycle_states(self.table)
         self._reset_betting_round()
-        self._unmark_in_extra_big_blinds_phase()
         self._is_closed = True
 
 
@@ -124,11 +115,6 @@ class HandCycle:
     def betting_round(self):
         "Betting round taking place."
         return self._betting_round
-
-    @property
-    def in_extra_big_blinds_phase(self):
-        "Whether the hand cycle is in the phase of placing extra big blinds."
-        return self._in_extra_big_blinds_phase
 
     @property
     def is_completed(self):

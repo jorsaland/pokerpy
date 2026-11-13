@@ -116,8 +116,6 @@
 
 - **Betting round (`betting_round`):** Betting round taking place.
 
-- **In extra big blinds phase (`in_extra_big_blinds_phase`):** Whether the hand cycle is in the phase of placing extra big blinds.
-
 - **Is completed (`is_completed`):** Whether the hand cycle generator reached the end.
 
 - **Is closed (`is_closed`):** Whether the hand cycle was closed.
