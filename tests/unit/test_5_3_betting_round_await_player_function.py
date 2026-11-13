@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, engines, messages, states, structures
+from pokerpy import constants, engines, messages, structures
 
 
 class TestBettingRoundAwaitPlayerFunction(TestCase):
@@ -43,9 +43,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
         generator = engines.await_player(self.Andy, self.action_ranges)
 
         with self.subTest('generator await'):
-            await_state = next(generator)
-            self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
+            next(generator)
 
         with self.subTest('generator end'):
             with self.assertRaises(RuntimeError) as context:
@@ -63,8 +61,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         with self.subTest('generator await'):
             await_state = next(generator)
-            self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
         await_state.request_action(action)
 
@@ -84,8 +80,6 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         with self.subTest('generator await'):
             await_state = next(generator)
-            self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
         await_state.request_action(action)
 

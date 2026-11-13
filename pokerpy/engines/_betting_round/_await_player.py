@@ -31,9 +31,6 @@ def await_player(player: Player, action_ranges: dict[str, range]):
     """
 
     yield (await_state := PlayerActionAwait(player=player, ranges=action_ranges))
-
-    # Determine whether action is valid or not
-
     action = await_state.requested_action
 
     if action is None:
