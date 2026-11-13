@@ -25,11 +25,9 @@ from pokerpy.logger import logger
 from pokerpy.structures import Player, Table
 
 
-def break_tie(table: Table, winners: Sequence[Player], pot: int):
+def _break_tie(table: Table, winners: Sequence[Player], pot: int):
 
-    """
-    Distributes the central pot between the tied winners.
-    """
+    "Distributes the central pot between the tied winners."
 
     assert table.button_player
 
@@ -53,7 +51,8 @@ def break_tie(table: Table, winners: Sequence[Player], pot: int):
 def showdown(table: Table):
 
     """
-    Determines who are the winners among the remaining players and distributes the pot between them.
+    Determines who are the winners among the remaining players and distributes the pot between
+    them.
     """
 
     assert table.live_players
@@ -84,6 +83,6 @@ def showdown(table: Table):
         else:
             pot_name = 'main pot' if i == 0 else f'side pot {i}'
             logger.info(f'it is a tie for {pot_name}! winners: {", ".join([w.name for w in winners])}.')
-            break_tie(table, winners, side_pot)
+            _break_tie(table, winners, side_pot)
 
     table.clear_central_pot()
