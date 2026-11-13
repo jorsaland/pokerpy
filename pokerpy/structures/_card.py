@@ -52,7 +52,7 @@ class Card:
 
 
     def __repr__(self):
-        return f'Card(value="{self.value}", suit="{self.suit})"'
+        return f'Card(value="{self.value}", suit="{self.suit}")'
 
 
     def __str__(self):

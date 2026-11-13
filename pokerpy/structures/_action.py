@@ -53,7 +53,7 @@ class Action:
 
     def __repr__(self):
 
-        return f'Action(name="{self.category}", amount={self.amount})'
+        return f'Action(category="{self.category}", amount={self.amount})'
     
 
     def __eq__(self, other):
