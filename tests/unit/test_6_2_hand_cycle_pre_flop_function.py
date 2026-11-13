@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, engines, structures
+from pokerpy import constants, engines, states, structures
 
 
 class TestPreFlopFunction(TestCase):
@@ -33,181 +33,105 @@ class TestPreFlopFunction(TestCase):
         self.table = structures.Table(self.setup_players, min_bet=100)
         self.Andy, self.Boa, self.Coral, self.Dino, self.Epa, self.Fomi = self.setup_players
 
-        self.hand_cycle = engines.HandCycle(
-            'test',
-            self.table,
-            raise_invalid_actions = True,
-            open_fold_allowed = True,
-        )
+        self.cards_by_player = {
+            self.Andy:  (structures.Card(constants.ACES, constants.SPADES),   (structures.Card(constants.ACES, constants.HEARTS))),
+            self.Boa:   (structures.Card(constants.KINGS, constants.SPADES),  (structures.Card(constants.KINGS, constants.HEARTS))),
+            self.Coral: (structures.Card(constants.QUEENS, constants.SPADES), (structures.Card(constants.QUEENS, constants.HEARTS))),
+            self.Dino:  (structures.Card(constants.JACKS, constants.SPADES),  (structures.Card(constants.JACKS, constants.HEARTS))),
+            self.Epa:   (structures.Card(constants.TENS, constants.SPADES),   (structures.Card(constants.TENS, constants.HEARTS))),
+            self.Fomi:  (structures.Card(constants.NINES, constants.SPADES),  (structures.Card(constants.NINES, constants.HEARTS))),
+        }
+
+        self.hand_cycle = engines.HandCycle('test', self.table, open_fold_allowed=True)
 
 
-    def run_test_without_blinds(
+    def run_test(
         self,
         *,
         expected_starting_player: structures.Player,
-        players_and_actions: tuple[
-            tuple[structures.Player, structures.Action],
-            ...
-        ],
+        optional_blind_choices: list[tuple[structures.Player, bool]],
+        players_and_actions: list[tuple[structures.Player, structures.Action]],
     ):
 
         "Runs the shared validations for the tests without blinds."
 
         generator = engines.pre_flop(self.hand_cycle)
 
-        with self.subTest('before generator start-up'):
+        applied_deals: list[tuple[structures.Player, tuple[structures.Card, ...]]] = []
+        applied_small_blinds: set[structures.Player] = set()
+        applied_big_blinds: set[structures.Player] = set()
+        def assert_applied_deals():
+            for player, cards in applied_deals:
+                self.assertTupleEqual(player.cards, cards)
+            for player in applied_small_blinds:
+                self.assertGreaterEqual(player.bet_level, self.table.small_blind or 0)
+            for player in applied_big_blinds:
+                self.assertGreaterEqual(player.bet_level, self.table.big_blind or 0)
+
+        with self.subTest('before start-up'):
             self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
             self.assertEqual(self.table.starting_player, self.setup_players[0])
             self.assertEqual(self.table.bet_level, 0)
             self.assertEqual(self.table.full_bet_level, 0)
             for player in self.setup_players:
-                self.assertEqual(len(player.cards), 0)
+                self.assertTupleEqual(player.cards, ())
 
-        with self.subTest('after listener start-up'):
-            next_player = next(generator)
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertEqual(self.table.bet_level, 0)
-            self.assertEqual(self.table.full_bet_level, 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        for i, (player, action) in enumerate(players_and_actions, 1):
-            with self.subTest('action phase', player=player.name):
+        for player, chose_placing_blind in optional_blind_choices:
+            with self.subTest('extra blinds phase', player=player.name):
+                await_state = next(generator)
+                if player == self.table.small_blind_player:
+                    applied_small_blinds.add(player)
+                if player == self.table.big_blind_player:
+                    applied_big_blinds.add(player)
+                assert_applied_deals()
+                self.assertIsInstance(await_state, states.PlayerBlindAwait)
                 self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-                self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
+                self.assertEqual(self.table.starting_player, expected_starting_player)
+                self.assertEqual(self.table.bet_level, self.table.big_blind or 0)
+                self.assertEqual(self.table.full_bet_level, self.table.big_blind or 0)
+            if chose_placing_blind:
+                await_state.place_blind()
+                applied_big_blinds.add(player)
+
+        for player, cards in self.cards_by_player.items():
+            with self.subTest('dealing phase', player=player.name):
+                await_state = next(generator)
+                if player == self.table.small_blind_player:
+                    applied_small_blinds.add(player)
+                if player == self.table.big_blind_player:
+                    applied_big_blinds.add(player)
+                assert_applied_deals()
+                self.assertIsInstance(await_state, states.PlayerDealingAwait)
+                self.assertEqual(await_state.player, player)
+                self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
+                self.assertEqual(self.table.starting_player, expected_starting_player)
+                self.assertEqual(self.table.bet_level, self.table.big_blind or 0)
+                self.assertEqual(self.table.full_bet_level, self.table.big_blind or 0)
+            await_state.deal_cards(cards)
+            applied_deals.append((player, cards))
+
+        for player, action in players_and_actions:
+            with self.subTest('action phase', player=player.name):
+                await_state = next(generator)
+                assert_applied_deals()
+                self.assertIsInstance(await_state, states.PlayerActionAwait)
+                self.assertEqual(await_state.player, player)
+                self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
                 self.assertEqual(self.table.starting_player, expected_starting_player)
                 self.assertGreaterEqual(self.table.bet_level, 0)
                 self.assertGreaterEqual(self.table.full_bet_level, 0)
-                self.assertEqual(player, next_player)
-                self.assertEqual(len(player.cards), 2)
-                player.request_action(action)
-                if i < len(players_and_actions):
-                    next_player = next(generator)
+            await_state.request_action(action)
 
-        with self.subTest('before generator termination'):
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertGreaterEqual(self.table.bet_level, 0)
-            self.assertGreaterEqual(self.table.full_bet_level, 0)
-            self.assertEqual(players_and_actions[-1][0], next_player)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        with self.subTest('after generator termination'):
+        with self.subTest('termination'):
             with self.assertRaises(StopIteration):
                 next(generator)
+            applied_small_blinds.clear()
+            applied_big_blinds.clear()
+            assert_applied_deals()
             self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
             self.assertEqual(self.table.starting_player, expected_starting_player)
             self.assertEqual(self.table.bet_level, 0)
             self.assertEqual(self.table.full_bet_level, 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-
-    def run_test_with_blinds(
-        self,
-        *,
-        big_blind: int|None = None,
-        expected_starting_player: structures.Player,
-        players_and_actions: tuple[
-            tuple[structures.Player, structures.Action],
-            ...
-        ],
-        extra_blind_candidates: tuple[structures.Player, ...] | None = None,
-    ):
-
-        "Runs the shared validations for the tests with blinds."
-
-        generator = engines.pre_flop(self.hand_cycle)
-
-        with self.subTest('before generator start-up'):
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, self.setup_players[0])
-            self.assertEqual(self.table.bet_level, 0)
-            self.assertEqual(self.table.full_bet_level, 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 0)
-
-        with self.subTest('after listener start-up'):
-            next_player = next(generator)
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertTrue(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertEqual(self.table.bet_level, big_blind)
-            self.assertEqual(self.table.full_bet_level, big_blind)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 0)
-
-        for i, player in enumerate(extra_blind_candidates, 1):
-            with self.subTest('extra blinds phase', player=player.name):
-                self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-                self.assertTrue(self.hand_cycle.in_extra_big_blinds_phase)
-                self.assertEqual(self.table.starting_player, expected_starting_player)
-                self.assertEqual(self.table.bet_level, big_blind)
-                self.assertEqual(self.table.full_bet_level, big_blind)
-                self.assertEqual(next_player, player)
-                self.assertEqual(len(player.cards), 0)
-                if i < len(extra_blind_candidates):
-                    next_player = next(generator)
-
-        with self.subTest('before transition to action phase'):
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertTrue(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertEqual(self.table.bet_level, big_blind)
-            self.assertEqual(self.table.full_bet_level, big_blind)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 0)
-
-        with self.subTest('after transition to action phase'):
-            next_player = next(generator)
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertEqual(self.table.bet_level, big_blind)
-            self.assertEqual(self.table.full_bet_level, big_blind)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        for i, (player, action) in enumerate(players_and_actions, 1):
-            with self.subTest('action phase', player=player.name):
-                self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-                self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-                self.assertEqual(self.table.starting_player, expected_starting_player)
-                self.assertGreaterEqual(self.table.bet_level, big_blind)
-                self.assertGreaterEqual(self.table.full_bet_level, big_blind)
-                self.assertEqual(player, next_player)
-                self.assertEqual(len(player.cards), 2)
-                player.request_action(action)
-                if i < len(players_and_actions):
-                    next_player = next(generator)
-
-        with self.subTest('before generator termination'):
-            self.assertEqual(self.hand_cycle.betting_round.name, constants.PREFLOP)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertGreaterEqual(self.table.bet_level, big_blind)
-            self.assertGreaterEqual(self.table.full_bet_level, big_blind)
-            self.assertEqual(players_and_actions[-1][0], next_player)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
-
-        with self.subTest('after generator termination'):
-            with self.assertRaises(StopIteration):
-                next(generator)
-            self.assertIsNone(self.hand_cycle.betting_round)
-            self.assertFalse(self.hand_cycle.in_extra_big_blinds_phase)
-            self.assertEqual(self.table.starting_player, expected_starting_player)
-            self.assertEqual(self.table.bet_level, 0)
-            self.assertEqual(self.table.full_bet_level, 0)
-            for player in self.setup_players:
-                self.assertEqual(len(player.cards), 2)
 
 
     def test_no_blinds(self):
@@ -215,6 +139,8 @@ class TestPreFlopFunction(TestCase):
         "Tests when no blinds are placed."
 
         self.table.set_button_player(self.Andy)
+
+        optional_blind_choices = []
 
         players_and_actions = [
             (self.Boa, structures.Action(constants.ACTION_BET, 100)),
@@ -225,8 +151,9 @@ class TestPreFlopFunction(TestCase):
             (self.Andy, structures.Action(constants.ACTION_CALL, 100)),
         ]
 
-        self.run_test_without_blinds(
+        self.run_test(
             expected_starting_player = self.Boa,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
         )
 
@@ -240,6 +167,14 @@ class TestPreFlopFunction(TestCase):
         self.table.set_button_player(self.Andy)
         self.table.set_big_blind_player(self.Boa)
 
+        optional_blind_choices = [
+            (self.Coral, False),
+            (self.Dino, False),
+            (self.Epa, False),
+            (self.Fomi, False),
+            (self.Andy, False),
+        ]
+
         players_and_actions = [
             (self.Coral, structures.Action(constants.ACTION_CALL, 100)),
             (self.Dino, structures.Action(constants.ACTION_CALL, 100)),
@@ -249,11 +184,10 @@ class TestPreFlopFunction(TestCase):
             (self.Boa, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Coral,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Coral, self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
@@ -266,8 +200,13 @@ class TestPreFlopFunction(TestCase):
         self.table.set_button_player(self.Andy)
         self.table.set_big_blind_player(self.Boa)
 
-        for player in (self.Coral, self.Dino, self.Epa):
-            player.mark_is_extra_blind()
+        optional_blind_choices = [
+            (self.Coral, True),
+            (self.Dino, True),
+            (self.Epa, True),
+            (self.Fomi, False),
+            (self.Andy, False),
+        ]
 
         players_and_actions = [
             (self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -278,11 +217,10 @@ class TestPreFlopFunction(TestCase):
             (self.Boa, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Coral,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Coral, self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
@@ -295,8 +233,13 @@ class TestPreFlopFunction(TestCase):
         self.table.set_button_player(self.Andy)
         self.table.set_big_blind_player(self.Boa)
 
-        for player in (self.Coral, self.Dino, self.Epa, self.Fomi, self.Andy):
-            player.mark_is_extra_blind()
+        optional_blind_choices = [
+            (self.Coral, True),
+            (self.Dino, True),
+            (self.Epa, True),
+            (self.Fomi, True),
+            (self.Andy, True),
+        ]
 
         players_and_actions = [
             (self.Coral, structures.Action(constants.ACTION_CHECK)),
@@ -307,11 +250,10 @@ class TestPreFlopFunction(TestCase):
             (self.Boa, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Coral,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Coral, self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
@@ -326,6 +268,13 @@ class TestPreFlopFunction(TestCase):
         self.table.set_small_blind_player(self.Boa)
         self.table.set_big_blind_player(self.Coral)
 
+        optional_blind_choices = [
+            (self.Dino, False),
+            (self.Epa, False),
+            (self.Fomi, False),
+            (self.Andy, False),
+        ]
+
         players_and_actions = [
             (self.Dino, structures.Action(constants.ACTION_CALL, 100)),
             (self.Epa, structures.Action(constants.ACTION_CALL, 100)),
@@ -335,11 +284,10 @@ class TestPreFlopFunction(TestCase):
             (self.Coral, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Dino,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
@@ -354,8 +302,12 @@ class TestPreFlopFunction(TestCase):
         self.table.set_small_blind_player(self.Boa)
         self.table.set_big_blind_player(self.Coral)
 
-        for player in (self.Dino, self.Epa):
-            player.mark_is_extra_blind()
+        optional_blind_choices = [
+            (self.Dino, True),
+            (self.Epa, True),
+            (self.Fomi, False),
+            (self.Andy, False),
+        ]
 
         players_and_actions = [
             (self.Dino, structures.Action(constants.ACTION_CHECK)),
@@ -366,11 +318,10 @@ class TestPreFlopFunction(TestCase):
             (self.Coral, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Dino,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
@@ -385,8 +336,12 @@ class TestPreFlopFunction(TestCase):
         self.table.set_small_blind_player(self.Boa)
         self.table.set_big_blind_player(self.Coral)
 
-        for player in (self.Dino, self.Epa, self.Fomi, self.Andy):
-            player.mark_is_extra_blind()
+        optional_blind_choices = [
+            (self.Dino, True),
+            (self.Epa, True),
+            (self.Fomi, True),
+            (self.Andy, True),
+        ]
 
         players_and_actions = [
             (self.Dino, structures.Action(constants.ACTION_CHECK)),
@@ -397,11 +352,10 @@ class TestPreFlopFunction(TestCase):
             (self.Coral, structures.Action(constants.ACTION_CHECK)),
         ]
 
-        self.run_test_with_blinds(
-            big_blind = 100,
+        self.run_test(
             expected_starting_player = self.Dino,
+            optional_blind_choices = optional_blind_choices,
             players_and_actions = players_and_actions,
-            extra_blind_candidates = (self.Dino, self.Epa, self.Fomi, self.Andy),
         )
 
 
