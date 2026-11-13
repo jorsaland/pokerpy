@@ -150,7 +150,7 @@ class BettingRound:
             pass
         except RuntimeError as exception:
             if exception.args[0] == msg_missing_action:
-                raise RuntimeError(msg_betting_round_was_not_completed) # closure after skipping parsing prefers this message
+                raise RuntimeError(msg_betting_round_was_not_completed) from exception
             raise exception
         finally:
             self._teardown()
