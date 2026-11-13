@@ -51,19 +51,8 @@ class Card:
         self._suit = suit
 
 
-    @property
-    def value(self):
-        "Rank of the card (numbers from 2 to 10, jacks, queens, kings and aces)."
-        return self._value
-    
-    @property
-    def suit(self):
-        "Symbol paired with the value (clubs, diamonds, hearts and spades)."
-        return self._suit
-
-
     def __repr__(self):
-        return f'Card(value={self.value}, suit={self.suit})'
+        return f'Card(value="{self.value}", suit="{self.suit})"'
 
 
     def __str__(self):
@@ -82,6 +71,17 @@ class Card:
             return NotImplemented
 
         return (self.value == other.value) and (self.suit == other.suit)
+
+
+    @property
+    def value(self):
+        "Rank of the card (numbers from 2 to 10, jacks, queens, kings and aces)."
+        return self._value
+    
+    @property
+    def suit(self):
+        "Symbol paired with the value (clubs, diamonds, hearts and spades)."
+        return self._suit
 
 
     def get_deck_position(self):

@@ -218,254 +218,151 @@ class Table:
         return tuple(self._split_central_pot)
 
 
-    # Methods related to cards
-
-
     def remove_card_from_deck(self, card: Card):
-
         "Removes a card from the deck property."
-
         validate_type_card(card)
         validate_card_in_deck(card, self.deck)
-
         self._deck.remove(card)
 
-
     def reset_deck(self):
-
         "Resets the deck property back to have all the cards."
-
         self._deck.clear()
         self._deck.extend(Card(value, suit) for value, suit in sorted_card_values_and_suits)
 
-
     def assign_common_card(self, card: Card):
-
         "Adds a card to the common_cards property."
-
         validate_type_card(card)
         validate_iterable_not_contains_card(card, self.common_cards)
-
         self._common_cards.append(card)
 
-
     def reset_common_cards(self):
-
         "Clears the common_cards property."
-
         self._common_cards.clear()
 
 
-    # Methods related to money
-
-
     def set_min_bet(self, amount: int):
-
         "Sets the min_bet property."
-
         validate_type_int(amount)
         validate_int_positive(amount)
-
         self._min_bet = amount
 
-
     def set_min_raise_increase(self, amount: int):
-
         "Sets the min_raise_increase property."
-
         validate_type_int(amount)
         validate_int_positive(amount)
-
         self._min_raise_increase = amount
 
-
     def set_bet_level(self, amount: int):
-
         "Sets the chip_level property."
-
         validate_type_int(amount)
         validate_int_positive_or_zero(amount)
-
         self._bet_level = amount
 
-
     def set_full_bet_level(self, amount: int):
-
         "Sets the full_chip_level property."
-
         validate_type_int(amount)
         validate_int_positive_or_zero(amount)
-
         self._full_bet_level = amount
 
-
     def set_ante(self, amount: int):
-
         "Sets the ante property."
-
         validate_type_int(amount)
         validate_int_positive(amount)
-
         self._ante = amount
 
-
     def set_small_blind(self, amount: int):
-
         "Sets the small_blind property."
-
         validate_type_int(amount)
         validate_int_positive(amount)
-
         self._small_blind = amount
 
-
     def set_big_blind(self, amount: int):
-
         "Sets the big_blind property."
-
         validate_type_int(amount)
         validate_int_positive(amount)
-
         self._big_blind = amount
 
 
     def increase_central_pot(self, amount: int):
-
         "Adds an amount to the deepest pot in the split_central_pot property."
-
         validate_type_int(amount)
         validate_int_positive_or_zero(amount)
-
         self._split_central_pot[-1] += amount
 
-
     def add_side_pot(self):
-
         "Adds a new side pot to the split_central_pot property."
-
         self._split_central_pot.append(0)
 
-
     def clear_central_pot(self):
-
         "Resets the split_central_pot property."
-
         self._split_central_pot.clear()
         self._split_central_pot.append(0)
 
 
-    # Methods related to players setting
-
-
     def set_starting_player(self, player: Player):
-
         "Sets the starting_player property."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._starting_player = player
-    
 
     def set_stopping_player(self, player: Player):
-
         "Sets the stopping_player property."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._stopping_player = player
 
-
     def set_button_player(self, player: Player):
-
         "Sets the button property."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._button_player = player
 
-
     def set_small_blind_player(self, player: Player):
-
         "Sets the small_blind_player property."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._small_blind_player = player
 
-
     def set_big_blind_player(self, player: Player):
-
         "Sets the big_blind_player property."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._big_blind_player = player
 
-
     def set_current_player(self, player: Player):
-
         "Sets a player as the current player."
-
         validate_type_player(player)
         validate_player_in_table(player, self.players)
-
         self._current_player = player
 
 
-    # Methods related to players iteration
-
-
     def get_next_player(self, reference_player: Player):
-
         "Retrieves the player next to a reference player."
-
         validate_type_player(reference_player)
         validate_player_in_table(reference_player, self.players)
-
         if reference_player == self.players[-1]:
             return self.players[0]
-
         reference_player_index = self.players.index(reference_player)
         return self.players[reference_player_index + 1]
 
-
     def get_previous_player(self, reference_player: Player):
-
         "Retrieves the player before a reference player."
-
         validate_type_player(reference_player)
         validate_player_in_table(reference_player, self.players)
-
         reference_player_index = self.players.index(reference_player)
         return self.players[reference_player_index - 1]
 
 
-    # High-level methods
-
-
     def gather_pot(self):
-
         "Gathers the chips from the users into the central pot."
-
         return gather_pot_method(self)
 
-
     def refund_excess(self):
-
         "Iteratively refunds the deepest side pots if the participating players are all folded."
-
         return refund_excess_method(self)
 
-
     def iter_players(self, starting_player: (Player|None) = None, reverse: bool = False):
-
         "Iterates over all the players."
-
         return iter_players_method(
             self,
             starting_player = starting_player,

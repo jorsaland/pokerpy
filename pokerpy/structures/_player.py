@@ -44,17 +44,13 @@ class Player:
 
     def __init__(self, name: str, stack: int):
 
-        # Validations
-
         validate_type_str(name)
         validate_type_int(stack)
 
         validate_int_positive_or_zero(stack)
 
-        # Fixed variables
         self._name = name
 
-        # State variables
         self._cards: list[Card] = []
         self._hand: (Hand|None) = None
         self._stack = stack
@@ -62,6 +58,11 @@ class Player:
         self._pot_index = 0
         self._is_folded = False
         self._has_played = False
+
+
+    def __repr__(self):
+
+        return f'Player(name="{self.name}", stack={self.stack})'
 
 
     @property
@@ -108,19 +109,11 @@ class Player:
         return self._pot_index if not self.is_folded else None
 
 
-    def __repr__(self):
-        return f'Player(name={self.name}, stack={self.stack})'
-
-
-    # Methods to affect cards and hand
-
-
     def assign_card(self, card: Card):
         "Adds a card to the cards property."
         validate_type_card(card)
         validate_iterable_not_contains_card(card, self.cards)
         self._cards.append(card)
-
 
     def reset_cards(self):
         "Clears the cards property."
@@ -132,13 +125,9 @@ class Player:
         validate_type_hand(hand)
         self._hand = hand
 
-
     def clear_hand(self):
         "Resets the hand property back to None."
         self._hand = None
-
-
-    # Methods to affect stack and current amount
 
 
     def increase_bet_level(self, amount: int):
@@ -174,9 +163,6 @@ class Player:
     def reset_pot_index(self):
         "Resets the pot_index back to zero."
         self._pot_index = 0
-
-
-    # Methods to affect playing status
 
 
     def mark_has_played(self):

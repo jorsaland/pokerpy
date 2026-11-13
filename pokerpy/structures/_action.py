@@ -51,6 +51,19 @@ class Action:
         self._amount = amount
 
 
+    def __repr__(self):
+
+        return f'Action(name="{self.category}", amount={self.amount})'
+    
+
+    def __eq__(self, other):
+
+        if not isinstance(other, Action):
+            return NotImplemented
+
+        return (self.category == other.category) and (self.amount == other.amount)
+
+
     @property
     def category(self):
         "Name of the action (fold, check, call, bet and raise)."
@@ -60,15 +73,3 @@ class Action:
     def amount(self):
         "Amount of chips placed in front during the action."
         return self._amount
-
-
-    def __repr__(self):
-        return f'Action(name={self.category}, amount={self.amount})'
-    
-
-    def __eq__(self, other):
-
-        if not isinstance(other, Action):
-            return NotImplemented
-
-        return (self.category == other.category) and (self.amount == other.amount)

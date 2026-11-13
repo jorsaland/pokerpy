@@ -60,10 +60,12 @@ class Hand:
 
 
     def __repr__(self):
-        return f'Hand({", ".join(repr(card) for card in self.cards)})'
+
+        return f'Hand([{", ".join(repr(card) for card in self.cards)}])'
 
 
     def __str__(self):
+
         return f'<{"".join(str(card) for card in self.cards)}>'
 
 
