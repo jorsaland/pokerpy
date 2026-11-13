@@ -18,41 +18,27 @@ Defines the function that determines the name of the hand.
 """
 
 
-from collections.abc import Iterable
-
-
 from pokerpy import constants
 
 
 from .._card import Card
-from ._arrange_cards import arrange_cards
 
 
-def get_category(cards: Iterable[Card]):
+def get_category(arranged_cards: tuple[Card, ...]):
 
-    """
-    Determines the hand category.
-    """
+    "Determines the hand category."
 
-    # Convert cards iterable
+    merged_card_values = ''.join(card.value for card in arranged_cards) # example --> 'JT987'
 
-    hand_tuple = arrange_cards(cards)
-    merged_card_values = ''.join(card.value for card in hand_tuple) # example --> 'JT987'
-
-    # Check if cards match flush
-
-    unique_suits = {card.suit for card in hand_tuple}
+    unique_suits = {card.suit for card in arranged_cards}
     cards_match_flush = (len(unique_suits) == 1)
 
-    # Check if cards match straight
-
-    merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACES ## this is literally --> 'AKQJT98765432A'
-    cards_match_straight = (merged_card_values in merged_full_straight) ## membership comparison between strings --> '76543' is contained in 'AKQJT98765432A'
-
-    # Match flushes and straights
+    merged_full_straight = ''.join(reversed(constants.sorted_card_values)) + constants.ACES # this is literally --> 'AKQJT98765432A'
+    cards_match_straight = (merged_card_values in merged_full_straight) # membership comparison between strings --> '76543' is contained in 'AKQJT98765432A'
+    value_counts = {merged_card_values.count(value) for value in merged_card_values}
 
     if cards_match_flush and cards_match_straight:
-        if hand_tuple[0].value == constants.ACES:
+        if arranged_cards[0].value == constants.ACES:
             return constants.ROYAL_FLUSH
         return constants.STRAIGHT_FLUSH
 
@@ -61,10 +47,6 @@ def get_category(cards: Iterable[Card]):
 
     if cards_match_straight:
         return constants.STRAIGHT
-
-    # Match other categories
-
-    value_counts = {merged_card_values.count(value) for value in merged_card_values}
 
     if 4 in value_counts:
         return constants.FOUR_OF_A_KIND
@@ -75,8 +57,8 @@ def get_category(cards: Iterable[Card]):
         return constants.THREE_OF_A_KIND
 
     if 2 in value_counts:
-        if len(set(merged_card_values)) == 3: ## 2 pairs and 1 unpaired card
+        if len(set(merged_card_values)) == 3: # 2 pairs and 1 unpaired card
             return constants.TWO_PAIR
-        return constants.ONE_PAIR ## 1 pair and 3 single cards
+        return constants.ONE_PAIR # 1 pair and 3 single cards
 
     return constants.HIGH_CARD

@@ -11,7 +11,7 @@ from itertools import permutations
 from unittest import main, TestCase
 
 
-from pokerpy import constants, messages, structures
+from pokerpy import constants, structures
 
 
 class PermutationTestCase(TestCase):
@@ -34,70 +34,6 @@ class PermutationTestCase(TestCase):
                 expected = ''.join(str(c) for c in expected_arrangement),
             ):
                 self.assertEqual(arranged_cards, expected_arrangement)
-
-
-class TestHandArrangeCardsFunctionInput(TestCase):
-
-
-    "Runs unit tests on arrange_cards function input."
-
-
-    def test_value_error(self):
-
-        "Tests value error detection."
-
-        no_cards = ()
-
-        less_than_5_cards = (
-            structures.Card(constants.JACKS, constants.HEARTS),
-            structures.Card(constants.DEUCES, constants.CLUBS),
-            structures.Card(constants.SIXES, constants.SPADES),
-        )
-
-        more_than_5_cards = (
-            structures.Card(constants.KINGS, constants.HEARTS),
-            structures.Card(constants.SEVENS, constants.HEARTS),
-            structures.Card(constants.DEUCES, constants.DIAMONDS),
-            structures.Card(constants.FIVES, constants.SPADES),
-            structures.Card(constants.KINGS, constants.CLUBS),
-            structures.Card(constants.ACES, constants.CLUBS),
-            structures.Card(constants.TENS, constants.CLUBS),
-        )
-
-        repeated_cards = (
-            structures.Card(constants.DEUCES, constants.DIAMONDS),
-            structures.Card(constants.FIVES, constants.SPADES),
-            structures.Card(constants.DEUCES, constants.DIAMONDS),
-            structures.Card(constants.JACKS, constants.SPADES),
-            structures.Card(constants.TENS, constants.CLUBS),
-        )
-
-        for card_set in (no_cards, less_than_5_cards, more_than_5_cards):
-
-            with self.subTest('not five cards', cards_count=len(card_set)):
-                with self.assertRaises(ValueError) as context:
-                    structures.arrange_cards(card_set)
-                self.assertEqual(context.exception.args[0], messages.msg_not_exact_amount_of_cards.format(5))
-
-        with self.subTest('repeated cards', cards_count=len(repeated_cards)):
-            with self.assertRaises(ValueError) as context:
-                structures.arrange_cards(repeated_cards)
-            self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
-
-
-    def test_valid_input(self):
-
-        "Tests valid input."
-
-        cards = (
-            structures.Card(constants.TENS, constants.CLUBS),
-            structures.Card(constants.QUEENS, constants.SPADES),
-            structures.Card(constants.QUEENS, constants.HEARTS),
-            structures.Card(constants.THREES, constants.HEARTS),
-            structures.Card(constants.FOURS, constants.CLUBS),
-        )
-
-        structures.arrange_cards(cards)
 
 
 class TestHandArrangeCardsFunctionWithFourOfAKind(PermutationTestCase):

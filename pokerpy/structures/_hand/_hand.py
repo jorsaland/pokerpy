@@ -19,20 +19,21 @@ Defines the class that represents a poker hand.
 
 
 from collections.abc import Iterable
-from typing import NewType
 
 
 from pokerpy import constants
-from pokerpy.validations import validate_type_iterable, validate_all_type_card
+from pokerpy.validations import (
+    validate_all_type_card,
+    validate_iterable_has_n_cards,
+    validate_iterable_not_repeated_cards,
+    validate_type_iterable,
+)
 
 
 from .._card import Card
 
 from ._arrange_cards import arrange_cards
 from ._get_category import get_category
-
-
-HandTuple = NewType('HandTuple', tuple[Card])
 
 
 class Hand:
@@ -45,33 +46,17 @@ class Hand:
 
     def __init__(self, cards: Iterable[Card]):
 
-        # Check input type
         validate_type_iterable(cards)
         validate_all_type_card(cards)
 
-        cards_list = list(cards)
+        validate_iterable_has_n_cards(cards, 5)
+        validate_iterable_not_repeated_cards(cards)
 
-        # Transform input
-        hand_tuple = arrange_cards(cards_list)
-        category = get_category(cards_list)
-        
-        # Static attributes
-        self._cards = hand_tuple
+        arranged_cards = arrange_cards(cards)
+        category = get_category(arranged_cards)
+
+        self._cards = arranged_cards
         self._category = category
-
-
-    @property
-    def cards(self):
-        "Set of five cards that make up the hand."
-        return self._cards
-
-    @property
-    def category(self):
-        """
-        Rank of the hand (high card, pair, two pair, three of a kind, straight, flush, full house,
-        four of a kind, straight flush and royal flush).
-        """
-        return self._category
 
 
     def __repr__(self):
@@ -116,3 +101,17 @@ class Hand:
             return NotImplemented
         
         return (self == other) or (self > other)
+
+
+    @property
+    def cards(self):
+        "Set of five cards that make up the hand."
+        return self._cards
+
+    @property
+    def category(self):
+        """
+        Rank of the hand (high card, pair, two pair, three of a kind, straight, flush, full house,
+        four of a kind, straight flush and royal flush).
+        """
+        return self._category
