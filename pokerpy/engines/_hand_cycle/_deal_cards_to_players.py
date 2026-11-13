@@ -18,11 +18,9 @@ Defines the function that starts the hand cycle generator that rotates the playe
 """
 
 
-from typing import TYPE_CHECKING
-
-
 from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.states import PlayerDealingAwait
+from pokerpy.structures import Table
 from pokerpy.validations import (
     validate_card_in_deck,
     validate_int_positive,
@@ -32,30 +30,26 @@ from pokerpy.validations import (
 )
 
 
-if TYPE_CHECKING:
-    from ._hand_cycle import HandCycle
-
-
-def deal_cards_to_players(hand_cycle: "HandCycle", cards_count: int):
+def deal_cards_to_players(table: Table, cards_count: int):
 
     "Deals cards to players in equal amounts."
 
     validate_type_int(cards_count)
     validate_int_positive(cards_count)
 
-    for player in hand_cycle.table.live_players:
+    for player in table.live_players:
 
-        yield (await_state := PlayerDealingAwait(player=player, count=cards_count, deck=hand_cycle.table.deck))
+        yield (await_state := PlayerDealingAwait(player=player, count=cards_count, deck=table.deck))
 
         chosen_cards = await_state.dealt_cards
 
         validate_iterable_has_n_cards(chosen_cards, cards_count)
         validate_iterable_not_repeated_cards(chosen_cards)
         for card in chosen_cards:
-            validate_card_in_deck(card, hand_cycle.table.deck)
+            validate_card_in_deck(card, table.deck)
 
         for card in chosen_cards:
-            hand_cycle.table.remove_card_from_deck(card)
+            table.remove_card_from_deck(card)
             player.assign_card(card)
         logger.info(f'Dealer deals cards {"".join(str(card) for card in chosen_cards)} to {player.name}.')
 

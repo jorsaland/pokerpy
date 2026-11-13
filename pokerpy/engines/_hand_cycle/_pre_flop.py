@@ -92,7 +92,7 @@ def pre_flop(hand_cycle: "HandCycle"):
         logger.info(f'TABLE CURRENT LEVEL: {table.bet_level}')
         logger.info(wrap_internal_log())
 
-        yield from deal_cards_to_players(hand_cycle, 2)
+        yield from deal_cards_to_players(table, 2)
         yield from betting_round.listen()
 
     hand_cycle._reset_betting_round()

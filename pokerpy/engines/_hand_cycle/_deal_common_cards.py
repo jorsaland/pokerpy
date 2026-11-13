@@ -16,11 +16,9 @@
 "Defines the function that Deals common cards to table."
 
 
-from typing import TYPE_CHECKING
-
-
 from pokerpy.logger import logger, wrap_internal_log
 from pokerpy.states import CommonDealingAwait
+from pokerpy.structures import Table
 from pokerpy.validations import (
     validate_card_in_deck,
     validate_int_positive,
@@ -30,28 +28,24 @@ from pokerpy.validations import (
 )
 
 
-if TYPE_CHECKING:
-    from ._hand_cycle import HandCycle
-
-
-def deal_common_cards(hand_cycle: "HandCycle", cards_count: int):
+def deal_common_cards(table: Table, cards_count: int):
 
     "Deals common cards to table."
 
     validate_type_int(cards_count)
     validate_int_positive(cards_count)
 
-    yield (await_state := CommonDealingAwait(count=cards_count, deck=hand_cycle.table.deck))
+    yield (await_state := CommonDealingAwait(count=cards_count, deck=table.deck))
     chosen_cards = await_state.dealt_cards
 
     validate_iterable_has_n_cards(chosen_cards, cards_count)
     validate_iterable_not_repeated_cards(chosen_cards)
     for card in chosen_cards:
-        validate_card_in_deck(card, hand_cycle.table.deck)
+        validate_card_in_deck(card, table.deck)
 
     for card in chosen_cards:
-        hand_cycle.table.remove_card_from_deck(card)
-        hand_cycle.table.assign_common_card(card)
+        table.remove_card_from_deck(card)
+        table.assign_common_card(card)
     logger.info(f'Dealer deals common cards: {"".join(str(card) for card in chosen_cards)}.')
 
     logger.info(wrap_internal_log())

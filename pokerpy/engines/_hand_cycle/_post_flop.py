@@ -66,9 +66,9 @@ def post_flop(hand_cycle: "HandCycle", round_name: str):
         # Deal three cards to table if round is flop and one if is turn or river
 
         if round_name == FLOP:
-            yield from deal_common_cards(hand_cycle, 3)
+            yield from deal_common_cards(table, 3)
         else:
-            yield from deal_common_cards(hand_cycle, 1)
+            yield from deal_common_cards(table, 1)
 
         for player in table.players:
             assign_hand(player=player, common_cards=table.common_cards)
