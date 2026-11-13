@@ -184,21 +184,18 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
 
         with self.subTest('before big blind placing'):
             for player in players:
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 0)
 
-        for player in generator:
-            if player in (Andy, Boa, Coral):
-                player.mark_is_extra_blind()
+        for await_state in generator:
+            if await_state.player in (Andy, Boa, Coral):
+                await_state.place_blind()
 
         with self.subTest('after big blind placing'):
             for player in (Andy, Boa, Coral):
-                self.assertTrue(player.is_extra_blind)
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 0)
             for player in (Dino, Epa, Fomi):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 0)
 
@@ -220,21 +217,18 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
 
         with self.subTest('before big blind placing'):
             for player in players:
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 10)
                 self.assertEqual(player.bet_level, 0)
 
-        for player in generator:
-            if player in (Andy, Boa, Coral):
-                player.mark_is_extra_blind()
+        for await_state in generator:
+            if await_state.player in (Andy, Boa, Coral):
+                await_state.place_blind()
 
         with self.subTest('after big blind placing'):
             for player in (Andy, Boa, Coral):
-                self.assertTrue(player.is_extra_blind)
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 10)
             for player in (Dino, Epa, Fomi):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 10)
                 self.assertEqual(player.bet_level, 0)
 
@@ -256,21 +250,18 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
 
         with self.subTest('before big blind placing'):
             for player in players:
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 100)
                 self.assertEqual(player.bet_level, 0)
 
-        for player in generator:
-            if player in (Andy, Boa, Coral):
-                player.mark_is_extra_blind()
+        for await_state in generator:
+            if await_state.player in (Andy, Boa, Coral):
+                await_state.place_blind()
 
         with self.subTest('after big blind placing'):
             for player in (Andy, Boa, Coral):
-                self.assertTrue(player.is_extra_blind)
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 100)
             for player in (Dino, Epa, Fomi):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 100)
                 self.assertEqual(player.bet_level, 0)
 
@@ -292,21 +283,18 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
 
         with self.subTest('before big blind placing'):
             for player in players:
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 1000)
                 self.assertEqual(player.bet_level, 0)
 
-        for player in generator:
-            if player in (Andy, Boa, Coral):
-                player.mark_is_extra_blind()
+        for await_state in generator:
+            if await_state.player in (Andy, Boa, Coral):
+                await_state.place_blind()
 
         with self.subTest('after big blind placing'):
             for player in (Andy, Boa, Coral):
-                self.assertTrue(player.is_extra_blind)
                 self.assertEqual(player.stack, 900)
                 self.assertEqual(player.bet_level, 100)
             for player in (Dino, Epa, Fomi):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 1000)
                 self.assertEqual(player.bet_level, 0)
 
@@ -329,47 +317,38 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
         with self.subTest('before big blind placing'):
 
             for player in (Andy, Boa, Coral):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 1000)
                 self.assertEqual(player.bet_level, 0)
 
-            self.assertFalse(Dino.is_extra_blind)
             self.assertEqual(Dino.stack, 100)
             self.assertEqual(Dino.bet_level, 0)
 
-            self.assertFalse(Epa.is_extra_blind)
             self.assertEqual(Epa.stack, 10)
             self.assertEqual(Epa.bet_level, 0)
 
-            self.assertFalse(Fomi.is_extra_blind)
             self.assertEqual(Fomi.stack, 0)
             self.assertEqual(Fomi.bet_level, 0)
 
 
-        for player in generator:
-            if player in (Coral, Dino, Epa, Fomi):
-                player.mark_is_extra_blind()
+        for await_state in generator:
+            if await_state.player in (Coral, Dino, Epa, Fomi):
+                await_state.place_blind()
 
         with self.subTest('after big blind placing'):
 
             for player in (Andy, Boa):
-                self.assertFalse(player.is_extra_blind)
                 self.assertEqual(player.stack, 1000)
                 self.assertEqual(player.bet_level, 0)
 
-            self.assertTrue(Coral.is_extra_blind)
             self.assertEqual(Coral.stack, 900)
             self.assertEqual(Coral.bet_level, 100)
 
-            self.assertTrue(Dino.is_extra_blind)
             self.assertEqual(Dino.stack, 0)
             self.assertEqual(Dino.bet_level, 100)
 
-            self.assertTrue(Epa.is_extra_blind)
             self.assertEqual(Epa.stack, 0)
             self.assertEqual(Epa.bet_level, 10)
 
-            self.assertTrue(Fomi.is_extra_blind)
             self.assertEqual(Fomi.stack, 0)
             self.assertEqual(Fomi.bet_level, 0)
 
