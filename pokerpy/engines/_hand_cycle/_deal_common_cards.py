@@ -21,19 +21,14 @@ from pokerpy.states import CommonDealingAwait
 from pokerpy.structures import Table
 from pokerpy.validations import (
     validate_card_in_deck,
-    validate_int_positive,
     validate_iterable_has_n_cards,
     validate_iterable_not_repeated_cards,
-    validate_type_int,
 )
 
 
 def deal_common_cards(table: Table, cards_count: int):
 
     "Deals common cards to table."
-
-    validate_type_int(cards_count)
-    validate_int_positive(cards_count)
 
     yield (await_state := CommonDealingAwait(count=cards_count, deck=table.deck))
     chosen_cards = await_state.dealt_cards
