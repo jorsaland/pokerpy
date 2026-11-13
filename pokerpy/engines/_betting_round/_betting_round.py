@@ -39,27 +39,59 @@ class BettingRound:
     """
 
 
-    def __init__(
-        self,
-        name: str,
-        table: Table,
-        *,
-        open_fold_allowed = False,
-    ):
+    def __init__(self, name: str, table: Table, *, open_fold_allowed=False):
 
         validate_type_str(name)
         validate_type_table(table)
 
-        # Fixed attributes
         self._listener = None
         self._name = name
         self._table = table
         self._open_fold_allowed = bool(open_fold_allowed)
 
-        # State attributes
         self._lap_counts = 0
         self._is_completed = False
         self._is_closed = False
+
+
+    def __enter__(self):
+
+        self.listen()
+        return self
+
+
+    def __exit__(self, exception_type: (type|None), exception_value: (BaseException|None), _):
+
+        if exception_type is None:
+            self.close()
+            return
+
+        # Closes the listener generator on the abort path. If an exception is raised on the
+        # caller's side (for example in a state method such as deal_cards), the generator stays
+        # suspended at yield and its nested with blocks do not unwind. Their cleanup would then run
+        # at garbage collection or interpreter shutdown, when imports no longer work, producing a
+        # misleading "ImportError: sys.meta_path is None" that hides the real error. Generator's
+        # method close() throws GeneratorExit through every `yield from`, so the cleanup runs here,
+        # deterministically. It is a harmless if the generator has already finished.
+        self._listener.close()
+        self._teardown()
+
+        if exception_type is StopIteration:
+            raise RuntimeError(msg_overloaded_betting_round) from exception_value
+
+
+    def _increase_counter(self):
+        "Registers a new lap."
+        self._lap_counts += 1
+
+    def _mark_is_completed(self):
+        "Mark round as completed."
+        self._is_completed = True
+
+    def _teardown(self):
+        "Cleans up the betting round."
+        self.reset_betting_round_states(self.table)
+        self._is_closed = True
 
 
     @property
@@ -93,35 +125,6 @@ class BettingRound:
         return self._open_fold_allowed
 
 
-    def __enter__(self):
-        self.listen()
-        return self
-
-
-    def __exit__(self, exception_type: (type|None), exception_value: (BaseException|None), _):
-
-        if exception_type is None:
-            self.close()
-            return
-
-        # Closes the listener generator on the abort path. If an exception is raised on the
-        # caller's side (for example in a state method such as deal_cards), the generator stays
-        # suspended at yield and its nested with blocks do not unwind. Their cleanup would then run
-        # at garbage collection or interpreter shutdown, when imports no longer work, producing a
-        # misleading "ImportError: sys.meta_path is None" that hides the real error. Generator's
-        # method close() throws GeneratorExit through every `yield from`, so the cleanup runs here,
-        # deterministically. It is a harmless if the generator has already finished.
-        self._listener.close()
-
-        self.reset_betting_round_states(self.table)
-        self._is_closed = True
-        if exception_type is StopIteration:
-            raise RuntimeError(msg_overloaded_betting_round) from exception_value
-
-
-    # Methods to control the listener
-
-
     def listen(self):
 
         "Starts and retrieves the generator object that listens for player actions."
@@ -150,15 +153,11 @@ class BettingRound:
                 raise RuntimeError(msg_betting_round_was_not_completed) # closure after skipping parsing prefers this message
             raise exception
         finally:
-            self.reset_betting_round_states(self.table)
-            self._is_closed = True
+            self._teardown()
 
         if not self.is_completed:
             logger.critical(wrap_external_log('the betting round was closed before ending'))
             raise RuntimeError(msg_betting_round_was_not_completed)
-
-
-    # Methods related to state
 
 
     @staticmethod
@@ -175,15 +174,3 @@ class BettingRound:
 
         for player in table.players:
             player.unmark_has_played()
-
-
-    # Helper methods
-
-
-    def _increase_counter(self):
-        "Registers a new lap."
-        self._lap_counts += 1
-
-    def _mark_is_completed(self):
-        "Mark round as completed."
-        self._is_completed = True
