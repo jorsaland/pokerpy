@@ -48,7 +48,7 @@ class Await(ABC):
     @abstractmethod
     def to_dict(self):
         "Serializes the state object to JSON format."
-        return NotImplemented
+        ...
 
 
 class PlayerMixin:
