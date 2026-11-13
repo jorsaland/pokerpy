@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, engines, messages, structures
+from pokerpy import constants, engines, messages, states, structures
 
 
 class TestBettingRoundAwaitPlayerFunction(TestCase):
@@ -42,10 +42,13 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(self.Andy, self.action_ranges)
 
-        with self.subTest('generator await'):
-            next(generator)
+        with self.subTest('yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
             with self.assertRaises(RuntimeError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_missing_action)
@@ -59,12 +62,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(self.Andy, self.action_ranges)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
         await_state.request_action(action)
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
             with self.assertRaises(RuntimeError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_forbidden_action)
@@ -78,12 +84,15 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
 
         generator = engines.await_player(self.Andy, self.action_ranges)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, self.action_ranges)
 
         await_state.request_action(action)
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertEqual(context.exception.value, action)

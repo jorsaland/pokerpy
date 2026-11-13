@@ -48,10 +48,30 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_last_player_in_hand)
+
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
     def test_no_further_action_possible(self):
@@ -68,10 +88,30 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_no_further_action_possible)
+
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
     def test_non_closing_folded_player(self):
@@ -83,10 +123,30 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertTrue(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_folded_player)
+
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertTrue(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
     def test_closing_folded_player(self):
@@ -99,10 +159,30 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertTrue(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_folded_stopping_player)
+
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertTrue(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
 
 
     def test_non_closing_all_in_player(self):
@@ -114,10 +194,30 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 0)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.JumpToNextPlayerSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_all_in_player)
+
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 0)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
     def test_closing_all_in_player(self):
@@ -130,53 +230,167 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
 
         generator = engines.prompt_player(self.table, open_fold_allowed=False)
 
-        with self.subTest('exception raise'):
+        with self.subTest('initial state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 0)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+
+        with self.subTest('closure state'):
             with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
                 next(generator)
             self.assertEqual(context.exception.cause, messages.signal_all_in_stopping_player)
 
+        with self.subTest('final state'):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 0)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
 
-    def test_non_closing_passive_player(self):
 
-        "Tests prompted player parses a passive action, given there are more players to listen."
+    def test_non_closing_passive_player_no_previous_aggression(self):
+
+        """
+        Tests prompted player parses a passive action, given there are more players to await and
+        none has parsed an aggressive action yet.
+        """
 
         actions = [
-            structures.Action(constants.ACTION_CHECK),
-            structures.Action(constants.ACTION_CALL, 100),
             structures.Action(constants.ACTION_FOLD),
+            structures.Action(constants.ACTION_CHECK),
         ]
+
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CHECK: range(0, 1),
+            constants.ACTION_BET: range(100, 1001),
+        }
 
         for action in actions:
 
             self.setUp()
             self.table.set_current_player(self.Andy)
 
-            if action.category == constants.ACTION_CALL:
-                self.table.set_bet_level(100)
-                self.table.set_full_bet_level(100)
-
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
-            with self.subTest('generator await', action=action):
+            with self.subTest('initial state', action=action):
+                self.assertFalse(self.Andy.has_played)
+                self.assertFalse(self.Andy.is_folded)
+                self.assertEqual(self.Andy.stack, 1000)
+                self.assertEqual(self.Andy.bet_level, 0)
+                self.assertEqual(self.table.bet_level, 0)
+                self.assertEqual(self.table.full_bet_level, 0)
+                self.assertEqual(self.table.min_raise_increase, 100)
+                self.assertEqual(self.table.stopping_player, self.Fomi)
+
+            with self.subTest('yield state', action=action):
                 await_state = next(generator)
+                self.assertIsInstance(await_state, states.PlayerActionAwait)
+                self.assertEqual(await_state.player, self.Andy)
+                self.assertDictEqual(await_state.ranges, expected_action_ranges)
 
             await_state.request_action(action)
 
-            with self.subTest('generator end', action=action):
+            with self.subTest('closure state', action=action):
                 with self.assertRaises(StopIteration) as context:
                     next(generator)
                 self.assertIsNone(context.exception.value)
 
+            with self.subTest('final state'):
+                self.assertTrue(self.Andy.has_played)
+                if action.category == constants.ACTION_FOLD:
+                    self.assertTrue(self.Andy.is_folded)
+                else:
+                    self.assertFalse(self.Andy.is_folded)
+                self.assertEqual(self.Andy.stack, 1000)
+                self.assertEqual(self.Andy.bet_level, 0)
+                self.assertEqual(self.table.bet_level, 0)
+                self.assertEqual(self.table.full_bet_level, 0)
+                self.assertEqual(self.table.min_raise_increase, 100)
+                self.assertEqual(self.table.stopping_player, self.Fomi)
 
-    def test_closing_passive_player(self):
 
-        "Tests prompted player parses a passive action, given there are more players to listen."
+    def test_non_closing_passive_player_previous_aggression(self):
+
+        """
+        Tests prompted player parses a passive action, given there are more players to await and
+        there is a previous aggressive action.
+        """
+
+        action = structures.Action(constants.ACTION_CALL, 100)
+
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CALL: range(100, 101),
+            constants.ACTION_RAISE: range(200, 1001),
+        }
+
+        self.table.set_current_player(self.Andy)
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+
+
+        generator = engines.prompt_player(self.table, open_fold_allowed=True)
+
+        with self.subTest('initial state', action=action):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+        with self.subTest('yield state', action=action):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+
+        await_state.request_action(action)
+
+        with self.subTest('closure state', action=action):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final state'):
+            self.assertTrue(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 900)
+            self.assertEqual(self.Andy.bet_level, 100)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
+
+
+    def test_closing_passive_player_no_previous_aggression(self):
+
+        """
+        Tests prompted player parses a passive action, given there are no more players to await and
+        none has parsed an aggressive action yet.
+        """
 
         actions = [
-            structures.Action(constants.ACTION_CHECK),
-            structures.Action(constants.ACTION_CALL, 100),
             structures.Action(constants.ACTION_FOLD),
+            structures.Action(constants.ACTION_CHECK),
         ]
+
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CHECK: range(0, 1),
+            constants.ACTION_BET: range(100, 1001),
+        }
 
         for action in actions:
 
@@ -184,90 +398,205 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             self.table.set_current_player(self.Andy)
             self.table.set_stopping_player(self.Andy)
 
-            if action.category == constants.ACTION_CALL:
-                self.table.set_bet_level(100)
-                self.table.set_full_bet_level(100)
-
             generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
-            with self.subTest('generator await', action=action):
+            with self.subTest('initial state', action=action):
+                self.assertFalse(self.Andy.has_played)
+                self.assertFalse(self.Andy.is_folded)
+                self.assertEqual(self.Andy.stack, 1000)
+                self.assertEqual(self.Andy.bet_level, 0)
+                self.assertEqual(self.table.bet_level, 0)
+                self.assertEqual(self.table.full_bet_level, 0)
+                self.assertEqual(self.table.min_raise_increase, 100)
+                self.assertEqual(self.table.stopping_player, self.Andy)
+
+            with self.subTest('yield state', action=action):
                 await_state = next(generator)
+                self.assertIsInstance(await_state, states.PlayerActionAwait)
+                self.assertEqual(await_state.player, self.Andy)
+                self.assertDictEqual(await_state.ranges, expected_action_ranges)
 
             await_state.request_action(action)
 
-            with self.subTest('exception raise', action=action):
+            with self.subTest('closure state', action=action):
                 with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
                     next(generator)
                 self.assertEqual(context.exception.cause, messages.signal_passive_stopping_player)
+
+            with self.subTest('final state'):
+                self.assertTrue(self.Andy.has_played)
+                if action.category == constants.ACTION_FOLD:
+                    self.assertTrue(self.Andy.is_folded)
+                else:
+                    self.assertFalse(self.Andy.is_folded)
+                self.assertEqual(self.Andy.stack, 1000)
+                self.assertEqual(self.Andy.bet_level, 0)
+                self.assertEqual(self.table.bet_level, 0)
+                self.assertEqual(self.table.full_bet_level, 0)
+                self.assertEqual(self.table.min_raise_increase, 100)
+                self.assertEqual(self.table.stopping_player, self.Andy)
+
+
+    def test_closing_passive_player_previous_aggression(self):
+
+        """
+        Tests prompted player parses a passive action, given there are no more players to await and
+        there is a previous aggressive action.
+        """
+
+        action = structures.Action(constants.ACTION_CALL, 100)
+
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CALL: range(100, 101),
+            constants.ACTION_RAISE: range(200, 1001),
+        }
+
+        self.table.set_current_player(self.Andy)
+        self.table.set_stopping_player(self.Andy)
+        self.table.set_bet_level(100)
+        self.table.set_full_bet_level(100)
+
+
+        generator = engines.prompt_player(self.table, open_fold_allowed=True)
+
+        with self.subTest('initial state', action=action):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
+
+        with self.subTest('yield state', action=action):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+
+        await_state.request_action(action)
+
+        with self.subTest('closure state', action=action):
+            with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
+                next(generator)
+            self.assertEqual(context.exception.cause, messages.signal_passive_stopping_player)
+
+        with self.subTest('final state'):
+            self.assertTrue(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 900)
+            self.assertEqual(self.Andy.bet_level, 100)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
 
 
     def test_non_closing_agressive_player(self):
 
         "Tests prompted player parses an aggressive action, given there are more players to listen."
 
-        actions = [
-            structures.Action(constants.ACTION_RAISE, 200),
-            structures.Action(constants.ACTION_BET, 100),
-        ]
+        action = structures.Action(constants.ACTION_BET, 100)
 
-        for action in actions:
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CHECK: range(0, 1),
+            constants.ACTION_BET: range(100, 1001),
+        }
 
-            self.setUp()
-            self.table.set_current_player(self.Andy)
+        self.table.set_current_player(self.Andy)
+        self.table.set_bet_level(0)
+        self.table.set_full_bet_level(0)
 
-            if action.category == constants.ACTION_RAISE:
-                self.table.set_bet_level(100)
-                self.table.set_full_bet_level(100)
-            else:
-                self.table.set_bet_level(0)
-                self.table.set_full_bet_level(0)
+        generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
-            generator = engines.prompt_player(self.table, open_fold_allowed=True)
+        with self.subTest('initial state', action=action):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
-            with self.subTest('generator await', action=action):
-                await_state = next(generator)
+        with self.subTest('yield state', action=action):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, expected_action_ranges)
 
-            await_state.request_action(action)
+        await_state.request_action(action)
 
-            with self.subTest('generator end', action=action):
-                with self.assertRaises(StopIteration) as context:
-                    next(generator)
-                self.assertIsNone(context.exception.value)
+        with self.subTest('closure state', action=action):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final state'):
+            self.assertTrue(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 900)
+            self.assertEqual(self.Andy.bet_level, 100)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
     def test_closing_agressive_player(self):
 
         "Tests prompted player parses an aggressive action, given there are no more players to listen."
 
-        actions = [
-            structures.Action(constants.ACTION_RAISE, 200),
-            structures.Action(constants.ACTION_BET, 100),
-        ]
+        action = structures.Action(constants.ACTION_BET, 100)
 
-        for action in actions:
+        expected_action_ranges = {
+            constants.ACTION_FOLD: range(0, 1),
+            constants.ACTION_CHECK: range(0, 1),
+            constants.ACTION_BET: range(100, 1001),
+        }
 
-            self.setUp()
-            self.table.set_current_player(self.Andy)
-            self.table.set_stopping_player(self.Andy)
+        self.table.set_current_player(self.Andy)
+        self.table.set_stopping_player(self.Andy)
+        self.table.set_bet_level(0)
+        self.table.set_full_bet_level(0)
 
-            if action.category == constants.ACTION_RAISE:
-                self.table.set_bet_level(100)
-                self.table.set_full_bet_level(100)
-            else:
-                self.table.set_bet_level(0)
-                self.table.set_full_bet_level(0)
+        generator = engines.prompt_player(self.table, open_fold_allowed=True)
 
-            generator = engines.prompt_player(self.table, open_fold_allowed=True)
+        with self.subTest('initial state', action=action):
+            self.assertFalse(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 1000)
+            self.assertEqual(self.Andy.bet_level, 0)
+            self.assertEqual(self.table.bet_level, 0)
+            self.assertEqual(self.table.full_bet_level, 0)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Andy)
 
-            with self.subTest('generator await', action=action):
-                await_state = next(generator)
+        with self.subTest('yield state', action=action):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerActionAwait)
+            self.assertEqual(await_state.player, self.Andy)
+            self.assertDictEqual(await_state.ranges, expected_action_ranges)
 
-            await_state.request_action(action)
+        await_state.request_action(action)
 
-            with self.subTest('generator end', action=action):
-                with self.assertRaises(StopIteration) as context:
-                    next(generator)
-                self.assertIsNone(context.exception.value)
+        with self.subTest('closure state', action=action):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final state'):
+            self.assertTrue(self.Andy.has_played)
+            self.assertFalse(self.Andy.is_folded)
+            self.assertEqual(self.Andy.stack, 900)
+            self.assertEqual(self.Andy.bet_level, 100)
+            self.assertEqual(self.table.bet_level, 100)
+            self.assertEqual(self.table.full_bet_level, 100)
+            self.assertEqual(self.table.min_raise_increase, 100)
+            self.assertEqual(self.table.stopping_player, self.Fomi)
 
 
 if __name__ == '__main__':
