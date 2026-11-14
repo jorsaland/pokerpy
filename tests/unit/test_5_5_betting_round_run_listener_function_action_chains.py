@@ -71,7 +71,7 @@ class BaseTestCase(TestCase):
             with self.subTest('yield state', player=player, action=action):
                 await_state = next(generator)
                 self.assertIsInstance(await_state, states.PlayerActionAwait)
-                self.assertDictEqual(await_state.ranges, action_ranges)
+                self.assertDictEqual(await_state.action_ranges, action_ranges)
                 self.assertEqual(await_state.player, player)
                 self.assertEqual(self.betting_round.lap_counts, lap)
                 self.assertEqual(self.table.current_player, player)

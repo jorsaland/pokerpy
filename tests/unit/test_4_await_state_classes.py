@@ -186,7 +186,7 @@ class TestAwaitStatesSerializationMethods(BaseTestCase):
                     "name": "Andy",
                     "stack": 1000,
                 },
-                "ranges": {
+                "action_ranges": {
                     constants.ACTION_CHECK: {
                         "min": 0,
                         "max": 0,

@@ -104,14 +104,14 @@ def game(table: pk.Table, *, open_fold_allowed: bool = False):
 
                 assert hand_cycle.betting_round is not None
                 action_name, amount_range = random.choice([
-                    (name, amount_range) for name, amount_range in await_state.ranges.items() if amount_range is not None
+                    (name, amount_range) for name, amount_range in await_state.action_ranges.items() if amount_range is not None
                 ])
                 if action_name == pk.ACTION_BET:
                     action_amount = random.randint(table.pot//2, table.pot*2)
                     if action_amount not in amount_range:
                         action_amount = amount_range[-1]
                 elif action_name == pk.ACTION_RAISE:
-                    amount_to_call = await_state.ranges[pk.ACTION_CALL][0]
+                    amount_to_call = await_state.action_ranges[pk.ACTION_CALL][0]
                     smallest_amount = amount_to_call + hand_cycle.table.min_raise_increase
                     action_amount = random.randint(smallest_amount, smallest_amount*3)
                     if action_amount not in amount_range:

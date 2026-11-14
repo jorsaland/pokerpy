@@ -46,7 +46,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
+            self.assertDictEqual(await_state.action_ranges, self.action_ranges)
 
         with self.subTest('closure state'):
             with self.assertRaises(RuntimeError) as context:
@@ -66,7 +66,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
+            self.assertDictEqual(await_state.action_ranges, self.action_ranges)
 
         await_state.request_action(action)
 
@@ -88,7 +88,7 @@ class TestBettingRoundAwaitPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, self.action_ranges)
+            self.assertDictEqual(await_state.action_ranges, self.action_ranges)
 
         await_state.request_action(action)
 

@@ -51,7 +51,7 @@ class PlayerActionAwait(Await, PlayerMixin, RangesMixin):
         return self._player
 
     @property
-    def ranges(self):
+    def action_ranges(self):
         "Available action ranges."
         return self._ranges
 
@@ -64,7 +64,7 @@ class PlayerActionAwait(Await, PlayerMixin, RangesMixin):
     def to_dict(self):
         state_dict: PlayerActionAwaitDict = {
             'player': self._build_player_dict(),
-            'ranges': self._build_ranges_dict()
+            'action_ranges': self._build_ranges_dict()
         }
         return state_dict
 

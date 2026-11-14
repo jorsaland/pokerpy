@@ -67,13 +67,13 @@ class RangesMixin:
 
     "Defines the method that serializes the ranges."
 
-    ranges: dict[ActionName, range]
+    action_ranges: dict[ActionName, range]
 
     def _build_ranges_dict(self):
         "Builds the ranges dict from an await state that has a ranges attribute."
         ranges_dict: dict[ActionName, RangeDict] = {
             action_name: {'min': action_range[0], 'max': action_range[-1]}
-            for action_name, action_range in self.ranges.items()
+            for action_name, action_range in self.action_ranges.items()
         }
         return ranges_dict
 

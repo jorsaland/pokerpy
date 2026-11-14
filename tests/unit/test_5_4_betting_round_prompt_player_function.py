@@ -295,7 +295,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
                 await_state = next(generator)
                 self.assertIsInstance(await_state, states.PlayerActionAwait)
                 self.assertEqual(await_state.player, self.Andy)
-                self.assertDictEqual(await_state.ranges, expected_action_ranges)
+                self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
             await_state.request_action(action)
 
@@ -354,7 +354,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+            self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
         await_state.request_action(action)
 
@@ -414,7 +414,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
                 await_state = next(generator)
                 self.assertIsInstance(await_state, states.PlayerActionAwait)
                 self.assertEqual(await_state.player, self.Andy)
-                self.assertDictEqual(await_state.ranges, expected_action_ranges)
+                self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
             await_state.request_action(action)
 
@@ -474,7 +474,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+            self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
         await_state.request_action(action)
 
@@ -526,7 +526,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+            self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
         await_state.request_action(action)
 
@@ -579,7 +579,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             await_state = next(generator)
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
-            self.assertDictEqual(await_state.ranges, expected_action_ranges)
+            self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
 
         await_state.request_action(action)
 
