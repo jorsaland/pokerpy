@@ -57,8 +57,12 @@ def showdown(table: Table):
     """
 
     assert table.live_players
+    assert not any(side_pot == 0 for side_pot in table.split_central_pot[:-1])
 
     for i, side_pot in enumerate(table.split_central_pot):
+
+        if not side_pot:
+            break
 
         winners: list[Player] = []
 
