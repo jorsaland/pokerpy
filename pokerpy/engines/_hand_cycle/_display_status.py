@@ -51,6 +51,8 @@ def display_pot_indexes(table: Table):
     logger.info(wrap_internal_log())
 
     for pot_index, pot in enumerate(table.split_central_pot):
+        if pot == 0:
+            continue
         logger.info(f"{'Main pot' if pot_index == 0 else f'Side pot {pot_index}'} ({pot}):")
         for player in table.live_players:
             if player.pot_index >= pot_index:
