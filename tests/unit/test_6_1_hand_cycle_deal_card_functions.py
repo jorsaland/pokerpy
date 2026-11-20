@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import constants, engines, messages, structures
+from pokerpy import constants, engines, messages, states, structures
 
 
 class BaseTestCase(TestCase):
@@ -44,15 +44,18 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
 
         generator = engines.deal_common_cards(self.table, 3)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.CommonDealingAwait)
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
-            next(generator)
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_not_exact_amount_of_cards.format(3))
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
@@ -68,17 +71,19 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
 
         generator = engines.deal_common_cards(self.table, 3)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
+            self.assertIsInstance(await_state, states.CommonDealingAwait)
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
-
-        await_state.deal_cards(cards)
-
-        with self.subTest('generator end'):
+    
+        with self.subTest('closure state'):
+            await_state.deal_cards(cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_not_exact_amount_of_cards.format(3))
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
@@ -95,17 +100,18 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
 
         generator = engines.deal_common_cards(self.table, 3)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
@@ -125,7 +131,7 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
 
         generator = engines.deal_common_cards(self.table, 3)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(
@@ -133,12 +139,13 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card != missing_card),
             )
 
-        await_state.deal_cards(cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_card_not_in_deck)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(
                 self.table.deck,
@@ -158,17 +165,18 @@ class TestHandCycleDealCommonCardsFunction(BaseTestCase):
 
         generator = engines.deal_common_cards(self.table, 3)
 
-        with self.subTest('generator await'):
+        with self.subTest('yield state'):
             await_state = next(generator)
             self.assertTupleEqual(self.table.common_cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(common_cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(common_cards)
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertIsNone(context.exception.value)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.table.common_cards, common_cards)
             self.assertTupleEqual(
                 self.table.deck,
@@ -193,7 +201,7 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             structures.Card(constants.ACES, constants.DIAMONDS),
         )
 
-        with self.subTest('first generator await'):
+        with self.subTest('first yield state'):
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Andy)
             self.assertTupleEqual(self.Andy.cards, ())
@@ -201,9 +209,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             self.assertTupleEqual(self.Coral.cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(Andy_cards)
-
-        with self.subTest('second generator await'):
+        with self.subTest('second yield state'):
+            await_state.deal_cards(Andy_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Boa)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -214,10 +221,12 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in Andy_cards),
             )
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_not_exact_amount_of_cards.format(2))
+ 
+        with self.subTest('final state'):
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
             self.assertTupleEqual(self.Boa.cards, ())
             self.assertTupleEqual(self.Coral.cards, ())
@@ -242,7 +251,7 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             structures.Card(constants.TENS, constants.CLUBS),
         )
 
-        with self.subTest('first generator await'):
+        with self.subTest('first yield state'):
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Andy)
             self.assertTupleEqual(self.Andy.cards, ())
@@ -250,9 +259,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             self.assertTupleEqual(self.Coral.cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(Andy_cards)
-
-        with self.subTest('second generator await'):
+        with self.subTest('second yield state'):
+            await_state.deal_cards(Andy_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Boa)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -263,12 +271,13 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in Andy_cards),
             )
 
-        await_state.deal_cards(Boa_cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(Boa_cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_not_exact_amount_of_cards.format(2))
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
             self.assertTupleEqual(self.Boa.cards, ())
             self.assertTupleEqual(self.Coral.cards, ())
@@ -294,7 +303,7 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             structures.Card(constants.TENS, constants.CLUBS),
         )
 
-        with self.subTest('first generator await'):
+        with self.subTest('first yield state'):
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Andy)
             self.assertTupleEqual(self.Andy.cards, ())
@@ -302,9 +311,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             self.assertTupleEqual(self.Coral.cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(Andy_cards)
-
-        with self.subTest('second generator await'):
+        with self.subTest('second yield state'):
+            await_state.deal_cards(Andy_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Boa)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -315,12 +323,14 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in Andy_cards),
             )
 
-        await_state.deal_cards(Boa_cards)
 
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(Boa_cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_repeated_cards)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
             self.assertTupleEqual(self.Boa.cards, ())
             self.assertTupleEqual(self.Coral.cards, ())
@@ -346,7 +356,7 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             structures.Card(constants.ACES, constants.SPADES),
         )
 
-        with self.subTest('first generator await'):
+        with self.subTest('first yield state'):
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Andy)
             self.assertTupleEqual(self.Andy.cards, ())
@@ -354,9 +364,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             self.assertTupleEqual(self.Coral.cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(Andy_cards)
-
-        with self.subTest('second generator await'):
+        with self.subTest('second yield state'):
+            await_state.deal_cards(Andy_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Boa)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -367,12 +376,13 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in Andy_cards),
             )
 
-        await_state.deal_cards(Boa_cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(Boa_cards)
             with self.assertRaises(ValueError) as context:
                 next(generator)
             self.assertEqual(context.exception.args[0], messages.msg_card_not_in_deck)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
             self.assertTupleEqual(self.Boa.cards, ())
             self.assertTupleEqual(self.Coral.cards, ())
@@ -403,7 +413,7 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             structures.Card(constants.DEUCES, constants.CLUBS),
         )
 
-        with self.subTest('first generator await'):
+        with self.subTest('first yield state'):
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Andy)
             self.assertTupleEqual(self.Andy.cards, ())
@@ -411,9 +421,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
             self.assertTupleEqual(self.Coral.cards, ())
             self.assertTupleEqual(self.table.deck, self.full_deck)
 
-        await_state.deal_cards(Andy_cards)
-
-        with self.subTest('second generator await'):
+        with self.subTest('second yield state'):
+            await_state.deal_cards(Andy_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Boa)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -424,9 +433,8 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in Andy_cards),
             )
 
-        await_state.deal_cards(Boa_cards)
-
-        with self.subTest('third generator await'):
+        with self.subTest('third yield state'):
+            await_state.deal_cards(Boa_cards)
             await_state = next(generator)
             self.assertEqual(await_state.player, self.Coral)
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
@@ -437,12 +445,13 @@ class TestHandCycleDealCardsToPlayersFunction(BaseTestCase):
                 tuple(card for card in self.full_deck if card not in (*Andy_cards, *Boa_cards)),
             )
 
-        await_state.deal_cards(Coral_cards)
-
-        with self.subTest('generator end'):
+        with self.subTest('closure state'):
+            await_state.deal_cards(Coral_cards)
             with self.assertRaises(StopIteration) as context:
                 next(generator)
             self.assertIsNone(context.exception.value)
+
+        with self.subTest('final state'):
             self.assertTupleEqual(self.Andy.cards, Andy_cards)
             self.assertTupleEqual(self.Boa.cards, Boa_cards)
             self.assertTupleEqual(self.Coral.cards, Coral_cards)
