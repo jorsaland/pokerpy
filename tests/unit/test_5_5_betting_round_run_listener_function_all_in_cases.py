@@ -1129,13 +1129,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (100,))
+            self.assertTupleEqual(self.table.split_central_pot, (100, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 0)
+                    self.assertEqual(player.pot_index, 1)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 0)
@@ -1205,13 +1205,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 0)
 
-            self.assertTupleEqual(self.table.split_central_pot, (60, 100))
+            self.assertTupleEqual(self.table.split_central_pot, (60, 100, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 1)
+                    self.assertEqual(player.pot_index, 2)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 1)
@@ -1282,13 +1282,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (150,))
+            self.assertTupleEqual(self.table.split_central_pot, (150, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 0)
+                    self.assertEqual(player.pot_index, 1)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 0)
@@ -1372,13 +1372,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (60, 150))
+            self.assertTupleEqual(self.table.split_central_pot, (60, 150, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 1)
+                    self.assertEqual(player.pot_index, 2)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 1)
@@ -1452,13 +1452,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (200,))
+            self.assertTupleEqual(self.table.split_central_pot, (200, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 0)
+                    self.assertEqual(player.pot_index, 1)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 0)
@@ -1544,13 +1544,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (60, 200))
+            self.assertTupleEqual(self.table.split_central_pot, (60, 200, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 1)
+                    self.assertEqual(player.pot_index, 2)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 1)
@@ -1620,13 +1620,13 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertTrue(self.betting_round.is_completed)
             self.assertEqual(self.betting_round.lap_counts, 1)
 
-            self.assertTupleEqual(self.table.split_central_pot, (300,))
+            self.assertTupleEqual(self.table.split_central_pot, (300, 0))
 
             for player in self.setup_players:
                 self.assertEqual(player.bet_level, 0)
                 if player == self.Andy:
                     self.assertEqual(player.stack, 950)
-                    self.assertEqual(player.pot_index, 0)
+                    self.assertEqual(player.pot_index, 1)
                 elif player == self.Boa:
                     self.assertEqual(player.stack, 0)
                     self.assertEqual(player.pot_index, 0)
