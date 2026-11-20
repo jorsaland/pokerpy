@@ -2959,7 +2959,7 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertEqual(self.Dino.stack, 1000)
             self.assertEqual(self.Epa.stack, 1000)
             self.assertEqual(self.Fomi.stack, 1000)
-            self.assertTupleEqual(self.table.split_central_pot, (100,))
+            self.assertTupleEqual(self.table.split_central_pot, (100, 0))
 
 
     def test_bb_all_in_when_deepest_pot_has_a_single_folded_player(self):
@@ -3020,7 +3020,7 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertEqual(self.Dino.stack, 1000)
             self.assertEqual(self.Epa.stack, 1000)
             self.assertEqual(self.Fomi.stack, 1000)
-            self.assertTupleEqual(self.table.split_central_pot, (150,))
+            self.assertTupleEqual(self.table.split_central_pot, (150, 0))
 
 
     def test_bb_all_in_when_deepest_pot_has_multiple_folded_player(self):
@@ -3085,7 +3085,7 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertEqual(self.Dino.stack, 950) # refund 50 excess
             self.assertEqual(self.Epa.stack, 1000)
             self.assertEqual(self.Fomi.stack, 1000)
-            self.assertTupleEqual(self.table.split_central_pot, (200,))
+            self.assertTupleEqual(self.table.split_central_pot, (200, 0))
 
 
     def test_bb_all_in_when_two_deepest_pots_have_multiple_folded_player(self):
@@ -3161,7 +3161,7 @@ class TestBettingRoundRunListenerFunctionHavingBBAllIn(BaseTestCase):
             self.assertEqual(self.Dino.stack, 950) # refund 50 excess
             self.assertEqual(self.Epa.stack, 950) # refund 150 excess
             self.assertEqual(self.Fomi.stack, 950) # refund 150 excess
-            self.assertTupleEqual(self.table.split_central_pot, (300,))
+            self.assertTupleEqual(self.table.split_central_pot, (300, 0))
 
 
 if __name__ == '__main__':
