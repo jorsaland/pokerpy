@@ -296,8 +296,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
                 self.assertIsInstance(await_state, states.PlayerActionAwait)
                 self.assertEqual(await_state.player, self.Andy)
                 self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-            await_state.request_action(action)
+                await_state.request_action(action)
 
             with self.subTest('closure state', action=action):
                 with self.assertRaises(StopIteration) as context:
@@ -355,8 +354,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
             self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-        await_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('closure state', action=action):
             with self.assertRaises(StopIteration) as context:
@@ -415,8 +413,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
                 self.assertIsInstance(await_state, states.PlayerActionAwait)
                 self.assertEqual(await_state.player, self.Andy)
                 self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-            await_state.request_action(action)
+                await_state.request_action(action)
 
             with self.subTest('closure state', action=action):
                 with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -475,8 +472,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
             self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-        await_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('closure state', action=action):
             with self.assertRaises(exceptions.CloseBettingRoundSignal) as context:
@@ -527,8 +523,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
             self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-        await_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('closure state', action=action):
             with self.assertRaises(StopIteration) as context:
@@ -580,8 +575,7 @@ class TestBettingRoundPromptPlayerFunction(TestCase):
             self.assertIsInstance(await_state, states.PlayerActionAwait)
             self.assertEqual(await_state.player, self.Andy)
             self.assertDictEqual(await_state.action_ranges, expected_action_ranges)
-
-        await_state.request_action(action)
+            await_state.request_action(action)
 
         with self.subTest('closure state', action=action):
             with self.assertRaises(StopIteration) as context:

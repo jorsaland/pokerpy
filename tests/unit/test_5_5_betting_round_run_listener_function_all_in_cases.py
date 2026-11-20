@@ -58,9 +58,8 @@ class BaseTestCase(TestCase):
                 self.assertEqual(await_state.player, player)
                 self.assertEqual(self.table.current_player, player)
                 self.assertEqual(self.betting_round.lap_counts, lap)
-
-            await_state.request_action(action)
-            current_lap = lap
+                await_state.request_action(action)
+                current_lap = lap
 
         with self.subTest('closure state'):
             with self.assertRaises(StopIteration) as context:
