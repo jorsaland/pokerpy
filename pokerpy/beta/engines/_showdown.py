@@ -69,6 +69,9 @@ def showdown(table: Table):
 
     for i, side_pot in enumerate(table.split_central_pot):
 
+        if not side_pot:
+            break
+
         winners: list[Player] = []
 
         side_pot_participating_players = [player for player in table.live_players if player.pot_index >= i]
