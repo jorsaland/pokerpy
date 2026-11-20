@@ -10,7 +10,7 @@ sys.path.insert(0, '.')
 from unittest import main, TestCase
 
 
-from pokerpy import engines, structures
+from pokerpy import engines, states, structures
 
 
 class TestHandCyclePlaceSmallBlindFunction(TestCase):
@@ -176,26 +176,22 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
             Boa := structures.Player('Boa', 0),
             Coral := structures.Player('Coral', 0),
             Dino := structures.Player('Dino', 0),
-            Epa := structures.Player('Epa', 0),
-            Fomi := structures.Player('Fomi', 0),
         )
 
         generator = engines.place_extra_big_blinds(100, players)
 
-        with self.subTest('before big blind placing'):
+        with self.subTest('initial states'):
             for player in players:
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 0)
 
-        for await_state in generator:
-            if await_state.player in (Andy, Boa, Coral):
-                await_state.place_blind()
+        with self.subTest('closure state'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
 
-        with self.subTest('after big blind placing'):
-            for player in (Andy, Boa, Coral):
-                self.assertEqual(player.stack, 0)
-                self.assertEqual(player.bet_level, 0)
-            for player in (Dino, Epa, Fomi):
+        with self.subTest('final states'):
+            for player in players:
                 self.assertEqual(player.stack, 0)
                 self.assertEqual(player.bet_level, 0)
 
@@ -209,8 +205,6 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
             Boa := structures.Player('Boa', 10),
             Coral := structures.Player('Coral', 10),
             Dino := structures.Player('Dino', 10),
-            Epa := structures.Player('Epa', 10),
-            Fomi := structures.Player('Fomi', 10),
         )
 
         generator = engines.place_extra_big_blinds(100, players)
@@ -220,17 +214,45 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
                 self.assertEqual(player.stack, 10)
                 self.assertEqual(player.bet_level, 0)
 
-        for await_state in generator:
-            if await_state.player in (Andy, Boa, Coral):
-                await_state.place_blind()
+        with self.subTest('first yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Andy)
+            self.assertEqual(await_state.amount, 10)
+            await_state.place_blind()
 
-        with self.subTest('after big blind placing'):
-            for player in (Andy, Boa, Coral):
-                self.assertEqual(player.stack, 0)
-                self.assertEqual(player.bet_level, 10)
-            for player in (Dino, Epa, Fomi):
-                self.assertEqual(player.stack, 10)
-                self.assertEqual(player.bet_level, 0)
+        with self.subTest('second yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Boa)
+            self.assertEqual(await_state.amount, 10)
+            await_state.place_blind()
+
+        with self.subTest('third yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Coral)
+            self.assertEqual(await_state.amount, 10)
+
+        with self.subTest('fourth yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Dino)
+            self.assertEqual(await_state.amount, 10)
+
+        with self.subTest('closure state'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final states'):
+            for player in players:
+                if player in (Andy, Boa):
+                    self.assertEqual(player.stack, 0)
+                    self.assertEqual(player.bet_level, 10)
+                else:
+                    self.assertEqual(player.stack, 10)
+                    self.assertEqual(player.bet_level, 0)
 
 
     def test_stacks_equal_to_big_blind(self):
@@ -242,8 +264,6 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
             Boa := structures.Player('Boa', 100),
             Coral := structures.Player('Coral', 100),
             Dino := structures.Player('Dino', 100),
-            Epa := structures.Player('Epa', 100),
-            Fomi := structures.Player('Fomi', 100),
         )
 
         generator = engines.place_extra_big_blinds(100, players)
@@ -253,17 +273,45 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
                 self.assertEqual(player.stack, 100)
                 self.assertEqual(player.bet_level, 0)
 
-        for await_state in generator:
-            if await_state.player in (Andy, Boa, Coral):
-                await_state.place_blind()
+        with self.subTest('first yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Andy)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
 
-        with self.subTest('after big blind placing'):
-            for player in (Andy, Boa, Coral):
-                self.assertEqual(player.stack, 0)
-                self.assertEqual(player.bet_level, 100)
-            for player in (Dino, Epa, Fomi):
-                self.assertEqual(player.stack, 100)
-                self.assertEqual(player.bet_level, 0)
+        with self.subTest('second yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Boa)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
+
+        with self.subTest('third yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Coral)
+            self.assertEqual(await_state.amount, 100)
+
+        with self.subTest('fourth yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Dino)
+            self.assertEqual(await_state.amount, 100)
+
+        with self.subTest('closure state'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final states'):
+            for player in players:
+                if player in (Andy, Boa):
+                    self.assertEqual(player.stack, 0)
+                    self.assertEqual(player.bet_level, 100)
+                else:
+                    self.assertEqual(player.stack, 100)
+                    self.assertEqual(player.bet_level, 0)
 
 
     def test_stacks_equal_over_big_blind(self):
@@ -275,8 +323,6 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
             Boa := structures.Player('Boa', 1000),
             Coral := structures.Player('Coral', 1000),
             Dino := structures.Player('Dino', 1000),
-            Epa := structures.Player('Epa', 1000),
-            Fomi := structures.Player('Fomi', 1000),
         )
 
         generator = engines.place_extra_big_blinds(100, players)
@@ -286,17 +332,45 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
                 self.assertEqual(player.stack, 1000)
                 self.assertEqual(player.bet_level, 0)
 
-        for await_state in generator:
-            if await_state.player in (Andy, Boa, Coral):
-                await_state.place_blind()
+        with self.subTest('first yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Andy)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
 
-        with self.subTest('after big blind placing'):
-            for player in (Andy, Boa, Coral):
-                self.assertEqual(player.stack, 900)
-                self.assertEqual(player.bet_level, 100)
-            for player in (Dino, Epa, Fomi):
-                self.assertEqual(player.stack, 1000)
-                self.assertEqual(player.bet_level, 0)
+        with self.subTest('second yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Boa)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
+
+        with self.subTest('third yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Coral)
+            self.assertEqual(await_state.amount, 100)
+
+        with self.subTest('fourth yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Dino)
+            self.assertEqual(await_state.amount, 100)
+
+        with self.subTest('closure state'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
+
+        with self.subTest('final states'):
+            for player in players:
+                if player in (Andy, Boa):
+                    self.assertEqual(player.stack, 900)
+                    self.assertEqual(player.bet_level, 100)
+                else:
+                    self.assertEqual(player.stack, 1000)
+                    self.assertEqual(player.bet_level, 0)
 
 
     def test_mixed_stack_conditions(self):
@@ -305,52 +379,69 @@ class TestHandCyclePlaceExtraBigBlindsFunction(TestCase):
 
         players = (
             Andy := structures.Player('Andy', 1000),
-            Boa := structures.Player('Boa', 1000),
-            Coral := structures.Player('Coral', 1000),
-            Dino := structures.Player('Dino', 100),
-            Epa := structures.Player('Epa', 10),
-            Fomi := structures.Player('Fomi', 0),
+            Boa := structures.Player('Boa', 100),
+            Coral := structures.Player('Coral', 10),
+            Dino := structures.Player('Dino', 0),
         )
 
         generator = engines.place_extra_big_blinds(100, players)
 
         with self.subTest('before big blind placing'):
-
-            for player in (Andy, Boa, Coral):
-                self.assertEqual(player.stack, 1000)
+            for player in players:
                 self.assertEqual(player.bet_level, 0)
+                if player == Andy:
+                    self.assertEqual(player.stack, 1000)
+                elif player == Boa:
+                    self.assertEqual(player.stack, 100)
+                elif player == Coral:
+                    self.assertEqual(player.stack, 10)
+                elif player == Dino:
+                    self.assertEqual(player.stack, 0)
+                else:
+                    raise AssertionError()
 
-            self.assertEqual(Dino.stack, 100)
-            self.assertEqual(Dino.bet_level, 0)
+        with self.subTest('first yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Andy)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
 
-            self.assertEqual(Epa.stack, 10)
-            self.assertEqual(Epa.bet_level, 0)
+        with self.subTest('second yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Boa)
+            self.assertEqual(await_state.amount, 100)
+            await_state.place_blind()
 
-            self.assertEqual(Fomi.stack, 0)
-            self.assertEqual(Fomi.bet_level, 0)
+        with self.subTest('third yield state'):
+            await_state = next(generator)
+            self.assertIsInstance(await_state, states.PlayerBlindAwait)
+            self.assertEqual(await_state.player, Coral)
+            self.assertEqual(await_state.amount, 10)
+            await_state.place_blind()
 
+        with self.subTest('closure state'):
+            with self.assertRaises(StopIteration) as context:
+                next(generator)
+            self.assertIsNone(context.exception.value)
 
-        for await_state in generator:
-            if await_state.player in (Coral, Dino, Epa, Fomi):
-                await_state.place_blind()
-
-        with self.subTest('after big blind placing'):
-
-            for player in (Andy, Boa):
-                self.assertEqual(player.stack, 1000)
-                self.assertEqual(player.bet_level, 0)
-
-            self.assertEqual(Coral.stack, 900)
-            self.assertEqual(Coral.bet_level, 100)
-
-            self.assertEqual(Dino.stack, 0)
-            self.assertEqual(Dino.bet_level, 100)
-
-            self.assertEqual(Epa.stack, 0)
-            self.assertEqual(Epa.bet_level, 10)
-
-            self.assertEqual(Fomi.stack, 0)
-            self.assertEqual(Fomi.bet_level, 0)
+        with self.subTest('final states'):
+            for player in players:
+                if player == Andy:
+                    self.assertEqual(player.stack, 900)
+                    self.assertEqual(player.bet_level, 100)
+                elif player == Boa:
+                    self.assertEqual(player.stack, 0)
+                    self.assertEqual(player.bet_level, 100)
+                elif player == Coral:
+                    self.assertEqual(player.stack, 0)
+                    self.assertEqual(player.bet_level, 10)
+                elif player == Dino:
+                    self.assertEqual(player.stack, 0)
+                    self.assertEqual(player.bet_level, 0)
+                else:
+                    raise AssertionError()
 
 
 if __name__ == '__main__':
